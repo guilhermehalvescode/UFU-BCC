@@ -1,0 +1,7 @@
+manteiga 1 4.5
+pao 1 7.99
+arroz 2 10.95
+feijao 3 5.4
+carne 2 21.90
+detergente 3 1.65
+sabao 2 3.45

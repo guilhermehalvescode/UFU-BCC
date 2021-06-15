@@ -1,0 +1,16 @@
+14. Calcule a complexidade, no pior caso, 
+do fragmento de código abaixo:
+
+int i, j, k;
+for(i = 0; i < N; i++) {
+  for(j = 0; j < N; j++) {
+    R[i][j] = 0;
+    for(k = 0; k < N; k++) {
+      R[i][j] += A[i][k] * B[k][j];
+    }
+  }
+}
+
+f(n) = 2 + 2n + n(2 + 2n + n(1 + 2 + 2n + n))
+f(n) = 2 + 4n + 5n² + 3n³
+O(n³)

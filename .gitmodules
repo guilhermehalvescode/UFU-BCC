@@ -10,3 +10,9 @@
 [submodule "Haskell"]
 	path = Haskell
 	url = git@github.com:guilhermealvesc/Haskell.git
+[submodule "AED2/hash-table-dynamic-resize"]
+	path = AED2/hash-table-dynamic-resize
+	url = git@github.com:guilhermealvesc/hash-table-dynamic-resize.git
+[submodule "AED2/graph/trees/prefix-tree"]
+	path = AED2/graph/trees/prefix-tree
+	url = git@github.com:guilhermealvesc/prefix-tree.git
