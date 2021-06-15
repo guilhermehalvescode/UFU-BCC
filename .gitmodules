@@ -7,3 +7,6 @@
 [submodule "POO/Trabalho_final_POO"]
 	path = POO/Trabalho_final_POO
 	url = git@github.com:joaoBatistaDesenvolvedor/Trabalho_final_POO.git
+[submodule "Haskell"]
+	path = Haskell
+	url = git@github.com:guilhermealvesc/Haskell.git
