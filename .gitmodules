@@ -4,3 +4,6 @@
 [submodule "POO/hangman-game"]
 	path = POO/hangman-game
 	url = https://github.com/guilhermealvesc/hangman-game.git
+[submodule "POO/Trabalho_final_POO"]
+	path = POO/Trabalho_final_POO
+	url = git@github.com:joaoBatistaDesenvolvedor/Trabalho_final_POO.git
