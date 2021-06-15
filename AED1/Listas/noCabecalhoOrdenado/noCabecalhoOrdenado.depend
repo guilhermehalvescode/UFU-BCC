@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1599594868 source:c:\users\guilherme\documents\prog\aed1\listas\nocabecalhoordenado\nocabecalhoordenado.c
+	<stdio.h>
+	<stdlib.h>
+	"noCabecalhoOrdenado.h"
+
+1599594742 c:\users\guilherme\documents\prog\aed1\listas\nocabecalhoordenado\nocabecalhoordenado.h
+

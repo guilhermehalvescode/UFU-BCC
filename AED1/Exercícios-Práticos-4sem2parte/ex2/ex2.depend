@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1599497839 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-4sem2parte\ex2\main.c
+	<stdio.h>
+	<stdlib.h>
+	"listadin.h"
+
+1599496611 c:\users\guilherme\documents\prog\aed1\exercícios-práticos-4sem2parte\ex2\listadin.h
+
+1599497472 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-4sem2parte\ex2\listadin.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"listadin.h"
+

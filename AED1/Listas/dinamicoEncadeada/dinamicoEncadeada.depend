@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1598995507 source:c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeada\main.c
+	<stdio.h>
+	<stdlib.h>
+	"listadin.h"
+
+1598989178 c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeada\listadin.h
+
+1598993725 source:c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeada\listadin.c
+	<stdio.h>
+	<stdlib.h>
+	"listadin.h"
+

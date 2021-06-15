@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1598993725 source:c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeadaordenado\listadin.c
+	<stdio.h>
+	<stdlib.h>
+	"listadin.h"
+
+1598989178 c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeadaordenado\listadin.h
+
+1598995542 source:c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeadaordenado\main.c
+	<stdio.h>
+	<stdlib.h>
+	"listadinOrd.h"
+
+1598995430 source:c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeadaordenado\listadinord.c
+	<stdio.h>
+	<stdlib.h>
+	"listadinOrd.h"
+
+1598995868 c:\users\guilherme\documents\prog\aed1\listas\dinamicoencadeadaordenado\listadinord.h
+

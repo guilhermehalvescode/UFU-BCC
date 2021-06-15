@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1598911838 source:c:\users\guilherme\documents\prog\aed1\listas\estaticosequencialordenado\main.c
+	<stdio.h>
+	<stdlib.h>
+	"listaestOrd.h"
+
+1598911914 c:\users\guilherme\documents\prog\aed1\listas\estaticosequencialordenado\listaestord.h
+
+1598911894 source:c:\users\guilherme\documents\prog\aed1\listas\estaticosequencialordenado\listaestord.c
+	<stdio.h>
+	<stdlib.h>
+	"listaestOrd.h"
+

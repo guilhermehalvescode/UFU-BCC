@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1598577747 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex1\main.c
+	<stdio.h>
+	<stdlib.h>
+	"complexo.h"
+
+1598577797 c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex1\complexo.h
+
+1598577841 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex1\complexo.c
+	<stdio.h>
+	<stdlib.h>
+	"complexo.h"
+

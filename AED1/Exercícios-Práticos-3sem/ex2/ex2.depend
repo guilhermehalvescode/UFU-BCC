@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1598581268 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex2\main.c
+	<stdio.h>
+	"ponto.h"
+
+1598580994 c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex2\ponto.h
+
+1598669159 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex2\ponto.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	"ponto.h"
+

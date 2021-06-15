@@ -1,0 +1,22 @@
+# depslib dependency file v1.0
+1598669288 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex3\main.c
+	<stdio.h>
+	<stdlib.h>
+	"esfera.h"
+
+1598666332 c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex3\esfera.h
+
+1598669135 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex3\ponto.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	"ponto.h"
+
+1598667884 c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex3\ponto.h
+
+1598671428 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-3sem\ex3\esfera.c
+	<stdio.h>
+	<stdlib.h>
+	"ponto.h"
+	"esfera.h"
+

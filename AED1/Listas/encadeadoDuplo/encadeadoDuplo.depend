@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1600218238 source:c:\users\guilherme\documents\prog\aed1\listas\encadeadoduplo\encadeadoduplo.c
+	<stdio.h>
+	<stdlib.h>
+	"encadeadoDuplo.h"
+
+1600200049 c:\users\guilherme\documents\prog\aed1\listas\encadeadoduplo\encadeadoduplo.h
+
+1600219586 source:c:\users\guilherme\documents\prog\aed1\listas\encadeadoduplo\main.c
+	<stdio.h>
+	<stdlib.h>
+	"encadeadoDuplo.h"
+

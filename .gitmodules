@@ -16,3 +16,9 @@
 [submodule "AED2/graph/trees/prefix-tree"]
 	path = AED2/graph/trees/prefix-tree
 	url = git@github.com:guilhermealvesc/prefix-tree.git
+[submodule "AED1/AED1---Trabalho"]
+	path = AED1/AED1---Trabalho
+	url = git@github.com:guilhermealvesc/AED1---Trabalho.git
+[submodule "AED1/aed-trab-2"]
+	path = AED1/aed-trab-2
+	url = git@github.com:heitorfreitasferreira/aed-trab-2.git

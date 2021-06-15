@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1600621535 source:c:\users\guilherme\documents\prog\aed1\listas\encadeadorecursivo\encadeadorecursivo.c
+	<stdio.h>
+	<stdlib.h>
+	"encadeadoRecursivo.h"
+
+1600621587 c:\users\guilherme\documents\prog\aed1\listas\encadeadorecursivo\encadeadorecursivo.h
+
+1600621840 source:c:\users\guilherme\documents\prog\aed1\listas\encadeadorecursivo\main.c
+	<stdio.h>
+	<stdlib.h>
+	"encadeadoRecursivo.h"
+

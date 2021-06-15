@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1598906600 source:c:\users\guilherme\documents\prog\aed1\listas\estaticosequencial\listaest.c
+	<stdio.h>
+	<stdlib.h>
+	"listaest.h"
+
+1598904976 c:\users\guilherme\documents\prog\aed1\listas\estaticosequencial\listaest.h
+
+1598906707 source:c:\users\guilherme\documents\prog\aed1\listas\estaticosequencial\main.c
+	<stdio.h>
+	<stdlib.h>
+	"listaest.h"
+

@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1599613207 source:c:\users\guilherme\documents\prog\aed1\listas\encadeadocircular\encadeadocircular.c
+	<stdio.h>
+	<stdlib.h>
+	"encadeadoCircular.h"
+
+1599611106 c:\users\guilherme\documents\prog\aed1\listas\encadeadocircular\encadeadocircular.h
+
+1599613403 source:c:\users\guilherme\documents\prog\aed1\listas\encadeadocircular\main.c
+	<stdio.h>
+	<stdlib.h>
+	"encadeadoCircular.h"
+

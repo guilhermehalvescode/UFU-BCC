@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1599496321 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-4sem2parte\ex1\listadinord.c
+	<stdio.h>
+	<stdlib.h>
+	"listadinOrd.h"
+
+1599360705 c:\users\guilherme\documents\prog\aed1\exercícios-práticos-4sem2parte\ex1\listadinord.h
+
+1599360747 source:c:\users\guilherme\documents\prog\aed1\exercícios-práticos-4sem2parte\ex1\main.c
+	<stdio.h>
+	<stdlib.h>
+	"listadinOrd.h"
+
