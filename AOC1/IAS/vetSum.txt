@@ -1,0 +1,61 @@
+int A [10];
+int soma_elementos()
+{
+  int i;
+  int soma=0;
+  for (i=0; i <20; i++)
+     soma = soma + A[i];
+  return soma;
+}
+
+000 LOAD M(01D); STOR M(002, 28:39) #Carrega o ponteiro e faz o ADD apontar para o elemento do vetor 
+001 ADD M(01E); STOR M(01D)         #Avança o ponteiro e atualiza ele 
+002 LOAD M(01B); ADD M(000)         #Carrega a soma com o valor do ponteiro de ADD (atualizado por 001)
+003 STOR M(01B); LOAD M(01A)        #Atualiza a soma e carrega o iterador
+004 SUB M(01E); STOR M(01A)         #Subtrai 1 do iterador e atualiza esse
+005 JUMP+(000, 0:19); LOAD M(01B)   #Verifica se volta para o começo se o iterador for negativo // Fim do código, carrega o resultado
+006 STOR M(01C); JUMP M(006, 20:39) #E coloca esse em outro campo da memoria, FIM
+
+01A 0000000009 #I = 9
+01B 0000000000 #SOMA
+01C 0000000000 #RETURN
+01D 0000000100 #PONTEIRO PARA O VETOR
+01E 0000000001 #CONSTANTE 1
+
+#int A[10]
+100 0000000001
+101 0000000002
+102 0000000003
+103 0000000004 
+104 0000000005
+105 0000000006
+106 0000000007
+107 0000000008
+108 0000000009
+109 000000000A
+
+#Convertido para Hexa
+000 0101D13002     
+001 0501E2101D         
+002 0101B05000            
+003 2101B0101A        
+004 0601E2101A  
+005 0F0000101B     
+006 2101C0E006
+
+01A 0000000009
+01B 0000000000 
+01C 0000000000 
+01D 0000000100 
+01E 0000000001 
+
+100 0000000001
+101 0000000002
+102 0000000003
+103 0000000004 
+104 0000000005
+105 0000000006
+106 0000000007
+107 0000000008
+108 0000000009
+109 000000000A

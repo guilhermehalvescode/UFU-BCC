@@ -1,0 +1,19 @@
+P1)Considere a seguinte operação sobre uma palavra binária. 
+Comece pelo bit menos significativo. 
+Copie todos os bits que são iguais a zero, 
+até que seja encontrado o primeiro bit diferente de zero, 
+e copie também esse bit. Então, faça o complemento booleano de cada 
+bit daí por diante. Qual é o resultado?
+
+#Considerando uma palavra binária de 1 byte
+
+0 0 0 1 1 0 0 0 # 24
+1 1 1 0 1 0 0 0 # -24
+
+1 1 1 0 1 0 0 0 # -28
+0 0 0 1 1 0 0 0 # 28
+
+0 1 1 1 1 1 1 1 # 127
+1 0 0 0 0 0 0 1 # -127
+#O resultado dessa operação é o valor negativo em complemento de dois da 
+#palavra binária

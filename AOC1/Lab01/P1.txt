@@ -1,0 +1,52 @@
+----CÓDIGO TRADUZIDO PARA HEXA----
+
+000 LOAD -M(100); JUMP+M(008, 20:39)
+001 LOAD M(100); DIV M(103)
+002 STOR M(104); LOAD -M(104)
+003 JUMP+M(005, 0:19); LOAD M(102)
+004 ADD M(101); STOR M(102)
+005 LOAD M(100); RSH
+006 STOR M(100); LOAD M(101)
+007 LSH; STOR M(101)
+008 JUMP M(000, 0:19); JUMP M(008, 20:39)
+
+100 0000000013 #19
+101 000000001B #27
+102 0000000000 #soma
+103 0000000002 #Constante 2
+104 0000000000 #temp (guarda resultado do resto)
+
+
+----DESCRIÇÃO OBJETIVA DO CÓDIGO----
+-O Código traz para o AC o valor negativo do número contido na posição 100.
+-Se o valor for negativo ou zero, ele termina o programa.
+-Se for positivo, ele carrega o número da posição 100 para o AC e divide ele 
+pelo número na posição 103 (NÚMERO 2).
+-Armazena o resto dessa divisão na posição 104 e carrega o valor negativo dela
+para o AC.
+-Se o resto é 0, soma o valor da posição 101 ao valor da posição 102, 
+se o resto é 1, não faz o passo anterior. 
+-Divide o valor da posição 100 por 2 e atualiza ela pelo quociente da conta.
+-Multiplica o valor da posição 101 por 2 e atualiza ela pelo resultado da conta.
+-Retorna para o começo do código, onde o valor da posição 100 é carregado para AC
+negativamente, fazendo que o código termine quando esse valor for zero ou negativo.
+
+--Resumo:--
+-O código divide sucessivamente o valor da posição 100 até que ele se torne zero.
+-Se antes de dividir, o número da posição 100 for par, o valor da posição 101 é acumulado
+na posição 102
+-Após essa verificação o valor da posição 100 é dividido por 2 e é atualizado,
+e o valor da posição 101 é multiplicado por 2 e é atualizado.
+-Assim sucessivamente até que o valor da posição 100 seja 0.
+
+--Exemplo em C--
+int c = 19;
+int a = 27;
+int soma = 0;
+while (c > 0) {
+  if(c % 2 != 0) {
+    soma += a;
+  } 
+  c /= 2;
+  a *= 2;
+}
