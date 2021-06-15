@@ -22,3 +22,9 @@
 [submodule "AED1/aed-trab-2"]
 	path = AED1/aed-trab-2
 	url = git@github.com:heitorfreitasferreira/aed-trab-2.git
+[submodule "PL/PROLOG"]
+	path = PL/PROLOG
+	url = git@github.com:guilhermealvesc/PROLOG.git
+[submodule "PL/SistemadeGastosPROLOG"]
+	path = PL/SistemadeGastosPROLOG
+	url = git@github.com:guilhermealvesc/SistemadeGastosPROLOG.git
