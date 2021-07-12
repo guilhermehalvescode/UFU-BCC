@@ -1,0 +1,1 @@
+% aluno(joao, ed1), aluno(maria, ed1).

@@ -1,0 +1,1 @@
+% aluno(Quem, pl).

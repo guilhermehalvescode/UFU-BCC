@@ -1,0 +1,24 @@
+.main-content {
+  background-color: #dddedb;
+}
+
+.info {
+  padding: 0 50px;
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+td {
+  padding-left: 1rem;
+  border: 1px solid #ddd;
+}
+button.btn.btn-light {
+  margin-top: 1rem;
+}
+form {
+  margin: 1rem;
+}

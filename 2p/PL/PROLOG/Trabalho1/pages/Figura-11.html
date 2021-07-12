@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Site de acesso do sistema">
+    <meta name="keywords" content="login, sistema">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ambiente do Empreendedor</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="../css/login.css">
+  </head>
+  <body>
+    <div class="main-content">
+        <div class="logo">
+            <img src="../img/logo.png" alt="Logo Círculo">
+            <h1>AMBIENTE <span class="highlight">EMPREENDEDOR</span></h1>
+        </div>
+        <form method="POST" action="/auth">
+            <label class="label" for="email">Login:</label>
+            <div class="field">
+                <p class="control has-icons-left">
+                <input type="email" class="input" name="email" id="email" placeholder="Insira seu email">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+            </div>
+            <label class="label" for="password">Senha:</label>
+            <div class="field">
+                <p class="control has-icons-left">
+                <input type="password" class="input" name="password" id="password" placeholder="Insira sua senha">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                  </span>
+            </div>
+            <div class="field">
+                <input type="checkbox" class="checkbox" name="Professor" id="teacher"> <label for="teacher">Professor</label>
+            </div>
+            <input class="button is-fullwidth" type="submit" value="Acessar">
+        </form>
+        <div class="support">
+            <a href="/signup">Cadastre-se</a>
+            <hr>
+            <a href="/forgot">Esqueci minha senha</a>
+        </div>
+        <div class="info">
+            <h3>Guilherme Alves</h3>
+            <a href="mailto:guilherme.092011@ufu.br">guilherme.092011@ufu.br</a>
+        </div>
+    </div>
+ 
+  </body>
+</html>

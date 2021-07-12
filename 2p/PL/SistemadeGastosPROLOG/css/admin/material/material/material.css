@@ -1,0 +1,14 @@
+.main-content {
+  background-color: #dddedb;
+}
+
+.info {
+  padding: 0 50px;
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}

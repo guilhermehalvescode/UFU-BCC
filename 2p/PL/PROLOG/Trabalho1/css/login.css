@@ -1,0 +1,123 @@
+html {
+    background-color: rgb(0, 119, 255);
+}
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    color: #fff;
+}
+.main-content {
+    height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-evenly;
+    max-width: 400px;
+    padding: 3% 0;
+    width: 90%;
+}
+
+.logo {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    height: 150px;
+}
+
+@keyframes rotation {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+.logo img {
+    animation-name: rotation;
+    animation-duration: 60s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.logo h1 {
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #fff;
+}
+.highlight {
+    font-weight: 900;
+    color: yellow;
+}
+
+form {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-around;
+    height: 260px;
+}
+.field {
+    width: 100%;
+}
+.label {
+    margin-right: auto;
+    color: #fff;
+}
+.input {
+    width: 100%;
+}
+.button {
+    background-color: #062b44;
+    border-color: transparent;
+    color: #fff;
+    transition: 0.5s;
+}
+
+.button:hover {
+    background-color: #fff;
+    border-color: transparent;
+    color: #000;
+    transition: 0.5s;
+}
+.support {
+    display: flex;
+    width: 90%;
+    justify-content: space-around;
+}
+
+hr {
+    border: 1px solid #fff;
+    height: 10px;
+}
+
+a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: underline;
+    transition: 0.5s;
+}
+
+a:hover {
+    color:#062b44;
+    transition: 0.5s;
+}
+
+.info {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+@media (max-width: 650px) {
+    
+.logo h1 {
+    text-align: center;
+    font-weight: 900;
+    font-size: 1rem;
+    color: #fff;
+}
+    .main-content {
+        padding: 1% 0;
+    }
+}

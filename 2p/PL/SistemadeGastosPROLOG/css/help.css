@@ -1,0 +1,112 @@
+@charset "UTF-8";
+
+.main-content {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background-color: #dddedb;
+	padding-top: 100px;
+}
+
+.navbar {
+	width: 100%;
+	position: fixed;
+	top: 0;
+}
+
+.logo { 
+	width: 50%;
+}
+
+.central{
+	background-color: orange;
+	text-align: center;
+	color: white;
+	font-size: 26px;
+	padding: 25px;
+	font-weight: bold;
+}
+
+ /* --------- TITULO --------------  */
+.conteudo {
+	color: #121212;
+	padding: 20px;
+	text-align: start;
+	font-weight: 300;
+}
+
+hr {
+	background-color: #e6e6e6;
+}
+
+ /* ------------------ DIV DE CADA PERGUNTA ----------------------  */
+.pergunta_container {
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+}
+
+	.pergunta_container .pergunte_title {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 20px;
+	}
+	
+	.pergunta_container i {
+		transition: transform 0.6s;
+	}
+
+	.pergunta {
+		font-size: 18px;
+		width: 80%;
+		font-weight: bold;
+	}
+
+	.resposta_container {
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.6s;
+	}
+
+	.resposta {
+		font-size: 18px;
+		padding: 30px;
+		color: #212121;
+		font-weight: 300;
+	}
+
+	.resposta_active {
+		max-height: 200px;
+	}
+
+	.icon_active {
+		transform: rotateX(180deg);
+	}
+
+.rodape{
+	background-color: orange;
+	font-size: 1.3em;
+	text-align: center;
+	padding: 40px;
+	color: white;
+	position: relative;
+	bottom: 0;
+}
+
+/* --------------------- RESPONSIVIDADE -------------  */
+
+@media (max-width: 700px) {
+	.central {
+		font-size: 1em;
+	}
+	.conteudo {
+		font-size: 1.8em;
+	}
+	.rodape {
+		font-size: 1em;
+	}
+}

@@ -1,0 +1,19 @@
+.main-content {
+  background-color: #dddedb;
+}
+
+.table {
+  height: 50vh;
+  overflow-y: auto;
+}
+
+.info {
+  padding: 0 50px;
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}

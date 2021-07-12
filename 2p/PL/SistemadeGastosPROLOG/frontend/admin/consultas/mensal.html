@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="../../../css/admin/service-order/root.css"
+    />
+    <title>Controle de Gastos de Clientes</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#header"
+        aria-controls="header"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="header">
+        <div class="navbar-nav">
+          <a class="nav-link" href="../../cadastros/">Cadastros</a>
+          <a class="nav-link" href="../material/material/material.html">Material</a>
+          <a class="nav-link active" href="#">Ordem de Serviço</a>
+          <a class="nav-link" href="../../consultas/">Consultas</a>
+          <a class="nav-link" href="../../../sobre.html">Sobre</a>
+          <a class="nav-link" href="../../../ajuda.html">Ajuda</a>
+        </div>
+      </div>
+    </nav>
+  
+    <div id="container">
+
+      <div class="wrapper">
+
+        <div class="header">
+          <span>&#127136;</span>
+          <strong>Consultas</strong>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#page"
+            aria-controls="page"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="page">
+            <div class="navbar-nav">
+              <a class="nav-link" href="./servicos.html">Consulta de Serviços</a>
+              <a class="nav-link active" href="#">Lançamento Mensal</a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="row info">
+          <div class="col-lg-10 col-md-10">
+            <div class="search">
+              <form method="get">
+                <label for="period">Selecione o período: </label>
+                <select name="period" id="type">
+                  <option value="period">mm/aaaa</option>
+                </select>
+                <label for="period">Cliente: </label>
+                <select name="period" id="type">
+                  <option value="A vista">A vista</option>
+                </select>
+                <input type="button" value="imprimir">
+              </form>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <td style="text-align: center;">Nota Fiscal</td>
+                  <td style="text-align: center;">Data de emissão</td>
+                  <td style="text-align: center;">Cliente</td>
+                  <td style="text-align: center;">Valor</td>
+                  <td style="text-align: center;">Juros</td>
+                  <td style="text-align: center;">Data de pagto</td>
+                  <td style="text-align: center;">Pago</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">0</td>
+                  <td style="text-align: center;">dd/mm/aaaa</td>
+                  <td style="text-align: center;">Fulano</td>
+                  <td style="text-align: center;">45,00</td>
+                  <td style="text-align: center;">0,00</td>
+                  <td style="text-align: center;">dd/mm/aaaa</td>
+                  <td style="text-align: center;"><input type="checkbox"> </input></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="buttons col-lg-2 col-md-2">
+            <button class="btn btn-light" disabled="disabled">Confirmar</button>
+            <button class="btn btn-light" disabled="disabled">Cancelar</button>
+            <button class="btn btn-light" disabled="disabled">Alterar</button>
+            <button class="btn btn-light">? Ajuda</button>
+          </div>
+        </div>
+
+        <div style="margin-left: 2%;">
+          <label for="period">Valor Pago</label>
+          <input type="button" value="0,00">
+          <label for="period">Valor Pendente</label>
+          <input type="button" value="0,00">
+          <label for="period">Valor Total</label>
+          <input type="button" value="0,00">
+        </div>
+      </div>
+
+    </div>
+  
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

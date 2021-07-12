@@ -1,0 +1,23 @@
+.main-content {
+  background-color: #dddedb;
+}
+
+.material {
+  padding: 5% 0;
+}
+#type {
+    width: 150px;
+}
+#unidade {
+    width: 100px;
+}
+.info {
+  padding: 0 50px;
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}

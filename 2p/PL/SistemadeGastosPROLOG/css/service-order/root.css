@@ -1,0 +1,86 @@
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+#container {
+  background-color: #dddedb;
+
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+}
+
+.wrapper .header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  height: 2rem;
+  padding: 1rem;
+}
+
+.wrapper .header span {
+  margin-right: 1rem;
+}
+
+#container table {
+  background-color: #fff;
+
+  width: 100%;
+  height: auto;
+}
+
+.search {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: left;
+}
+
+.search form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search form select {
+  min-width: 200px;
+}
+
+.search form input, .search button, .search form select {
+  height: 25px;
+  
+  outline: none;
+  border: 1px solid #000;
+
+  margin: 1%;
+}
+
+.search form label {
+  margin: 0;
+}
+
+.info {
+  padding: 0 2%;
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons button {
+  margin: .8rem 0;
+}

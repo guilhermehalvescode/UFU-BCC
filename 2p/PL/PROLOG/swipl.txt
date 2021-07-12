@@ -1,0 +1,113 @@
+//--------------------------------------TERMINAL-----------------------------------------------//
+SIMBOLOS LOGICOS{
+    = //compara se é igual. Ex: alice = alices //yes.
+    >= //maior igual
+    =< //menor igual
+    ; == "ou" lógico
+    , == "e" lógico.
+    \+ (" " = " ") == " " != " ".
+    =:= //igualdade
+    =\= //desiguldade
+    // == retorna a divisão inteira
+}
+
+FORMAS DE COMPILAR{
+    [NOME DO ARQ]. //compila o arquivo selecionado como base de fatos OBS: arquivo deve estar na mesma pasta que roda o swipl.
+    consult('NOME DO ARQ.pl'). //deve ser escrita a extensão do arquivo.
+}
+
+COMANDOS{
+    nl == \n.
+    listing. //mostra informações sobre algo, como a base de dados, listando essa.
+    write('string'). //printf do c.
+    writeq('Mostra as aspas simples!'). //printf que mostra as aspas simples.
+    read(X). //le uma variavel X do teclado == scanf.
+    get(X). //função que le um caractere do teclado.
+    put(X). //função que printa um caractere.
+    format('string/variaveis') // forma melhorada de printf, ~w == variável, ~s == string, ~n == nl == new line, ~2f == float com 2 casas decimais 
+    EX: format('~w é ~s ~n', [X,"LEGAL"]). //X=joao //output: joao é LEGAL (nl)
+    nl == new line //funciona como um comando. 
+    ; //serve para trazer mais valores quando um comando no terminal é solicitado com uma variável
+    is == atribuição 
+    tab(1) //um espaço.
+    trace. //funciona como um debugger q traça o caminho realizado pelo pl quando resolve uma pergunta
+    notrace. // desabilita trace
+    mod(numerador,denominador). //retorna o resto.
+    random(0,10,Res). //retorna um valor aleatorio entre "0" e "10" na variável Res.
+    between(0,10,Res). //retorna todos os valores entre "0" e "10" na variável Res.
+    succ(2,X). //retorna o sucessor de "2" em X.
+    abs(-8). //retorna o módulo.
+    max(10,5).//retorna o valor maior dos parametros.
+    min(10,5). // retorna o valor menor dos parametros.
+    round(numero). //retorna o valor arredondado.
+    truncate(numero). //retorna sem as vírgulas.
+    floor(numero). //retorna o valor arredondado para baixo.
+    ceiling(numero). //retorna o valor arredondado para cima.
+    loop(start) //função para poder inciar um loop "start inicia"
+    ARQUIVAGEM{
+        open(File,write,Stream). //File é o nome do arquivo, write é o metodo, Stream é basicamente o ponteiro do arquivo.
+        write(Stream, Text). //Stream é o ponteiro, Text é o texto que vc deseja escrever.
+        close(Stream). //Remove a memoria alocada para o ponteiro.
+        get_char(Stream,Char1). //le do arquivo um caractere.
+        end_of_file == EOF do C.
+        ! //deve ser um break.
+        EXEMPLO PRÁTICO{
+            write_to_file(File,Text):-
+                open(File, write, Stream),
+                write(Stream, Text),nl,
+                close(Stream).
+            
+            read_file(File) :-
+                open(File, read, Stream),
+                get_char(Stream, Char1),
+                process_stream(Stream, Char1), //função para escrever e ver se é end_of_file.
+                close(Stream).
+
+            process_stream(_,end_of_file) :- !.
+
+            process_stream(Stream, Char) :-
+                write(Char),
+                get_char(Stream,Char2),
+                process_stream(Stream, Char2).
+        }
+    }
+}
+
+DECLARAÇÕES{
+    podem ser realizadas "perguntas" ao banco de fatos 
+    EX: loves(romeo, X). // X = juliet
+    também há a variável anônima // loves(_,_). // retorna se existe o predicado loves existe.
+}
+
+//--------------------------------------DATABASE-----------------------------------------------//
+DECLARAÇÕES{
+    propriedade(argumento1,argumento2,...,argumentoN). //declara um fato como: loves(romeo,juliet).
+    constantes são delcaradas com letra minúscula.
+    variáveis são declaradas com letra maiúscula.
+    pode ser realizada aninhamento de declarações. /estruturas e objetos.
+    EX: runs_with(albert,shoe(black)).
+}
+
+REGRAS{
+    :- == if('condição').
+    feitas com :- // a parte anterior ao ':-' so será verdadeira se a parte posterior for verdadeira.
+    podem ser usadas para criarem funções
+    EX: 
+    grand_parent(X,Y) :- //terminal: grand_parent(joao,A). -> retorna: A = ´avós de joao´
+        parent(Z,X),
+        parent(Y,Z).
+    
+    what_grade(5) :-
+        write('You\'re pretty!'),nl,write('!'). //quando "What_grade" é chamado faz as ações depois de ":-".
+    
+    double_digit(X,Y):- //double_digit(1000,Res) returns Res = 2000.
+        Y is X*2.
+}
+RECURSÃO{
+    related(X,Y) :-
+        parent(X,Y).
+
+    related(X,Y) :-
+        parent(X,Z),
+        related(Z,Y).
+}

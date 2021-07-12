@@ -1,0 +1,18 @@
+.main-content {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #dddedb;
+}
+
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+}
+
+.logo { 
+    width: 50%;
+}

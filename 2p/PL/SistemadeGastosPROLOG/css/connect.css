@@ -1,0 +1,40 @@
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.info {
+  color: #2a166f;
+  text-align: center;
+  font-size: 2.5rem;
+}
+form {
+  padding: 15px;
+  background-color: #dddedb;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 500;
+  color: #2a166f;
+}
+
+.btn {
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .info {
+    font-size: 1.5rem;
+  }
+  form {
+    width: 60%;
+  }
+
+  .btn {
+    margin: 0;
+  }
+}

@@ -1,0 +1,12 @@
+typedef struct no *Lista;
+int lista_vazia(Lista *);
+Lista cria_lista();
+int insere_final(Lista *, double);
+int insere_inicio(Lista *, double);
+int remove_inicio(Lista *, double *);
+int remove_final(Lista *, double *);
+int obtem_valor_elem(Lista *, int, double *);
+int insere_pos(Lista *, int, double);
+int remove_pos(Lista *, int, double *);
+int lista_tam(Lista *);
+int maior_elem(Lista *, double *);

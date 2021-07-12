@@ -1,0 +1,39 @@
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.logo {
+  margin-bottom: 1rem;
+}
+
+form {
+  padding: 15px;
+  background-color: #cecfcc;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 500;
+  color: #2a166f;
+}
+
+.buttons {
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    width: 70%;
+}
+
+@media (max-width: 768px) {
+  form {
+    width: 60%;
+  }
+  .logo {
+    margin-bottom: 0rem;
+  }
+}

@@ -1,0 +1,57 @@
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.main-content {
+    height: 90vh;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 80%;
+    padding: 3% 2%;
+}
+.cabecario {
+    width: 100%;
+}
+.aluno {
+    margin-left: 0.6rem;
+    color: #062b44;
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+
+hr {
+    margin: 10px auto 30px;
+    width: 98%;
+    background-color: #2773a5;
+}
+.table {
+    width: 97%;
+    margin: 0 auto;
+    background-color: #cde5f5;
+}
+
+.table thead {
+    background-color: #062b44;
+}
+.table thead td, .table thead th {
+    color:#ffffff;
+}
+.result, #mp {
+    font-weight: 800;
+}
+
+@media (max-width: 650px) {
+    .aluno {
+        margin-left: 0.6rem;
+        color: #062b44;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+    .result, #mp {
+        font-size: 0.8rem;
+    }
+}

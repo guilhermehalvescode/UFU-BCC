@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Janela de consulta de avaliações e notas">
+    <meta name="keywords" content="notas, sistema, avaliações, consulta">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notas</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="../css/notas.css">
+  </head>
+  <body>
+    <div class="main-content">
+        <header class="cabecario">
+            <h1 class="aluno">Rafael Santiago - Notas</h1>
+            <hr>
+        </header>
+        <table class="table">
+            <thead class="head">
+                <th>Avaliação</th>
+                <th>Peso</th>
+                <th>Nota</th>
+            </thead>
+            <tbody>
+                <tr class="eval">
+                    <td>Avaliação 1</td>
+                    <td class="peso">3.00</td>
+                    <td class="nota">9.00</td>
+                </tr>
+                <tr class="eval">
+                    <td>Avaliação 2</td>
+                    <td class="peso">3.00</td>
+                    <td class="nota">8.50</td>
+                </tr>
+                <tr class="eval">
+                    <td>Plano de negócio</td>
+                    <td class="peso">4.00</td>
+                    <td class="nota">10.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <td></td>
+                <td class="result">NotaF:</td>
+                <td id="mp"></td>
+            </tfoot>
+        </table>
+    </div>
+    <script src="../js/notas.js"></script>
+  </body>
+</html>
