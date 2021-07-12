@@ -85,10 +85,12 @@
 
 4. Nessa situação, um consultor seria necessário para direcionar a empresa na situação repentina em que se encontram, pois um consultor possui experiências recentes de mercado, pelo fato, de prestar consultorias para várias empresas. Ele auxiliaria mostrando metodologias para serem adotadas naquele momento na empresa, mediante a situação de mercado. Para convercer Ricardo, seria necessário mostrar situações anteriores de outras empresas que foram resolvidas com o auxílio de um consultor, pois o caso dele é comum entre as empresas.
 
-5. Os filhos gerenciariam ao longo de um certo tempo a empresa, porém, com a falta de experiência, certas situações corriqueiras que seriam resolvidas por uma pessoa que possui experiência, não seriam resolvidas e trariam problemas para os filhos.
+5. O pai não consegueria reverter os impactos gerados pela alta competitividade gerados pela globalização, levando a uma futura falência da empresa.
 
-6. Houvendo um impasse entre os pais e filhos, muito provavelmente a empresa iria à falência, pois se as partes não colaboram, o todo não se mantém;
+6. Os filhos gerenciariam ao longo de um certo tempo a empresa, porém, com a falta de experiência, certas situações corriqueiras que seriam resolvidas por uma pessoa que possui experiência, não seriam resolvidas e trariam problemas para os filhos.
 
-7. Não conheço casos semelhantes a este.
+7. Houvendo um impasse entre os pais e filhos, muito provavelmente a empresa iria à falência, pois se as partes não colaboram, o todo não se mantém;
 
-8. Não foi afirmativo.
+8. Não conheço casos semelhantes a este.
+
+9. Não foi afirmativo.
