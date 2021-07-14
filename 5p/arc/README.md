@@ -53,15 +53,17 @@
 - _"protocolo"_ - define uma formato preciso para as mensagens (acordo sobre a troca de informações).
   - _"gramática"_ - regras para a troca de dados.
   - _"sintáxe"_ - formato preciso para mensagens válidas.
-  - TO-DO
+  - _"vocabulário"_ - conjunto de mensagens válidas.
+  - _"semântica"_ - significado das mensagens
+  - _"regras procedimentais"_ - remetente e destinatário devem conhecer o protocolo e implementá-lo corretamente.
 
 - Portanto um protocolo se parece com a definição de uma linguagem.
-- Interpretações diferentes de um conjunto de regras podem gerar implementações diferentes e cheias de inconsistências.
+- Interpretações diferentes de um conjunto de regras podem gerar implementações diferentes e cheias de inconsistências, por isso se vê a necessidade de padronizar os protocolos.
 
 #### 4. Padronização de Protocolos
 
 - Instituição ISO que contempla o organismo de padronização ANSI propôs a padronização a tabela ASCII e inteface RS-232.
   - ASCII é formalmente conhecido como ISO 646.
-- Organismos de padronização: NIST, FTSC, FCC, IEEE, etc...
+- Organismos de padronização: CCITT, ITU, IFIP, NIST, FTSC, FCC, IEEE, etc...
 - A padronização é importante, mas não garante a resolução de todos os problemas.
 - ESTELLE, utilizado para testar os protocolos submetidos às entidades.
