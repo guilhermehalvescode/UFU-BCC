@@ -29,7 +29,7 @@
 
 - Ao decorrer do tempo, surgiram novas tecnologias que possibilitaram a troca mais facilitada de mensagens (tele-typer, telefone, ENIAC - primeiros computadores,  etc...).
 
-#### 2. As Primeiras Redes de Computadores
+### 2. As Primeiras Redes de Computadores
 
 - 1º Protocolo: _"Mestre-Escravo"_
   - Uma parte envolvida está no controle, e outra responde as requisições.
@@ -46,7 +46,7 @@
   - Na rede de protocolo de pares, não há uma elemento central para desenvolver acordos entre recursos compartilhados nesta rede.
   - Colisão de 2 fluxos de dados pode causar tanto dano quado a de dois trens (Acidente do Túnel de Clayton).
 
-#### 3. Protocolos e Linguagens
+### 3. Protocolos e Linguagens
 
 - _"ideia"_ - espécie de acordo sobre a troca de informações entre elementos pares e que formam um sistema distribuído.
 
@@ -60,7 +60,7 @@
 - Portanto um protocolo se parece com a definição de uma linguagem.
 - Interpretações diferentes de um conjunto de regras podem gerar implementações diferentes e cheias de inconsistências, por isso se vê a necessidade de padronizar os protocolos.
 
-#### 4. Padronização de Protocolos
+### 4. Padronização de Protocolos
 
 - Instituição ISO que contempla o organismo de padronização ANSI propôs a padronização a tabela ASCII e inteface RS-232.
   - ASCII é formalmente conhecido como ISO 646.
