@@ -72,12 +72,11 @@
 
 ## **_1. Revisão de Conceitos Básicos_**
 
-- **Conjuntos**
-- **Relações**
-- **Funções**
-- **Lógica**
-- **Técnicas de Demonstração**
-- **ASYNC**
+- **Conjuntos** - OK
+- **Relações** - OK
+- **Funções** - OK
+- **Lógica** - OK
+- **Técnicas de Demonstração** - OK
 
 ## _**2. Linguagens, Gramáticas e Reconhecedores**_
 
