@@ -3,3 +3,6 @@
 *.exe
 main
 *.out
+.Rproj.user
+.R*
+*.R*
