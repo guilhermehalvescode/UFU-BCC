@@ -32,6 +32,7 @@ _**Conceitos básicos:**_
   - Windows, Ubuntu, Mac, IOS, Android, etc...
 
 ## **Conceitos de introdução**
+
 - Conceitos de Hardware e Software
   - Unidades Funcionais (ULA, UC, Registradores, Dispositivos de I/O, Memória Principal)
   - Registradores
@@ -65,3 +66,42 @@ _**Conceitos básicos:**_
 - **Carga do Kernel do SO**
   - Inicializa suas rotinas, drivers, programas
   - Inicialização do SO em questão
+
+## **Tipos de Sistemas Operacionais**
+
+- Monoprogramáveis/Monotarefa
+  - Somente um programa pode ser executado **por vez**
+- Multiprogramáveis/Multitarefa
+  - Vários programas podem ser executados **simultaneamente**
+  - Permite multiusuários (usuários conectados de forma remota)
+  - Batch (Conjunto/Lote)
+    - Eram preparados lotes de programas para serem executados para o sistema operacional
+  - Time-sharing (Tempo compartilhado)
+    - Mainframe(CPU, Disco, Memória, etc...) compartilhado entre vários terminais(usuários com teclado e tela)
+    - Todos usuários tem acesso simultâneo a uma mesma máquina
+    - Muito mais complexo que o modelo em lote(batch)
+    - Maioria das distribuições comerciais (Linux, Windows, etc...)
+  - Tempo Real
+    - Específico para sistemas que precisam operar em ambiente real em tempo real (Sistemas Críticos)
+    - Sistema de mísseis, aviões, radares, etc...
+- Múltiplos Processadores (possui vários processadores)
+  - Fortamente Acoplados
+    - Os processadores, memória principal, I/O,  estão no mesmo back-plane (placa do sistema)
+    - Sistemas Simétricos (SMP)
+      - Todos os processadores são iguais e funcionam da mesma forma
+      - O suporte físico do back-plane (placa) limita o crescimento da quantidade de processadores
+      - São comuns em computadores comerciais
+    - Sistemas Assimétricos
+      - Processadores são diferentes entre si em funções (especializado em parte gráfica, I/O de rede, cálculo, criptografia) e em especificações (4GHz, 2GHz)
+      - São comuns em alguns minicomputadores e em sistemas específicos (alguns smartphones, consoles de videogames)
+  - Fracamente Acoplados
+    - Processadores não estão no mesmo back-plane, portanto não é limitada a quantidade de processadores
+    - Um rack com várias placas mães
+    - Necessidade de um SO que monitore essas várias back-planes
+    - Sistema Operacional de Rede (NOS)
+      - Permite que computadores se comuniquem entre si através de syscalls oferecidas pelo SO
+    - Sistema Operacional Distribuído (DOS)
+      - O SO gerencia o armazenamento de dados, execução de programas nos computadores que estão conectados entre si
+      - O sistema de comunicação entre os computadores precisa ser muito eficiente e rápido
+      - atualmente existe um gargalo que impede de ter um DOS em escala comercial
+  
