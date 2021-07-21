@@ -116,6 +116,7 @@
 - Obs: todas essas fases podem ter mais níveis de abstração
 
 - Níveis básicos de Abstração - Formatação
+  
   ![niveisAbstracao](images/exemploAbstracao.png)
 
 ### 2. Elementos do Protocolo
@@ -134,6 +135,7 @@
 ![sinteseProtocolo](images/exemploSintese.png)
 
 ### 3. Exemplo de um Protocolo
+
 - W. C. Lynch (1968) - Especificação do **Serviço**
 - O objetivo consiste transferir arquivos de texto como uma sequência de caracteres através de uma linha telefônica sem erros de transmissão (erros podem ser detectados)
 - "Premissa"
@@ -158,6 +160,7 @@
   - campo de controle - identifica o tipo da primitiva
   - campo de dados - conjunto de códigos de caracteres
   - Representação "C-like" para uma primitiva:
+
     ```c
     enum control { Ack, Nack, Err };
     struct primitiva {
@@ -187,3 +190,128 @@
 - Maior deficiência:
   - Dados duplicados são recebidos corretamente - ocorreu devido a sequência de eventos
   - Receptor, deve decidir se um dado foi recebido ou não corretamente
+
+### 4. Serviço e Ambiente
+
+- Um problema grande pode ser subdividido em problemas menores (Divide and Conquer)
+- Funções abstratas são definidas sobre funções subjacentes, escondendo propriedades indesejáveis em um canal de comunicação
+  - canal de comunicação se torma mais idealizado
+
+#### Exemplo
+
+- considere um protocolo para transmissão de dados que oferece codificação de caracteres e tuplas de 7 bits e um rudimentar detector de erro baseado em paridade
+- são 2 os serviços: codificação e detecção de erros
+- pode-se separar os serviços em dois módulos funcionais, chamados sequencialmente, construindo um canal virtual
+- de fato, cada camada oferece um serviço diferente e implementa um protocolo em separado
+  - 1º Camada implementa P1 => formato de 8 bits
+  - 2º Camada implementa P2 => formato de 7 bits
+
+![virtualChannel](images/virtualChannel.png)
+
+- P2 (Processo P2) não sabe sobre o 8º bit adicionado e controlado por P1 (Processo P1)
+  - P1 sabe que é o canal mais confiável sobre o meio de comunicação abaixo
+- P1 oferece um canal virtual para P2, mas, mas ao mesmo tempo, P1 é transparente para P2
+
+- 2 conceitos fundamentais em um protocolo
+  - transparente - alguma coisa que existe, mas parece não existir
+  - virtal - alguma coisa que parece existir, mas não existe de fato
+- Para P1, o significado dos bits não importa, apenas o número de bits; de modo smilar nem P1, nem P2, conhece sobre protocolos de níveis superiores
+- Cada nível encerra os dados transmitidos em uma "capsula", formado por um "header" e/ou "trailer", antes de passá-lo ao próximo nível
+- formato de níveis superiores não precisam ser preservados
+
+![dataEnvelope](images/dataEnvelope.png)
+
+- o projeto tem um modelo hierárquico, conhecido em programação sequencial e modular, novo em sistemas distribuídos
+- camadas ajudam a indicar a estrutura lógica do protocolo separando detalhes de alto-nível dos de baixo-nível
+- quando o protocolo necessitar de correções e ajustes, será mais fácil reescrevê-lo pelo fato de estar modularizado
+- ISO viu a necessidade no anos 70 de padronizar e criou o ***Modelo OSI*** baseado em camadas
+- cada camada define um conjunto de serviços distintos e implementa protocolos específicos para aquela camada
+- formato usado por uma camada é completamente independente dos formatos usados pelas demais camadas
+- Exemplo: 
+  - camada de rede envia pacotes
+  - camada de enlace envia "frames", e assim por diante
+
+  ![exemploCamadaRede](images/exRede.png)
+
+### 5. Vocabulário e Formatos
+
+- Cabeçalhos e "Trailers"
+- servem para construir métodos de formatação de alto nível sistemáticos
+- Exemplo: considere os caracteres ETX e DLE como delimitadores da mensagem bem como a ocorrência de erros de transmissão:
+  - contador é perdido ou,
+  - se o caracter ETX (End of Text) ou DLE (Data Link Escape) forem corrompidos, as técnicas de estruturação falham
+- esquemas de detecção de erro requerem transmissão de informações redundantes na mensagem
+  - se outros mecanismos forem contemplados, por exemplo, controle de fluxo, então outros campos faze-se necessários, por exemplo, número de sequência
+- Cabeçalho e o Trailer podem ser refinados em subconjuntos ordenados chamados campos de controle
+- Exemplo:
+  - cabeçalho = {tipo, destino, janela, contador, prioridade}
+  - trailer = {checksum, endereço de retorno}
+
+### 6. Regras Procedimentais
+
+- Até o momento, tarefas de projeto de protocolo e desenvolvimento de software se assemelham
+- as regras procedimentais (procedure rules) são interpretadas paralelamente por dois ou mais pares (muito provavelmente em máquinas diferentes)
+  - efeito de cada nova regra adicionada ao conjunto é frequentemente muito maior do que se possa imaginar
+- Para se convencer da corretude do projeto é necessário algo melhor do que a reflexão informal
+  - infelizmente a ferramenta mais popular para isto é Diagrama de Ordem Temporal
+  
+### 7. Projeto Estrutura de Protocolos
+
+- toca em várias áreas conhecidas, mesmo que não seja um entendimento completo
+- exemplo: nível físico do modelo OSI/ISO:
+  - conhece-se precisamente qual o comportamento padrão dos diferentes que são "levados"
+  - quão rápido pode-se transmitir dados neles
+  - qual a taxa média de "bit error" resultante
+- há várias técnicas para codificação binária em sinais analógicos
+- conhece-se bem técnicas de sincronização sender/receiver
+- acima da Camada Física depara-se com problemas, por exemplo, controle de acesso ao meio ou problemas de projeto de rede
+  - roteamento através de redes
+  - dimensionamento preciso da estrutura de redes
+  - interconexão de várias redes via gateways
+  - desenvolvimento em um nível superior de disciplinas para controle de fluxo e controle de congestionamento
+- Obs: existem técnicas que podem resolver problemas na camada física, contudo os problemas estão apenas no início
+  - propôr regras completas e não ambíguas para trocar informações em um sistema distribuído é difícil de muito complexo
+- simplicidade - protocolos *Light-weight*
+- um protocolo bem estruturado pode ser feito a partir de um pequeno número de "pedaços" bem projetados e bem conhecidos
+- para entender o protocolo basta entender os pedaços
+- protocolos feitos deste modo são mais fáceis de entender, de implementar e, mais apropriados para verificar e manter
+- Protocolo "Light-Weight" - simples, robusto e eficiente 
+- Modularidade - hierarquia de funções
+- um protocolo que executa uma função complexa pode ser separado em pedaços que interagem de um modo simples e bem definido
+- cada módulo é um protocolo "light weight"
+- cada módulo não faz suposições sobre o trabalho de outros, nem mesmo a presença de outros
+- funções ortogonais não podem ser misturadas, elas são projetas como entidades independentes
+- controle de erro e controle de fluxo são funções ortogonais
+- **Protocolo Bem-Formado** - um protocolo bem formado NÃO É:
+  - "over-specified", ou seja, não há regras não alcançaveis ou não utilizáveis no conjunto de regras
+  - "under-specified" ou incompleto, ou seja, durante sua execução, são requiridas regras que não estão definidas
+  - "bounded" - não pode ultrapassar limites definidos do sistema (ambiente), como capacidade da fila de mensagens
+  - "self-stabilizing" - quando erro arbitrário muda o estado do protocolo, este deve retornar a um estado conhecido
+  - "self-adapting" - pode se adaptar em certas circunstâncias
+  - _Polybus - "It is chiefly unexpected occurrences which require consideration and help."_
+  - Rotustez - não é difícil projetar protoclos que trabalham em circunstâncias nomais
+  - é o inesperado que torna o projeto um desafio (o protocolo deve ser preparado para tratar apropriadamente todas as ações que ocorram, em qualquer sequência, sob quaisquer condições)
+  - protocolo deve fazer suposições mínimas sobre o ambiente para evitar dependêcnias de características que mudam
+  - Consistência - existem alguma modos "padronizados" e temidos nos quais um protocolo pode falhar:
+    - "deadlocks" - situação na qual não haverá um próximo estado
+    - "livelocks"- sequências na execução, repetidas indefinidamente, sem fazer qualquer progresso
+    - "no k-limited" - máquina de estado não finita
+    - "não reiniciável" - não é possível a partir de um dado estado voltou ao estado inicial
+    - "terminação imprópria" - finalização sem satisfazer as condições apropriadas de encerramento
+  
+### 8. Regras de Projeto de Protocolos
+
+- Regras de Ouro para Projeto de Protocolos
+
+1. Certificar-se que o Problema foi bem especificado
+2. Definir os serviços em cada nível de abstração
+3. Delinear as funcionalidades externas antes das internas
+4. Manter o projeto simples
+5. Não ligar o que é independente, qu tem ortogonalidade
+6. Não introduzie o que "não é concreto"; não restringir oque é irrelevante; um bom projeto é "open-ended"; um projeto resolve uma classe de problemas
+7. Antes de implementar, faça um protótipo de alto-nível, e verifique se os critérios de projeto foram alcançados
+8. Implementar o projeto, medir seu desempenho, e se necessáriom otimizar o projeto do protocolo
+9. Garantir que a implementação final, otimizada, é equivalente ao projeto de alto-nível que foi verificado
+10. Não Pular as Regras de 1 a 7 (MAIS IMPORTANTE!!)
+
+> Infelizmente, a regra 10 é mais violada
