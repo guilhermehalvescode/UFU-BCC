@@ -27,8 +27,8 @@ soma2 = 2 + 3
 2+2
 
 ###### os comandos abaixo não serão executados; o R apontará um erro.
-2234r*S&F(SD&F234)
-c(c))
+#2234r*S&F(SD&F234)
+#c(c))
 
 #### R pode executar operações lógicas
 
@@ -79,8 +79,8 @@ valor.a <- 2+2
 
 ######## não é permitido iniciar o nome de uma variável por um número, por exemplo; também não é permitido ter espaços no nome de uma variável
 
-9a <- 2+2
-variavel a <- 2+2
+#9a <- 2+2
+#variavel a <- 2+2
 
 #### você agora pode imprimir a variável a e fazer operações com ela.
 a
