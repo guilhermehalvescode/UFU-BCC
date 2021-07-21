@@ -9,7 +9,9 @@
 
 #define MAX_SIZE 4
 
+//Input format
 void formatCommand(char* str, unsigned short int max);
+//Error format
 void err(char * msg);
 void cls();
 void dir();
@@ -41,7 +43,6 @@ int main() {
 }
 
 
-//Input format
 void formatCommand(char* str, unsigned short int max) {
   int i, j;
   for(i = 0; i < max; i++) {
@@ -55,12 +56,12 @@ void formatCommand(char* str, unsigned short int max) {
   }
 }
 
-//Error format
 void err(char* msg) {
   printf("Erro: \"%s\"\n", msg);
 }
 
 void cls() {
+  //Writes "\e[1;1H\e[2J" to stdout, giving an effect of cleared screen
   char regex[13] = "\e[1;1H\e[2J";
   if(!syscall(SYS_write, STDIN_FILENO, regex, sizeof(char) * 13)) {
     err("syscall gerou erro!");
@@ -68,33 +69,50 @@ void cls() {
 }
 
 void dir() {
-  struct dirent *dfile;
+  //Uses struct dirent data structure
+  struct dirent *ddir;
+  //Opens current dir "."
   DIR* direc = opendir(".");
   if(!direc)  {
     err("opendir gerou erro!");
     return;
   }
+  //while direc is readable, get ddir d_name and show it's name
   while(1) {
-    dfile = readdir(direc);
-    if(!dfile) break;
-    printf("%s\n", dfile->d_name);
+    ddir = readdir(direc);
+    if(!ddir) break;
+    printf("%s\n", ddir->d_name);
   }
 }
 
 void date() {
+  //Get current seconds in Epoch standard
   time_t now = time(NULL);
   struct tm timeFormat;
   char temp[11];
+  //Get struct tm, which represents local time
   timeFormat = *localtime(&now);
+  /* 
+  Convert time, storing conversion in 'temp', 
+  passing it's size, the format desired and
+  tm structured representing local time
+  */
   strftime(temp, sizeof(temp), "%d:%m:%Y", &timeFormat);
   printf("%s\n", temp);
 }
 
 void timeShell() {
+  //Get current seconds in Epoch standard
   time_t now = time(NULL);
   struct tm timeFormat;
   char temp[9];
+  //Get struct tm, which represents local time
   timeFormat = *localtime(&now);
+  /* 
+  Convert time, storing conversion in 'temp', 
+  passing it's size, the format desired and
+  tm structured representing local time
+  */
   strftime(temp, sizeof(temp), "%H:%M:%S", &timeFormat);
   printf("%s\n", temp);
 }
