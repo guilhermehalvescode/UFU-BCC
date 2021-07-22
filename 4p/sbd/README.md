@@ -171,3 +171,91 @@
     - Modelo de Redes
     - Modelo Relacional
     - Modelo Relacional - Orientado a objeto
+
+## _**Modelo de Entidade-Relacionamento (ER / MER / DER)**_
+
+- Também chamado de Modelo de Entidade-Relacionamento ou Diagrama de Entidade-Relacionamento
+- Uma visão panorâmica
+
+  ![visaoPanoramica](images/visaoParoramica.png)
+
+- É uma modelagem de dados em alto nível com foco do domínio do problema e não na solução
+- Elemetos básicos
+  - Modelar conceitos do mundo real
+  - Modelar as características dos conceitos
+  - Modelar os relacionamentos entre conceitos
+- O MER, ou ER, tem como objetivo facilitar o projeto de BD por meio de um modelo indendente da implementação de fácil compreensão por parte do usuário
+- A partir dos requisitos, consegue-se modelar um DER
+- Conceitos básicos
+  - Entidade, Tipo Entidade e Conjunto de Entidades
+  - Relacionamento e Conjunto de Relacionamentos
+  - Atributos
+- Def: O Diagrama ER-DER é uma representação gráfica de Entidades, Atributos, e Relacionamentos que modelam o Esquema de um Banco de Dados
+- **DER Exemplo - Company Database**
+
+  ![Company Database DER](images/DER.png)
+
+***
+
+- Definições
+  - **Entidade:** é um conceito do mundo real com existência independente
+    - Ex: empregado (conceito físico), projeto, curso (conceito abstrato)
+  
+    ![entidadeRepresentação](images/entidade.png)
+    - o retângulo representa uma **Entidade**
+    - o tipo _Empregado_ representa um Conjunto de Entidades, ou seja, todas as instâncias do BD
+  - **Atributo:** é uma propriedade da entidade (campo de um objeto)
+    - Ex: código, nome, créditos
+    ![atributosRepresentação](images/atributos.png)
+    - Um atributo no DER é representado por uma elipse ligada à entidade
+    - **Existem vários tipos de atributos:**
+    - Simples: atributo que não possui divisão (sexo, cpf - não podem ser subdivididos)
+    - Composto: atributo que pode ser dividido em partes com significados diferentes
+    ![atributosVariações](images/atribuitosVar.png)
+      - Uma atributo composto pode formar uma hierarquia
+      ![hierarquiaAtributos](images/hierarquiaAtributos.png)
+    - Monovalorado: atributo possui um único valor (nome - uma pessoa só pode ter um nome)
+    - Multivalorado: atributo que possui um conjunto de valores para uma mesma entidade (telefone - uma pessoa pode ter mais de um telefone)
+      - No DER, um atributo multivalorado é representado por uma elipse com contorno em linha dupla
+      ![atributosMultivalorados](images/atributosMultivalorados.png)
+    - Chave (Primary Key): é um atributo cujos valores são distintos para instâncias distintas de um Conjunto de Entidades (código de uma disciplina/sigla ou código de uma turma - são valores únicos para instâncias diferentes)
+    ![atributosChave](images/atributosChave.png)
+      - Obs: uma entidade pode ter mais de um atributo chave
+    - Derivado: é um atributo que não está definido, mas pode ser obtido a partir de outros atributos através de algum procedimento (não precisa ser armazenado)
+      - idade (se houver a data de nascimento, podemos calcular a idade) 
+      - numero de empregados de um departamento (se houver uma tabela de empregados relacionados a uma tabela de departamentos, podemos contar quantos empregados estão relacionados à aquele departamento específico)
+      ![atributosDerivados](images/atributosDerivados.png)
+        - Obs: No DER uma atributo derivado é representado por uma elipse com contorno em linha tracejada (este atributo não será armazenado fisicamente no BD)
+  - **Relacionamento:** é uma associação entre entidades que é definido quando uma entidade se refere a outra. Ex: lotação de um empregado em um departamento
+
+    ![relacionamento](images/relacionamento.png)
+    - Um relacionamento no DER é representado por um losango às entidades (existem vários tipos de relacionamentos)
+    - Papeis em relacionamentos:  papel em um relacionamento define como a entidade participa do mesmo
+      - Ex: empregado está lotado em departamento e departamento tem lotação de empregados
+      - Muitas vezes o papel está implícito e não é representado no ER
+    - Auto-relacionamento: associam instâncias de uma mesma entidade
+      - Ex: supervisão de empregados (um empregado pode ser supervisor de outros empregados), papéis: empregado é supervisor de empregado, e empregado é supervisionado por empregado
+      - É necessário indicar os papéis que são denotados por rótulos nas linhas que modelam o relacionamento
+      ![autoRelacionamento](images/autoRelacionamento.png)
+    - Cardinalidade em Relacionamentos: é uma restrição na quantidade máxima de instâncias de uma entidade que podem estar associadas a uma instância de outra entidade
+      ![cardinalidadeRelacionamentos](images/cardinalidadeRelacionamentos.png)
+      - No DER definimos a cardinalidade de N ou 1, neste caso, indicando que uma instância de funcionário pode estar associadas a, no máximo, uma instância de departamento (um funcionário só trabalha para um departamento, mas um departamento tem vários funcionários)
+    - Participação em Relacionamentos:
+      - Participação Total: é uma restrição que indica a necessidade de que qualquer instância da entidade, estar associada a, no mínimo, uma instância no relacionamento
+        - Ex: toda instância de PROJECT necessariamente está associada a um departamento no relacionamento CONTROLS (_Não pode existir um projeto no Conjunto de Entidades que não esteja relacionado a um departamento_)
+        ![relacionamentoTotal](images/relacionamentoTotal.png)
+        - No DER um relacionamento com participação total é indicado por meio de uma linha dupla . Quando não é total, chamamos de ***Participação Parcial***
+        - Participação Parcial: no caso do exemplo acima, um departamento pode não ter um projeto relacionado a ele
+    - Entidade Fraca: é aquela que não possui um atributo chave e é identificada por meio de um relaciomento total com pelo menos um tipo Entidade Forte
+      - Ex: Dependente/Entidade Fraca, Funcionário/Entidade Forte
+  
+      ![entidadeFraca](images/entidadeFraca.png)
+      - No DER, um Tipo Entidade Fraca é representado por meio de retângulo com contorno em linha dupla. O relacionamento total com pelo menos uma entidade forte é denotado por um losângulo com contorno em linha dupla. A "chave local" é denotada por sublinhado pontilhado. A Chave de uma instância de uma entidade fraca é um atributo composto pela chave da entidade forta mais a sua "chave local"
+    - Grau de Tipo-Relacionamento: é o número de entidades que participam
+      - Ex: relacionamentos de grau 3 (ternário) ligam 3 entidades, por exemplo: relacionamento entre agencia, cliente e conta
+      ![relacionamentoGrau](images/relacionamentoGrau.png)
+      - Um tipo-relacionamento de grau n tem n arocs no diagrama
+    - Relacionamentos binário/ternário: diferença entre um relacionamento ternário e três relacionamentos binários 
+  
+      ![relacionamentoTernario](images/relacionamentoTernario.png)
+      ![relacionamentoBinario](images/relacionamentoBinario.png)
