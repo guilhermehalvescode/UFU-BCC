@@ -336,3 +336,48 @@
     - L(G2) = {w $\in$ {a, b}$^*$ | w tem prefixo "a" seguido de 0 ou mais ba's}
   - Portanto, a gramática do ex2 gera a exatamente a mesma linguagem da gramática do ex1 (são linguagens equivalentes pela definição de _Equivalência de Gramáticas_)
   - Hierarquia: Tipo 3 ou Regular
+
+### *Gramática tipo 2 (livre de contexto)*
+
+- G(V, T, P, S) é do tipo 2, se toda produção em P é da forma:
+  - A => $\alpha$,  com A $\in$ V e $\alpha$ $\in$ (V $\cup$ T)*, ou seja:
+    - basta uma variável na esquerda
+- Ex3. Seja G3 = (V, T, P, S) com:
+  - V = {S, B}
+  - T = {0, 1}
+  - P = {S -> 0B | OSB, B -> 1}
+  - Derivações
+    - S => 0B => 1
+    - S => 0SB => 00BB => 001B => 0011
+  - Linguagem Gerada
+    - L(G3) = {01, 0011, 000111, ..., 0¹⁰⁰1¹⁰⁰}
+    - L(G3) = {w $\in$ {0, 1}* | w possui N 0's concatenados com N 1's, para N >= 1}
+    - L(G3) = {w $\in$ {0, 1}* | w = $0^n1^n$, N >= 1}
+  - Hierarquia: Tipo 2 ou Livre de Contexto
+- Ex4. Seja G4 = (V, T, P, S) com:
+  - V = {S, V, U}
+  - T = {0, 1}
+  - P = {S -> $\varepsilon$ | Z | U | 0SZ | 1SU, Z -> 0, U -> 1}
+  - Derivações
+    - S => $\varepsilon$
+    - S => Z => 0
+    - S => U => 1
+    - S => 0SZ => 01SUZ => 01UUZ => 01110
+  - Linguagem Gerada
+    - L(G4) = {$\varepsilon$, 0, 1, 00, 11, 000, 010, 101, 111, 0000, 0110, 1001, 1111, ....}
+    - L(G4) = {w $\in$ {0, 1}* | w é uma palíndrome}
+  - Hierarquia: Tipo 2 ou Livre de Contexto
+- Ex5. Seja G5 = (V, T, P, E) com:
+  - V = {E}
+  - T = {+, *, (,), x}
+  - P = {E => E+E | E*E | (E) | x}
+  - Derivações
+    - TO-DO Gerar menores palavras
+  - Linguagem Gerada
+    - TO-DO 
+  - Hierarquia: Tipo 2 ou Livre de Contexto
+
+### *Gramática tipo 1 (sensíveis ao contexto)*
+
+- G(V, T, P, S) é do tipo 1, se P é da forma: TO-DO
+  - S -> $\varepsilon$ ou $\alpha$ -> $\beta$, com $|\beta|$
