@@ -89,6 +89,7 @@
       - É difícil controlar acesso em Arquivo Convencionais.
 
 - Componentes de um SBD
+
   ![SBD](images/sbd.png "sbd")
 
 - Capacidades de um SGBD
@@ -106,6 +107,7 @@
     - necessidade de concorrência (transações)
 
 - Níveis de Abstração
+
   ![abstração](images/abstracoes.png)
 
 - Independência de Dados
@@ -159,6 +161,7 @@
     - monitoração
 
 - Arquitetura de um SGBD Relacional
+
   ![arqSGBD](images/arqSGBD.png)
 
 - Modelo de Dados
@@ -206,7 +209,8 @@
     - o tipo _Empregado_ representa um Conjunto de Entidades, ou seja, todas as instâncias do BD
   - **Atributo:** é uma propriedade da entidade (campo de um objeto)
     - Ex: código, nome, créditos
-    ![atributosRepresentação](images/atributos.png)
+
+      ![atributosRepresentação](images/atributos.png)
     - Um atributo no DER é representado por uma elipse ligada à entidade
     - **Existem vários tipos de atributos:**
     - Simples: atributo que não possui divisão (sexo, cpf - não podem ser subdivididos)
@@ -259,3 +263,101 @@
   
       ![relacionamentoTernario](images/relacionamentoTernario.png)
       ![relacionamentoBinario](images/relacionamentoBinario.png)
+
+## _**Modelo de Entidade-Relacionamento-Estendido (EER / MEER / DEER)**_
+
+- Intriduz semântica adicional ao ER  
+- Entidades do ER podem representar
+  - CLASSE
+  - SUBCLASSE
+  - SUPERCLASSE
+- HERANÇA
+  - subclasses herdam atributos da superclasse
+
+- ERR - Especilização/ Generalização
+  - ESPECIALIZAÇÃO: definir sub-classes à partir da super-classe
+  - GERERALIZAÇÃO: definir super-classe à partir de sub-classes
+
+    ![especializacaoGeneralizacao](images/especializacaoGeneralizacao.png)
+  
+  - Exemplo
+    
+    ![especializacaoGeneralizacaoExemplo](images/especializacaoGeneralizacaoExemplo.png)
+    - Cada entidade do Conjunto de Entidades das subclasses também é um empregado
+  
+- EER - Herança de Relacionamentos
+  - Além dos atributos, as subclasses herdam os relacionamentos das superclasses
+  - Uma instância da superclasse pode ser instânciada de zero, ou mais suclasses, dependendo do ***critério de especialização/generalização***
+
+- EER - Especialização/Generalização (Notação)
+
+  ![especializacaoGeneralizacaoNotacao](images/especializacaoGeneralizacaoNotacao.png)
+
+- EER - Subclasses mutuamente esclusivas
+  - Critério de Especialização/Generalização
+    - Disjunto: este critério modela uma restrição tal que as subclasses são mutuamente exclusivas, ou seja, uma instância da superclasse pode ser, no máximo, a instância de uma das subclasses
+
+      ![disjointNot](images/disjointNot.png)
+
+      - No DER, o critério disjunto é indicado pela letra "d" no relacionamento de superclasse/subclasse 
+      - Uma instância de disciplina não pode ser de graduação e pós-graduação
+
+        ![exemploGraduacao](images/exemploGraduacao.png)
+    - Sobreposto: subclasses se sobrepõem, ou seja, uma instância de superclasse pode ser instância de mais de uma subclasse
+
+      ![overlapNot](images/overlapNot.png)
+      - No DER, o critério sobreposto é o *default* ou pode ser explicitado pela letra "o"
+      - Uma instância de pessoa pode praticar mais de um tipo de esporte
+
+        ![exemploEsporte](images/exemploEsporte.png)
+
+- EER - Exemplo de Especialização
+
+  ![exemploEmpresa](images/exemploEmpresa.png)
+  - Notação de união, significa que herda (extends)
+
+- EER - Exemplo de Generalização
+
+  ![exemploVeiculos](images/exemploVeiculos.png)
+  - As entidades "car" e "truck" foram generalizadas na "vehicle"
+
+- EER - Exemplo definida como atributo
+
+  ![exemploEmpresaAtributo](images/exemploEmpresaAtributo.png)
+  - Especialização é vista como um "job type"
+
+- EER - Herança múltipla em subclasses
+
+  ![herancaMultipla](images/herancaMultipla.png)
+
+- EER - Categoria (_UNION TYPE_ ou _CATEGORIA_)
+  - União de entidades(superclasses) formando categorias (ou clusters), onde a instância de uma subclasse da categoria tem que ser instância d epelo menos uma das superclasses
+  - A categoria é modelada por meio de um relacionamento (União) da subclasse com mais de uma superclasse, e a subclasse representa um subconjunto da união de todas as superclasses
+
+    ![exemploCategoria](images/exemploCategoria.png)
+
+- EER - Agregação
+  - É um conceito de abstração para a criação de objetos compostos com base em componentes (três casos)
+    1. Entidade agrega atributos de objetos para representar um objeto mais complexo (ex: COMPA agrega CNa e Caddr)
+    2. Relacionamento que agrega atributos (ex: INTERVIE agrega ContactNa e ContactPho)
+    3. Entidade que representa objeto agregado a partir do relacionamento de outros objetos (não é natural no ER. Como resolver isso?)
+
+        ![exemploEntrevista](images/exemploEntrevista.png)
+
+  - O problema: como relacionar Entrevista a outra entidade chamada Oferta de emprego?
+    - Resolução: Abordagem com Entidade_Fraca
+  
+      ![resolucaoEntidadeFraca](images/resolucaoEntidadeFraca.png)
+
+  - Exemplo de EER
+
+    ![exemploAeroporto](images/exemploAeroporto.png)
+
+- Projeto Conceitual - UML
+  - Diagramas de classes da UML como alternativa de modelagem conceitual
+
+    ![umlEmpresa](images/umlEmpresa.png)
+
+  - UML - Especialização/Generalização
+
+    ![umlEspecializacaoGeneralizacao](images/umlEspecializacaoGeneralizacao.png)
