@@ -38,7 +38,7 @@
    - P(P) = P(P $\cap$ D) + P(P $\cap$ ND) = P(D)P(P|D) + P(ND)P(P|ND)
    - P(D|P) = $P(D \cap P)\over P(P)$ = $P(D)P(P|D)\over P(P)$ = $P(D)P(P|D)\over P(D)P(P|D) + P(ND)P(P|ND)$ = $0,004.0,94\over 0,004.0,94 + 0,96.0,01$ = $376 \over 7276$
 
-3. Considere três urnas com as seguintes configurações: a urna I contém 6 bolas pretas, 3 brancas e 5 vermelhas; a urna II contém 4 bolas pretas, 4 brancas e 2 vermelhas; a urna III contém 4 bolas pretas, 2 brancas e 7 vermelhas.  Lança-se um dado equilibrado.  Se sair 5, uma bola da urna I é retirada; se sair 1, 4, então uma bola da urna II é retirada; se sair 2, 3 ou 6, então uma bola da urna III é retirada
+3. Considere três urnas com as seguintes configurações: a urna I contém 6 bolas pretas, 3 brancas e 5 vermelhas; a urna II contém 4 bolas pretas, 4 brancas e 2 vermelhas; a urna III contém 4 bolas pretas, 2 brancas e 7 vermelhas. Lança-se um dado equilibrado.  Se sair 5, uma bola da urna I é retirada; se sair 1, 4, então uma bola da urna II é retirada; se sair 2, 3 ou 6, então uma bola da urna III é retirada
    - (a) Calcule a probabilidade da bola retirada ser vermelha.
      - Devemos calcular a P(V)
      - Sabemos pelo teorema da probabilidade total que: P(V) = P(V$\cap U_{1}$) + P(V$\cap U_{2}$) + P(V$\cap U_{3}$) = P($U_{1}$)P(V|$U_{1}$) + P($U_{2}$)P(V|$U_{2}$) + P($U_{3}$)P(V|$U_{3}$)
@@ -54,3 +54,38 @@
 4. Os amigos David Gilmour, Robert Plant, Nick Manson e Jimmy Page desejam fazer um *amigo oculto* entre eles. Calcule a probabilidade de que este amigo oculto não dê errado. Obs: um amigo oculto dá errado quando uma pessoa sorteia ela mesma
    - P(C) = 1 - P(NC), Probabilidade de um amigo oculto não dar errado é 1 menos a probabilidade de dar errado
    - P(NC) é a soma das probabilidades de cada um escolher ele mesmo
+
+5. ex5
+6. ex6
+7. Consideremos o lançamento de dois dados equilibrados. O espaço amostral desse experimento é formado pelos pares ordenados (i, j), emque i, j= 1,2,3,4,5,6.  Suponhamos que nosso interesse esteja no máximo das faces dos dois dados, isto é, vamos considerar a variável aleatória X que é dada por:
+
+    X = o máximo das faces dos dois dados.
+
+    Assim, por exemplo, se o resultado do  experimento foi (2,4), teremos que o valor de X neste ponto será 4, pois
+
+    X(2,4) = máximo{2,4}= 4.
+
+    Análise similar nos permite afirmar que se o resultado do experimento foi (5,5), então X assumirá, neste ponto, o valor 5. Em relação a esta variável aleatória X, responda:
+
+    (a) Quais os valores que X assume?
+      - X assume os valores {1, 2, 3 ,4 ,5 ,6}, que são os valores máximos em duas faces
+
+    (b) Para cada valor k que X assume, determine P(X = k).
+      - P(1) = $1 \over 36$
+      - P(2) = $3 \over 36$
+      - P(3) = $5 \over 36$
+      - P(4) = $7 \over 36$
+      - P(5) = $9 \over 36$
+      - P(6) = $11 \over 36$
+
+    (c) Calcule P(X < 3) e P(X ≥ 3).
+      - P(X < 3) = P(1) + P(2) = $4 \over 36$ = $1 \over 9$ 
+      - P(X ≥ 3) = 1 - P(X < 3) = 1 - $4 \over 36$ = $8 \over 9$
+
+    (d) Calcule P(X > 2|X < 5).
+      - Devemos calcular $P(X > 2 \cap X < 5) \over P(X < 5)$
+      - Logo, $P(3) + P(4) \over P(X < 3) + P(3) + P(4)$ = $12/36 \over 16/36$ = $12 \over 16$ = $3 \over 4$
+
+    (e) Esboce o gráfico da função de distribuição acumulada de X.
+
+    ![fda](fda.png)
