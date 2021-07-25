@@ -372,12 +372,38 @@
   - T = {+, *, (,), x}
   - P = {E => E+E | E*E | (E) | x}
   - Derivações
-    - TO-DO Gerar menores palavras
+    - E => x
+    - E => (E) => (x)
+    - E => E + E => x + x
+    - E => E * E => x * x
   - Linguagem Gerada
-    - TO-DO 
+    - L(G5) = {x, (x), x + x, x * x, x}
+    - L(G5) = { w $\in$ {+, *, (,), x}⁺ | w é um polinômio de grau n > 0 sem termos constantes, na variável x }
   - Hierarquia: Tipo 2 ou Livre de Contexto
 
 ### *Gramática tipo 1 (sensíveis ao contexto)*
 
-- G(V, T, P, S) é do tipo 1, se P é da forma: TO-DO
-  - S -> $\varepsilon$ ou $\alpha$ -> $\beta$, com $|\beta|$
+- G(V, T, P, S) é do tipo 1, se P é da forma:
+  - S -> $\varepsilon$ ou $\alpha$ -> $\beta$, com $|\beta| \geq |\alpha|, \alpha \in (V \cup T)^*$ e $\beta \in (V \cup T)^+$
+  - Existe uma forma normal dessa gramática, de onde deriva o nome da mesma, onde P é da forma:
+    - S -> $\varepsilon$ ou
+    - $\alpha A \phi$ -> $\alpha \beta \phi$, sendo $\alpha \in (V \cup T)^*$, $\phi \in (V \cup T)^*$ e $\beta \in (V \cup T)^+$
+    - Dizemos que a variável A é substituida por $\beta$, no contexto $\alpha A \phi$
+- Ex6. Seja G6 = (V, T, P, S) com:
+  - V = {S, X, Y, A, B, C, D, E, F}
+  - T = {a, b}
+  - P = {S -> XY | aa | bb | $\varepsilon$, X -> XaA | XbB | aaC | abD | baE | bbF, Aa -> aA, Ab -> bA, AY -> Ya, Ba -> aB, Bb -> bB, BY -> Yb, Ca -> aC, Cb -> bC, CY -> aa, Da -> aD, Db -> bD, DY -> ab, Ea -> aE, Eb -> bE, EY -> ba, Fa -> aF, Fb -> bF, FY -> bb}
+  - Derivações
+    - S => aa
+    - S => bb
+    - S => $\varepsilon$
+    - S => XY => aaCY => aaaa
+    - S => XY => abDY => abab
+    - S => XY => baEY => baba
+    - S => XY => bbFY => bbbb
+    - S => XY => XaAY => XaYa => aaCaYa => aaaCYa => aaaaaa
+    - S => XY => XbBY => XbYb => bbFbYb => bbbFYb => bbbbbb
+  - Linguagem Gerada
+    - L(G6) = {aa, bb, aaaa, abab, baba, bbbb, aaaaaa, bbbbbb, ...}
+    - L(G6) = {?}
+  - Hierarquia: Tipo 1 ou Sensível ao Contexto
