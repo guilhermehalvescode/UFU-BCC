@@ -376,10 +376,13 @@
     - E => (E) => (x)
     - E => E + E => x + x
     - E => E * E => x * x
+    - E => E + E => (E) + x => (x) + x
   - Linguagem Gerada
     - L(G5) = {x, (x), x + x, x * x, x}
     - L(G5) = { w $\in$ {+, *, (,), x}⁺ | w é um polinômio de grau n > 0 sem termos constantes, na variável x }
-  - Hierarquia: Tipo 2 ou Livre de Contexto
+  - Hierarquia:
+    - Tipo 2 ou Livre de Contexto (pois nas produções, na esquerda da seta se tem uma variável, e do lado direito se tem combinação de variáveis e terminais)
+    - Não é regular, possui mais de uma variável a esquerda de outra na produção
 
 ### *Gramática tipo 1 (sensíveis ao contexto)*
 
@@ -399,11 +402,8 @@
     - S => $\varepsilon$
     - S => XY => aaCY => aaaa
     - S => XY => abDY => abab
-    - S => XY => baEY => baba
-    - S => XY => bbFY => bbbb
-    - S => XY => XaAY => XaYa => aaCaYa => aaaCYa => aaaaaa
-    - S => XY => XbBY => XbYb => bbFbYb => bbbFYb => bbbbbb
   - Linguagem Gerada
     - L(G6) = {aa, bb, aaaa, abab, baba, bbbb, aaaaaa, bbbbbb, ...}
-    - L(G6) = {?}
+    - L(G6) = { w $\in$ {a, b}⁺ | w = a$^{2n}$ ou w = b$^{2n}$ ou w = (ab)$^{2n}$ ou w = (ba)$^{2n}$, n > 0 }
   - Hierarquia: Tipo 1 ou Sensível ao Contexto
+    - Não é do tipo 2 e nem do tipo 1, porque possui terminais além de variáveis na esquerda, o que não é permitido
