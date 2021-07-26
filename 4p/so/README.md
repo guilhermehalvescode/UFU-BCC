@@ -105,3 +105,16 @@ _**Conceitos básicos:**_
       - O sistema de comunicação entre os computadores precisa ser muito eficiente e rápido
       - atualmente existe um gargalo que impede de ter um DOS em escala comercial
   
+## Estruturas e Componentes
+
+- Chamada de Sistema(system call)
+- Grupos Funcionais
+  - Gerência de Processador
+  - Gerência de Memória
+  - Gerência de E/S
+  - Gerência de Arquivos
+  - Comunicação em Rede
+- Organização do Kernel
+  - Monolítico
+  - Em camadas
+  - Microkernel
