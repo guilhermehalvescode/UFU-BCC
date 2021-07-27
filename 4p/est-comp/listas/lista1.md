@@ -56,7 +56,18 @@
    - P(NC) é a soma das probabilidades de cada um escolher ele mesmo
 
 5. ex5
-6. ex6
+6. Seja X uma variável aleatória tal que
+    - P(X = 1) = $2 \over 8$, P(X = 3) = $2 \over 8$ e P(X = 5) = $4 \over 8$.
+    - (a) Calcule P(X < 4).
+      - O resultado é: P(X = 1) + P(X = 3) = $2 \over 8$ + $2 \over 8$ = $1 \over 2$
+    - (b) CalculeP(X ≥ 4).
+      - O resultado é: P(X = 5) = $1 \over 2$
+    - (c) Calcule a esperança e a variância de X.
+      - E(X) = 1.P(X = 1) + 3.P(X = 3) + 5.P(X = 5) = $2 \over 8$ + 3$2 \over 8$ + 5$4 \over 8$ = $2 + 6 + 20 \over 8$ = $28 \over 8$ = 3,5
+      - Var(X) = E(x²) - (E(X))² = 1.P(X = 1) + 9.P(X = 3) + 25.P(X = 5) - 3,5² = $2 \over 8$ + 9$2 \over 8$ + 25$4 \over 8$ = $2 + 18 + 100 \over 8$ - 3,5² = 15 - 12,25 = 2,75
+    - (d) Esboce o gráfico da função de distribuição acumulada de X.
+    ![fda6](fda6.png)
+
 7. Consideremos o lançamento de dois dados equilibrados. O espaço amostral desse experimento é formado pelos pares ordenados (i, j), emque i, j= 1,2,3,4,5,6.  Suponhamos que nosso interesse esteja no máximo das faces dos dois dados, isto é, vamos considerar a variável aleatória X que é dada por:
 
     X = o máximo das faces dos dois dados.
@@ -89,3 +100,37 @@
     (e) Esboce o gráfico da função de distribuição acumulada de X.
 
     ![fda](fda.png)
+
+8. Seja X ∼ N(7,4). Obtenha:
+    - z = $X - 7 \over 2$
+    - (a) P(X ≤ 10).
+      - O valor é P(Z ≤ 1,5) = 0,5 + 0,4332 (tabelado) = 0,9332
+    - (b) P(X > 5).
+      - O valor é P(Z > -1) = 0,5 + 0,3413 (tabelado) = 0,8413
+
+    - (c) Represente graficamente as probabilidades obtidas em (a) e (b).
+
+      ![fdp8](fdp8.png)
+    - (d) O valor de a tal que P(X ≤ a) = 0.04
+      - 0,5 - 0,04 = 0,46, onde P(Z ≤ 1,75)
+      - 1,75.2 = a - 7, a = 10,5
+
+9. Num teste educacional com crianças, o tempo para a realização de uma bateria de questões de raciocínio verbal e lógico é medido e anotado para ser comparado  com um modelo teórico. Este teste é utilizado  para identificar o desenvolvimento das crianças e auxiliar a aplicação de medidas corretivas. O modelo teórico considera T, tempo de teste em minutos, como uma variável aleatória contínua com função densidade de probabilidade dada por:
+  $$f(t) =
+    \begin{cases}
+      1(t - 40)\over40, & 8 \leq t \leq 10;\\
+      3\over20, & 10 \leq t \leq 15;\\
+      0, & \text{caso contrário.}
+    \end{cases}$$
+
+   - (a) Esboce o gráfico de f.
+    ![fdp9](fdp9.png)
+   - (b) Prove que f é, de fato, uma função densidade.
+     - Para f ser uma função densidade, devemos provar que f(t) >= 0, para todo x, e que $\int_{-\infty}^{+\infty}f(t)dt=1$
+     - f(t) >= 0, para todo x. Para t < 8 e t > 15, f(t) = 0. Já para t >= 8 e t <= 15, ambas funções são positivas.
+     - $\int_{-\infty}^{+\infty}f(t)dt=1$. Para f(t), $\int_{-\infty}^{+\infty}f(t)dt$ = $\int_{8}^{10}(t-4)/40dt$ + $\int_{10}^{15}3/20dt$ = 0,25 + 0,75 = 1
+     - Logo, f(t) é uma função densidade
+   - (c) Calcule P(1 < T ≤ 13).
+     - $\int_{1}^{13}f(t)dt$ = 0 + $\int_{8}^{13}f(t)dt$ = $\int_{8}^{10}(t-4)/40dt$ + $\int_{10}^{13}3/20dt$ = 0,25 + 0,45 = 0,65
+   - (d) Calcule P(10 < T ≤ 12).
+     - $\int_{10}^{12}f(t)dt$ = $\int_{10}^{12}3/20dt$ = 0,3
