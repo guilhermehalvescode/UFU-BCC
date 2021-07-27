@@ -70,7 +70,7 @@
 
 ## Estruturas de Protocolos
 
-### 1. Introdução
+### 1. Introdução - Estruturas de Protocolos
 
 - "premissa" - sem conhecer o meio de transmissão, não há como especificar as regras e procedimentos que governam as trocas de informações entre elementos pares.
   - Isto é verdadeiro? "_conhecendo o meio ou não, é necessário definir as regras que governam as interações_"
@@ -315,3 +315,89 @@
 10. Não Pular as Regras de 1 a 7 (MAIS IMPORTANTE!!)
 
 > Infelizmente, a regra 10 é mais violada
+
+## Controle de Erro
+
+### 1. Introdução - Controle de Erro
+
+- "estatísticas" - número de erros ocorridos nas transmissões de dados são muito maiores comparados por erros de "hardware" nos sistemas computacionais
+  - diferença de magnitude entre uma probabilidade de erro de 10^(-15) e outro de 10^-4 não pode ser subestimada
+  - para transmitir 10¹⁵ bits a uma taxa de transferência de 100 Mbps(100000000 bps) são necessários 10¹⁵/10⁸ segundos.
+  - 10⁷ segundos corresponde 10⁷/60 = 166666,6667 minutos, que por sua vez corresponde 166666,6667/60 = 2.777,7778 horas, que por sua vez 2777,7778 / 24 = 115,7407
+  - Para um erro, ocorre de forma análoga, no caso do erro de hardware, este ocorre a cada 10¹⁵, portanto, ocorre em média a 115,7407 pelos cálculos acima
+  - dependendo do meio, podem até ocorrer ruídos entre o envio dos dados
+  - os dados podem ser reordenados, distorcidos ou removidos, devido ao meio
+- "controle de erro" - objetivo de aumentar a confiabilidade da transmissão, preferivelmente para um nível de confiabilidade de operação "standalone" de um sistema computacional
+  - não se deve esperar que o controle de erro capture todos os erros
+  - uma controle de erro deve considerar os erros do canal a ser usado
+  - Obs: se a taxa de ereo de um canal é menor que a de um equipamento periférico, incluie controle de erro trará solução?
+    - não necessariamente, pois ao incluir o controle de erro, pode degradar o desempenho e até diminuir a confiabilidade dos dados
+
+### 2. Modelo de Erro
+
+- "Discrete Memoryless Channel" - modelo formal para este tipo de canal é o canal discreto sem memória
+- "Canal discreto" - canal é dito discreto porque ele reconhece apenas um número finito de níveis de sinais distintos
+- "Canal sem memória" - canal é dito sem memória porque a probabilidade de um erro é suposta ser independente dos erros anteriores
+- "Canal Simétrico" - p (bit error 0) = p(bit error 1)
+
+  ![dmc](images/dmc.png)
+
+- Canal Simétrico Binário - estabelece a probabilidade "Pr" de ter ao menos "n" bits livres de erro EFI >= "n"
+- Pr( EFI >= n ) = (1 - b)^n onde EFI "Erro Free Interval"
+  - onde "n" >= 0 e "b" = taxa de média de erros de bits
+  - essa fórmula é linear, probabilidade decresce linearmente a medida que o tamanho do intervalo livre de erros decresce (EFI)
+  - de maneira similar, probabilidade que a duração de uma rajada exceda "n" bits decresce linearmente como "n"
+- Para expressar "Pr" como função exponencial, substitui-se por:
+  - Pr( EFI >= n ) = e^[-b*(n-1)]
+  - estudos mostram que a equação acima (exponencial) prediz intervalos livres de erros melhor que a equação anterior (linear)
+  - porém a equação pode ser melhorada com a adição de um fator que determina o fator de agrupamento >> Benoit Mandelbrost
+
+### 3. Erros de Transmissão
+
+- "principais erros de transmissão"
+  - **inserção/remoção de dados** - causado por perda temporária de sincronização entre tranmissor e receptor
+  - **remoção de dados** - pode ser causado artificialmente disciplinas inadequadas de controle de fluxo
+  - **duplicação de dados** - podem ser gerados intencionalmente, p.ex., transmissor fazer retransmissão
+  - **distorção de dados** - podem ser geradas variações nas condições do canal, gerando distorções nos dados
+  - **reordenação de dados** - ocorre quando dados percorrem diferentes rotas
+- "solução" - esquemas de controle de fluxo para resolver os problemas de **remoção**, **duplicação** e **reordenação de dados**
+  - não obstante, erros de inserção e distorções podem ocorrer, assim, são necessários métodos para verificar a consistência dos dados
+  - **inserção/remoção de dados** e **distorçã de dados** 
+### 4. Redundância de Dados
+
+- "Detecção de Erro" - somente funciona se aumentarmos a redundância de dados na mensagem
+  - além da detecção de erros de transmissão, o receptor pode também ser capaz de corrigir os erros seguindo 2 maneiras:
+    - "Forward Error Control" - redundância se dá de tal modo que o receptor reconstroi a mensagem a partir da mensagem distorcida
+    - "Feedback Error Control" - reundância de dados se dá de tal modo que o receptor apenas detecta que a mensagem contém distorções
+- "Feedback Error Control" - reundância de dados se dá de tal modo que o receptor apenas detecta que a mensagem contém erros
+  - códigos de transmissão são "Error Detecting Codes" ou Códigos de Detecção de Erros
+  - aplicáveis em redes de computadores e no processamento paralelo onde custo do reenvio da informação é viável
+- "Foward Error Control" - ECCs capazes de detectar e corrigir erros em primitivas apresentam complexidade/computabilidade bem maior que em ("Feedback Error Control")
+- "Feedback Error Control" - há duas possibilidades:
+  - transmissor com alta taxa de erro, levando com que a retransmissão pode ser requerida explicitamente, através de uma confirmação negativa
+    - neste caso o receptor simplesmente descarta a primitiva corrompida e espera por uma retransmissão da mensagem
+  - tranmissor com taxa de erro suficientemente baixa => ausência de confirmação indica sucesso
+- "Controle de Erro" - tem o objetivo de diminuir a taxa de erro de um canal de comunicação
+  - contudo, nem todos os erros podem ser detectados, sempre existe uma "Taxa de Erro Residual" (RER - "Residual Error Rate")
+  - e.g., suponha-se que a probabilidade de erros de transmissão em mensagem. seja "p", e que o método de controle identifique uma fração "f" deste conjunto de dados, então:
+    - RER = p * (1 - f)
+  - esta equação implica que, por instância, a taxa residual é da ordem 10⁻⁹ ou menos
+
+### 5. Tipos de Códigos de Erros
+
+- São 2 os tipos básicos de codificação:
+- "Block Codes"
+  - todas as "code words" têm possivelmente o mesmo tamanho
+  - codificação para cada mensagem de dado pode ser definida estaticamente
+- "Convolution Codes" - há uma relação entre a codificação da primitiva corrente e a codificação das primitivas anteriores
+  - "code word" produzida depende da mensagem de dados e de um número prévio de mensagens codificadas
+  - codificador muda seu estado com cada mensagem que é processada, mas o comprimento da "code word" é usualmente estático
+- Palavras Códigos ou "Code Words" podem ser classificadas:
+  - "Linear Codes" - toda combinação linear de palavras de códigos válidas produz uma outra palavra código válida (mod-2 sum)
+  - "Cyclic Codes" - cada deslocamento cíclico (cyclic shift) de uma palvra código produz uma palavra código válida (CRC)
+  - "Systematic Codes" - toda palavra código inclui bits da primitiva original, seguida ou precedida por um grupo de bits de "checks"
+- Em todos o casos, as palavras códigos são maiores que as palavras de dados sobre as quais se baseiam
+  - se o número de bits originais é "d" e o número de bits adicionais é "e", a razão "d/(d+e)" é chamada "code rate"
+  - melhorar a "code rate" frequentemente significa aumentar a redundância e por consequência diminuir a "code rate"
+  - e.g., reduzir taxa de erro de um canal por um fator de 5 * 10² usando, p.ex., "Forward Error Control" pode exigir um código com um "code rate" <= 0.5
+  - "code rate" <= 0.5 -> "redundância é maior que a própria mensagem" (e >= d, tem se que o número de bits adicionais maior ou igual ao número de bits do próprio dado a ser transmitido)
