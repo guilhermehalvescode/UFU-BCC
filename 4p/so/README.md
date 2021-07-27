@@ -116,5 +116,90 @@ _**Conceitos básicos:**_
   - Comunicação em Rede
 - Organização do Kernel
   - Monolítico
+    - Primeiros modelos de kernels criados
+    - As rotinas do kernel estão organizadas de forma muito coesas entre si, permitindo que as rotinas compartilhem estruturas e dados entre si
+    - A manutenção em cima desse código é difícil devido a coesão das rotinas entre si
+    - As rotinas estão tão coesas em um nível que ao carregar o kernel, todas as rotinas são levadas para a memória, podendo haver rotinas que nem sequer serão utilizadas
+    - Porém é mais rápido, pois os dados são compartilhados e não é necessária criação de rotinas passando paramêtros copiados
   - Em camadas
+    - Permite uma melhor manutenção do código
+    - As rotinas estão bem separadas uma das outras, permitindo com que as rotinas possam ser executadas em diferentes modos de operação do processador(kernel/user mode)
+    - Possui uma performance pior comparado ao monolítico, pois as interfaces não permitem que as funções compartilhem dados
+    - Existe interfaces entre as rotinas para se ter uma integração coesa
+    - Ainda não é possível previnir o carregamento de todas as rotinas para a memória
   - Microkernel
+    - Neste as rotinas podem ser selecionadas para carregamento
+    - As rotinas do kernel são carregadas para a user level, deixando apenas as rotinas mais baixo nível no kernel
+    - As rotinas que estão no user level precisam acessar o kernel através de system calls que consomem tempo (desempenho menor comparado aos outros tipos de kernel)
+    - Falhas em subsistemas(rotinas) não comprometem a execução do sistema, pois estão bem isoladas
+    - Em sistemas multiprocessados, módulos podem ser executados em diferentes processadores mais facilmente, aproveitando o processamento dos processadores
+    - As rotinas do kernel são separadas em vários programas, diferente dos outros kernels, na qual uma aplicação realiza uma syscall para o kernel
+
+  ![kernelStructures](images/kernelStructures.png)
+- Interface de System Calls
+
+  ![systemInterface](images/systemInterface.png)
+  - Um programa em C invoca o printf(), o qual por sua vez chama a system call write()
+  ![cSyscall](images/cSyscall.png)
+  - System Calls: Padronização
+    - A marioria das syscalls usadas em sistemas UNIX (ou UNIX-like) estão definidas no padrão POSIX (Portable Operating System Interface for Unix)
+      - A família de padrões POSIX é formalmente conhecida como IEEE 1003
+      - Equivale ao padrão internacional ISO/IEC 9945
+    - No Linux podemos ver as system calls na seção 2 do manual online (man pages)
+      - man 2 system_call
+        - ex # man 2 exit
+      - man syscalls - apresenta todas as chamadas de sistema
+  - System Calls vs. Rotinas de Biblioteca
+    - No UNIX muitras system calls são encapsuladas por rotinas de biblioteca
+      - C library (libc, glibc, ...)
+    - Exemplo:
+      - void _exit(int status) - system call
+      - void exit(int status) - rotina da biblioteca
+    - Algumas diferenças:
+      - _exit não chama qualquer função registrada com atexit() ou on_exit().
+      - _exit não fecha descritores de arquivos abertos
+      - entre outras
+    - O que é melhor? System Calls ou Rotinas de Biblioteca?
+      ![sysXfuncs](images/sysXfuncs.png)
+    - Ao realizar teste utilizando os comandos
+      ![time](images/time.png)
+    - percemos que a syscall perdeu drasticamente em quesito de performance comparado com a rotina de biblioteca, isso se deve pelo fato da rotina em C realizar um procedimento de bufferização internamente, evitando o chaveamento entre modo kernel e usuário de forma repetida no código System Call
+  - Métodos de Entrada no Kernel
+    - Na arquitetura x86, a entrada do Kernel via system call é implementada por meio de uma interrupção de software
+      - No MSDOS: int 0x21
+      - Windows NT/2000: int 0x2E
+      - Linux (Kernel < 2.6): int 0x80
+      - Solaris 2 (x86): SYSENTER/SYSEXIT
+      - Linux (Kernel 2.6): SYSENTER/SYSEXIT
+      - Windows XP/Vista: SYSENTER/SYSEXIT
+    - Além das chamadas de sistema outras duas formas de entrada no Kernel são:
+      - Interrupções de hardware
+      - Hardware trap (específicas do processo)
+        - Ex: divisão por zero
+  - Exemplo de Estrutura de Kernel (Modelo Unix SVR4)
+    ![kernel](images/kernel.png)
+
+## **Modelo de Processos/Threads**
+
+### Modelo de Processo
+
+- Processo: é uma instância de um programa em execução
+
+  ![programaProcesso](images/programaProcesso.png)
+  - Programa é o executável, quando acionado, solicita para o SO criar um processo do programa na memória (instância), o qual vai ser executado pelo processador
+  - Programa é dinâmico, e processos são dinâmicos
+  - O que roda na memória principal é o processo, não o programa
+- Programa vs. Processo
+  
+  ![processXprogram](images/processXprogram.png)
+
+### Implementação Interna
+
+- PCB
+- Contextos (Hardware/Software)
+
+### Modelo de Threads
+
+- Conceito
+- Vantagens e Desvantagens
+- Paralelismo
