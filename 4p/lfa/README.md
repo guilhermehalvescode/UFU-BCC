@@ -387,10 +387,10 @@
 ### *Gramática tipo 1 (sensíveis ao contexto)*
 
 - G(V, T, P, S) é do tipo 1, se P é da forma:
-  - S -> $\varepsilon$ ou $\alpha$ -> $\beta$, com $|\beta| \geq |\alpha|, \alpha \in (V \cup T)^*$ e $\beta \in (V \cup T)^+$
+  - S -> $\varepsilon$ ou $\alpha$ -> $\beta$, com $|\beta| \geq |\alpha|, \alpha \in (V \cup T)^+$ e $\beta \in (V \cup T)^*$
   - Existe uma forma normal dessa gramática, de onde deriva o nome da mesma, onde P é da forma:
     - S -> $\varepsilon$ ou
-    - $\alpha A \phi$ -> $\alpha \beta \phi$, sendo $\alpha \in (V \cup T)^*$, $\phi \in (V \cup T)^*$ e $\beta \in (V \cup T)^+$
+    - $\alpha A \phi$ -> $\alpha \beta \phi$, sendo $\alpha \in (V \cup T)^+$, $\phi \in (V \cup T)^*$ e $\beta \in (V \cup T)^*$
     - Dizemos que a variável A é substituida por $\beta$, no contexto $\alpha A \phi$
 - Ex6. Seja G6 = (V, T, P, S) com:
   - V = {S, X, Y, A, B, C, D, E, F}
@@ -402,8 +402,31 @@
     - S => $\varepsilon$
     - S => XY => aaCY => aaaa
     - S => XY => abDY => abab
+    - abbbabbb? TO-DO
   - Linguagem Gerada
-    - L(G6) = {aa, bb, aaaa, abab, baba, bbbb, aaaaaa, bbbbbb, ...}
-    - L(G6) = { w $\in$ {a, b}⁺ | w = a$^{2n}$ ou w = b$^{2n}$ ou w = (ab)$^{2n}$ ou w = (ba)$^{2n}$, n > 0 }
+    - L(G6) = {$\varepsilon$, aa, bb, aaaa, abab, baba, bbbb, aaaaaa, bbbbbb, ...}
+    - L(G6) = { w $\in$ {a, b}⁺ | w = }
   - Hierarquia: Tipo 1 ou Sensível ao Contexto
     - Não é do tipo 2 e nem do tipo 1, porque possui terminais além de variáveis na esquerda, o que não é permitido
+
+### *Gramática tipo 0 (irrestrita)*
+
+- G(V, T, P, S) é uma gramática sem nenhuma restrição adicional em P, apenas:
+  - $\alpha$ -> $\beta$, sendo $\alpha \in (V \cup T)^+$ e $\beta \in (V \cup T)^*$, conforme vimos na definição geral da gramática
+- Ex8. Seja G8 = (V, T, P, S) com:
+  - V = {S, A, B, C, D, E}
+  - T = {a}
+  - P = {S -> ACaB, Ca -> aaC, CB -> DB | E, aD -> Da, AD -> AC, aE -> Ea, AE -> $\varepsilon$}
+  - Derivações
+    - S => ACaB => AaaCB => AaaE => AaEa => AEaa => aa
+    - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaE => AaaaEa => AaaEaa => AaEaaa => AEaaaa => aaaa
+    - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaDB => AaaaDaB => AaaDaaB => AaDaaaB => ADaaaaB => ACaaaaB => AaaCaaaB => AaaaaCaaB => AaaaaaaCaB => AaaaaaaaaCB => AaaaaaaaaE => AaaaaaaaaE =>* aaaaaaaa
+    - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaDB => AaaaDaB => AaaDaaB => AaDaaaB => ADaaaaB => ACaaaaB => AaaCaaaB => AaaaaCaaB => AaaaaaaCaB => AaaaaaaaaCB => AaaaaaaaaE =>* aaaaaaaaaaaaaaaa
+    - S =>* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  - Linguagem Gerada
+    - L(G6) = {aa, aaaa, aaaaaaaa, aaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ...}
+    - L(G6) = { w $\in$ {a}* | w = a$^{2^n}$, n > 0 }
+    - Como fazer w = a$^{3^n}$? TO-DO
+  - Hierarquia: Tipo 0 ou Irrestrita
+    - Não é regular, pois possui duas variáveis na esquerda de uma regras de produção
+    - Também não é livre de contexto, pois possui mais de uma variável na regra de produção em sua esquerda
