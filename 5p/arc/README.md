@@ -362,7 +362,8 @@
   - **reordenação de dados** - ocorre quando dados percorrem diferentes rotas
 - "solução" - esquemas de controle de fluxo para resolver os problemas de **remoção**, **duplicação** e **reordenação de dados**
   - não obstante, erros de inserção e distorções podem ocorrer, assim, são necessários métodos para verificar a consistência dos dados
-  - **inserção/remoção de dados** e **distorçã de dados** 
+  - **inserção/remoção de dados** e **distorçã de dados**
+
 ### 4. Redundância de Dados
 
 - "Detecção de Erro" - somente funciona se aumentarmos a redundância de dados na mensagem
@@ -401,3 +402,127 @@
   - melhorar a "code rate" frequentemente significa aumentar a redundância e por consequência diminuir a "code rate"
   - e.g., reduzir taxa de erro de um canal por um fator de 5 * 10² usando, p.ex., "Forward Error Control" pode exigir um código com um "code rate" <= 0.5
   - "code rate" <= 0.5 -> "redundância é maior que a própria mensagem" (e >= d, tem se que o número de bits adicionais maior ou igual ao número de bits do próprio dado a ser transmitido)
+
+### 6. Verificação por Paridade
+
+- Se a probabilidade de erros de múltiplos bits por mensagem é baixa, tudo que é necessário para o controle de erro um canal simétrico binário é o código de verificação por paridade
+  - para toda mensagem que adicionarmos 1 bit, teremos a soma módulo 2 naquela mensagem igual a 1 (um)
+  - se um único bit, incluindo o bit de verificação sofre mudança, o cálculo da paridade no receptor indica erro, mas não pode ser corrigido
+  - se "q = 1 - p", então a probabilidade de transmissão livre de erro para mensagens de "n + 1" bits, sendo 1 bit de paridade
+  - probabilidade de erros de 1 bit em "n + 1" bits transmitidos é a probabilidade binomial = "(n+1) \* p \* q^n"
+  - sob tais circunstâncias, e.g., canal sem memória, a taxa de erro residual da verificação por paridade de 1 bit é: 1 - q^(n+1) * p * q^n
+
+    ![dmc](images/dmc.png)
+  - e.g., para n = 15 e p = 10⁻⁴ teremos a taxa de erro residual da ordem de 10⁻⁶ por mensagem ou 10⁻⁷ por bit
+  - linha contínua mostra como a taxa de erro residual por "code word" aumenta como uma função da taxa "p" de erro de bits
+  - Nem todos os erros podem ser detectados e, então, sempre exite uma "Taxa de Erro Residual" (RER) = p * (1 - f)
+    - "f" - fração de erros identificada; "p" - probabilidade de erro
+
+    ![residualErrorRate](images/residualErrorRate.png)
+
+### 7. Correção de Erro
+
+- "Forward Error Control" usa somente um conjunto pequeno de combinações disponíveis de bits para codificar as mensagens
+  - códigos são escolhidos de modo que se tenha relativamente um número grande de erros de bits para converter uma mensagem válida em outra
+- "code rate" - para um código de correção de erro é em geral menor que aquele para um código de detecção de erro
+- lembre-se que "d" (nro de bits originais), "e" (nrm debits adicionais), e "d/(d + e)" - chama-se "code rate"
+  - logo que aumentamos "e" -> "d / (d + e)" diminui, ou seja, maior é a redundância para códigos de correção do que somente detecção
+- "Forward Error Correction" - por apresentar "code rate" menor que "Feedback Error Control", quando se deve utilizar?
+- Deve ser considerado somente quando as mensagens de controle do RX para o TX for um problema por razões tais como:
+  - valores altos para o atraso de transmissão
+  - taxa de erros de bits alta
+  - ausência de canal de retorno (receptor -> transmissor)
+- e.g., problema de comunicação de uma comunicação de uma estação espacial (receptor) e o centro de controle (transmissor) na terra;
+  - sinal de controle para liberar o obturador da câmera ou ajustar um curso, pode exigir vários minutos até alcançar a estação
+  - neste cenário, pode não haver tempo suficiente para repetir o sinal no caso de erro de transmissão (sinal pode chegar como pode se perder)
+- e.g., taxa alta de erros de bits -> neste caso, até mesmo a probabilidade de uma requisição para uma retransmissão ser recebida corretamente é inaceitavelmente baixa
+  - coloca em dúvida a própria requisição para retransmissão
+- Até mesmo a verificação de paridade simples por "code word" pode ser estendida de um código de detecção de um único erro para código de correção de um único erro
+  - e.g., sequência de 7 bits é estendida de 1 bit, o que torna o nro. de bits na sequência um nro. par (Longitudinal Redundancy Check ou LRC)
+  - 1000100 onde "0" é o bit de paridade
+  - na sequência inclu-se redundância para a série de "n" códigos (Vertical Redundancy Check ou VRC)
+
+    ![bitParityExtension](images/bitParityExtension.png)
+- "Hamming Distance" - nro. de bits a serem alterados na msg. de modo a obter uma outra msg. válida - "mínima diferença entre code words"
+  - diferença entre 2 "code words" é definida como o nro. de bits nos quais as "code words" se diferem, ou seja, em nro de bits
+- Código com "Hamming Distance" de "n", implica que qualquer combinação de até "n - 1" erros de bit pode ser detectada
+  - qualquer combinação até "(n - 1)/2" de erros de bits por código pode corrigida se o receptor interpretar toda palavra de código não válida como a palavra de código válida mais próxima
+  - este método é formalmente chamado de "Maximum Likelihood Decoding" ou "Nearest Neighbor Decoding"
+- Aumentando a Distância de Hamming, ou seja, escolhendo "code words" mais longas, aumenta-se a confiabilidade de um código tanto mais quanto maior a "code word"
+  - Obs: Redundânica de um Código determina seu poder de detecção e correção de erros de transmissão
+  - redundância pode ser redefinida como o nro de bits sobre o mínimo exigido para codificar inequivocamente uma mensagem
+
+### 8. "Linear Block Code"
+
+- pode-ser proteger os "m" bits adicionando "c" bits de verificação e escolhendo "n" códigos de um total de 2^(m + c)
+- de tal forma que cada combinação de 2 códigos válidos contemple a maior diferença em bits quanto possível
+  
+  ![parityProtection](images/parityProtection.png)
+- Como uma boa aproximação, o nro de bits de dados que podem ser protegidos cresce exponencialmente como o nro. de bits de verificação, ou seja, "c" bits de verificação
+
+  ![parityProtection2](images/parityProtection2.png)
+- Para corrigir erros de 1 bit, precisa-se de uma distância no Código de Hamming de ao menos 3 entre "code words"
+  - neste contexto, quantos bits "c" de verificação precisamos
+- para toda "code word" de "m + c" bits, tem-se precisamente "m + c" código resultantes com erros de 1 bit
+- para cada palavra no espectro de "2^m" possíveis códigos de dados, precisamos de "m + c + 1" palavras para protegê-la contra erros de 1 bit -> total de palavras no código é (m + c + 1) * 2^m
+- (m + c + 1) * 2^m = 2^(m + c) -> "m + c + 1 = 2^c"
+  - permite calcular o nro mínimo debits de verificação dado o nro de bits de dados
+  - também podemos calcular o nro máximo de bits de dados para um nro de bits de verificação "c"
+  
+    ![parityProtection](images/parityProtection.png)
+- e.g. "hamming code" - em uma mensagem de "m" bits, inclui-se "c" bits de verificação -> "m + c" bits na mensagem
+- "idéia" - sobrepor os bits de paridade, de forma que eles consigam verificar-se uns aos outros, bem como os bits de dados
+  - código de Hamming é obtido a partir da palavra de dados, inserindo pontos de controle, denominados bits de paridade
+  - bits de verificação são colocados na palavra de código de tal maneira que a soma da posição dos bits que eles ocupam aponte para o bit errado para qualquer erro de 1 único bit (mas não para 2 bits)
+  - quando uma posição é escrita como a soma de potências de 2, p.ex (1 + 2 + 4), estas potências também apontam para os bits de verificação que cobre o bit em questão, neste caso bit de dados - 7
+
+    ![hammingCode](images/hammingCode.png)
+
+- "Representação Matricial" - método conveniente para "LBC"
+  - e.g., considere um código com 3 bits de dados (D1, D2 e D3) e 3 bits de verificação (C4, C5 e C6)
+  - seja C4 = D1 + D2; C5 = D1 + D3; e C6 = D2 + D3, então com algum rearranjo podemos represetnar as equações na forma de matricial
+  
+    ![matricialRep](images/matricialRep.png)
+  - C^t é a matriz transposta de palavras de dados, escrita como um vetor de bits e de acordo com a equação anterior.
+    - Matriz de Dados + Verificação * C^t produz o vetor "zero"
+  - Podemos representar a matriz na forma: H * C^t = 0
+    - onde H é a Matriz de Paridade (Dados + Verificação)
+
+      ![matricialRepAlt](images/matricialRepAlt.png)
+- erros de transmissão podem ser formalizados pela adição de um vetor E, ou seja, H * (C^t + E) = s
+  - onde S é chamado de Síndrome
+- Neste código, toda soma módulo 2 de palavras de código válidas produz uma outra palavra de código válida
+  - assim, se o vetor de erros E coincide com alguma palavra de código válida, a síndrome é zero e o erro não é detectável
+
+### 9. Cyclic Redundancy Checks
+
+- "Cyclick Redundancy Check" - algoritmo de código cíclico mais utilizado em redes de computadores
+  - ISO especifica uma algoritmo similar denominado FCS(Frame Check) utilizado em seus protocolos IEEE802
+- CRC contempla o produto de bits de verificação de uma primitiva, cuja amostragem é definida segundo um critério
+  - bits escolhidos fazer parte do fator (polinômio gerador) e, portanto, é transmitido o produto, ou seja, primitiva * fator;
+  - no destino faz-se a divisão que é recebido pelo fator, se o resto é zero, significa ausência de erro ou erro não detectável
+  - método de divisão é específico e o fator (polinômio gerador) usado determinam o leque de erros de transmissão que podem ser detectados
+- Seja uma primitiva - sequência de "n" bits que podem ser representados por um polinômio de grau "n - 1"
+  - Somatório b*i* * x com i = [0 .. (n - 1)]
+  - b*i* é o coeficiente do bit na posição "i"
+  - x^i indica o literal do bit na posição "i"
+- e.g., considera a sequência "10011"
+  - escrita em polinômio: "1\*x⁴ + 0\*x³ + 0\*x² + 1\*x + 1" ou "x⁴ + x + 1"
+- Sejam as operações binárias (ou-exclusivo):
+  - 0 + 0 = 0 - 0 = 0
+  - 0 + 1 = 0 - 1 = 1
+  - 1 + 0 = 1 - 0 = 0
+  - 1 + 1 = 1 - 1 = 0
+  - não há "carry bit" na adição e nem "borrow bit" na subtração, ou seja, todo "i" ... x^i + x^i = 0
+  - para multiplicar 2 códigos de dados, basta multiplicar os polinômios correspondentes aos códigos de dados
+- Dado codificado em 4 bits (p.ex., x² + 1) é multiplicado por "x + 1"
+- Código gerado é o de paridade cuja "core rate" de 3/4
+- É também um código cíclico, mas não é simétrico
+  
+  ![cyclicCode](images/cyclicCode.png)
+- e.g., Calcule o polinômio cuja primitiva é "1 0 0 1 1" e o fator (polinômio gerador) é  "1 1 0 0"
+  - "1 0 0 1 1" -> x⁴ + x + 1
+  - "1 1 0 0" => x³ + x²
+  - (x⁴ + x + 1) * (x³ + x²) = x⁷ + x⁶ + x⁴ + **x³ + x³** + x²
+    - **x³ + x³** é zero, pela regra do ou exclusivo
+  - (x⁴ + x + 1) * (x³ + x²) = x⁷ + x⁶ + x⁴ + x²
