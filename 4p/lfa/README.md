@@ -424,9 +424,9 @@
     - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaDB => AaaaDaB => AaaDaaB => AaDaaaB => ADaaaaB => ACaaaaB => AaaCaaaB => AaaaaCaaB => AaaaaaaCaB => AaaaaaaaaCB => AaaaaaaaaE =>* aaaaaaaaaaaaaaaa
     - S =>* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   - Linguagem Gerada
-    - L(G6) = {aa, aaaa, aaaaaaaa, aaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ...}
-    - L(G6) = { w $\in$ {a}* | w = a$^{2^n}$, n > 0 }
-    - Como fazer w = a$^{3^n}$? TO-DO
+    - L(G9) = {aa, aaaa, aaaaaaaa, aaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ...}
+    - L(G9) = { w $\in$ {a}* | w = a$^{2^n}$, n > 0 }
+    - Como fazer w = a$^{3^n}$?
       - Seja G9 = (V, T, P, S) com:
       - V = {S, A, B, C, D, E}
       - T = {a}
