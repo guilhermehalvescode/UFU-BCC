@@ -402,7 +402,7 @@
     - S => $\varepsilon$
     - S => XY => aaCY => aaaa
     - S => XY => abDY => abab
-    - abbbabbb? TO-DO
+    - S => XY => XbBY => XbYb => XbBbYb => XbbBYb => XbbYbb => abDbbYbb => abbDbYbb => abbbDYbb => abbbabbb
   - Linguagem Gerada
     - L(G6) = {$\varepsilon$, aa, bb, aaaa, abab, baba, bbbb, aaaaaa, bbbbbb, ...}
     - L(G6) = { w $\in$ {a, b}⁺ | w = }
@@ -427,6 +427,10 @@
     - L(G6) = {aa, aaaa, aaaaaaaa, aaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ...}
     - L(G6) = { w $\in$ {a}* | w = a$^{2^n}$, n > 0 }
     - Como fazer w = a$^{3^n}$? TO-DO
+      - Seja G9 = (V, T, P, S) com:
+      - V = {S, A, B, C, D, E}
+      - T = {a}
+      - P = {S -> ACaB, Ca -> aaaC, CB -> DB | E, aD -> Da
   - Hierarquia: Tipo 0 ou Irrestrita
     - Não é regular, pois possui duas variáveis na esquerda de uma regras de produção
     - Também não é livre de contexto, pois possui mais de uma variável na regra de produção em sua esquerda
