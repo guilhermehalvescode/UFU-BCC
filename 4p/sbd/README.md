@@ -281,7 +281,7 @@
     ![especializacaoGeneralizacao](images/especializacaoGeneralizacao.png)
   
   - Exemplo
-    
+
     ![especializacaoGeneralizacaoExemplo](images/especializacaoGeneralizacaoExemplo.png)
     - Cada entidade do Conjunto de Entidades das subclasses também é um empregado
   
@@ -361,3 +361,123 @@
   - UML - Especialização/Generalização
 
     ![umlEspecializacaoGeneralizacao](images/umlEspecializacaoGeneralizacao.png)
+
+## _*Modelo Relacional - MR**_
+
+- O modelo relacional representa um banco de dados como uma correlação de valores. Uma relação é uma tabela de valores, onde cada linha é um conjunto de valores relacionados e cada coluna um conjunto de valores de mesmo tipo e significado
+
+  ![modeloRelacional](images/modeloRelacional.png)
+- foi proposto por Ted Codd em 1970
+- versões comerciais disponibilizadas no início da década de 80 (SQL/DS; ORACLE)
+- seu formalismo usa teoria de conjuntos de lógic a de primeira ordem;
+- é um método declarativo de especificar dados e consultas
+- Conceitos informais
+  - Relação é uma tabela de valores
+  - Cada linha da tabela representa fatos do mundo real, chamada tupla no modelo formal
+  - Cada coluna da tabela tem um cabeçalho que indica o significado do item de dado na coluna, chamado atributo
+  - Cada linha tem pelo menos uma chave que é um subconjunto de valores que identifica unicamente a linha
+- Exemplo de Relação
+
+  ![exemploRelacao](images/exemploRelacao.png)
+
+- Definições formais
+  - Domínio e Cardinalidade: um **domínio D** é um conjunto de valores atômicos e a **cardinalidade de D**, denotada por |D|, é o número de valores em D
+    - Exemplo:
+      - D1 = Domínio(sexo) = {F, M}; |D1| = 2
+      - D2 = Dom(funcionario.idade) = [15, 80]; |D1| = 66
+    - Um domínio pode ser definido por um tipo ou formato
+      - funcionario.idade: inteiro
+      - fone: (dd)dddd.dddd, onde cada "d" representa uma digito númerico decimal, sendo os dois primeiros um código de área
+  - Esquema de relação e atributo: o esquema de relação descreve a relação e é definido por R(A1, A2, ..., AN), onde R é o nome da relação e cada Ai é o nome de um atributo
+    - O atributo é o nome do papel desempenahdo por algum domínio na relação
+    - Exemplo: EMPREGADO(cpf, nome, endereco, sexo)
+      - Dom(cpf) = ddd.ddd.ddd-dd
+      - Dom(nome) = cadeia de caracteres que representam nomes de pessoas
+      - Dom(endereco) = cadeia de caracteres que representam endereços
+      - Dom(sexo) = {F, M}
+  - Tupla, valor de atributo e NULL: uma tupla t é um conjunto ordenado de valores denotado por t = <v1, v2, v3, v4>, onde cada vi é derivado do domínio apropriado de Ai ou é um valor nulo
+    - o valor nulo, denotado por NULL, é um valor especial para reprentar valores desconhecidos ou que não se aplicam
+    - Se t = <v1, v2, ..., vn> então t[Ai] = vi
+    - Exemplo:
+      - EMPREGADO(cpf, nome, enderco, sexo)
+      - empregado=<114719143637, 'John Smith', '101 Main St. Atlanta, Ga 303332', 'M'>
+      - empregado.sexo = 'M'
+  - Relação, estado, grau e cardinalidade: uma relação r de uma esquema R(A1, A2, ..., An), denotado por r(R), é um conjunto de tuplas (r = {t1, t2, ..., tm}).
+    - Obs
+      - O estado da relação r reflete as tuplas válidas que representam um estado particular do mundo real
+      - O esquema R é relativamente estático, mas em geral, o estado da relação r é dinâmico
+      - n é o grau do esquema da relação
+      - m é a cardinalidade da relação
+  - Características das relações
+    - as tuplas em uma relação não possuem ordem
+    - os atributos em uma tupla estão ordenados de acordo com o esquema da relação
+    - não há atributos compostos ou multivalorados no modelo relacional normalizado, pois todos os atributos são atômicos (não são divisíveis)
+    - NULL é um valor especial para representar valores desconhecidos ou qeue não se aplicam
+    - um esquema de relação pode ser interpretado como uma afirmação ou asserção sobre a estrutura da relação
+    - uma tupla pode ser interpretada como um fato ou instância da afirmação
+    - uma relação pode representar uma entidade ou um relacionamento no modelo ER
+  - Restrições e suas categorias: são condições que devem ser mantidas por todos os estados válidos (tuplas) das relações
+    - Categorias
+      - Inerentes: são características do modelo de dados, por exemplo, não há atributo composto no modelo R
+      - Baseadas em esquema: podem ser expressas no modelo de dados, por exemplo, restrição de domínio
+      - Baseadas na aplicação: não podem ser expressas no modelo de dados, portanto devem ser implementadas por meio de programas de aplicação
+  - Superchave: é um subconjunto de atributos SCh do esquema de relação R, tal que em qualquer estado válido r de R não existem duas tuplas com a mesma combinação de valores para atributos de SCh
+    - Ex: Sejam tuplas ti, ij com i != j, então ti[SCH] != tj[SCH]
+    - Obs: para qualquer R, SCh = R é uma superchave, pois a relação r é um conjunto
+  - Chave: é uma superchave de R tal que a remoção de qualquer atributo de Ch gera uma subconjunto Ch' que não é superchave de R
+    - Obs: uma relação pode ter mais de uma chave, cada uma é chamada chave candidata, e uma delas é chamada chave primária PK;
+    - a *Integridade de Entidade* é uma restrição inerente ao Modelo R e define que a chave primária não pode ser nula
+    - Ex
+      - DEPENDENTE(cpf_pai, nome, relacionamento)
+      - SCh1(SuperChave) = DEPENDENTE - não é chave
+      - SCh2(SuperChave) = (cpf_pai, nome) - é chave
+  - Chave estrangeira e integridade referencial
+    - uma FK de uma relação R que referencia a relação S é um conjunto de atributos FK é um conjunto de atributos FK de R com o mesmo domínio da chave primária PK de S tal que para qualquer tupla r de R r[FK] é unulo ou existe s[PK] tal que r[FK] = s[PK]
+    - Seja FK*i*(r) = PK(S), então para toda tupla r em R, existe s em S | r[FK*i*] = s[PK] ou r[FK*i*] = NULL
+    - Uma chave estrangeira FK(R) = PK(S) define uma INTEGRIDADE REFERENCIAL de R para S
+  - Esquema de BD: é um conjunto de esquemas de relações que pertencem ao BD
+    - S = {R*1*, R*2*, ..., R*n*}
+    - Exemplo de Esquema de BD Company
+
+      ![esquemaDb](images/esquemaDb.png)
+    - Integridade referancial em esquema de Db
+
+      ![integridadeRefEx](images/integridadeRefEx.png)
+    - Esquema de DB formal
+      - relações e suas chaves
+
+         ![esquemaDbFormal](images/esquemaDbFormal.png)
+      - Chave Primária
+
+        ![pk](images/pk.png)
+      - Integridade referencial/Chave estrangeira
+
+        ![fkEx](images/fkEx.png)
+      - Restrições de domínio
+
+        ![restricoesDom](images/restricoesDom.png)
+  - Operações no DB e violação de restrições
+    - inserir - INSERT
+    - excluir - DELETE
+    - alterar - UPDATE
+    - obs: a manutenção da consistência de DB, ou seja, execução das operações sem violar as restrições modeladas
+  - Instância db
+
+    ![instanciaDb](images/instanciaDb.png)
+  - Violação de restrições em INSERIR
+    - EMPREGADO(fname, minit, lname, ~~ssn~~, bdate, address, sex, salary, superssn, dno)
+    - Inserir empregado<'cecília', 'F', 'Ribeiro', NULL, '05-04,-1960', 'Rua Esmeralda, 35, Uberlândia, MG', F, 28000, NULL, 4> (não pode ser inserido pois a chave primária esta nula)
+    - Inserir empregado<'cecília', 'F', 'Ribeiro', ***123456789***, '05-04,-1960', 'Rua Esmeralda, 35, Uberlândia, MG', F, 28000, NULL, 4> (não pode ser inserido, pois já existe uma chave primária ***123456789***)
+    - Inserir empregado<'cecília', 'F', 'Ribeiro', 677678989, '05-04,-1960', 'Rua Esmeralda, 35, Uberlândia, MG', F, 28000, NULL, ***7***> (não pode ser inserido, pois não existe um dno-FK 7 no PK da relação DEPARTAMENTO)
+  - Violação de restrição em EXCLUIR
+    - EMPREGADO(fname, minit, lname, ~~ssn~~, bdate, address, sex, salary, superssn, dno)
+    - DEPARTAMENTO(~~dname~~, ~~dnumber~~, mgrssn, mgrstartdate)
+    - FK*dno*(empregado) = PK(departamento)
+    - Excluir tuplas em DEPARTAMENTO com dnumber = 5
+      - viola restrição de integriadade referencial FK*dno*(empregado), fazendo que ela referencia algo que não existe, pois foi excluído
+    - Opções de tratamento de violação de restrições em exclusão:
+      - restrict: rejeita a exclusão
+      - cascade: propaga a exclusão (exclui todos as linhas com o FK relacionado que foi violado na exclusão da PK)
+      - set null: modifica valores de atributos que referenciam a causa das violações
+  - Violação de restrição em ALTERAR
+    - A operação de ALTERAR pode ser interpretada como uma operação de EXCLUIR e INSERIR em sequida, portanto está sujeita às mesmas violações, inclusive às opções de tratamento de violações mostradas anteriormente, a saber, restrict, cascade e set null
