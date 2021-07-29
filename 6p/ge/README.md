@@ -37,3 +37,30 @@
 - O **Controle** tem haver com a questão de acompanhar, avaliar e ajustar, para que se possa ter um melhor conhecimento sobre a situação atual da organização
   - Acompanhar as situações que envolvem a organização (satisfação dos clientes, gerencimento dos gastos/horas de trabalho/feedbacks)
   - Poder fazer ajustes conforme as situações, pois com o controle, a organização está bem informada
+
+## **Estrutura Organizacional**
+
+### Passos Para a Gestão
+
+1. Traçar objetivos
+   - Definir aonde vamos chegar
+2. Definir *os caminhos* (estratégias para alcançar os objetivos)
+   - Procurar maneiras/rotas para poder atingir os objetivos, como fazer alianças, expandir vendas, etc...
+
+### Ambiente Interno
+
+- Situação interna da empresa, esse ambiente deve ser analisado para se ter uma maior ideia da empresa
+
+- Devemos analisar primeiro a situação atual da empresa, as suas forças e fraquezas relacionadas a sua gestão, funcionários, participação no mercado, etc...
+
+#### Elementos
+
+- Cultura
+  - A cultura da empresa reflete como os funcionários desta se relacionam entre sí, podendo ter um cenário competitivo entre esses, ou um ambiente colaborativo. Essa característica da organização reflete diretamente no desempenho, criatividade e proatividade dos funcionários dentro da organização
+  - Geralmente, as situações em que a cultura da empresa é colocada em questão estão relacionadas quando ocorre mudança de gestão de empresas. Uma exemplo seria uma empresa mais tradicional sofrer transformações em seus valores quando a gestão é passada para os filhos do dono, mudando o estilo tradicional dessa para um mais moderno.
+  - As situações de mudança de cultura podem trazer atritos, pois é uma situação de mudança repentina que é aversa aos valores daqueles que participam dessa mudança. Isso se deve pelo fato de que, essa cultura se engessa com o passar do tempo, portanto é necessário se ter cuidado e tempo ao tentar uma transição de cultura.
+  - A cultura organizacional é sinônimo de trajetória organizacional, sendo essa trajetória as experiências da empresa desde a sua criação. Essas experiências acabam definindo valores e estratégias para a empresa, portanto define a cultura da organização
+- Estrutura
+  - Divisão do trabalho/hierarquia/autonomia/regras formais/alcance de comando
+  - Para representar a estrutura, é utilizado um organograma da organização, sinalizando as divisões hierarquicas da empresa, indo dos gestores da empresa até os funcionários operacionais
+  - Ao analisar a estrutura da empresa, podemos ter uma ideia da cultura desta
