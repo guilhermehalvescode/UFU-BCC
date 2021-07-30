@@ -55,7 +55,14 @@
    - P(C) = 1 - P(NC), Probabilidade de um amigo oculto não dar errado é 1 menos a probabilidade de dar errado
    - P(NC) é a soma das probabilidades de cada um escolher ele mesmo
 
-5. ex5
+5. Luke Skywalker está na origem de uma reta. Um esboço da situação pode ser visto na Figura 1. Luke lança uma moeda honesta; se sair coroa, ele dá um passo para a esquerda (e termina na posição -1 da reta); se sair cara, ele dá um passo para a direita (e termina na posição 1 da reta). Suponha que no primeiro lançamento tenha saído cara.  Aí, agora na posição
+1, ele lança novamente a moeda: se cara, um passo para a direita; se coroa um passo para a esquerda. Suponha que novamente tenha saído cara. Na posição 2 da reta ele irá jogar novamente a moeda e irá proceder da mesma forma que nos dois passos anteriores.
+
+    (a) Yoda diz: Luke à origem só pode voltar depois de um número par de rodadas. Você concorda com Yoda? Justifique sua resposta.
+     - Ao luke partir da origem, supondo que ao deslocar a direita some um e deslocar a esquerda subtraia um, ao deslocar ***n*** à direita, ele deve retornar ***n*** esquerda, totalizando ***2n*** rodadas para que o mesmo retorne à origem. Portanto ele só retornará à origem após um número par de rodadas
+
+    (b) Luke está na origem da reta. Calcule a probabilidade dele retornar à origem depois de 4 passos.
+
 6. Seja X uma variável aleatória tal que
     - P(X = 1) = $2 \over 8$, P(X = 3) = $2 \over 8$ e P(X = 5) = $4 \over 8$.
     - (a) Calcule P(X < 4).
@@ -90,7 +97,7 @@
       - P(6) = $11 \over 36$
 
     (c) Calcule P(X < 3) e P(X ≥ 3).
-      - P(X < 3) = P(1) + P(2) = $4 \over 36$ = $1 \over 9$ 
+      - P(X < 3) = P(1) + P(2) = $4 \over 36$ = $1 \over 9$
       - P(X ≥ 3) = 1 - P(X < 3) = 1 - $4 \over 36$ = $8 \over 9$
 
     (d) Calcule P(X > 2|X < 5).
@@ -112,8 +119,8 @@
 
       ![fdp8](fdp8.png)
     - (d) O valor de a tal que P(X ≤ a) = 0.04
-      - 0,5 - 0,04 = 0,46, onde P(Z ≤ 1,75)
-      - 1,75.2 = a - 7, a = 10,5
+      - 0,5 - 0,04 = 0,46, onde P(Z ≤ -1,75)
+      - (-1,75).2 = a - 7, a = 3,5
 
 9. Num teste educacional com crianças, o tempo para a realização de uma bateria de questões de raciocínio verbal e lógico é medido e anotado para ser comparado  com um modelo teórico. Este teste é utilizado  para identificar o desenvolvimento das crianças e auxiliar a aplicação de medidas corretivas. O modelo teórico considera T, tempo de teste em minutos, como uma variável aleatória contínua com função densidade de probabilidade dada por:
   $$f(t) =
