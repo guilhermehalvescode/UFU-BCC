@@ -187,11 +187,19 @@ _**Conceitos básicos:**_
 
   ![programaProcesso](images/programaProcesso.png)
   - Programa é o executável, quando acionado, solicita para o SO criar um processo do programa na memória (instância), o qual vai ser executado pelo processador
-  - Programa é dinâmico, e processos são dinâmicos
+  - Programa é estátic, e processos são dinâmicos
   - O que roda na memória principal é o processo, não o programa
 - Programa vs. Processo
   
   ![processXprogram](images/processXprogram.png)
+  ![programEx](images/programEx.png)
+
+  - Normalmente o processo tem espaço maior do que o programa executável, pelo fato do programa poder alocar memória, ocupando mais espaço do que o tamanho desse ao ser transformado em processo, mas pode ser menor ou igual também.
+  
+  ![programStructure](images/programStructure.png)
+  - Na pilha de execução que são armazenadas as execução de funções, criação de variáveis locais, retornos de função e endereços de retorno após termino de execução de uma função
+  - Se a stack cresce até a Heap, ocorre "stack overflow", se a Heap cresce até a stack, ocorre a "stack overrun"
+  - Entry point sinaliza aonde é o início do da rotina principal do código (main)
 
 ### Implementação Interna
 
