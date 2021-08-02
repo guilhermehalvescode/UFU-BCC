@@ -378,7 +378,7 @@
     - E => E * E => x * x
     - E => E + E => (E) + x => (x) + x
   - Linguagem Gerada
-    - L(G5) = {x, (x), x + x, x * x, x}
+    - L(G5) = {x, (x), x + x, x * x, (x) + x, ...}
     - L(G5) = { w $\in$ {+, *, (,), x}⁺ | w é um polinômio de grau n > 0 sem termos constantes, na variável x }
   - Hierarquia:
     - Tipo 2 ou Livre de Contexto (pois nas produções, na esquerda da seta se tem uma variável, e do lado direito se tem combinação de variáveis e terminais)
@@ -405,9 +405,9 @@
     - S => XY => XbBY => XbYb => XbBbYb => XbbBYb => XbbYbb => abDbbYbb => abbDbYbb => abbbDYbb => abbbabbb
   - Linguagem Gerada
     - L(G6) = {$\varepsilon$, aa, bb, aaaa, abab, baba, bbbb, aaaaaa, bbbbbb, ...}
-    - L(G6) = { w $\in$ {a, b}⁺ | w = }
+    - L(G6) = { w $\in$ {a, b}* | w é uma repetição dela mesma (ww)}
   - Hierarquia: Tipo 1 ou Sensível ao Contexto
-    - Não é do tipo 2 e nem do tipo 1, porque possui terminais além de variáveis na esquerda, o que não é permitido
+    - Não é do tipo 2 e nem do tipo 3, porque possui terminais além de variáveis na esquerda, o que não é permitido
 
 ### *Gramática tipo 0 (irrestrita)*
 
@@ -421,11 +421,11 @@
     - S => ACaB => AaaCB => AaaE => AaEa => AEaa => aa
     - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaE => AaaaEa => AaaEaa => AaEaaa => AEaaaa => aaaa
     - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaDB => AaaaDaB => AaaDaaB => AaDaaaB => ADaaaaB => ACaaaaB => AaaCaaaB => AaaaaCaaB => AaaaaaaCaB => AaaaaaaaaCB => AaaaaaaaaE => AaaaaaaaaE =>* aaaaaaaa
-    - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaDB => AaaaDaB => AaaDaaB => AaDaaaB => ADaaaaB => ACaaaaB => AaaCaaaB => AaaaaCaaB => AaaaaaaCaB => AaaaaaaaaCB => AaaaaaaaaE =>* aaaaaaaaaaaaaaaa
+    - S => ACaB => AaaCB => AaaDB => AaDaB => ADaaB => ACaaB => AaaCaB => AaaaaCB => AaaaaDB => AaaaDaB => AaaDaaB => AaDaaaB => ADaaaaB => ACaaaaB => AaaCaaaB => AaaaaCaaB => AaaaaaaCaB => AaaaaaaaaCB => AaaaaaaaaDB =>* aaaaaaaaaaaaaaaa
     - S =>* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   - Linguagem Gerada
-    - L(G9) = {aa, aaaa, aaaaaaaa, aaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ...}
-    - L(G9) = { w $\in$ {a}* | w = a$^{2^n}$, n > 0 }
+    - L(G8) = {aa, aaaa, aaaaaaaa, aaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ...}
+    - L(G8) = { w $\in$ {a}$^+$ | w = a$^{2^n}$, n > 0 }
     - Como fazer w = a$^{3^n}$?
       - Seja G9 = (V, T, P, S) com:
       - V = {S, A, B, C, D, E}
@@ -434,3 +434,117 @@
   - Hierarquia: Tipo 0 ou Irrestrita
     - Não é regular, pois possui duas variáveis na esquerda de uma regras de produção
     - Também não é livre de contexto, pois possui mais de uma variável na regra de produção em sua esquerda
+
+## _**3. Linguagens Regulares, Autômatos Finitos e Gramáticas Regulares**_
+
+### Linguagens Regulares ou Tipo 3
+
+- estudos e aplicações são variados e abrangentes
+- exemplos
+  - editores de texto
+  - processadores de texto em geral
+  - pesquisa de dados
+  - interface simples homem X máquina
+  - protocolos de comunicação
+  - lógica
+  - ...
+- formalismos operacionais ou reconhecedores
+  - Autômato Finito Determinístico
+  - Autômato Finito Não-Determinístico
+  - Autômato Finito com Movimentos Vazio
+- formalismo axiomático ou gerador
+  - Gramática Regular
+- formalismo denotacional
+  - Expressão Regular
+  - também considerado formalismo gerador
+
+### Sistema de Estados Finitos
+
+- É um modelo matemático de sistema com entradas e saídas discretas
+- Pode assumir um número finito e pré definido de estados
+- Cada estado resume somente as informações do passado necessárias para determinar as ações da próxima entrada
+- Ex: Elevador
+  - entrado
+    - requisições pendentes
+  - estado
+    - andar corrente
+    - direção de movimento
+  - não memoriza as requisições anteriores
+
+### Autômato Finito (Determinístico) - Def.1
+
+- É uma máquina reconhecedora composta de:
+  - Fita de Entrada
+  - Unidade de Controle
+  - Programa ou Função de Transição de Estados
+  - Obs: o Autômato Finito não possui memória auxiliar. As informações do passado são armazenadas através dos estados
+  
+    ![automatoFinito](images/automatoFinito.png)
+  - Fita de Entrada: 
+    - finita  dividida em células, sendo que cada célula armazana um símbolo. Não é possível gravar.
+  - Unidade de Controle 
+    - armazena o estado corrente (dentre um número finito de estados); 
+    - possui cabeça de leitura (não grava) que acessa cada célula da fita, lê o símbolo e movimenta-se exclusivamente à DIREITA;
+    - no início a cabeça é posicionada no primeiro símbolo
+  - Programa ou Função de Transição de Estados
+    - função que comanda a leitura e define o estado corrente
+    - função parcial que define o novo estado do autômato a partir do estado corrente e do símbolo lido na fita
+- Exemplo:
+
+  ![exemploProgramaAutomatoFinito](images/exemploProgramaAutomatoFinito.png)
+  - Reconhece todas as palavras binárias que possuem pelo menos um '1'
+
+### Autômato Finito (Determinístico) - Def.2
+
+- Um Autômato Finito é uma 5-upla:
+  - A = (Q, $\Sigma$, $\sigma$, q0, F)
+  - Q -> conjunto finito de estados
+  - $\Sigma$ -> alfabeto (símbolos da fita): $\Sigma \cap Q = \empty$
+  - q0 -> estado inicial
+  - $\sigma$ -> função de transição de estado: Q x $\Sigma$ -> Q
+  - F -> conjuntos de estados finais (aceitação): F $\subseteq$ Q
+
+- Função de Transição de Estados ou Programa ($\sigma$)
+  - Para todos estados possíveis do autômato (q $\in$ q), a função deve definir qual será o próximo estado do autômato (q' $\in$ Q), quando for lido qualquer símbolo na fita (a $\in \Sigma$)
+  - A função $\sigma$ é dada por uma lista de transições de tipo:
+    - $\sigma$(q, a) = q',
+  - ou seja, O autômato finito estando no estado *q* e lendo o símbolo *a* na fita de entrada, move a cabeça para a direita e vai para o estado *q'*
+  - Exemplo anterior:
+    - A = (Q, $\Sigma$, $\sigma$, q0, F)
+    - Q = {q0, q1}
+    - $\Sigma$ = {0, 1}
+    - F = {q1}
+    - $\sigma$: $\sigma$(q0, 0) = q0, $\sigma$(q0, 1) = q1, $\sigma$(q1, 0) = q1, $\sigma$(q1, 1) = q1
+
+    ![tabelaSigma](images/tabelaSigma.png)
+    ![grafoSigma](images/grafoSigma.png)
+    ![grafoSigmaExemplo](images/grafoSigmaExemplo.png)
+- Processamento
+  - sucessiva aplicação da função programa
+    - para cada símbolo da entrada
+    - da esquerda para a direita
+    - até parar
+  - definição formal do comportamento
+    - necessário estender a função programa
+  - argumento da função programa estendida
+    - um estado
+    - uma palavra
+- Função de Transição de Estados Estendida ($\underline{\sigma}$)
+  - A função $\underline{\sigma}$ é uma função $\underline{\sigma}$: Q x $\Sigma^*$ -> Q
+  - É a função $\sigma$ estendida para palavras e é definida por:
+    - $\underline{\sigma}$(q, $\varepsilon$) = q
+    - $\underline{\sigma}$(q, aw) = $\underline{\sigma}(\sigma(q, a), aw)$, sendo w $\in \Sigma, a \in .\Sigma$ 
+  - Para as palavras w $\in \Sigma^*$: $\underline{\sigma}$(q, w) = q'
+    - O Autômato Finito no estado *q* após ler todos os símbolos e w (da esquerda para a direita) vai para o estado q'
+- Palavra aceita por um Autômato Finito
+  - Seja A = (Q, $\Sigma$, $\sigma$, q0, F) e w $\in \Sigma^*$. A palavra w é aceita por A se $\underline{\sigma}$(q0, w) $\in$ F. Se o Autômato Finito A, partindo do estado inicial q0, após ler todos os símbolos de w, for para um estado final q(q $\in$ F), então a palavra w é aceita por A
+  - Condição de Parada de um Autômato Finito
+    - Uma Autômato Finito sempre para ao processar qualquer entrada, aceitando ou rejeitando w
+    - W é aceita: se após procesar o último símbolo, o AF, para em um estado final
+    - W é rejeitada: se após processar o último símbolo, o AF para em um estado não final ou a função $\sigma$ é indefinida para o argumento (estado, símbolo)
+
+  ![automatoExemploFinal](images/automatoExemploFinal.png)
+- Linguagem Reconhecida (ou aceita) por um Autômato Finito
+  - Seja A = (Q, $\Sigma$, $\sigma$, q0, F) um autômato finito. A linguagem reconhecida por A é dada por:
+    - L(A) = {w $\in \Sigma^*$ | $\underline{\sigma}$(q0, w) $\in$ F}
+  - L(A) é o conjunto de todas as palavras pertencentes a $\Sigma^*$ e aceitas por A
