@@ -14,20 +14,20 @@
        - A probabilidade de ser maior que 9 é a probabilidade de no primeiro e no segundo lançamento sair um número maior igual 5, ou seja, (6, 4), (6, 5), (6, 6), (4, 6), (5,6), (6, 6) que gera a probabilidade $6 \over 36$
        - Dessa forma o resultado é $4 \over 36$ + $6 \over 36$ = $10 \over 36$
      - P(B|C) - Para calcular P(B|C), devemos calcular a probabilide da soma ser impar, dado que um dos lançamentos foi 5
-       - Devemos calcular $P(B \cap C) \over P(C)$, pois sabemos que, condicionalmente, o espaço amostral é B, e que um evento deste espaço é P(B $\cap$ C)
+       - Devemos calcular $P(B \cap C) \over P(C)$, pois sabemos que, condicionalmente, o espaço amostral é C, e que um evento deste espaço é P(B $\cap$ C)
        - P(B $\cap$ C): $6 \over 36$ (5, 2), (2, 5), (5, 4), (4, 5), (6, 5), (5, 6)
-       - P(C): $9 \over 36$ (5, 1), (1, 5), (5, 2), (2, 5), (5, 3), (3, 5), (5, 4), (4, 5), (5, 5)
-       - Então P(A|B) = $6 \over 36$/$9 \over 36$ = $6 \over 9$
+       - P(C): $11 \over 36$ (5, 1), (1, 5), (5, 2), (2, 5), (5, 3), (3, 5), (5, 4), (4, 5), (5, 5), (6, 5), (5, 6)
+       - Então P(B|C) = $6 \over 36$/$11 \over 36$ = $6 \over 11$
      - P(A $\cap$ D) - Devemos calcular a probabilidade de, entre a soma das faces ser 9, o mínimo entre as faces dos dados seja 4, ou seja, probabilidade dos eventos dentro de A onde 4 seja o menor resultado dentre as faces dos lançamentos
        - Sabendo que os eventos de P(A) são: (6, 3), (3, 6), (5, 4), (4, 5), (6, 4), (6, 5), (6, 6), (4, 6), (5, 6), (6, 6)
        - Os eventos válidos são: (5, 4), (4, 5), (4, 6), (6, 4)
-       - Logo P(A $\cap$ D) = $4 \over 36$ = $1 \over 9$ 
+       - Logo P(A $\cap$ D) = $4 \over 36$ = $1 \over 9$
      - P(C $\cup$ D) - Devemos calcular a probabilidade de um dos lançamentos ser 5 ou o mínimo entre duas faces ser 4
-       - Sabemos que P(C) + P(D) - P(C $\cap$ D)
+       - Devemos calcular P(C) + P(D) - P(C $\cap$ D)
        - P(D) = $5 \over 36$ (4, 4), (5, 4), (4, 5), (6, 4), (4, 6)
-       - P(C) + P(D) = $10 \over 36$ + $5 \over 36$
+       - P(C) + P(D) = $11 \over 36$ + $5 \over 36$
        - P(C $\cap$ D) = $2 \over 36$ (5, 4), (4, 5)
-       - Portanto, P(C $\cup$ D) = $10 \over 36$ + $5 \over 36$ - $2 \over 36$ = $13 \over 36$
+       - Portanto, P(C $\cup$ D) = $11 \over 36$ + $5 \over 36$ - $2 \over 36$ = $14 \over 36$
 
 2. Um exame de sangue feito por um laboratório tem eficiência de 94% para detectar uma certa doença quando ela de fato existe. Entretanto, o teste aponta um resultado falso-positivo para 1% das pessoas sadias testadas (isto é, se uma pessoa testada for saudável, então, com probabilidade 0,01, o teste indicará que a pessoa sadia tem a doença). Se 0,4% da população tem a doença, qual é a probabilidade de uma pessoa ter a doença dado que o resultado de seu exame foi positivo?
    - P = positivo, D = doente, ND = não doente
@@ -52,8 +52,15 @@
      - Concluimos com, $P(U_{3})P(V|U_{3}) \over 0.395424245$, e substituindo temos: ${0.269230769}\over{0.395424245}$ = 0.680865608 $\approx 68,1\%$
 
 4. Os amigos David Gilmour, Robert Plant, Nick Manson e Jimmy Page desejam fazer um *amigo oculto* entre eles. Calcule a probabilidade de que este amigo oculto não dê errado. Obs: um amigo oculto dá errado quando uma pessoa sorteia ela mesma
-   - P(C) = 1 - P(NC), Probabilidade de um amigo oculto não dar errado é 1 menos a probabilidade de dar errado
-   - P(NC) é a soma das probabilidades de cada um escolher ele mesmo
+   - P(E) = 1 - P(NE), Probabilidade de um amigo oculto não dar errado é 1 menos a probabilidade de dar errado
+   - A cardinalidade do espaço amostral é 24, (4!)
+   - P(NE) é a soma das probabilidades de cada um escolher ele mesmo
+   - Evento em que todos sorteiam eles mesmos: (1,2,3,4)
+   - O evento em que 3 sorteiam eles mesmos cai no anterior, pois se três itens estão em seus respectivos índices, o último também estará
+   - Os evento em que 2 sorteiam eles mesmos são: (1,2,4,3), (1,4,3,2), (1,3,2,4), (4,2,3,1), (3,2,1,4), (2,1,3,4)
+   - Os eventos em que 1 sorteia ele mesmo são: (1,4,2,3), (1,3,4,2), (3,2,4,1), (4,2,1,3), (4,1,3,2), (2,4,3,1), (3,1,2,4), (2,3,1,4)
+   - Ou seja, a probabilidade de dar errado é a probabilidade de pelo menos um amigo sortear ele mesmo, que é a soma da probabilidade dos eventos calculados anteriormente: $8 + 6 + 1 \over 24$ = $15 \over 24$ = 0,625
+   - Como a probabilidade de não dar errado é um menos a probabilidade de dar errado, temos: 1 - 0,625 = 0,375 = 37,5% do amigo secreto não dar errado
 
 5. Luke Skywalker está na origem de uma reta. Um esboço da situação pode ser visto na Figura 1. Luke lança uma moeda honesta; se sair coroa, ele dá um passo para a esquerda (e termina na posição -1 da reta); se sair cara, ele dá um passo para a direita (e termina na posição 1 da reta). Suponha que no primeiro lançamento tenha saído cara.  Aí, agora na posição
 1, ele lança novamente a moeda: se cara, um passo para a direita; se coroa um passo para a esquerda. Suponha que novamente tenha saído cara. Na posição 2 da reta ele irá jogar novamente a moeda e irá proceder da mesma forma que nos dois passos anteriores.
@@ -61,7 +68,7 @@
     (a) Yoda diz: Luke à origem só pode voltar depois de um número par de rodadas. Você concorda com Yoda? Justifique sua resposta.
      - Ao luke partir da origem, supondo que ao deslocar a direita some um e deslocar a esquerda subtraia um, ao deslocar ***n*** à direita, ele deve retornar ***n*** esquerda, totalizando ***2n*** rodadas para que o mesmo retorne à origem. Portanto ele só retornará à origem após um número par de rodadas
 
-    (b) Luke está na origem da reta. Calcule a probabilidade dele retornar à origem depois de 4 passos.
+    (b) Luke está na origem da reta. Calcule a probabilidade dele retornar à origem depois de 4 passos. DÚVIDA
 
 6. Seja X uma variável aleatória tal que
     - P(X = 1) = $2 \over 8$, P(X = 3) = $2 \over 8$ e P(X = 5) = $4 \over 8$.
@@ -106,7 +113,7 @@
 
     (e) Esboce o gráfico da função de distribuição acumulada de X.
 
-    ![fda](fda.png)
+    ![fda7](fda7.png)
 
 8. Seja X ∼ N(7,4). Obtenha:
     - z = $X - 7 \over 2$
@@ -115,7 +122,7 @@
     - (b) P(X > 5).
       - O valor é P(Z > -1) = 0,5 + 0,3413 (tabelado) = 0,8413
 
-    - (c) Represente graficamente as probabilidades obtidas em (a) e (b).
+    - (c) Represente graficamente as probabilidades obtidas em (a) e (b). DÚVIDA
 
       ![fdp8](fdp8.png)
     - (d) O valor de a tal que P(X ≤ a) = 0.04
@@ -134,7 +141,7 @@
     ![fdp9](fdp9.png)
    - (b) Prove que f é, de fato, uma função densidade.
      - Para f ser uma função densidade, devemos provar que f(t) >= 0, para todo x, e que $\int_{-\infty}^{+\infty}f(t)dt=1$
-     - f(t) >= 0, para todo x. Para t < 8 e t > 15, f(t) = 0. Já para t >= 8 e t <= 15, ambas funções são positivas.
+     - f(t) >= 0, para todo x. Para t < 8 e t > 15, f(t) = 0. Já para t >= 8 e t <= 15, ambas funções são positivas. DÚVIDA
      - $\int_{-\infty}^{+\infty}f(t)dt=1$. Para f(t), $\int_{-\infty}^{+\infty}f(t)dt$ = $\int_{8}^{10}(t-4)/40dt$ + $\int_{10}^{15}3/20dt$ = 0,25 + 0,75 = 1
      - Logo, f(t) é uma função densidade
    - (c) Calcule P(1 < T ≤ 13).
