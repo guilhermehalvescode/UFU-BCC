@@ -526,3 +526,106 @@
   - (x⁴ + x + 1) * (x³ + x²) = x⁷ + x⁶ + x⁴ + **x³ + x³** + x²
     - **x³ + x³** é zero, pela regra do ou exclusivo
   - (x⁴ + x + 1) * (x³ + x²) = x⁷ + x⁶ + x⁴ + x²
+- Seja P - polinômio da primitiva e G - polinômio gerador de grau "r", então o resto da divisão é polinômio R com grau "r - 1", onde:
+  - R = (P * x^r)/G
+  - Plavra Código: "T = P * x^r - R"
+    - T é trasmitido e o receptor divide o mesmo pelo polinômio gerador, se Resto for diferente de zero, um erro é detectado
+- Um erro de transmissão adiciona um polinômio E ao código e o receptor descobre o erro por:
+  - (T + E)/G = T/G(= 0) + E/G = E/G
+- Um erro de comunicação é detectado se E/G != 0, caso contrário o erro não é detectável, pois o erro se tornou múltiplo do gerador
+
+## Controle de Fluxo
+
+### 1. Introdução - Controle de Fluxo
+
+- "Controle de Fluxo" - relacionado com o controle de diálogo na troca de mensagens entre as entidades pares
+- "esquemas simples de controle de fluxo" - consiste em ajustar a velocidade da origem das primitivas à velocidade com que o receptor pode receber e processar as primitivas
+  - esquemas mais elaborados podem evitar erros tais como: remoção, inserção, duplicação e reordenação
+  - Nota: isto é o que acontece nas camadas mais baixas da pilha de comunicação, p.ex., camada física
+- Fundamentos Filosóficos do Controle de Fluxo, 4 pilares:
+  - garantia que as primitvas são enviadas em uma frequência que a entidade receptora pode receber e processá-las
+  - otimização na utilização do canal
+  - diminuição ou eliminação da "perda de carga" do canal
+  - distribuição criteriosa do uso dos recursos de comunicação
+- O caminho entre a origem e o destino pode conter esquemas de interconexão com as seguintes características:
+  - capacidade limitada para "storing" and "forwarding"
+  - compartilhamento entre vários pares de entidades
+- Obs: esquemas prudentes de controle de fluxo evitam que pares monopolizem todo o espaço de recursos disponíveis
+- "Objetivo" - tendo por base um protocolo básico, propõe-se a concepção de um modelo de controle de fluxo
+  - "receive" - representa o estado no qual a recepção de uma nova mensagem do canal está sendo aguardada
+  - "dented box" - representa o reconhecimento de uma mensagem que está associada - "match" com o rótulo - "label" da caixa
+  - "pointed box" - indica a transmissão de uma mensgam cujo tipo é indicado pelo rótulo - "label" da caixa
+  - "square/ retangle box" - indica uma ação interna para obter o próximo item de dado, p.ex., caracter a ser transferido
+
+    ![elementos](images/exemploEstados.png)
+  - protocolo "simplex" - usado para transmitir dados em apenas um sentido (canal "half-duplex")
+  
+    ![noFlowControl](images/noFlow.png)
+- "premissa" - protocolo apresentado funciona apenas se o receptor RX for mais rápido que transmissor TX
+  - se esta suposição for falsa, a entidade que envia pode sobrecarregar o esquema de entrada da entidade receptora
+- 1º Postulado: "Never make assumptions about the relative speeds of concurrent entities"
+- Nota: gargalo do protocolo é provavelmente o receptor, logo não se deve assumir que o receptor suporte o transmissor
+- como a recepção é geralmente mais dispendiosa(processamento) do que a transmissão, então receptor deve:
+  - interpretar as primitivas; decidir o que fazer com elas
+  - alocar memória; até encaminhá-las ao recurso final
+- transmissão não precisa de um provedor para funcionar(ativa-se quando há algo para transmitir), mas quem transmitive deve:
+  - liberar memória após a transmissão (liberação de recurso)
+  - não assumir que o receptor irá se adaptar à entidade que transmite, ou seja, não assumir sincronismo entre transmissor e receptor
+- "Técnica mais Antiga" de controle de fluxo para tratar a sincronização, sem que seja necessário negociação a priori entre receptor estabelece o compasso entre mensagens transmitidas
+- método utiliza 2 mensagens de controle:
+  - uma mensagem para suspender -> "x-off"
+  - uma mensagem para retomar o tráfego -> "x-on"
+- "premissa" - canal é livre de erros e o vocabulário do protocolo contempla 3 três mensagens:
+  - V = { mesg, suspend, resume }
+- Seja um protocolo "duplex", no qual o vocabulário contempla 3 tipos de mensagens, ou seja, V = { "mesg", "suspend", "resume" }
+
+  ![xonoffProt](images/xonoffProt.png)
+- Protocolo "x-on/x-off" ... no remetente (transmissor):
+  - mensagem "mesg" apenas é enviada se "state" = "go"
+  - estado é alterado pelo recebimento de msg. "suspend" ou "resume"
+- Protocolo "X-on/X-off" - receptor também é divido em 2 partes:
+- após a chegada de uma mensagem de dados o processo contador incrementa a variável "n":
+  - "n" representa o nro. de msgs que foram recebidas do transmissor e que ainda estão esperando para serem aceitas pelo receptor
+  - se o valor de "n" ultrapassa um limite, uma msg. "suspend" é enviada para o transmissor (controle de fluxo)
+  - se o valor "n" decresce abaixo de um limite inferior, uma msg. "resume" é enviada para o transmissor (controle de fluxo)
+  - quando o receptor aceita uma mensagem, o processo "acceptor" decrementa a variável "n"
+- Obs: msg, de dados é passada do processo "contador" para o processo "acceptor" através de uma fila interna
+- após a chegada de uma msg. de dados o processo contador incrementa a variável "n"
+
+  ![receiverxonoff](images/receiverxonoff.png)
+  - "n" representa o nro. de msgs. que foram recebidas do transmissor e que aguardam serem aceitas pelo receptor
+  - se o valor de "n" decresce abaixo de um limite inferior, uma msg. "resume" é enviada para o transmissor (controle de fluxo)
+  - quando o receptor aceita uma mensagem, o processo "acceptor" decrementa a variável "n"
+  - Obs: msg. de dados é passada do processo "contador" para o "acceptor" através de uma fila interna
+- Problemas do Protocolo X-on/X-off:
+  - total confiança no meio de transmissão (não há erros ou perdas)
+  - se mensagem "suspend" é perdida/atrasada, pode ocorrer "overflow"
+  - se msg "resume" é perdida, tem-se um colapso total do sistema
+  - funcionamento de um protocolo não deve depender do tempo que uma mensagem de controle leva para atingir o destino
+- Logo, 2 principais problamas devem ser resolvidos:
+  - erros de "overrun" (transbordo) de maneira mais confiável
+  - proteção contra perda de mensagens (suspend/resume)
+- "solução para erros de transbordo" - para resovler este problema basta deixar o transmissor esperar explicitamente o reconhecimento das mensagens já transmitidas
+  - e.g. Protocolo "Ping-Pong" ou Protocolo "Stop and Wait"
+- "Ping-Pong Protocol" - problema do transbordo é resolvido, mas o sistema ainda pode sofrer bloqueio se o controle ou alguma mensagem de dados se perder no canal
+- "premissa" - total confiança no canal ou meio de transmissão, pois não há erros ou perdas no canal
+- "Ping-Pong Protocol" - problema do transbordo é resolvido, mas o sistema ainda pode sofrer bloqueio se o controle ou alguma mensagem de dados se perder no canal
+  - "t" - tempo de propagação em um canal
+  - "a" - tempo que o receptor precisa para processar e aceitar a mensagem que acabou de ser entregue pelo canal
+  - "p" - tempo que o transmissor precisa para prepara a mensagem a fim de a mesma possa ser transmitida pelo canal
+- com estas considerações, transmissor terá atraso de "2t + a - p" unidades detempo para toda e qualquer primitiva transmitida
+  - premissa - threads em paralelo para "p" e para "2*t + a"
+- "Procolo Ping-Pong" - mesmo que protocolo "Stop and Wait"
+
+  ![pingPong](images/pingPong.png)
+  - "t" - tempo de propagação em um canal
+  - "a" - tempo que o receptor precisa para processar e aceitar a mensagem que acabou de ser entregue pelo canal
+  - "p" - tempo que o transmissor para prepara a msg. a fim de a mesma possa ser transmitida pelo canal
+- "p < a" - obiviamente que "t" aumenta no mínimo linearmente com a distância entre o transmissor e receptor
+  - observe-se que o reconhecimento não significa apenas a chegada da última primitiva, mas também significa um crédito que o receptor oferece ao transmissor para que envie a próxima primitiva
+- "p < a" - obviamente que "t" aumenta no mínimo linearmente com a distância entre o transmissor e receptor
+- observe-se que o reconhecimento não significa apenas a chegada da última primitiva
+- reconhecimento também significa um crédito que o receptor oferece ao transmissor para que envie a próxima primitiva
+- Obs: Sequência de passos contempla a idéia de janela!
+
+### 2. Protocolo de Janelas
