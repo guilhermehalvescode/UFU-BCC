@@ -200,10 +200,41 @@ _**Conceitos básicos:**_
   - Na pilha de execução que são armazenadas as execução de funções, criação de variáveis locais, retornos de função e endereços de retorno após termino de execução de uma função
   - Se a stack cresce até a Heap, ocorre "stack overflow", se a Heap cresce até a stack, ocorre a "stack overrun"
   - Entry point sinaliza aonde é o início do da rotina principal do código (main)
+- Principais Características (Processo)
+  - Modos de Execução
+    - Usuário (user mode)
+    - Kernel (kernel mode)
+
+    ![execModels](images/execModels.png)
+  - Estados
+    - Pronto, Esperando, Executando
+
+    ![processStates](images/processStates.png)
+  - Hierarquia
+    - Processo, sub-processo
+
+    ![processTree](images/processTree.png)
+
+  - Identificação
+    - PID, credenciais
+
+    ![processId](images/processId.png)
+- Gerenciamento (Processo)
+  - Identificação + Credenciais
+    - Controle de Acesso
+    - Contabilização de recursos
+    - Quotas de utilização
+    - Logs de auditoria
+    - outros...
 
 ### Implementação Interna
 
-- PCB
+- Bloco de controle de processos (PCB)
+  - Estrutura interna ao sistema operacional
+  - Armazena todas informações a respeito do processo
+  - Normalmente implementado como uma lista ligada ou vetor de estruturas
+  - Acessível somente pelas rotinas do kernel
+
 - Contextos (Hardware/Software)
 
 ### Modelo de Threads
