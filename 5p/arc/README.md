@@ -629,3 +629,63 @@
 - Obs: Sequência de passos contempla a idéia de janela!
 
 ### 2. Protocolo de Janelas
+
+- Na fase de estabelecimento de conexão, as entidades definem quanto de buffer, banda, etc. haverá para a comunicação
+  - entidades definem espaço para um número de requisições pendentes, espaço este comumente referenciado como crédito
+  - créditos podem ser alterados dinamicamente quando os espaços para primitivas pendentes mudarem
+  - "premissa" - assumir que por hoar não há perdas de primitivas
+- Cada primitiva recebida é reconhecida com um único reconhecimento ou "acknowledgement" no sentido contrário
+  - tudo o que se tem a fazer é manter a contabilidade das mensagens em trânsito (ao longo do canal)
+  - crédito inicial pode ser negociado ou pode ser predefinido para um número de mensagems "W"
+
+    ![windowProtocol](images/windowProtocol.png)
+    - para cada primitiva enviada, TX decrementa seu crédito
+    - para cada primitiva recebida por RX, devolve-se 1 novo crédito ao TX através do canal de retorno
+    - "W - n" representa o número de créditos não utilizados
+- Seja 
+  - a(t) - número de créditos recebidos pelo transmissor no instante t
+  - p(t) - número de primitivas enviadas ao receptor no instante t
+  - n(t) - número de mensagens pendentes de reconhecimento no instante t
+- O máximo número de primitivas que o transmissor pode ter pendentes, ou seja, esperando reconhecimento, é:
+  - W - n(t) + p(t) - a(t)
+  - W - n(t), número de créditos disponíveis
+  - p(t) - a(t), número de crédito usados
+- Como o número máximo de primitivas pendentes de reconhecimento - "acknowledgement" é W:
+  - W - n(t) + p(t) - a(t) <= W
+  - i.e, p(t) - a(t) <= n(t)
+  - Lembrete: inicialmente todas as variáveis na inequação são 0 (zero)
+- Obs: O máximo número de créditos (W), que é o máximo nro. de primitivas pendentes de reconhecimento é denominado o tamanho da janela ou "window size"
+- Toda ação de envio no transmissor incrementa ambos os lados da inequação, lado direito primeiro e assim preserva sua validade
+- similarmente, cada ação de recepção do processo receptor decrementa ambos os lados de 1, inicialmente o lado esquerdo, e novamente preserva a corretude
+  - i.e. p(t) - a(t) <= n(t)
+- Obs: Há de fato concordância com as definições apresentadas para a(t) e p(t)? elas se referem a visão do transmissor? n(t) não tem o mesmo significado de p(t)?
+- Como visto, o valos máximo de "W" é o tamanho da janela - "window size" do protocolo
+  - durante a transferência de dados, o número de créditos varia entre 0 e "W - 1", dependendo da velocidade entre TX e RX
+  - canais com tepmo de trânsito alto podem ser otimizados se habilitarmos o transmissor a enviar uma ou mais primitivas enquanto espera por uma confirmação
+  - os problemas citados em comunicações (inserções, duplicações, ...) ainda persistem, exigindo um melhor controle de fluxo
+- Protocolo Ping-Pong com "timeouts"
+
+  ![timeoutPingPong](images/timeoutPingPong.png)
+- Com uso de múltiplas primitivas pendentes por reconhecimento, é necessário manter rastreado o controle do tempo decorrido entre as transmissões e as recepções
+- para isto é necessário dismensionar o pior caso nos tempos de transmissão, isto para não considerar como perdida uma primitiva em pleno trânsito, que ainda não chegou no receptor
+- A expressão a seguir é frequentemente utilizada:
+  - T(worst) = T(médio) + N * sqrt(var(T))
+  - T é o tempo de ida e volta da primitiva
+  - N é tipicamente 1 e raramente 2
+- Comportamento de entidades fins e o canal de comunicação podem ser modelados como um processo de Markov M/M/1
+- Neste caso tem-se que: var(T) = T(médio) * T (médio)
+- esta é uma consideração impoertante poist o cálculo de desvio padrão, ou seja, sqrt(var(T)) envolve as medidas anteriores e isto nem sempre está disponível
+- Se considerarmos N = 1, temos: T(worst) = 2T(médio)
+- Um erro comum, entretando, é quando ambas as entidades fins implemetaram mecanismos de "timeout"
+- ambos transmissor e receptor decidem retransmitir a última mensagem enviada se o erro de remoção ocorre
+
+  ![dfdTimeSequenceTimeoutWindowProt](images/dfdTimeSequenceTimeoutWindowProt.png)
+- "conclusão" - ambos transmissor e receptor não devem estar habilitados para iniciar retransmissões
+  - suficiente colocar esta habilidade em uma das duas entidades
+  - tradicionalmente é o transmissor que tem esta prerrogativa uma vez que somente ele tem certeza de quando um novo dado deve ser enviado
+- Deve haver um mecanismo que identifique exatamente a qual primitiva pertence um reconhecimento de erro que acaba de chegar
+  - mesmo se houver uma primitiva pendente em qualquer instante
+  - isto normalmente é feito por um número de sequência (seq. number)
+  - como números são finitos (necessário mecanismo para verificar os números de sequência reutilizados ou reciclados)
+
+### 3. Número de Sequência
