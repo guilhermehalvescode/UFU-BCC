@@ -64,3 +64,18 @@
   - Divisão do trabalho/hierarquia/autonomia/regras formais/alcance de comando
   - Para representar a estrutura, é utilizado um organograma da organização, sinalizando as divisões hierarquicas da empresa, indo dos gestores da empresa até os funcionários operacionais
   - Ao analisar a estrutura da empresa, podemos ter uma ideia da cultura desta
+
+### Ambiente Externos (macroambiente + microambiente)
+
+- Analisar setores externos para poder trazer benefícios para a organização e seu ambiente interno
+
+#### Macroambiente
+
+- Cenário econômico, político, social e culturais na qual uma organização esta inserida, ou seja, fatores externos à organização que não podem ser alterados pela mesma, pelo fato de ser maior que esta
+- Pode tornar mais propício ou não a situação econômica da organização
+
+#### Microambiente
+
+- Cenário setorial em que a organização esta inserida (setor automobilístico, imobiliário, bancário)
+- Setores nos quais empresas formaram com o decorrer da história das mesmas, formando nichos que podem ser voláteis ou não
+  - o setor bancário é mais estável quando comparado com o setor de serviços em redes sociais
