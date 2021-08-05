@@ -480,10 +480,10 @@
   - Obs: o Autômato Finito não possui memória auxiliar. As informações do passado são armazenadas através dos estados
   
     ![automatoFinito](images/automatoFinito.png)
-  - Fita de Entrada: 
+  - Fita de Entrada:
     - finita  dividida em células, sendo que cada célula armazana um símbolo. Não é possível gravar.
-  - Unidade de Controle 
-    - armazena o estado corrente (dentre um número finito de estados); 
+  - Unidade de Controle
+    - armazena o estado corrente (dentre um número finito de estados);
     - possui cabeça de leitura (não grava) que acessa cada célula da fita, lê o símbolo e movimenta-se exclusivamente à DIREITA;
     - no início a cabeça é posicionada no primeiro símbolo
   - Programa ou Função de Transição de Estados
