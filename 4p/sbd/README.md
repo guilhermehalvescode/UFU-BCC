@@ -482,12 +482,13 @@
   - Violação de restrição em ALTERAR
     - A operação de ALTERAR pode ser interpretada como uma operação de EXCLUIR e INSERIR em sequida, portanto está sujeita às mesmas violações, inclusive às opções de tratamento de violações mostradas anteriormente, a saber, restrict, cascade e set null
 
-## _*Mapeamento ER, EER para o Relacional**_
+## _*Mapeamento ER, EER para o Relacional*_
 
 - Projeto Lógico
   - é a especificação detalhada da estrutura do banco de dados em um modelo que possa ser implementado por um gerenciado de banco de dados
   - Uma estratégia de projeto lógico é o mapeamento de um modelo conceitual para o modelo relacional
   - Modelo Conceitual = ER ou EER ==> Modelo Implementável = R
+
 ### Roteiro
 
 - Mapeamento de tipo entidade regular
@@ -605,3 +606,31 @@
 - Herança Múltipla - Exemplo de EER
   
   ![herancaMultiplaEx](images/herancaMultiplaEx.png)
+
+- Herança Múltipla - Relações Geradas
+  - manter o mesmo atributo chave em todas as relações, usando qualquer opção de mapeamento para especializações
+
+    ![relGeradas](images/relGeradas.png)
+- União - Diagrama
+
+  ![uniond](images/uniond.png)
+- Categoria (Tipo União) - Relações Geradas
+  - quando as superclasses têm chaves diferentes, cria uma chave substituta e inserí-la em casa entidade: Ownerid
+
+    ![union](images/union.png)
+
+## _*Uma introdução ao Projeto Físico-PF*_
+
+- é a especificação da estrutura interna de armazenamento dos dados do banco, considerando aspectos de desempenho e alocação de espaço em disco
+
+- Principais Tarefas
+  - Escolher SGBD
+  - Definir índices
+  - Definir tamanhos de bloco (páginas)
+  - Definir localização física de arquivos e índices
+- Principais Critérios
+  - Espaço disponível
+  - Frequência de execuação de consultas
+  - Frequência de transações de atualização do BD
+  - Pico de transações correntes
+  - Restrições de integridade de atributos
