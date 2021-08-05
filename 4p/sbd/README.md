@@ -481,3 +481,127 @@
       - set null: modifica valores de atributos que referenciam a causa das violações
   - Violação de restrição em ALTERAR
     - A operação de ALTERAR pode ser interpretada como uma operação de EXCLUIR e INSERIR em sequida, portanto está sujeita às mesmas violações, inclusive às opções de tratamento de violações mostradas anteriormente, a saber, restrict, cascade e set null
+
+## _*Mapeamento ER, EER para o Relacional**_
+
+- Projeto Lógico
+  - é a especificação detalhada da estrutura do banco de dados em um modelo que possa ser implementado por um gerenciado de banco de dados
+  - Uma estratégia de projeto lógico é o mapeamento de um modelo conceitual para o modelo relacional
+  - Modelo Conceitual = ER ou EER ==> Modelo Implementável = R
+### Roteiro
+
+- Mapeamento de tipo entidade regular
+  - cada entidade regular é mapeada em uma relação
+  - EMPREGADO(**CPF_empregado**, nome_empregado)
+
+    ![entidadeRegular](images/entidadeRegular.png)
+  - OBS
+    - defina a chave primária: PK(EMPREGADO) = CPF_empregado
+    - mantenha informações de chave secundária, se houver
+- Mapeamento de tipo entidade fraca
+  - cada entidade fraca é mapeada em uma relação que inclui em seus atributos a chave primária de sua entidade forte
+
+      ![entidadeFracaEmp](images/entidadeFracaEmp.png)
+  - DEPENDENTE(~~CPF_empregado, nome_dependente~~, sexo_dependente)
+  - OBS
+    - defina uma chave estrangeira na relação relacionada à chave primária de sua entidade forte
+      - FK*cpf_empregado*(DEPENDENTE) = PK(EMPREGADO)
+    - a chave primária da relação será composta de sua chave local e da chave primária de sua entidade forte
+      - PK(DEPENDENTE) = (CPF_empregado, nome_dependente)
+- Relacionamentos 1:1 com chaves iguais e relacionamento total em E1 e E2
+  - agrupa-se todos os atributos em uma relação
+
+    ![tot1para1](images/tot1para1.png)
+
+    - ClienteCarregamento(Codigo_Cliente, Nome, Endereço)
+- Relacionamentos 1:1 com chaves diferentes e relacionamento total/parcial
+  - cria-se duas relações e agrupa-se os atributos da entidade com participação total com a chave da entidade com participação
+
+    ![parcial1para1](images/parcial1para1.png)
+    - Cliente(Nome, Codigo_Cliente)
+    - Cartao_Credito(Nro_Cartao, Limite, Codigo_Cliente)
+    - FK*codigo_cliente*(Cartao_Credito)=PK(Cliente)
+    - OBS: opcionalmente pode-se omitir o Codigo_Cliente em Cartao_Credito e criar uma terceira relação com a duas chaves, principalmente quando não houver participação total
+- Relacionamentos 1:1 com chaves diferentes e relacionamento parcial/parcial
+  - sem participação total, agrupa-se os atributos do relacionamento com as chaves das entidades em uma terceira relação
+
+    ![parcial1para1Casamento](images/parcial1para1Casamento.png)
+    - HOMEM(CPF_HOMEM, NOME_HOMEM)
+    - MULHER(CPF_MULHER, NOME_MULHER)
+    - CASAMENTO(CPF_HOMEM, CPF_MULHER, DATA)
+    - FK*cpf_homem*(CASAMENTO)=PK(HOMEM)
+    - FK*cpf_mulher*(CASAMENTO)=PK(MULHER)
+
+- Relacionamentos 1:N
+  - agrupa-se a chave da entidade com cardinalidade 1 aos atribuos da entidade com cardinalidade N
+
+    ![1paraN](images/1paraN.png)
+    - ESTADO(**SIGLA**, NOME)
+    - CIDADE(**CODIGO**, NOME, POPULAÇÃO, SIGLA_ESTADO)
+    - FK*sigla_estado*(CIDADE)=PK(ESTADO)
+- Relacionamentos M:N
+  - agrupa-se os atributos do relacionamento com as chaves das entidades participantes
+
+    ![MparaN](images/MparaN.png)
+    - ALUNO(**MATRICULA**, NOME)
+    - DISCIPLINA(**CODIGO**, NOME)
+    - CURRICULO(**MATRICULA, CODIGO_DISCIPLINA,** ANO, SEMESTRE, NOTA)
+    - FK*matricula*(CURRICULO)=PK(ALUNO)
+    - FK*codigo_disciplina*(CURRICULO)=PK(DISCIPLINA)
+- Atributos multivalorados e entidades
+  - cria-se uma nova relação com o atributo multivalorado e a chave da entidade original
+
+    ![multival](images/multival.png)
+    - DEPARTAMENTO(**NUMERO**, NOME)
+    - LOCALIZAÇÕES(**NUMERO_DEPTO, LOCALIZACAO**)
+    - FK*numero_depto*(LOCALIZAÇÕES) = PK (DEPARTAMENTO)
+- Eliminação de atributos compostos
+  - duas alternativas com perda mostradas abaixo ou uma terceira, criando uma nova relação "pessoa_endereco"
+
+    ![atribComposto](images/atribComposto.png)
+    - Observe a mudança de notação no ER em relação aos slides anteriores
+- Relacionamentos de grau maior que 2
+  - agrupa-se a os atributos do relacionamento com as chaves das entidades participantes
+
+    ![relGrauMaiorQueDois](images/relGrauMaiorQueDois.png)
+    - PEÇA(**COD_PEÇA**, DESCRIÇÃO)
+    - FORNECEDOR(**COD_FORN**, NOME, ENDEREÇO, TELEFONE)
+    - PROJETO(**COD_PROJETO**, NOME, DATA_ABERT)
+    - FORNECIMENTO(**COD_PEÇA, COD_FORNECEDOR, COD_PROJETO,** QTDE)
+- Autorelacionamento
+  - Se for M:N cria-se uma nova relação, caso contrário agrupa-se mais uma chave na relação
+
+    ![autoRel](images/autoRel.png)
+    - EMPREGADO(**REG_EMP**, NOME, DATA_NASC)
+    - GERENCIA(**REG_SUB, REG_COORDENADOR**)
+    - E se o relacionamento 1:n?
+    - EMPREGADO(**REG_EMP**, NOME, DATA_NASC, REG_SP)
+    - FK*reg_sp*(EMPREGADO)=PK(EMPREGADO)
+- Generalização/Especialização: Opções
+  - especialização de uma superclasse C={k, a1, a2, ..., an} com m subclasses {S1, S2, ..., Sm} pode ser mapeada de quatro formas, aqui chamada de:
+    - Opção A: uma tabela para cada entidade, inclusive C
+      - a partir de C={k, a1, a2, ..., an} e {S1, S2, ..., Sm} gerar as seguintes relações
+      - L = {**K**, a1, a2, ..., an} e Li = {**K**} U {atributos específicos de Si} | 1 <= i <= m
+      - obs: aplicável a qualquer tipo de especialização (total ou parcial, disjunto ou sobreposta)
+
+        ![exOpA](images/exOpA.png)
+    - Opção B: uma tabela para cada entidade Si fundida com C
+      - a partir de C={k, a1, a2, ..., an} e {S1, S2, ..., Sm} gerar as seguintes relações
+      - Li = {**K**, a1, a2, ..., an} U {atributos específicos de Si} | 1 <= i <= m
+      - obs: aplicável para especializações totais e disjuntas
+
+        ![exOpB](images/exOpB.png)
+    - Opção C: fusão de todas as entidades com um atributo tipo
+      - a partir de C={k, a1, a2, ..., an} e {S1, S2, ..., Sm} gerar as seguintes relações
+      - L = {**K**, a1, a2, ..., an} U {atributos específicos de S1} U {atributos específicos de S2} U ... U { atributos específicos de Sm} U {t}
+      - obs: t é chamado atributo discriminador e é utilizado para especializações disjuntas
+
+        ![exOpC](images/exOpC.png)
+    - Opção D: fusão de todas as entidades com m atributos tipo
+      - a partir de C={k, a1, a2, ..., an} e {S1, S2, ..., Sm} gerar as seguintes relações
+      - L = {**K**, a1, a2, ..., an} U {atributos específicos de S1} U {atributos específicos de S2} U ... U { atributos específicos de Sm} U {t1, t2, ..., tn}, onde ti é um valor booleano correspondente a cada subclasse
+
+        ![exOpD](images/exOpD.png)
+- Herança Múltipla - Exemplo de EER
+  
+  ![herancaMultiplaEx](images/herancaMultiplaEx.png)
