@@ -8,7 +8,7 @@
    - C = um dos lançamentos foi 5.
    - D = o mı́nimo entre as duas faces é 4.
 
-   - Calcule as seguinte probabilidades: P(A), P(B|C), $P(A \cap B ) P(C \cup D)$
+   - Calcule as seguinte probabilidades: P(A), P(B|C), $P(A \cap B), P(C \cup D)$
      - P(A) - Para calcular P(A) devemos calcular a probabilidade da soma do lançamento de dois dados ser maior ou igual que 9.
        - A probabilidade de ser igual a 9 é $4 \over 36$ (6, 3) (5, 4), (4, 5), (3,6)
        - A probabilidade de ser maior que 9 é a probabilidade de no primeiro e no segundo lançamento sair um número maior igual 5, ou seja, (6, 4), (6, 5), (6, 6), (4, 6), (5,6), (6, 6) que gera a probabilidade $6 \over 36$
@@ -69,7 +69,7 @@
      - Ao luke partir da origem, supondo que ao deslocar a direita some um e deslocar a esquerda subtraia um, ao deslocar ***n*** à direita, ele deve retornar ***n*** esquerda, totalizando ***2n*** rodadas para que o mesmo retorne à origem. Portanto ele só retornará à origem após um número par de rodadas
 
     (b) Luke está na origem da reta. Calcule a probabilidade dele retornar à origem depois de 4 passos.
-      - Considerando a 4-upla (_,_,_,_) os 4 passos de luke e D (direita) e E (esquerda), os movimentos dele temos 2⁴ = 16 possibilidades de movimentos
+      - Considerando a 4-upla (D,E,E,D) os 4 passos de luke e D (direita) e E (esquerda), os movimentos dele temos 2⁴ = 16 possibilidades de movimentos
       - Dentre esses queremos aqueles em que a quantidade D é igual a de E
       - Logo essa probabilidade é a probabilidade de escolher 2 posições dentro as 4 para d C(4, 2) = 4!/(2!2!) = 6
       - Logo a probabilidade dele retornar a origem é 6/16 = 3/8 = 37,5%
