@@ -634,3 +634,59 @@
   - Frequência de transações de atualização do BD
   - Pico de transações correntes
   - Restrições de integridade de atributos
+
+## _*Normalização de Relações em Projeto de BD (Parte 1 - 1FN a FNBC)*_
+
+### Projeto de BD Relacionais
+
+- Método 1: mapeamento do modelo conceitual para o Modelo R
+- Método 2: formal com critérios de qualidade
+- Método 3: mapeamento seguido de aplicação do método formal
+- Objetivos
+  - Preservar a informação
+  - Minimizar redundância
+
+### Projeto de BD - Diretrizes Informais
+
+- Semântica clara com esquemas fáceis de explicar
+- Evitar informações redundantes
+- Evitar possibilidade de valores NULL nas tuplas
+- Evitar o surgimento de tuplas falsas: a junção de relações deve ser feita somente com chave estrangeira
+- Contra exemplo:
+  - FUNC_LOCAL(fnome, *ploca*l)
+  - FUNC_PROJ(cpf, pnum, horas, pnome, *plocal*)
+  - FUNC_LOCAL(junção)*plocal*FUNC_PROJ
+    - junção baseada em plocal GERA tuplas falsas
+
+### Normalização de Relações
+
+- é o processo reversível de substituição de um conjunto de relações de um banco de dados por sucessivos conjuntos onde as relações são mais simples
+- o objetivo da normalização é eliminar anomalias
+- Por exemplo:
+  - Seja o Esquema de BD abaixo formado por apenas um esquema de relação (relação universal)
+  - Relação Universal de Empregados e Projetos:
+    - uemp(ecod, ename, sal, pno, pname, budget, resp, dur)
+
+### Projeto de BD - Anomalias
+
+- uemp(ecod, ename, sal, pno, pname, budget, resp, dur)
+- Em **uemp** temos as seguintes anomalias:
+  - Anomalia de Repetição: cargo e salário são repetidos em cada projeto
+  - Anomalia de Atualização: um aumento de salário reflete em todas as tuplas dos projetos em que o empregado trabalha
+  - Anomalia de Inserção: como inserir um empregado que ainda não foi alocado para um projeto?
+  - Anomalia de Exclusão: como eliminar o único projeto em que um funcionário trabalha sem eliminar o funcionário
+
+### Normalização - Como fazer
+
+- Como normalizar?
+- Decomposição sem perda da relação universal em conjuntos de relações nas formas normais (1FN, 2FN, 3FN, etc...) preservando as dependências
+- Dependência é a base para as formas normais
+
+### Dependência Funcional - Definição
+
+- Sejam:
+  - R(A1, A2, ..., An) um esquema de relação definido sobre o conjunto de atributos A={A1, A2, ..., An};
+  - r uma relação sobre R
+  - X, Y dois subconjuntos de atributos de A | X está contido em A e Y está contido em A
+- Uma expressão X -> Y é chamada de Dependência Funcional sobre R. Esta dependência é satisfeita por r se para quaisquer tuplas ti e e tj em r,
+  - Se (ti[X] = tj [X]) então (ti[Y] = tj[Y])
