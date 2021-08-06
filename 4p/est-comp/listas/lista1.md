@@ -34,9 +34,9 @@
    - P(P|D) = 0.94
    - P(P|ND) = 0.01
    - P(D) = 0.004
-   - P(ND) = 0.96
+   - P(ND) = 0.996
    - P(P) = P(P $\cap$ D) + P(P $\cap$ ND) = P(D)P(P|D) + P(ND)P(P|ND)
-   - P(D|P) = $P(D \cap P)\over P(P)$ = $P(D)P(P|D)\over P(P)$ = $P(D)P(P|D)\over P(D)P(P|D) + P(ND)P(P|ND)$ = $0,004.0,94\over 0,004.0,94 + 0,96.0,01$ = $376 \over 7276$
+   - P(D|P) = $P(D \cap P)\over P(P)$ = $P(D)P(P|D)\over P(P)$ = $P(D)P(P|D)\over P(D)P(P|D) + P(ND)P(P|ND)$ = $0,004.0,94\over 0,004.0,94 + 0,996.0,01$ = $376 \over 1372$ = $\approx 27,4\%$
 
 3. Considere três urnas com as seguintes configurações: a urna I contém 6 bolas pretas, 3 brancas e 5 vermelhas; a urna II contém 4 bolas pretas, 4 brancas e 2 vermelhas; a urna III contém 4 bolas pretas, 2 brancas e 7 vermelhas. Lança-se um dado equilibrado.  Se sair 5, uma bola da urna I é retirada; se sair 1, 4, então uma bola da urna II é retirada; se sair 2, 3 ou 6, então uma bola da urna III é retirada
    - (a) Calcule a probabilidade da bola retirada ser vermelha.
@@ -68,7 +68,11 @@
     (a) Yoda diz: Luke à origem só pode voltar depois de um número par de rodadas. Você concorda com Yoda? Justifique sua resposta.
      - Ao luke partir da origem, supondo que ao deslocar a direita some um e deslocar a esquerda subtraia um, ao deslocar ***n*** à direita, ele deve retornar ***n*** esquerda, totalizando ***2n*** rodadas para que o mesmo retorne à origem. Portanto ele só retornará à origem após um número par de rodadas
 
-    (b) Luke está na origem da reta. Calcule a probabilidade dele retornar à origem depois de 4 passos. DÚVIDA
+    (b) Luke está na origem da reta. Calcule a probabilidade dele retornar à origem depois de 4 passos.
+      - Considerando a 4-upla (_,_,_,_) os 4 passos de luke e D (direita) e E (esquerda), os movimentos dele temos 2⁴ = 16 possibilidades de movimentos
+      - Dentre esses queremos aqueles em que a quantidade D é igual a de E
+      - Logo essa probabilidade é a probabilidade de escolher 2 posições dentro as 4 para d C(4, 2) = 4!/(2!2!) = 6
+      - Logo a probabilidade dele retornar a origem é 6/16 = 3/8 = 37,5%
 
 6. Seja X uma variável aleatória tal que
     - P(X = 1) = $2 \over 8$, P(X = 3) = $2 \over 8$ e P(X = 5) = $4 \over 8$.
@@ -122,7 +126,7 @@
     - (b) P(X > 5).
       - O valor é P(Z > -1) = 0,5 + 0,3413 (tabelado) = 0,8413
 
-    - (c) Represente graficamente as probabilidades obtidas em (a) e (b). DÚVIDA
+    - (c) Represente graficamente as probabilidades obtidas em (a) e (b).
 
       ![fdp8](fdp8.png)
     - (d) O valor de a tal que P(X ≤ a) = 0.04
@@ -141,7 +145,7 @@
     ![fdp9](fdp9.png)
    - (b) Prove que f é, de fato, uma função densidade.
      - Para f ser uma função densidade, devemos provar que f(t) >= 0, para todo x, e que $\int_{-\infty}^{+\infty}f(t)dt=1$
-     - f(t) >= 0, para todo x. Para t < 8 e t > 15, f(t) = 0. Já para t >= 8 e t <= 15, ambas funções são positivas. DÚVIDA
+     - f(t) >= 0, para todo x. Para t < 8 e t > 15, f(t) = 0. Já para t >= 8 e t <= 15, ambas funções são positivas.
      - $\int_{-\infty}^{+\infty}f(t)dt=1$. Para f(t), $\int_{-\infty}^{+\infty}f(t)dt$ = $\int_{8}^{10}(t-4)/40dt$ + $\int_{10}^{15}3/20dt$ = 0,25 + 0,75 = 1
      - Logo, f(t) é uma função densidade
    - (c) Calcule P(1 < T ≤ 13).
