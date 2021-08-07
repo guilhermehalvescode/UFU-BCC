@@ -689,4 +689,132 @@
   - r uma relação sobre R
   - X, Y dois subconjuntos de atributos de A | X está contido em A e Y está contido em A
 - Uma expressão X -> Y é chamada de Dependência Funcional sobre R. Esta dependência é satisfeita por r se para quaisquer tuplas ti e e tj em r,
-  - Se (ti[X] = tj [X]) então (ti[Y] = tj[Y])
+  - Se (ti[X] = tj[X]) então (ti[Y] = tj[Y])
+
+### Dependência Funcional - Exemplo
+
+- uemp(ecod, ename, sal, pno, pname, budget, resp, dur)
+  - pno -> (pname, budget)
+  - (ecod, pno) -> (ename, title, sal, resp, dur)
+  - ecod -> (ename, title, sal)
+  - title -> sal
+
+### Dependência Funcional Parcial e Total
+
+- Em uma dependência funcional X -> Y um subconjunto X -> Y um subconjunto Y' está contido Y é dependente parcialmente de X se existe um subconjunto X' propriamente contido X tal que X' -> Y', caso contrário a dependência é total
+- Exemplo:
+  - uemp(ecod, ename, sal, pno, pname, budget, resp, dur)
+  - Dep Parcial
+    - (ecod, pno) -> (ename, title, sal) pois
+    - ecod -> (ename, title, sal)
+  - Dep Total
+    - (ecod, pno) -> (resp, dur)
+
+### Primeira Forma Normal - 1FN
+
+- Uma relação R está na primeira forma normal se todos os seus atributos são atômicos
+- A 1Fn não permite que o valor de um atriubto seja um conjunto de valores ou uma tupla de valores ou uma combinação de ambos
+- Exemplo: todas as relações apresentadas até agora
+
+### Segunda Forma Normal - 2FN
+
+- Ua relação R está na segunda forma normal se está na 1FN e se todo atributo não chave, também chamado de traibuto não principal, é totalmente dependente da chave (não há dependência parcial)
+  - Apenas interesse histórico, não há aplicação prática
+- Exemplo:
+  - Na 1FN: uemp(ecod, ename, sal, pno, pname, budget, resp, dur) com chave=(ecod, pno)
+    - Dep Parcial: (ecod, pno) -> (ename, title, sal) pois ecod -> (ename, title, sal)
+  - Na 2FN:
+    - emp(~~ecod~~, ename, title, sal)
+    - proj(~~pno~~, pname, budget)
+    - asg(~~ecod, pno~~, resp, dur)
+
+### Terceira Forma Normal - 3FN
+
+- Uma relação R está na terceira forma normal se para toda dependência funcional X -> Y associada com R uma das seguintes afirmações é verdadeira:
+  - Y esta contido em X (i.e, X -> Y é DF trivial); ou
+  - X é superchave de R; ou
+  - Y é um atributo principal (pertence a uma chave)
+- Exemplo:
+  - Na 2FN: emp(~~ecod~~, ename, title, sal), mas title -> sal
+  - Na 3FN:
+    - emp(~~ecod~~, ename, title), pay(~~title~~, sal)
+
+### Definições gerais das 3 primeira formas normais - 3FN
+
+  ![tabelaNormais](images/tabelaNormais.png)
+
+### Forma normal de Boyce-Codd - FNBC
+
+- Uma relação R está na forma normal de Boyce-Codd se para toda dependência funcional X -> Y associada com R uma das seguintes afirmações é verdadiera:
+  - Y está contido em X (i.e, X -> Y é DF trivial); ou
+  - X é superchave de R;
+- Exemplo:
+  - Está na FNBC: emp(~~ecod~~, ename, title), pay(~~title~~, sal)
+  - É raro uma relação estar na 3FN e não estar na FNBC, mas vejamos dois exemplos
+
+### Exemplo de normalização até a FNBC
+
+- Seja o esquema de lotes a venda em um Estado:
+  - lotes(~~propriedadeNum~~, ~~cidade, loteNum~~, area, preco, imposto)
+- chaves primária: propriedadeNum
+- DF1: propriedaeNum é a chave primária
+- DF2: (cidade, loteNum) é chaves candidata
+- DF3: cidade -> imposto; % imposto fixo por cidade
+- DF4: area -> preco; %preço por área independente % dos demais atributos
+- DF5: area -> cidade; % domínio de tamanhos % disjuntos por cidade
+- Está na 1FN? e na 2FN? e na 3FN? E na FNBC?
+
+### Exemplo lotes: 1FN
+
+- lotes(~~propriedadeNum~~, ~~cidade, loteNum~~, area, preco, imposto)
+- Está na 1FN, mas não na 2FN, pois:
+- DF2: (cidade, loteNum) -> propriedadeNum, area, preco, imposto
+- DF3: cidade -> imposto
+- Imposto é parcialmente dependente da chave (cidade, loteNum)
+
+### Exemplo lotes1 e lotes2: 2FN
+
+- lotes1(~~propriedadeNum~~, ~~cidade, loteNum~~, area, preco)
+- lotes2(~~cidade~~, imposto)
+- lotes 2 está na 3FN
+- lotes 1 está na 2FN, mas não na 3FN, pois:
+- DF4: area -> preco
+- area não é superchave e preço não é atributo principal
+
+### Exemplo lotes1 e lotes2: 3FN
+
+- lotes1a(~~propriedadeNum~~, ~~cidade, loteNum~~, area)
+- lotes1b(~~area~~, preco)
+- lotes2(~~cidade~~, imposto)
+- Lotes1a, lotes1b e lotes2 estão na 3FN, mas lotes1a não está na FNBC, pois:
+- DF5: area -> cidade
+- Observe que lotes1a está na 3FN porque, embora area não seja superchave, cidade é atributo principal. Entretanto isso naõ é relevante para a FNBC
+
+### Exemplo lotes na FNBC
+
+- lotes1ax(~~propriedadeNum~~, loteNum, area)
+- lotes1ay(~~area~~, cidade)
+- lotes1b(~~area~~, preco)
+- lotes2(~~cidade~~, imposto)
+- Observe que a DF2 foi perdida nesta decomposição
+
+### Outro Exemplo de 3FN x FNBC
+
+- ensina(~~aluno, disciplina~~, professor)
+- DF1: {aluno, disciplina} -> professor
+- DF2: professor -> disciplina: % cada professor %leciona uma disciplina
+- 1FN: atributos não atômicos? Sim
+- 2FN: há dependência parcial? Não, logo está na 2FN
+- 3FN: dependências de superchaves ou apontando para atriubtos principais? sim, logo está na 3FN
+- FNBC: dependências de superchaves? Não, veja DF2
+- Como decompor ensina?
+
+### Alternativas de decomposição na FNBC
+
+1. (~~aluno, professor~~), (~~aluno, disciplina~~)
+2. (disciplina, ~~professor~~), (~~aluno, disciplina~~)
+3. (disciplina, ~~professor~~), (~~aluno, professor~~)
+
+- Todos perder DF1, mas em 3. envitamos tuplas falsas após uma junção. Ex de instância:
+
+  ![exEnsina](images/exEnsina.png)
