@@ -577,3 +577,8 @@
   - A função $\sigma$ é dada por uma lista de transições de tipo:
     - $\sigma$(q, a) = {q1, q2, ..., qn},
   - ou seja, O AFND estando no estado *q* e lendo o símbolo *a* na fita de entrada, escolhe um dos estados q*i*(1 <= i <= N) como novo estado
+
+- Exemplo 1
+  ![afnd1](images/afnd1.png)
+  - L = {w $\in$ {a,b}* | "aa" ou "bb" é subpalara de w}
+  - Palavras que possuem 'aa' ou 'bb' como subpalavra
