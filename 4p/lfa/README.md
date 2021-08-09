@@ -548,3 +548,32 @@
   - Seja A = (Q, $\Sigma$, $\sigma$, q0, F) um autômato finito. A linguagem reconhecida por A é dada por:
     - L(A) = {w $\in \Sigma^*$ | $\underline{\sigma}$(q0, w) $\in$ F}
   - L(A) é o conjunto de todas as palavras pertencentes a $\Sigma^*$ e aceitas por A
+
+## _**4. Autômato Finito Não Determinístico**_
+
+### Não Determinismo
+
+- É uma importante generalização dos modelos de máquinas abstratas, na Teoria da Computação
+- Numa transição não determinista, partindo-se de um estado q1, lendo-se um símbolo a, e possível ir para um ou mais estados. Por exemplo: $\sigma$(q1, a) = {q1, q2}
+- Nem sempre o não-determinismo aumenta o poder de reconhecimento de uma classe de autômatos. Por exemplo, o Autômato Finito Não Determininístico tem poder de reconhecimento equivalente ao Autômato Finito Determinístico
+
+### Autômato Finito Não Determinístico - Def1
+
+- Uma AFND é um Autômato Finito, onde são permitidas transições não determinísticas
+- Uma palavra e aceita no AFND se exite alguma sequência de transições, processando a palavra símbolo a símbolo, que leve do estado inicial a um estado final
+- Na representação de máquina abstrata de reconhecimento (fita de entrada + unidade de controle finito), o AFND assume um conjunto de estados alternativos, como se houvesse uma multiplicação de unidades de conteol com processamento independente
+
+### Autômato Finito Não Determinístico - Def2
+
+- Um autômato finito é uma 5-upla:
+  - A = (Q, $\Sigma$, $\sigma$, q0, F)
+  - Q -> conjunto finito de estados
+  - $\Sigma$ -> alfabeto (símbolos da fita): $\Sigma \cap Q = \empty$
+  - q0 -> estado inicial
+  - $\sigma$ -> função de transição de estado: Q x $\Sigma$ -> 2$^q$, onde 2$^q$ é o conjunto potência de Q (todos os subconjuntos)
+  - F -> conjuntos de estados finais (aceitação): F $\subseteq$ Q
+- Função de Transição de Estados ($\sigma$) (AFND) 
+  - Para todos estados possíveis do (AFND) (q $\in$ Q), a função deve definir quais serão os possíveis estados do autômato ({q1, q2, ...} $\subset$ Q), quando for lido qualquer símbolo na fita (a $\in \Sigma$)
+  - A função $\sigma$ é dada por uma lista de transições de tipo:
+    - $\sigma$(q, a) = {q1, q2, ..., qn},
+  - ou seja, O AFND estando no estado *q* e lendo o símbolo *a* na fita de entrada, escolhe um dos estados q*i*(1 <= i <= N) como novo estado
