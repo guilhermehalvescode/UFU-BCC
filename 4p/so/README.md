@@ -234,11 +234,38 @@ _**Conceitos básicos:**_
   - Armazena todas informações a respeito do processo
   - Normalmente implementado como uma lista ligada ou vetor de estruturas
   - Acessível somente pelas rotinas do kernel
+  - O PCB materializa o conceito de processo, armazenado o estado do processo, argumentos da linha de comando, PID, UID, GID, registradores, limites de memória (limita o uso do processo, impedindo situaçao de monopolização de recursos de hardware), lista de arquivos aberta
+  - Cada PCB referencia outros PCB's que foram criados por um programa, criando várias estruturas, por isso a necessidade de limitar o uso dos processos
+  - O PCB no linux é implementado por uma Árvore Rubro negra, diferentemente de uma lista ligada
 
 - Contextos (Hardware/Software)
+  - Hardware (conteúdo dos registradores)
+    - PC(program counter)
+    - Stack Pointer
+    - Flags de estado
+    - demais registradores
+  - Software (recursos/atributos do processo)
+    - Arquivos abertos
+    - Tamanho dos Buffers de I/O
+    - Tempo de execuçao
+    - Identificação
+    - Credenciais
+    - outros...
 
 ### Modelo de Threads
 
-- Conceito
-- Vantagens e Desvantagens
+- Conceito: É um fluxo de execução interno a um processo, sendo que um processo pode ter uma thread(singlethreaded), ou várias (multithreaded)
+  - Cada thread tem uma call stack
+  - Cada processo é criado com uma thread (fluxo de execução) chamada de main thread
+  - O processo na mainthread cria outras threads, gerando um processo multithread
+  - Todas a threads são independentes das outras, um bloqueio de I/O não interrompe as outras threads
+  - As threads são concorrentes, pois disputam o mesmo tempo de processamento
+- Vantagens
+  - Economia de recursos do sistema
+  - Melhor organização com requisitos de concorrência
+  - Uso eficiente de multiprocessadores (*) 
+- Desvantagens
+  - Introduz maior complexidade
 - Paralelismo
+  - Processos SingleThreaded executam em um único processador a sua mainthread
+  - Já processos Multithreaded podem ter suas threads executadas por diferentes processadores, permitindo um paralelismo de thread
