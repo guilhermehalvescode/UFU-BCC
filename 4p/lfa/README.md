@@ -604,8 +604,26 @@
     - pelo menos um caminho alternativo aceita w
   - w $\in$ REJEITA(M)
     - todas as alternatias rejeitam w
-- Funçao de Transiçao Estendida (AFND)
+- Funçao de Transição Estendida (AFND)
   - Seja A = (Q, $\Sigma$, $\sigma$, q0, F) um AFND
   - A funçao $\sigma$ estendida $\underline{\sigma}$: 2$^q$ estendida para palavra é assim definida:
-    - $\underline{\sigma}$(q, $\vareipsilon$) = {q}
-
+    - $\underline{\sigma}$(q, $\varepsilon$) = {q}
+    - $\underline{\sigma}$(q, aw) = $\underline{\sigma}(\sigma(q, a), w)$
+    - $\underline{\sigma}$(S, w) = $\cup_{q \in S}$ $\underline{\sigma}(q, w)$
+  - sendo:
+    - q $\in$ Q (estado)
+    - S $\subset$ Q (subconjunto de estados)
+    - a $\in \Sigma$ (símbolo)
+    - w $\in \Sigma$* (palavra)
+- Palavra aceita por um AFND
+  - Seja w $\in \Sigma$* e o AFND A = (Q, $\Sigma$, $\sigma$, q0, F)
+  - A palavra w é aceita por A se $\underline{\sigma}$(q0, w) $\cap$ != $\empty$,
+  - ou seja: se existe algum estado final $\underline{\sigma}$(q0, w)
+- Linguagem aceita por um AFND
+  - A linguagem aceita por A é definida por:
+    - L(A) = {w $\in \Sigma$* | $\underline{\Sigma}$(q0, w) $\cap$ != $\empty$}
+- Determinismo x Não-Determinismo
+  - não-determinismo aparentemente trás um significativo acréscimo ao poder computacional de um AF
+  - na realidade não aumenta o poder computacional
+  - para cada AFN, é possível construir um AFD equivalente (que realiza o mesmo processamento)
+    - o contrário também é verdadeiro
