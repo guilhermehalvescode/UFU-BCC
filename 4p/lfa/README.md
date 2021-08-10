@@ -582,3 +582,30 @@
   ![afnd1](images/afnd1.png)
   - L = {w $\in$ {a,b}* | "aa" ou "bb" é subpalara de w}
   - Palavras que possuem 'aa' ou 'bb' como subpalavra
+
+- Exemplo 2
+- M6 = ({a,b}, {q0,q1,q2,qf}, $\Sigma_{6}$, q0, {qf})
+  
+  ![aaaSufix](images/aaaSufix.png)
+- Linguagem reconhecida e aceita por esse AF
+- L = {w $\in$ {a,b}* | "aaa" é sufixo de w}
+- Exemplos
+
+  ![exProcessamentoAFND](images/exProcessamentoAFND.png)
+  ![exProcessamentoAFNDaceito](images/exProcessamentoAFNDaceito.png)
+- Quando a palavra é aceita, basta apresentar o caminho no qual o processamento leva a um estado final
+- Caso uma palavra não for aceita, deve-se mostrar todos os caminhos e mostrar que seus estados finais não pertencem a um estado de aceitação
+- Processamento
+  - uniao dos resultados da funçao programa aplicada a cada estado alternatio
+  - definiçao formal do comportamento
+    - necessário estender a função programa
+    - argumento: um conjunto finito de estados e uma palara
+  - w $\in$ ACEITA(M)
+    - pelo menos um caminho alternativo aceita w
+  - w $\in$ REJEITA(M)
+    - todas as alternatias rejeitam w
+- Funçao de Transiçao Estendida (AFND)
+  - Seja A = (Q, $\Sigma$, $\sigma$, q0, F) um AFND
+  - A funçao $\sigma$ estendida $\underline{\sigma}$: 2$^q$ estendida para palavra é assim definida:
+    - $\underline{\sigma}$(q, $\vareipsilon$) = {q}
+
