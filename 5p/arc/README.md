@@ -689,3 +689,125 @@
   - como números são finitos (necessário mecanismo para verificar os números de sequência reutilizados ou reciclados)
 
 ### 3. Número de Sequência
+
+- Número de sequência rotula cada primitiva enviada, que por sua vez terá msg. de reconhecimento - "acknoledgement"
+  - i.e, número da primitiva reconhecdida está presente, de alguma forma, na mensagem de reconhecimento
+- e.g., considere um número de sequência de um bit, isto permite o uso de "timeout" no Protocolo Bit Alternate
+- e.g., como exemplo de um melhor uso do "timeout" e do nro. de sequência de 1 bit, vamos considerar uma "versão estendida" do Protocolo Bit Alternate
+- Bartleet, Scantleury and Wilkinson [1969] - propuseram o "Protocolo Bit Alternate" - 02 FSM com 6 estados cada
+  - propuseram procedimentos para alcançar transmissão "full-duplex" confiável em enlaces "half-duplex"
+  - esquema proposto foi comparado com esquemas do mesmo tipo, descrito na mesma época (década de 1960)
+  - W.C. Lynch - "Reliable Full-Duplex File Transmission over Half Duplex Telephone Lines"; Communications ACM; 1968
+  - Método proposto utiliza 1 bit de controle que se mostrou infalível, desde que todos os erros possam ser detectados
+    - semelhante ao esquema de transmissao proposto por W.C Lynch
+- "Protocolo Bit Alternate" - 2 FSM com 6 estados cada
+- "arestas" - especifica a troca de mensagens, sendo que cada aresta é identificada por 2 letras, p.ex., B0, B1, A0, A1K
+- primeria letra especifica a origem da mensagem sendo recebida ou transmitida, enquanto a segunda letra especifica o número de sequência
+- aresta com 2 setas indica entrada para ser aceita no receptor ou uma nova mensagem será transmitida no transmissor
+- entradas errôneas, ou seja, mensagens que carregam um número de sequência incorreto, causam uma retransmissão da últmia mensagem já transmitida
+- e.g., pesquisar o protocolo e entender os detalhes
+- Bartlett, Scantlebury and Wilkinson [ACM - 1969] - propuseram o "Protocolo Bit Alternate" - 2 FSM com 6 estados cada
+
+  ![bitAlternate](images/bitAlternate.png)
+  ![bitAlternateDFD](images/bitAlternateDFD.png)
+- 2 tipos de mensagens "mesg" e "ack" com os seguintes formatos:
+  - {mesg, data, sequence number} - "mesg:o:s" indica mensagem de sequência; "r" mantém o último número de sequência recebido
+  - "e" indica o último número de sequência esperado no receptor; "a" armazenad o último número de sequência atualmente recebido no receptor
+  - {ack, sequence number}
+- Considere o que acontece se a mensagem de "ack" está tão atrasada que o transmissor sofre "timeout" e retransmite a última mensagem
+
+  ![timeDiagramBitAlternate](images/timeDiagramBitAlternate.png)
+- "duplicaçao" e "reordenação" - presentes em redes de datagrama, isto é, em redes que não há circuito lógico ou circuito virtual
+  - "redes de datagrama" - são aquelas nas quais primitivas podem usar diferentes rotas para alcançar as entidades parceiras
+  - "circuito lógico" - são canais que de algum modo têm mapeamento no meio físico (por ex. circuitos de linhas para telefones)
+  - "circuito virtual" - são canais que têm as características de comunicação de circuito lógicos mas não existem de facto (obtidas por configuração)
+- "solução" - codificar a primitiva na ordem original com um número de sequência com espectro grande o suficiente para numerar qualquer quantidade de primitivas
+- normalmente o número de sequência segue acoplado ao cabeçalho da primitiva (quanto maior, maior a quantidade de mensagens sem que o número de sequência seja reutilizado)
+- se considerarmos primitivas de 15kb, com um número de sequência de 16 bits, e um canal de 100Mbps, este sistema vai conseguir funcionar por aproximadamente 9,5 segundos
+  - 100 * 10⁶ / 15000 bits = 6666,67 primitivas por segundo, ou seja, cada primitiva irá utilizar um número de sequência
+  - considerando que tem-se 16 bits para os números de sequência, então temos 65536 números de sequência possíveis
+  - logo, basta dividir 655536 / 6666,67 = 9,83 segundos serão gastos para utilizarmos todos os números de sequência possíveis
+- "problema" do limite do número de sequência desaparece se limitarmos o máximo número de primitivas que estejam em trânsito através do crédito concedito ao transmissor
+  - gama de possíveis números de sequência tem de ser maior que os crécdito máximos negociados, permitindo assim ao receptor distinguir primitivas duplicadas de originais
+- Suponha "M" números de sequência disponíveis e "W" números de créditos iniciais de primitivas, então:
+  - "M > W" - evita número de sequência fora de ordem sem que o mesmo número de sequência se repita na janela
+- Que estruturas/mecanismos utilizar para este controle??
+  - transmissor deve contabilizar cada primitiva pendente - "outstanding primitives" dentro da janela corrente;
+  - para "acks" individuais é necessário uma estrutura de dados que mantenha o estado, o número de sequência e a própria primitiva
+  - uso de vetores para controle de quais mensagens já foram transmitidas, tendo ou não sido reconhecidas
+  - se uma mensagem com número de sequência "s" foi transmitida mas ainda não foi reconhecida, então "busy[s] = true"
+  -já "store[s] = primitiva" mensagem com número de sequência "s" já foi transmitida
+  - inicialmente, todos os elementos do vetor "busy" = "true"
+- Transmissor - modularizado com 3 procedimentos:
+  - Transmissão de Primitivas
+  - Processamento dos "ACKS"
+  - Retransmissão de Primitivas
+- além do parâmentros "W" e "M", são necessários mais 4 parâmetros (com valor inicial zero):
+  - "s" - nro. se sequência da próxima primitiva a ser enviada
+  - "window" - número de primitivas pendentes (não reconhecidas)
+  - "n" - nro. de sequência da primitiva mais antiga sem reconhecimento
+  - "m" - nro. de sequência da última primitiva reconhecida
+"Transmissao de Primitivas" - transmissor rastreia toda mensagem pronta para ser enviada dentro da janela
+  - para cada primitiva transmitida, incrementa-se o número de primitivas pendentes de "acks" - "window++"
+  - primitiva transmitida(o) é armazenada na posição "s", onde "s" corresponde ao número de sequência - "store[s] = o"
+  - busy[s] = true indica que msg. com nro. de sequência "s" foi enviada mas ainda não foi reconhecida
+  - incremento de "s" em módulo "M", ou seja, "s" = "(s+1) % M", para obter o próximo nro. de seq. a ser utilizado
+- "Processamento de Acks"
+  - atualiza-se o número (m) do último reconhecimento
+  - recebe-se um reconhecimento e libera-se o buffer atualmente utilizado pela primitiva reconhecida - busy[m] = false
+- "Retransmissão de Primitivas" window > 0
+  - percorre-se a estrutura de envio periodicamente - "timeout period", se "busy[n] == true", então reenvia primitiva "store[n]"
+  - se "busy[n] == false", então "windo--" e "n = (n + 1) % M"
+
+  ![senderSlidingWindow](images/senderSlidingWindow.png)
+- Receptor - normalmente modularizado e com 2 procedimentos
+  - "Recepçao de Primitivas"
+  - "Aceitação de Primitivas"
+- "Recepção de Primitivas" - além dos parâmetros W e M, são necessários mais 2 parâmetros 2 vetores
+  - "m" - número de sequência da última primitiva recebida
+  - "p" número de sequência da primitiva sendo esperada
+  - "buffer[M]" - conteúdo das mensagems recebidas
+  - "recvd[M]" - representa números de sequência recebidos, mas não processados como "true", ou "false" caso contrário
+- "Aceitação da Primitiva" - para serem aceitas, as primitivas devem ser aceitas primeiro para então serem reconhecidas, pois se o forem correm o risco de usar "buffers" fora do espaço definido
+  - recepção consome tempo e interpretação da primitiva, decisão do que fazer, alocação de memória, e até encaminhamento
+  - processo de aceitação pode ser mais lento que o de recepção, o que sugere o reconhecimento somente depois da aceitação
+  - utiliza-se o vetor "recvd[M]" para armazenar o nro, de sequência de msgs. que foram recebidas, mas ainda não aceitas
+  - utiliza-se o vetor "buffer[M]" para armazenar o conteúdo destas msgs, ou seja, recebidas mas ainda não aceitas
+  - adicionalmente, faz-se necessário uma variável extra "p" que é o nro. de sequência da próxima msg. que será aceita
+
+  ![receiverSlidingWindow](images/receiverSlidingWindow.png)
+- quando o receptor recebe uma primitiva, cabe ao mesmo verificar se a posição equivalente está livre "recvd[m] == false", e então:
+  - "recvd[m] = true"
+  - "recvd[ (m - W + M) % M ] = false" ou "recvd[ (m - W) % M ] = false"
+- duplicação é percebida ao verificar o estado da posição sendo recebida - "recvd[m] == true" -> indicação de duplicação
+- Há 2 motivos para primitivas duplicadas:
+  - primitiva foi recebida mas ainda não foi reconhecida
+  - primitiva foi recebida, reconhecida mas o reconhecimento ainda não chegou ao transmissor (somente neste deve ter re-reconhecimento)
+- ao analisar o valor corrente do parâmetro "p", pode-se afirmar se o caso "ii" foi ou não devidamente tratado
+- Uma primitiva recebida é considerada válida, dependendo de:
+  - se o número de sequência não é do tipo módulo, ou seja, nao é janela deslizante, o teste é simplesmente "valid(m) = m < p"
+  - se considerarmos o efeito do módulo "M", "p" será sempre menor do que "M", então: "valid(m) = (0 < p - m <= W) || (0 < p + M - m <= W)"
+- Obs: se "s" é uma primitiva recebida que se encontra no buffer, então nenhuma açao é tomada pelo módulo de recepção
+- Nota: protocolo de janela deslizante garante a retransmisão de msgs. não trata nro de sequência maior que "W" e nem menor que a última msg. que foi reconhecida
+  - estrutura de dados é percorrida e o processo de aceitação (dependendo da aceitação) gera um Ack ou um NAck
+  - processa e aceita (ou não aceita) "buffer[p]";
+  - gera um Ack (ou NAck) para o número de sequência "p" para na sequência atualizar "p", ou seja, "p = (p+1) % M"
+
+  ![receiverSlidingWindow](images/receiverSlidingWindow.png)
+- Seja "M" nros de sequência disponíveis e "W" nros de créditos de primitivas, então, qual o "Tamanho Máximo da Janela"??
+- "Tamanho Máximo da Janela" - dado "M" e sabendo-se que "M > W", então qual o máximo "W" para otimizar o canal?
+  - se todas as mensagens que chegam fora de ordem sao simplesemente rejeitas, então a resposta é "M - 1"
+  - se um nro. de sequência não for reutilizado até que a respectiva primitiva seja reconhecida, então, o cenário é outro
+    - nestes casos, isto significa "W" não pode exceder "M/2"
+- Se um nro. de sequência não for reutilizado até que a respectiva primitiva seja reconhecida, então, "W" não pode exceder "M/2"
+- Considere "H" o maior número (%M) que o receptor reconheceu, então podemos ter 2 cenários
+  - pior caso, transmissor recebeu apenas um "ack"
+  - melhor caso, transmissor recebeu todos os "acks"
+- Para o pior caso, o transmissor pode decidir retransmitir todas as "W - 1" primitivas e a própria "H" - ésima primitiva:
+  - primitiva mais antiga que poderia ser retransmitida poderia ser [ H - (W - 1) % M ], ou (H - W + 1) % M
+- Para o melhor caso, podem ser retransmitidas até "W" msgs. que sucederam a msg. com nro. de sequência "H"
+  - primeira "W - 1" podem ter sido perdidas no canal, então a msg. com nro. de seq (H + W) % M é a primeira nova msg. a chegar
+  - maior nro. e seq. que suceda H tem de ser distinguível do menor nro. de seq. com potencial de ser retransmitido(que preceda H)
+  - isto significa que "M > 2W - 1" ou a janela de tamanho máximo será "W" igual a M/2 (W = M/2)
+
+### 4. Reconhecimento Negativo
