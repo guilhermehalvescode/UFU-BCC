@@ -811,3 +811,97 @@
   - isto significa que "M > 2W - 1" ou a janela de tamanho máximo será "W" igual a M/2 (W = M/2)
 
 ### 4. Reconhecimento Negativo
+
+- "reconhecimento", até agora foi utilizado como método de controle de fluxo, mas não como controle de erro
+  - se a msg. é perdida ou danificada e não é reconhecida, a ausência de reconhecimento positivo irá eventualmente causar o "timeout" no transmissor e, por conseguinte, a retransmissão da mensagem
+- "reconhecimento negativo" - pode-se amenizar o problema, não obstante não se consegue eliminá-lo completamente
+  - nack - usado pelo receptor qdo o mesmo recebe uma mensagem que foi danificada no canal durante a transmissão
+  - qdo o transmissor recebe um "ack" negativo, ele sabe que deve retrasmitir a msg. correspondente, sem ter que esperar pelo "timeout"
+- Ex: extensão do dfd de bit alternante para acomodar o reconhecimento negativo (antigo)
+
+  ![dfdAlternatingBit](images/dfdAlternatingBit.png)
+  ![dfdAlternatingBitRec](images/dfdAlternatingBitRec.png)
+
+- Versão extendida
+
+  ![extendedBitAlternateSender](images/extendedBitAlternateSender.png)
+  ![extendedBitAlternateReceiver](images/extendedBitAlternateReceiver.png)
+
+- "Automated Repeat reQuest" ARQ - método que utiliza reconhecimento para controlar a retransmissão de mensagens
+  - Stop-and-Wait ARQ
+  - Selective Repeat ARQ
+  - Go-back-N Continuous ARQ
+- e.g., Protocolo Ping-Pong estendido com reconhecimento negativo, pode ser classificado como "Stop-and-Wait ARQ"
+- após cada mensagem enviada, o transmissor deve esperar por um NAck ou Ack, ou mesmo "timeout"
+  
+  ![pingPong](images/pingPong.png)
+- Uso do reconhecimento no Protocolo de Janela Deslizante pode ser classificado como "Selective Repeat ARQ"
+  - implementa método de repetição seletiva "one-at-a-time" onde somente a msg. não reconhecida mais velha é retransmitida
+  - entretando, qualquer msg. quer gere um "ack" negativo ou "timeout" pode ser retransmitida, independente de outra mensagem
+  - generalização do método é repetição seletiva contínua
+
+  ![senderSlidingWindow](images/senderSlidingWindow.png)
+  ![receiverSlidingWindow](images/receiverSlidingWindow.png)
+- "Go-back-N Continuous ARQ" - pode ser implementado no Protocolo Bit Alternate estendido
+  - basta que o transissor retransmita a msg. corrompida e todas mensagens subsequentes já enviadas
+  - neste caso o projeto do receptor pode ser simplificado, p.ex., "acceptor" pode ser removido do receiver do protocolo de janela deslizante e o "buffer" torna-se desnecessário
+- "Go-back-N", receptor recusa todas as msgs. que chegam fora de ordem espera por aquelas na sequência correta, ou seja, não se reconhece msgs. fora de ordem.
+  - reconhecimento com nro. de sequência pode ser entendido como reconhecimento de todas as msgs. até àquela incluindo "s" - também chamado de "reconhecimento cumulativo"
+- "Go-back-N" ou "Selective Repeat" com variaçoes podem reduzir o nro. de msgs. de reconhecimentos individuais que são enviadas do receptor para o transmissor - "reconhecimento em bloco"
+  - neste caso, reconhecimento pode especificar a faixa de nros. de sequência que foram recebidas corretamente
+  - "block acknowledgment" - pode enviar periodicamente pedido do transmissor e, assim, pode ser visto como uma forma estendida do "reconheciento cumulativo"
+
+### 5. Evitando Congestionamento
+
+- Há 2 razões principais para incluirmos controle de fluxo nos protocolos, ou seja, sincronização e controle de congestionamento
+  - até este momento, praticamente ignoramos como evitar o congestionamento e nos concentramos na sincronização fim-a-fim
+- "ponto não discutido", para um dado enlace, qual o tamanho da janela bem como a correspondente faixa de nrs. de sequência que se deve escolher?
+  - é relativamente fácil estabelecer limites superiores no tamanho da janela, pois aumentar a partir de um ponto pode não mais melhorar a vazão caso o canal já esteja completamente saturado
+- Considere t*prog* = 0.5 seg. do transmissor para o receptor t*prog* = 0.t seg. do receptor para o transmissor, ou seja, o canal será saturado pelo transmissor se a transmissão perdurar por 1 seg
+  - é relativamente fácil estabelecer limites superiores no tamanho da janela, pois aumentar a partir de um ponto pode não mais melhorar a vazão caso o canal já esteja completamente saturado
+
+  ![senderReceiver](images/senderReceiver.png)
+- "tamanho da janela > S / M" -> perda de tempo?
+  - é uma perda de tempo pois no momento que a última msg. da janela é transmitida, o "ACK" para a msg. válida mais velha deve ter chegado
+  - ou caso o ACK não tenha chegado, é o momento de considerar a retransmissão da mensagem
+  - necessário considerar o tipo de cálcuo proposto, pois o mesmo reduz o problema de controle de fluxo para uma questão do nível do enlace, enquanto ignora a ree que contém o enlace de dados
+- Tendo por base com 2 enlaces, há 2 caminhos na definição de um protocolo de controle de fluxo
+- "Hop-by-Hop" ou também chamado "Node-to-Node"
+- "End-to-End" - não há participação dos nós intermdiários
+
+  ![twoHopLink](images/twoHopLink.png)
+- "Hop-to-Hop Protocol" - tamanho da janela é calculado separadamente para cada enlace de moco que possa ser saturado
+  - primeiro enlace é 100 vezes mais rápio que o segundo, assim, se bem sucedidos na saturação dos 2 canais, ter-se-à um grande problema "versus" desempenho no uso de recursos
+  - dados chegam 100 vezes mais rápido do que podem ser re-passados para o receptor e, independente do espaço em "buffer", pode ser sobrecarregado >> perda de mensagens
+  - "alternativa" - "transfer point" passa a controlar o transmissor ao recusar as msgs. de "acks", não obstante o transmissor irá saturar o canal e ser bem sucedido (retransmissões ou dados novos)
+
+  ![twoHopLink](images/twoHopLink.png)
+
+- "solução" - contemplar um controle de fluxo que retire o máximo do uso dos recursos em separado, ou seja:
+  - "buffer space" nos nós da rede
+  - "bandwidth" do enlaces que conectam os nós da rede
+  - esta abordagem falha nos 2 pontos, uma vez que gasta espaço de "buffer" no nó "transfer point", potencialmente bloqueando outros tráfegos que passam pelo nó
+
+  ![twoHopLink](images/twoHopLink.png)
+- "solução" - contemplar um controle de fluxo que retire o máximo do uso do recursos em separado, ou seja, a) "buffer space" nos nós da rede ou b) "bandwidth" do enlaces que conectam os nós da rede
+  - também gasta "bandwidth" pois gatilha um dilúvio de retransmissões no enlace do transmissor para o "transfer point"
+  - uso ótimo dos 2 enlaces pode ser atingido se o transmissor encaminha dados na velocidade do enlace de menor capacidade
+
+  ![twoHopLink](images/twoHopLink.png)
+- "End-to-End Protocol", neste caso, a capacidade fim-a-fim da rede é igual a capacidade do menor enlace, assim, o tamanho da janela pode ser escolhido apropriadamente
+- Obs: Em Redes mais complexa, não há esperança que o transmissor possa facilmente predizer onde se encontra o enlace de menor capacidade até o receptor
+  - em rede maiores, a capacidade do enlace de dados não depende apenas do "hardware", mas **também do nro. de usuários**
+- e.g., Se 10 usuários inicam a transf. de arquivos no mesmo enlace da rede, este enlace subtamente se transforma no enlace de menor capacidade de todos eles
+- "mais seguro a fazer" - derivar o tamanho máximo da janela para toda a rede considerando o enlace de menor capacidade
+- "dynamic window", controle de fluxo com janela dinâmica permite que o protocolo seja auto-adaptável
+  - método simples e comum de se usar é forçar o transmissor a diminuir o tamanho da janela toda vez que ocorrer "timeout" (e.g. caso de retransmissão automática)
+  - considerando que o "timeout" não mais ocorre, o transmissor pode aumentar gradualmente o tramanho da janela até o seu valor máximo (busca-se o máximo de transferência a todo instante)
+- "alguma análises", há diferentes filosofias quanto a precição dos parâmetros de modo que esta técnica seja utilizada, dentre elas:
+  - diminuir a janela de 1 toda vez que "timeout" ocorre e, aumentar de 1 toda vez que se recebe um "ack" positivo
+  - diminuir a janela pela 1/2 do tamanho corrente a cada "timeout" e aumentar de 1 msg. quando a ocorrência de "N" "acks" positivos recebidos
+  - diminuir a janela para o seu valor mínimo de 1 n ocorrência do "timeout" e, aumentar a janela de 1 quando a ocorrência de "N" "acks" positivos recebidos
+- Suponha que uma primitiva leva 0,5 segundos para ir do transmissor ao receptor e o mesmo tempo de 0,5 segundos para voltar o Ack
+  - transmissor satura o anal se transmitir por mais que 1s
+- "factívee", se a taxa do canal e S bpc, o transmissor pode transmitir S bits, para então se preocupar com o reconhecimento
+  - se cada primitiva tem "N" bits, a melhor janela e "S/N", mas ressalvando a importância de garantir que "N < S".
+  - janela maiores do que "S/N" representam desperdício!
