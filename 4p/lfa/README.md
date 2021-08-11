@@ -627,3 +627,22 @@
   - na realidade não aumenta o poder computacional
   - para cada AFN, é possível construir um AFD equivalente (que realiza o mesmo processamento)
     - o contrário também é verdadeiro
+- Equivaência dentre AFD e AFND
+  - Seja L(A) a linguagem aceita por um AFND A
+  - Existe um AFD A' que também aceita L(A)
+  - Seja AFND A = (Q, $\Sigma$, $\sigma$, q0, F)
+  - O AFD A' equivalente a A é dado por A' = (Q', $\Sigma$, $\sigma$', q0', F'), sendo:
+    - Q' = 2$^Q$. Elementos de Q' do tipo {q1, q2, ..., qk}, sendo qi(i = 1, 2, ..., k) $\in$ Q, representados por \<Q1Q2 ... QK>
+    - F' -> estados de Q' que contém pelo menos q estado de F
+    - Q0' = {q0}, representado por \<q0>
+    - $\sigma'$(\<q1q2...qj>, a) = \<r1r2...ri> se e somente se, $\sigma$({q1, q2, ... qj}, a) = $\sigma(q1, a) \cup \sigma(q2, a) \cup ... \cup \sigma(qj, a) = $ {r1, r2, ..., ri}
+
+- Exemplo de conversão AFND -> AFD
+
+  ![AFNDtoAFDex](images/AFNDtoAFDex.png)
+- Grafo do AFD
+
+  ![graphAFNDtoAFD](images/graphAFNDtoAFD.png)
+- Simplificando e comparando com a solução proposta anteriormente nos AFDs
+  
+  ![conclusionAFNDtoAFD](images/conclusionAFNDtoAFD.png)

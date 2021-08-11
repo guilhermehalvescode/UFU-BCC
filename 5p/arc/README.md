@@ -902,6 +902,6 @@
   - diminuir a janela para o seu valor mínimo de 1 n ocorrência do "timeout" e, aumentar a janela de 1 quando a ocorrência de "N" "acks" positivos recebidos
 - Suponha que uma primitiva leva 0,5 segundos para ir do transmissor ao receptor e o mesmo tempo de 0,5 segundos para voltar o Ack
   - transmissor satura o anal se transmitir por mais que 1s
-- "factívee", se a taxa do canal e S bpc, o transmissor pode transmitir S bits, para então se preocupar com o reconhecimento
+- "factível", se a taxa do canal e S bpc, o transmissor pode transmitir S bits, para então se preocupar com o reconhecimento
   - se cada primitiva tem "N" bits, a melhor janela e "S/N", mas ressalvando a importância de garantir que "N < S".
   - janela maiores do que "S/N" representam desperdício!
