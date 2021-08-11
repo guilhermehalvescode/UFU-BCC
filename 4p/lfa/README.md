@@ -621,7 +621,7 @@
   - ou seja: se existe algum estado final $\underline{\sigma}$(q0, w)
 - Linguagem aceita por um AFND
   - A linguagem aceita por A é definida por:
-    - L(A) = {w $\in \Sigma$* | $\underline{\Sigma}$(q0, w) $\cap$ != $\empty$}
+    - L(A) = {w $\in \Sigma$* | $\underline{\sigma}$(q0, w) $\cap$ != $\empty$}
 - Determinismo x Não-Determinismo
   - não-determinismo aparentemente trás um significativo acréscimo ao poder computacional de um AF
   - na realidade não aumenta o poder computacional
