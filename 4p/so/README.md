@@ -263,9 +263,24 @@ _**Conceitos básicos:**_
 - Vantagens
   - Economia de recursos do sistema
   - Melhor organização com requisitos de concorrência
-  - Uso eficiente de multiprocessadores (*) 
+  - Uso eficiente de multiprocessadores (*)
 - Desvantagens
   - Introduz maior complexidade
 - Paralelismo
   - Processos SingleThreaded executam em um único processador a sua mainthread
   - Já processos Multithreaded podem ter suas threads executadas por diferentes processadores, permitindo um paralelismo de thread
+- TCB (Thread Control Block) - são as representações das threads, tendo a mesma ideia do PCB
+  - Thread ID (tid)
+  - Registradores de estado (inclui PC e SP)
+  - Pilha
+  - Máscara de sinais
+  - Prioridade
+  - Armazenamento privado
+  - Outros...
+
+### Exemplo de Criação de Processos/Threads
+
+- Uso: pid_t fork(void);
+- A chamada de sistema fork() returna um valor zero para o filho e o valor do PID do filho para o Pai
+- O pai normalemente espera o filho terminar antes de encerrar (usando wait())
+- O filho retorna um status de término para o Pai
