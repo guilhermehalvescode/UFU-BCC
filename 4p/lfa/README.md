@@ -719,3 +719,7 @@
 - F'
   - conjunto de todos q $\in$ Q tq
   - algum elemento do $F_{\varepsilon}$(q) pertence a F
+
+- Exemplo:
+
+  ![afVazioAFND](images/afVazioAFND.png)
