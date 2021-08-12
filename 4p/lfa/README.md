@@ -646,3 +646,63 @@
 - Simplificando e comparando com a solução proposta anteriormente nos AFDs
   
   ![conclusionAFNDtoAFD](images/conclusionAFNDtoAFD.png)
+
+## _**5. Autômato Finito Não Determinístico com Movimentos Vazios (AF$\varepsilon$)**_
+
+### Transição Vazia (ou Movimento Vazio)
+
+- É uma transição sem leitura na fita de entrada
+- Não aumenta o poder de reconhecimento dos AFs
+- Na visão de máquina reconhecedora, é como se o controle finito mudasse de estado sem mover a cabeça de leitura
+
+  ![movimentoVazio](images/movimentoVazio.png)
+
+### Autômato Finito Não Determinístico com Movimentos Vazios (AF$\varepsilon$)
+
+- O AFND com transições vazias (AF$\varepsilon$) é uma 5-upla A = (Q, $\Sigma$, $\sigma$, q0, F), com Q, $\Sigma$, q0 e F definidos como no AFND
+- A função $\sigma$ é dada por: $\sigma$ Q x ($\Sigma \cup$ {$\varepsilon$}) -> 2$^Q$
+- A função $\sigma$ para transições vazias é do tipo: $\sigma$(q, $\varepsilon$) = {q1, q2, ..., qn}
+  - o AF$\varepsilon$ no estado q e sem ler nenhum símbolo na fita de entrada, escolhe um dos qi (i =1, 2, ..., 3) para seu próximo estado
+  - A função $\sigma$ para outras transições com leitura de símbolo é igual ao AFND: $\sigma$(q, a) = {q1, q2, ..., qn}
+- Exemplo
+
+  ![exVazio0](images/exVazio.png)
+  ![exVazio1](images/exVazio1.png)
+- Processamento (semântica)
+  - análogo ao de um AFN
+  - processamento de uma transição vazia
+    - também é não-determinista
+    - assume simultaneamente os estados destino e origem
+    - origem de uma transição vazia sempre é um caminho alternativo
+- Processamento (formal)
+  - função programa estendida
+    - conjunto de estados
+    - palavra
+    - baseado na noção de fecho vazio
+
+### Função Fecho Vazio ($F_{\varepsilon}$)
+
+- Seja AF$\varepsilon$ A = (Q, $\Sigma$, $\sigma$, q0, F). A função F$\varepsilon$ Q -> 2$^Q$ é definida indutivamente:
+  - $F_{\varepsilon}$(q) = {q}, se $\sigma$(q, $\varepsilon$) = { }
+  - $F_{\varepsilon}$(q) = {q} $\cup (\cup_{p \in \sigma(q, \varepsilon)} F_{\varepsilon}(p))$, se $\sigma$(q, $\varepsilon$), caso contrário
+- Informalmente:
+  - Se q é um estado de Q, $F_{\varepsilon}$(P) é o conjunto de estados que se pode atingir a partir de q, utilizando apenas transições $\varepsilon$, incluindo-se o próprio estado q
+
+### Função Fecho Vazio Estendida ($F_{\varepsilon}$)
+
+- Seja o AF$\varepsilon$ A = (Q, $Sigma$, $\sigma$, q0, F), a função $\underline{F}_{\varepsilon}$: 2$^Q$ -> 2$^Q$ é assim definida:
+  - $\forall P \subset Q \underline{F}_{\varepsilon}(P) = \cup_{q \in P} F_{\varepsilon}(q)$
+  - Ou seja, se P = {q1, q2, ...}:
+    - $\underline{F}_{\varepsilon}(P) = F_{\varepsilon}(q_{1}) \cup F_{\varepsilon}(q_{2}) \cup ...$
+- Exemplo
+  
+  ![exFechoVazio](images/exFechoVazio.png)
+
+### Função Programa Estendida de um $AF_{\varepsilon} (\underline{\sigma})$
+
+- Seja o $AF_{\varepsilon}$ A = (Q, $\Sigma$, $\sigma$, q0, F). A função $\sigma$ estendida para um conjunto de estados e uma palvra e é dada por:
+  - $\underline{\sigma}$(P, $\varepsilon$) = $\underline{F}_{\varepsilon}$(P)
+  - $\underline{\sigma}$(P, wa) = $\underline{F}_{\varepsilon}$(R), onde R = {r | r $\in \sigma$(s, a) e s $\in \underline{\sigma}$(P, w)}
+- Exemplo:
+
+  ![exAFvazio](images/exAFvazio.png)
