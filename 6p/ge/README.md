@@ -79,3 +79,7 @@
 - Cenário setorial em que a organização esta inserida (setor automobilístico, imobiliário, bancário)
 - Setores nos quais empresas formaram com o decorrer da história das mesmas, formando nichos que podem ser voláteis ou não
   - o setor bancário é mais estável quando comparado com o setor de serviços em redes sociais
+
+## **Forças Competitivas**
+
+  ![forcasCompetitivas](images/forcasCompetitivas.png)
