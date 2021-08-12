@@ -706,3 +706,16 @@
 - Exemplo:
 
   ![exAFvazio](images/exAFvazio.png)
+
+### Equivalência entre AFND e $AF_{\varepsilon}$
+
+- uma linguagem é regular se é aceita por um $AF_{\varepsilon}$
+- a capacidade de reconhecimento dos $AF_{\varepsilon}$ é a mesma de AFD e dos AFN
+- seja M = ($\Sigma$, Q, $\sigma$, q0, F) um $AF_{\varepsilon}$ qualquer
+- seja M' = ($\Sigma$, Q, $\sigma$', q0, F') um AFN
+- $\sigma$'
+  - $\sigma$': Q x $\Sigma$ -> 2$^Q$
+  - $\sigma$'(q, a) = $\underline{\sigma}$({q}, a)
+- F'
+  - conjunto de todos q $\in$ Q tq
+  - algum elemento do $F_{\varepsilon}$(q) pertence a F
