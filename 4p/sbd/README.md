@@ -818,3 +818,379 @@
 - Todos perder DF1, mas em 3. envitamos tuplas falsas após uma junção. Ex de instância:
 
   ![exEnsina](images/exEnsina.png)
+
+## _*SQL/DDL e Implementação no PostgreSQL*_
+
+### Projeto e Implementaçao de SBD
+
+- Linguagem SQL/DDL
+  - Comandos de criação e eliminação de tabelas
+  - Especificação de restrições em bancos de dados
+  - Evolução de esquemas de bancos e dados
+- Linguagem SQL/DML
+  - Comandos de inserção e tuplas em tabelas
+  - Comandos de alteração e supressão de tuplas
+  - Comandos e consulta (simples e complexo)
+  - Definição de visões
+- Álgebra Relacional
+- Cálculo Relacional
+
+### SQL
+
+- A SQL(Structured Query Language) é uma Linguagem de Consulta Estruturada declarativa para acesso a sistemas de bancos de dados relacionais
+- OBS: como linguagem declarativa descreve o problema ao invés da solução, especificando o que deve ser feito e não como
+
+### SQL - Exemplos SGBDs
+
+- Exemplos de SGBD que utilizam SQL:
+  - Oracle, SyBase, Informix, DB2, Ingress, MySQL, SQL Server, PostgreSQL, Interbase
+
+### SQL - Classes de Comandos
+
+- Duas classes principais e comandos SQL:
+  - DDL: Data definition language (Comandos para a definição de dados)
+  - DML: Data manipulation language (Comandos para a manipulação de dados)
+    - DML interativa - interface direta com o SGBD
+    - DML embutida - utilizada e programas de aplicação
+
+## SQL - DDL
+
+- _Data Definition Language_ - permite ao usuário definir tabelas e elementos associados
+- OBS: A SQL/DDL se caracteriza por poucos comandos básicos, embora implementações comerciais tenham várias extensões
+
+## SQL/DDL Conceitos associados
+
+- Banco de dados e Catálogo
+- Esquema
+- Tabela
+- Linha
+- Coluna
+- Índice
+
+## SQL/DDL Comandos
+
+- CREATE - Cria uma definição
+- CREATE TABLE tab...
+- ALTER - Altera uma definição
+- ALTER TABLE tab ADD...
+- DROP - Exclui uma definição
+- DROP TABLE tab
+
+### SQL/DDL Abrangência
+
+- Definição
+  - de tabelas
+  - de restrições de integridade
+  - de índices
+  - de privilégios de acesso
+  - de visões
+
+### O SGBD PostgreSQL
+
+- PostgreeSQL - Um SGBD objeto-relacional
+
+### PostgreSQL - Principais Características
+
+- implementa padrão SQL
+- herança
+- tipos de ddos
+- funções
+- restrições (contraints)
+- gatilhos (triggers)
+- regras (rules)
+- integridade transacional
+
+### PostgreSQL - Criação do Banco de Dados
+
+```sql
+CREATE DATABASE nome
+  [[WITH] [OWNER] [=] dono_bd]
+    [ TEMPLATE [=] modelo ]
+    [ ENCODING [=] codificação ]
+    [ TABLESPACE [=] tablespace ]
+    [ CONNECTION LIMIT [=] limite_con ]
+-- Exemplo: 
+CREATE DATABASE sbdX WITH OWNER bccX
+```
+
+### PostgreSQL - Criação de Esquemas
+
+```sql
+CREATE SCHEMA schemaname
+  [ AUTHORIZATION username ]
+-- Exemplo
+CREATE SCHEMA company
+```
+
+### PostgreSQL - Criação de Tabela
+
+```sql
+CREATE TABLE tabela (
+  {coluna tipo [restricoes coluna] | restrições tabela}
+  [, ...]
+) [ INHERITS (tabela pai [, ...])]
+```
+
+### PostgreSQL - Exemplo de Tabela
+
+- CREATE TABLE tabela ({coluna tipo [restricoes coluna] | restricoes tabela} [, ...]) [ INHERITS (tabela pai [, ...])]
+- Exemplos de identificadores de tabela:
+  - company.employee
+  - public.employee
+  - employee
+
+### PostgreSQL - regras para identificadores
+
+- Iniciam com letras (a-z) ou underscore (_)
+  - Caracteres subsequentes: letras, dígitos (0-9), _
+- Identificadores e palavras-chave não são case-sensitive
+  - UPDATE MY_TABLE SET A = 5;
+  - uPDaTE my_TabLE Set a = 5;
+- Conveção adotada
+  - Palavras-chave em maiúscula
+  - Identificadores em minúsculo
+    - UPDATE my_table SET a = 5
+- Identficadores com aspas
+  - Aceitam quaisquer caracteres
+    - UPDATE "my_table" SET "a" = 5
+- Ao colocar aspas em um indentificador ele torna-se case-sensitive
+- Identficadores sem aspas são sempre transformados em minúsculo (embora o padrão SQL defina que se transforme em maiúscula)
+- Se você criar um esquema ou tabela usando a interface gráfica do pgAdmin e, caso o identificador deste objeto não seja composto por letras minúsculas, o objeto será identificado somente por meio de aspas
+  - Faça o teste, criando esquemas e tabelas por meio da interface gráfica e utilizando letras maiúsculas
+
+### PostgreSQL - Exemplo de Tipos
+
+```sql
+CREATE TABLE tabela (
+  {coluna tipo [restricoes coluna] | restrições tabela}
+  [, ...]
+) [ INHERITS (tabela pai [, ...])]
+```
+
+- Exemplos de coluna tipo:
+  - nome VARCHAR(40)
+  - sexo CHAR
+  - salario DECIMAL(10, 2)
+- Outros tipos
+  - INT; SMALLINT; REAL; DATE; TIME; TIMESTAMP; BOOLEAN; GEOMETRIC(POINT, LINE, etc); NETWORD ADDRES; BIT; XML; ARRAY; COMPOSITE; OID; etc
+  - Consulte os tipos no manual do PostgreSQL
+
+### PostgreSQL - Exemplo de restrições de coluna
+
+```sql
+CREATE TABLE tabela (
+  {coluna tipo [restricoes coluna] | restrições tabela}
+  [, ...]
+) 
+[ INHERITS (tabela pai [, ...])]
+[CONSTRAINT restrição]
+  {NOT NULL | NULL | UNIQUE | PRIMARY KEY | CHECK(expressão) | REFERENCES tabela [ (coluna) ] [ON DELETE ação] [ON UPDATE ação]}
+  [DEFERRABLE | NOT DEFERRABLE]
+  [INITIALLY DEFERRED | INITIALLY IMMEDIATE]
+  -- Exemplos de restrições coluna:
+  sexo CHAR CHECK (sexo IN ('M', 'F'))
+```
+
+### PostgreSQL - Domínios
+
+- CREATE DOMAIN
+  - cria um domínio para um tipo de dados
+- DROP DOMAIN
+  - remove um domínio existente do BD
+- ALTER DOMAIN
+  - altera a definição de domínio
+
+### PostgreSQL - CREATE DOMAIN
+
+```sql
+CREATE DOMAIN name [AS] data_type
+[DEFAULT expression]
+[constraint [...]]
+-- onde contraint é:
+[CONSTRAINT constraint_name]
+{NOT NULL | NULL | CHECK (expression)}
+```
+
+### PostgreSQL - CREATE DOMAIN - Exemplos
+
+```sql
+CREATE DOMAIN sexo AS char(1)
+DEFAULT 'M'
+NOT NULL
+CHECK (VALUE IN ('M', 'F'));
+
+CREATE DOMAIN data_evento AS date
+CONSTRAINT valida_data
+CHECK (VALUE > '01/01/1900' AND VALUE < '01/01/2099')
+```
+
+- OBS: podemos então definir tipos sexo ouo data_evento no CREATE TABLE
+
+### PostgreSQL - Exemplo de restrições de tabela
+
+```sql
+CREATE TABLE tabela (
+  {coluna tipo [restricoes coluna] | restrições tabela}
+  [, ...]
+) 
+[ INHERITS (tabela pai [, ...])]
+[CONSTRAINT restrição]
+  {UNIQUE(coluna [...]) | PRIMARY KEY(coluna [, ...]) | CHECK(expressão) | FOREIGN KEY REFERENCES tabela [(coluna, [,...])] [ON DELETE ação] [ON UPDATE ação]}
+  [DEFERRABLE | NOT DEFERRABLE]
+  [INITIALLY DEFERRED | INITIALLY IMMEDIATE]
+  -- Exemplos de restrições de tabela:
+  PRIMARY KEY(ssn)
+```
+
+### PostgreSQL - Exemplo de criação de tabela
+
+```sql
+CREATE TABLE emp (
+  ssn CHAR(9) NOT NULL,
+  name VARCHAR(40),
+  sex CHAR CHECK (sex IN ('M', 'F')),
+  salary DECIMAL(10, 2),
+  CHECK (mngrsalary > salary),
+  PRIMARY KEY (ssn)
+);
+```
+
+### PostgreSQL - DROP TABLE
+
+- DROP TABLE - Exclui uma tabela existente de um banco de dados. Não pode ser excluída a tablea que possui algua referência. Neste caso, deve-se primeiro excluir a tabela que possui algum campo que a está referenciando e depois excluir a tabela inicial
+- DROP TABLE \<nome da tabela>
+- Exemplo
+
+```sql
+-- Apaga tabela Departamento
+DROP TABLE Departamento;
+```
+
+### PostgreSQL - ALTER TABLE
+
+- ALTER TABLE - Altera as definições de campos e de restrições
+
+```sql
+ALTER TABLE <nome da tabela>
+ADD <definição da coluna>
+ADD <restrição de integridade>
+ALTER <definição de coluna>
+ALTER <definição de coluna> DEFAULT <default-value>
+ALTER <definição de coluna> [NOT] NULL
+DROP <definição de coluna>
+DROP CONSTRAINT <noe da restrição>
+RENAME <novo nome>
+RENAME <atributo> TO <novo atributo>
+-- Onde <definição de coluna> pode ser:
+<Nome Atributo> <Tipo de Dado> [NULL] | [ DEFAULT default-value ]
+```
+
+### PostgreSQL - Objetivos de Criação de Índices
+
+- OBJETIVOS
+  - Restrições de integridade: chaves
+  - Desempenho: atributos frequentemente usados em comparações e cláusula WHERE)
+
+```sql
+CREATE [UNIQUE] INDEX nome_do_indice
+  ON tabela
+  [USING metodo_de_acesso]
+  (coluna [ nome_operador ] [, ...])
+  [WHERE predicado]
+```
+
+### PostgreSQL - sintaxe de criação de índices
+
+```sql
+CREATE [UNIQUE] INDEX nome_do_indice ON tabela
+  [USING metodo_de_acesso] (coluna [nome_operador] [, ...])
+  [WHERE predicado]
+```
+
+- metodo_de_acesso: BTREE; RTREE; HASH; GIST
+  - BTREE: para operadores <, <=, =, >=, >
+  - RTREE: para operadores espaciais, por exemplo, left of
+  - HASH: para operador de igualdade (=)
+  - GIST: operadores genéricos entre classes
+- nome_operador: operador usado na comparação, por exemplo, valor absoluto em BTREE
+- predicado: usado para índices parciais (seleção da tabela)
+
+### PostgreSQL - exemplos de criação de índices
+
+- Exemplos
+
+```sql
+CREATE INDEX ind_name
+  ON employee (fname, minit, lname)
+CREATE UNIQUE INDEX ind_pname
+  ON project (pname)
+```
+
+- OBS: antes de implementar um BD em nosso SGBD, vamos discutir alguns detalhes do servidor PostgreSQL
+
+### PostgreSQL - Arquitetura Cliente/Servidor
+
+- Servidor - processo postmaster
+  - acessa arquivos
+  - aceita conexões
+  - cria canal direto cliente/servidor
+- Cliente
+  - ferramenta textual, por exemplo, psql
+  - aplicação gráfica, por exemplo, pgadmin
+  - servidor web, por exemplo, apache rodando phpmyadmin
+
+### PostgreSQL - Criando o Ambiente no Servidor
+
+- Superusuário, geralmente o postgres
+- Criando um Cluster de BD:
+  - `[postgres]$ initdb-D <diretório>`
+- Configurando
+  - postgresql.conf: geral, como número de conexões
+  - pg_hba.conf: métodos de autenticação de conexões
+  - pg_ident.conf: mapeamento de ids de usuários do SO
+- Colocando o SGBD, que gerencia um Cluster de BD, no ar
+  - `[postgres]$ pg_ctl start -l <arquivo_log> -D <diretório>`
+
+### PostgreSQL - Criando um usuário
+
+```sql
+--Criando um usuário
+CREATE USER nome [[WITH] opções [...]]
+--Conexão via psql
+[postgres]$ psql template1
+```
+
+- Exemplo
+  - template1 => CREATE USER sbdgX
+  - template1 => PASSWORD 'pw.X.sbd'
+
+### PostgreSQL - Criando um banco de dados
+
+- Exemplo de um banco de dados criado para um usuário:
+  - template1 => CREATE DATABASE sbdX
+  - template1 => OWNER bccX
+
+### PostgreSQL - Controle de acesso - Grant
+
+```sql
+GRANT lista_privilegios
+  ON tipo_objetivo lista_objetos
+  TO lista_usuarios
+```
+
+- Exemplo
+
+```sql
+GRANT SELECT, DELETE
+  ON employee
+  TO joao
+```
+
+### PostgreSQL - Concedendo Privilégios
+
+- Privilégios de acordo com o objeto:
+  - TABLE: {{SELECT | INSERT | UPDATE | DELETE | RULE | REFERENCES | TRIGGER } [,...] | ALL [PRIVILEGES]}
+  - DATABASE: {{CREATE | TEMPORARY | TEMP } [,...] | ALL [PRIVILEGES]}
+  - FUNCTION {EXECUTE | ALL [PRIVILEGES]}
+  - LANGUAGE: {USAGE | ALL [PRIVILEGES]}
+  - SCHEMA: {{CREATE | USAGE} [,...] | ALL [PRIVILEGES]}
