@@ -723,3 +723,106 @@
 - Exemplo:
 
   ![afVazioAFND](images/afVazioAFND.png)
+
+## _**6. Expressão Regular - Formalismo Denotacional das Linguagens Regulares**_
+
+### Expressão Regular
+
+- toda LR pode ser descrita por uma
+  - Expressão Regular
+- formalismo
+  - simples
+  - denotacional (gerador)
+- definida a partir de
+  - conjuntos (linguagens) básicos
+  - operação de concatenação
+  - operação de união
+- são adequadas para a comunicação
+  - homem x homem
+  - homem x máquina
+- Exemplos
+  - aa
+  - ba*
+  - (a + b)*
+  - (a + b)\*aa(a + b)\*
+  - a\*ba\*ba\*
+  - (a + b)*(aa + bb)
+  - (a + $\varepsilon$)(b + ba)*
+
+### Definição de Expressão Regular
+
+- sobre um alfabeto $\Sigma$
+- indutivamente definida
+  - $\empty$ é ER e denota a linguagem vazia
+  - $\varepsilon$ é ER e denotada a linguagem {$\varepsilon$}
+  - x é ER onde x $\in \Sigma$ e denota a linguagem {x}
+  - ser r e s são ER e donotam as linguagens R e S, então:
+    - (r + s) é ER e denota R $\cup$ S
+    - (rs) é ER e denota RS
+    - (r*) é ER e denota R*
+
+#### Precedência entre Operadores
+
+- concatenação sucessiva tem precedência sobre
+  - concatenação
+  - união
+- concatenação tem precedência sobre
+  - união
+- Linguagem Gerada
+  - por uma ER r
+  - é representada por L(r) ou GERA(r)
+
+  ![tabelaER](images/tabelaER.png)
+
+### As ER denotam exatamente as LR
+
+- Teorema
+  - Se r é uma Er
+  - então GERA(r) é uma LR
+- Prova
+  - L é LR se somente se é possível construir um
+    - AF(AFD, AFN ou AF$_{\varepsilon}$), que reconheça L
+  - portanto, é necessário mostrar que,
+    - dado uma ER r qualquer
+    - é possível construir um AF m tal que
+    - ACEITA(M) = GERA(r)
+  - demonstração de que ACEITA(M) = GERA(r)
+    - indução no número de operadores
+  - é assumido que qualquer AF
+    - pode ser simulado por um AF com exatamente um estado final
+- Base (ER com zero operadores)
+  - Se r tem zero operadores, etnão é da forma:
+    - r = $\empty$
+    - r = $\varepsilon$
+    - r = x (x $\in \Sigma$)
+  - r = $\empty$. M1 = ($\empty$, {q0}, $\sigma_{1}$, q0, $\empty$)
+
+    ![ERvazio](images/ERvazio.png)
+  - r = $\varepsilon$. M2 = ($\empty$, {qf}, $\sigma_{2}$, qf, {qf})
+  
+    ![ERpalavraVazia](images/ERpalavraVazia.png)
+  - r = x. M3 = ({x}, {q0, qf}, $\sigma_{3}$, q0, {qf})
+
+    ![ERtoAF](images/ERtoAF.png)
+- Hipótese (ER com até n > 0 operadores)
+  - suponha que aé possível construir um autômato finito que aceita a linguagem Gera(r)
+- Indução (ER com n + 1 operadores)
+  - se r possui n + 1 operadores, então a ER pode ser representada por (r1 e r2 possuem ocnjuntamente no máximo n operadores)
+    - r = r1 + r2
+
+      ![ERtoAFprovaUnião](images/ERtoAFprovaUnião.png)
+    - r = r1r2
+
+      ![ERtoAFprovaConcat](images/ERtoAFprovaConcat.png)
+
+    - r = r1*
+
+      ![ERtoAFprovaKleene](images/ERtoAFprovaKleene.png)
+
+  - por hipótese de indução existem
+    - M1 = ($\Sigma_{1}$, Q1, $\sigma_{1}$, q01, {qf1}) tal que L(M1) = GERA(r1)
+    - M2 = ($\Sigma_{2}$, Q2, $\sigma_{2}$, q02, {qf2}) tal que L(M2) = GERA(r2)
+- Exemplo - Construir o AF que é equivalente à ER acima
+  - a*(aa + bb)
+
+    ![ERtoAFex](images/ERtoAFex.png)
