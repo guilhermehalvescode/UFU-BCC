@@ -280,7 +280,50 @@ _**Conceitos básicos:**_
 
 ### Exemplo de Criação de Processos/Threads
 
+#### Criando processos
+
 - Uso: pid_t fork(void);
 - A chamada de sistema fork() returna um valor zero para o filho e o valor do PID do filho para o Pai
 - O pai normalemente espera o filho terminar antes de encerrar (usando wait())
 - O filho retorna um status de término para o Pai
+- Após ser criado, um processo filho pode executar um novo programa (diferente do pai) por chamar exec().
+  - fork() e exec() são usadas em conjunto para executar um programa qualquer
+
+    ![forkExec](images/forkExec.png)
+- Outra chamada de sistemas usada para criação de processos é o **vfork()**
+  - Possui a mesma sintaxe de utilização do fork()
+- vfork() bloqueia o processo Pai até que o filho chame exec()
+- É uma chamada criada para evitar o overhead de um fork() para processos que irão invocar exec()
+
+#### Criando Threads (pthreads)
+
+- Uso:
+
+```c
+#include <pthread.h>
+int pthread_create(pthread_t * thread, const pthread_attr_t * attr, void * (*start_routine)(void *), void * arg);
+```
+
+- thread - retorna o thread id
+- attr - NULL para os valores default
+- start_routine - ponteiro para a função que será executada pela thread
+- arq - ponteiro para o argumento da função. Para passar múltiplos argumentos, use um ponteiro para estrutura (struct)
+
+- Uso:
+
+```c
+#include <pthread.h>
+int pthread_join(pthread_t * th, void ** thread_return);
+```
+
+- th - thread chamadora suspensa até que a thread identificada por th termina
+- thread_return - Se o retorno da thread th é diferente de NULL, então o valor de retorno é armazenado em thread_return
+
+- Uso:
+
+```c
+#include <pthread.h>
+int pthread_exit(void * retval);
+```
+- retval - valor de retorno da thread
+- Essa rotina encerra a thread, portanto, ela nunca retorna
