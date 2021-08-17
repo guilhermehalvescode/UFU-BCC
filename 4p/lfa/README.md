@@ -826,3 +826,11 @@
   - a*(aa + bb)
 
     ![ERtoAFex](images/ERtoAFex.png)
+
+## *Gramática Regular*
+
+- G(V, T, P, S) é Regular, se toda produção em P é da forma:
+  - A => wB ou A => Bw ou A => w com A $\in$ V, B $\in$ V e w $\in$ T$^*$, ou seja:
+    - Uma variável na esquerda e no máximo uma variável à direita (a variável a direita não pode ser precedida e sucedida ao mesmo tempo por terminais)
+
+### *Gramática Linear*
