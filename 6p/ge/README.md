@@ -83,3 +83,15 @@
 ## **Forças Competitivas**
 
   ![forcasCompetitivas](images/forcasCompetitivas.png)
+
+## **Análise SWOT**
+
+- Esta análise tira uma fotografia da situação do momento da empresa
+- Antes de fazer a matriz SWOT, é necessário uma análise externa/interna da empresa
+  - Análise externa: identificar as principais oportunidades e ameaças da empresa
+  - Análise interna: identificar os principais pontos fortes e fracos da organização
+- Passos:
+  1. Elencar os pontos fortes + fracos e as oportunidades + ameaças (a partir da análise de recursos e capacidades internos + análise do macro e microambiente externo)
+  2. Montar a matriz SWOT fazendo a relação entre os pontos do ambiente interno com os pontos externos
+  3. Fazer a análise SWOT propriamente dita
+  4. Definir as estratégias a partir da análise da matriz
