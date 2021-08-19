@@ -1194,3 +1194,185 @@ GRANT SELECT, DELETE
   - FUNCTION {EXECUTE | ALL [PRIVILEGES]}
   - LANGUAGE: {USAGE | ALL [PRIVILEGES]}
   - SCHEMA: {{CREATE | USAGE} [,...] | ALL [PRIVILEGES]}
+
+## _*Álgebra Relacional*_
+
+### Álgebra e Cálculo Relacional no Modelo R
+
+- São as linguagens formais do Modelo R
+- Álgebra Relacional (AR): conjunto básico de operações do modelo R
+- Expressão da Álgrebra Relacional: uma sequência de operações da AR
+- Usada na implementação de consultas por processadores de consultas dos SGBD Relacionais
+- Cálculo Relacional (CR): uma linguagem declarativa formal
+
+### Álgebra e Cálculo Relacional no Modelo R - Notação
+
+- R, S: símbolos de relação
+- F: uma fórmula do cálculo de predicados de primeira ordem, i.e.:
+  - Alfabeto de símbolos: variáveis, constantes, funções, símbolos de predicados, parênctesis, conectivos lógicos (^, v, -|, ->, <->) e quantificadores (existe, para qualquer)
+  - Termo: é uma constante ou variável. Sendo f uma função n-ária de t1, t2, , ..., tn termos, então f(t1, t2, ..., tn) também é um termo
+  - Fórmula atômica: P(t1, t2, ..., tn) onde P é um símbolo de predicado n-ário
+  - Fórmula bem formada(fbf): se wi wj são fbfs então tabmém são fbfs:
+    - (wi), (wj) e todas as combinações desses com os conectivos lógicos
+    - Obs: As variáveis em fbf pode mser livres ou vinculadas a um dos dois quantificadores (existe), (para qualquer)
+
+### Álgebra Relacional - BD de Exemplo
+
+- Seja a instância abaixo do Esquema C(emp, proj, asg, pay)
+
+  ![AREx](images/AREx.png)
+
+### Álgebra Relacional - Fundamentos
+
+- Operações derivadas da teoria de conjuntos são definidas sobre relações
+- Operadores fundamentais:
+  - UNÁRIOS: seleção, projeção
+  - BINÁRIOS: união, diferença, produto cartesiano
+- Operadores adicionais: intersecção, junção 0, junção natural, semijunção, quociente
+- Outros operadores: junção externa, união externa, fecho transitivo
+
+### Álgebra Relacional - Seleção
+
+- Def: a Seleção sigmaf(R) retorna o subconjunto de truplas de R que satisfazem a fóŕmula F. Pode ser vista como uma partição horizontal de R
+- F é chamado predicado da seleção
+- F contêm termos do tipo (A 0 c) ligados por conectores onde
+  - A é um atributo de R
+  - 0 é um dos seguintes operadores: <, >, =, !=, =<, >=
+  - c uma constante
+  - conectores pode ser ^ , v e -| (negação)
+- Exemplo
+
+  ![ARSelecaoEx](images/ARSelecaoEx.png)
+
+### Álgebra Relacional - Projeção
+
+- Def: a Projeação pi*A,B*(R) retorna tuplas de R sob esquema (A, B). Pode ser vista como uma partição vertical de R
+- Exemplo Projeação: pi*pno, budget*(proj)
+
+  ![ARProjecaoEx](images/ARProjecaoEx.png)
+
+### Álgebra Relacional - Projeção - Considerações
+
+- O resultado de uma expressão da AR é um conjunt ode truplas distintas!
+- No caso da projeção, deve-se eliminar as tuplas repetidas, caso existam
+- Veja, por exemplo, em pi*eno*(asg)
+
+### AR - Sequência de operações
+
+- Como recuperar o código e nome dos engenheiros mecânicos?
+  - Alternativa 1: expressão da AR
+    - pi*eno, ename*(sigma*title*='Mech. Eng'(emp))
+  - Alternativa 2: sequência explícita de operações
+    - EMEC <- sigma*title*='Mech. Eng'(emp)
+    - R <- pi*eno, ename*(EMEC)
+
+### AR - Renomeando atributos/relação
+
+- R(código, nome) <- pi*eno, ename*(emp)
+  - Renomeando a relação: ps(R)
+  - Renomeando os atributos: p*eno, ename*(R)
+  - Renomeando a relação e seus atributos: p*S(eno, name)*(R)
+
+### AR - Operações binárias com conjuntos
+
+- Considerações sobre a União, Intersecção e Diferença ou subtração
+- Def: Compatibilidade de tipo: duas relações R(A1, A2, ..., An) e S(B1, B2, ..., Bm) são compatíveis se tiverem o mesmo grau, i.e. m = n, e para todo 1 <= i <= n dom(Ai) = dom(Bi)
+
+### Álgebra Relacional - União
+
+- Def: a União R U S retorna o conjutno das tuplas que estão em R ou que estão em S, considerando os esquemas de R e S compatíveis
+
+### Álgebra Relacional - União e Sequência de Op
+
+- Recuperar o código dos empregados cujo cargo seja de "Engenheiro" ou que sejam "Gerentes" de algum projeto:
+  - ENG <- sigma*title*='Elect. Eng.' v title='Mech. Eng'(emp)
+  - R1 <- pi*eno*(ENG)
+  - GER <- sigma*resp*='Manager'(asg)
+  - R2 <- pi*eno*(GER)
+  - R <- R1 U R2
+
+### Álgebra Relacional - Diferença
+
+- Def: a Diferença R - S retorna o conjunto das tuplas que estão em R mas não estão em S
+
+### Álgebra Relacional - Intersecção
+
+- Def: A Intersecção R intersec S retorna o conjunto das tuplas que estão em R e em S
+
+### Álgebra Relacional - Produto Cartesiano
+
+- Def: o Produto Cartesiano R x S retorna o conjunto de tuplas formadas pela concatenação de cada tupla de R com todas as tuplas de S
+- Sendo (r, s) os graus das relações (R, S), respectivamente, (R x S) será uma relação de grau r + s
+
+### Álgebra Relacional - Produto Cartesiano - Exemplo
+
+![ARprodCartEx](images/ARprodCartEx.png)
+
+### AR - Conjunto completo de operações
+
+- O conjunto de operações {sigma, pi, U, p, -, x} é um conjunto completo, ou seja, qualquer operação da AR pode ser expresa como uma sequência dessas operações, por exemplo: R intesec S = (R U S) - ((R - S) U (S - R)), obs: (R - S) U (S - R) é o todo menos a intersec
+
+### Álgebra Relacional - Junção
+
+- Def: a Junção 0 é denotada por R cone f S e pode ser definida como sigmaf(R x S), onde F é do tipo (R.A 0 S.B) sendo A e B atributos de R e S respectivamente. Também chamada junção interna (inner join)
+  - Se F é do tipo (R.A=S.B) a junção 0 é chamada equijunção
+  - Se F é do tipo (R.A=S.A) e dom(R.A)=dom(S.A), então a equijunção é chamada de junção natural. Em junção natural haverá apenas uma projeção no resultado final, aparecendo apenas uma das duas colunas de F.
+  - A junção natural pode ser denotada por R cone em a S
+
+### Álgebra Relacional - Junção - Exemplo
+
+![ARJuncaoEx](images/ARJuncaoEx.png)
+
+### Álgebra Relacional - Junção Externa
+
+- Def: a Junção Externa (outer join) entre R e S mantem na relação resultante tuplas que não têm correspondência na junção, sendo:
+  - Junção externa à esquerda, R _cone S, mantém tuplas R sem correspondência em S com NULLS nos atributos de S
+  - Junção externa à direita, R cone_ S, mantêm tuplas de S sem correspondência em R com NULLS nos atributos de R
+  - Junção externa completa, R \_cone\_ S, mantêm tuplas de R e S sem correspondência com S e R, respectivamente, com NULLS atributos S e R, respectivamente
+
+### Álgebra Relacional - Semi Junção
+
+- Def: a Semi junção R semijunção*f* em S é definida por pi*r*(R cone*f* S) e retorna o subconjunto das tuplas de R que participam de R cone*f* S
+- É utilizada para reduzir o acesso a disco em BD centralizado e como estratégia para reduzir comunicação com DB distribuídos
+
+### Álgebra Relacional - Divisão
+
+- Def: a Divisão R divido por S, sendo (r, s) os graus das relações (R, S), respectivamente, com r > s > 0, retorna o conjunto das (r - s)-tuplas t, tais que para toda s-tupla u de S a r-tupla tu, formada pela concatenação de t e u, está em R.
+- Sendo A o conjunt ode atributos de R que não estão em S (esquema R-S), então:
+  - R dividido por S = pi*A*(R) - pi*A*((pi*A*(R) x S) - R)
+
+### Álgebra Relacional - Divisão - Exemplo
+
+  ![ARdivEx](images/ARdivEx.png)
+
+### Álgebra Relacional - Expressões - Exemplo 1
+
+- Qual o nome dos funcionários que trabalham no projeto "CAD/CAM" ?
+- pi*ENAME*(((sigma*PNAME='CAD/CAM'*PROJ) inner join *pno* ASG) inner join *ENO* EMP)
+- Uma solução com relações intermediários menores é:
+  - pi*ENAME*(EMP semijunção*ENO* (pi*ENO*(ASG semijunção *PNO* (sigma*PNAME='CAD/CAM'*PROJ))))
+
+### Álgebra Relacional - Expressões - Exemplo 2
+
+- Atualizar o salário dos programadores (TITLE = 'Programmer') para 25000
+- (PAY - (sigma*TITLE*PAY)) U (\<Programmer, 25000>)
+- Para inserir tuplas basta usar União
+
+### Álgebra Relacional - Árvore de Consulta
+
+- Def: uma árvore de consulta é uma estrutura de dados em árvore que representa uma expressão da álgebra relacional
+
+  ![ARconsultaEx](images/ARconsultaEx.png)
+
+### Álgebra Relacional - Árvore de Consulta - Exemplo
+
+![ARArvoreEx](images/ARArvoreEx.png)
+
+### AR - Outras operações
+
+- Uso de expressões em projeções
+- Função de agregação e agrupamento
+- Fecho transitivo:
+  - Como recuperar o ssn dos empregados da hierarquia de um supervisor
+  - Necessita uma mecanismo de Loop ou Recursão que não está especificado na AR
+- Veremos em SQL
