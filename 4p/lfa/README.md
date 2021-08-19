@@ -834,3 +834,45 @@
     - Uma variável na esquerda e no máximo uma variável à direita (a variável a direita não pode ser precedida e sucedida ao mesmo tempo por terminais)
 
 ### *Gramática Linear*
+
+- Seja G = (V, T, P, S) uma gramática e
+  - sejam A, B $\in$ V (variáveis)
+  - w $\in$ T* (palavras de símbolos terminais)
+  - Então G é
+- Gramática Linear à Direita (GLD)
+  - A -> wB ou
+  - B -> w
+- Gramática Linear à Esquerda (GLE)
+  - A -> Bw ou
+  - A -> W
+- Gramática Linear Unitária à Direita (GLUD)
+  - como na linear à direita
+  - adicionalmente, |w| <= 1
+- Gramática Linear Unitária à Esquerda (GLUE)
+  - como na linear à esquerda
+  - adicionalmente, |w| <= 1
+- Exemplo
+
+  ![ExERemGR](images/ExERemGR.png)
+
+### *Equivalência Gramática Regular (GLUD) e AF(AF$_{\varepsilon}$)*
+
+- suponha G = (V, T, P, S) uma GLUD
+- seja AF$_{\varepsilon}$M = (R, Q, $\sigma$, F) tal que
+  - R = T
+  - Q = V U {qf}
+  - F = {qf}
+  - q0 = S
+  - $\sigma$ é como segue (TO-DO)
+
+## *Minimização de Autômatos Finitos Determinísticos*
+
+- Objetivo
+  - gerar um AF equivalente
+  - com o menor número de estados possível
+- O autômato mínimo é único
+  - a minimização de AF distintos
+    - que aceitam a mesma linguagem
+    - geram o mesmo AF mínimo
+- Idéia básica do algoritmo
+  - unificar os estados equivalentes (TO-DO)
