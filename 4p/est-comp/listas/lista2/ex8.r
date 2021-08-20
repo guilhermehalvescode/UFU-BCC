@@ -1,4 +1,3 @@
-# dúvida
 tamanho.seq = function(p) {
   # 0 = cara, 1 = coroa
   caras = 0;

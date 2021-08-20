@@ -6,24 +6,15 @@
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <pthread.h>
 #define MAX 1000
 
 typedef unsigned long int uli;
 
-
-// proc file counter
-int proc_files = 0; 
-void* callback(void* arg);
 uli readdir_count(char* path);
 uli multiprocs(char* path);
 int main() {
   printf("Numero total de arquivos em: %lu\n", multiprocs("/"));
   return 0;
-}
-
-void* callback(void * arg) {
-  proc_files += readdir_count((char*) arg);
 }
 
 uli readdir_count(char* path) {
@@ -53,7 +44,7 @@ uli readdir_count(char* path) {
 uli multiprocs(char* path) {
   DIR* dir = opendir(path);
   if(!dir) return -1;
-  int nProc = get_nprocs_conf() - 1, i, j, dirs = 0, res, files = 0;
+  int nProc = get_nprocs_conf() - 1, i, j, files = 0, dirs = 0, res;
   if(nProc == 0) nProc = 1;
   struct dirent* file; 
   while(file = readdir(dir)) {
@@ -76,8 +67,7 @@ uli multiprocs(char* path) {
     ) continue;
     strcpy(names[i++], file->d_name);
   }
-  // Each process has 2 threads
-  for(i = 0; i < dirs; i += (nProc + 1) * 2) {
+  for(i = 0; i < dirs; i += nProc + 1) {
     // start 'nProc' procs
     for(j = 0; j < nProc; j++) {
       if(!fork()) break;
@@ -89,20 +79,13 @@ uli multiprocs(char* path) {
     strcat(arqName, num);
     strcat(arqName, ".txt");
     FILE* arq = fopen(arqName, "w");
-    if(arq && i + (j * 2) + 1 < dirs) {
-      char newDir[MAX], threadDir[MAX];
-      pthread_t tid;
+    if(arq && i + j < dirs) {
+      char newDir[MAX];
       strcpy(newDir, path);
-      strcpy(threadDir, path);
-      strcat(newDir, names[i + (j * 2)]);
-      strcat(threadDir, names[i + (j * 2) + 1]);
+      strcat(newDir, names[i + j]);
       strcat(newDir, "/");
-      strcat(threadDir, "/");
-      proc_files = 0;
-      pthread_create(&tid, NULL, callback, (void*) threadDir);
-      res = readdir_count(newDir);
-      pthread_join(tid, NULL);
-      fprintf(arq, "%d", res + proc_files);
+      int res = readdir_count(newDir);
+      fprintf(arq, "%d", res);
     }
     fclose(arq);
     //if child, exit;
@@ -116,8 +99,8 @@ uli multiprocs(char* path) {
       num[1] = '\0'; 
       strcat(arqName, num);
       strcat(arqName, ".txt");
-      FILE* arq = fopen(arqName, "r");
       res = 0;
+      FILE* arq = fopen(arqName, "r");
       if(arq) {
         fscanf(arq, "%d", &res);
         files += res;
