@@ -833,7 +833,7 @@
   - A => wB ou A => Bw ou A => w com A $\in$ V, B $\in$ V e w $\in$ T$^*$, ou seja:
     - Uma variável na esquerda e no máximo uma variável à direita (a variável a direita não pode ser precedida e sucedida ao mesmo tempo por terminais)
 
-### *Gramática Linear*
+### Gramática Linear
 
 - Seja G = (V, T, P, S) uma gramática e
   - sejam A, B $\in$ V (variáveis)
@@ -855,7 +855,7 @@
 
   ![ExERemGR](images/ExERemGR.png)
 
-### *Equivalência Gramática Regular (GLUD) e AF(AF$_{\varepsilon}$)*
+### Equivalência Gramática Regular (GLUD) e AF(AF$_{\varepsilon}$)
 
 - suponha G = (V, T, P, S) uma GLUD
 - seja AF$_{\varepsilon}$M = (R, Q, $\sigma$, F) tal que
@@ -863,7 +863,25 @@
   - Q = V U {qf}
   - F = {qf}
   - q0 = S
-  - $\sigma$ é como segue (TO-DO)
+  - $\sigma$ é como segue
+
+    ![GLUDtoAFe](images/GLUDtoAFe.png)
+- Exemplo
+
+  ![GLUDtoAFeExemplo](images/GLUDtoAFeExemplo.png)
+
+### Equivalência AF (AFD) e Gramática Regular (GLUD)
+
+- Suponha AFD M = ($\Sigma$, Q, $\sigma$, q0, F) tal que ACEITA(M) = G
+- Seja G = (V, T, P, S) uma GLUD tal que
+  - V = Q U {S}
+  - T = R
+  - P é tal que (suponha qi, qk $\in$ Q, a $\in$ R e qf $\in$ F)
+
+    ![AFDtoGLUD](images/AFDtoGLUD.png)
+- Exemplo
+
+  ![AFDtoGLUDex](images/AFDtoGLUDex.png)
 
 ## *Minimização de Autômatos Finitos Determinísticos*
 
@@ -875,4 +893,57 @@
     - que aceitam a mesma linguagem
     - geram o mesmo AF mínimo
 - Idéia básica do algoritmo
-  - unificar os estados equivalentes (TO-DO)
+  - unificar os estados equivalentes
+
+### Estados Equivalentes
+
+- q e p são equivalente se e somente se:
+  - para qualquer W,
+  - $\sigma$(q, w) e $\sigma$(p, w)
+  - resultam simultaneamente em estados finais, ou não finais
+- ou seja
+  - processamento de uma entrada qualquer
+  - a partir de estados equivalentes
+  - gera o mesmo resultado aceita/rejeita
+
+### Pré-Requisitos do Algoritmo
+
+- AF deve ser determinístico
+- não pode ter estados inacessíveis
+  - não-atingíveis a partir do estado inicial
+- a função programma deve ser total
+
+### Caso o AF não satisfaça algum dos pré-requisitos
+
+- gerar um AFD equivalente
+  - algoritmos introduzidos nos teoremas
+- eliminar os estados inacessíveis e suas correspondentes transições
+- função programa total
+  - introduzir um novo estado não-final d
+  - incluir as transições não-previstas, tendo como resultado o estado d
+  - incluir um ciclo em d para todos os símbolos do alfabeto
+
+### Algoritmo de Minimização pelo Particionamento da Tabela de Transição (Transparência Extra)
+
+- Exemplo
+
+  ![exAFDmin](images/exAFDmin.png)
+
+- Um dos primeiros passos que devemos realizar é eliminar todos os estados inacessíveiss do autômato
+
+  ![stateTree](images/stateTree.png)
+  ![AFDmin](images/AFDmin.png)
+  ![AFDminproc](images/AFDminproc.png)
+- Este é o passo principal (o algoritmo em si), que busca refinar as classes de esquivalência até se obter os estados equivalentes, que podem ser simplificados
+- A cada partição, um novo tamanho de palavra é analisado e as respostas dos estados de uma mesma classe são observadas. Se forem as mesmas respostas (aceita/rejeita), os estados permanecem na mesma classe. Caso contrária, a classe deve ser dividida em 2 ou mais classes
+
+  ![AFDminpartes](images/AFDminpartes.png)
+- Passo final: Obtenção do AF mínimo
+  - A tabela de transição do AF mínimo é dada pelas transições das últimas classes de equivalência obtidas nas 2 últimas partições
+
+  ![AFDminFINAL](images/AFDminFINAL.png)
+  ![esAFmin](images/esAFmin.png)
+  ![esInicialAFmin](images/esInicialAFmin.png)
+  ![esFinaisAFmin](images/esFinaisAFmin.png)
+  ![esTransAFmin](images/esTransAFmin.png)
+  ![AFminFim](images/AFminFim.png)
