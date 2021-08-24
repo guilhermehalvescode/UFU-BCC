@@ -325,5 +325,97 @@ int pthread_join(pthread_t * th, void ** thread_return);
 #include <pthread.h>
 int pthread_exit(void * retval);
 ```
+
 - retval - valor de retorno da thread
 - Essa rotina encerra a thread, portanto, ela nunca retorna
+
+## **Comunicação entre processos(IPC)**
+
+### Introdução
+
+- Inúmeras aplicações são programadas em forma de vários processos cooperantes
+- Estes processos cooperam entre si compartilhando recursos e informações
+- O kernel do SO deve prover os mecanismos necessários para estas implementações
+- Estes mecanimos são comumente chamados de IPC
+- Processo A <-> Processo B, é uma abstração mas as informações passam pelo SO
+
+### Propósitos Principais
+
+- Transferência de Dados
+  - Ex: FTP, ICQ, etc.
+- Compartilhamento de Dados
+  - Ex: Variáveis de controle entre processos cooperantes
+- Notificação de Eventos
+  - Ex: O Processo filho notifica seu processo pai de sua conclusão
+- Compartilhamento de Recursos
+  - Ex: Gerenciamento de fila de impressão
+- Controle de Processos
+  - Ex: Depuração de um processo em tempo de execução (debugging)
+
+### Aplicações
+
+- Sistemas Servidores:
+  - WEB
+  - email
+  - Impressão
+  - Arquivo, etc.
+- Sistemas Comerciais:
+  - Controle de conta corrente
+  - Controle de estoque
+  - Controle de passagens (avião, ônibus, etc.)
+  - etc...
+
+### Modelo Produto-Consumidor
+
+![ipcModel](images/ipcModel.png)
+
+### Exemplo de Utilização Modelo Produto-Consumidor
+
+- MS-DOS:
+  - C:\type texto.txt | more
+- UNIX:
+  - % cat texto.txt | more
+  - % ls -l | grep filename | wc -l
+- "Pipe é um exemplo de mecanismo, fornecido pelo sistema operacional, para a realização de IPC"
+- Outros mecasnismos:
+  - Shared memory
+  - Signals
+  - Semaphores
+  - Message Passing/ Message Queues
+  - Ports
+
+### Mecanismos de IPC
+
+- Como um processo comunica con outro?
+  - Signal: Um processo notifica outro através de uma interrupção de software (Ex. kill do unix)
+  - Semaphore: Processos bloqueados, aguardando sua vez, recebem uma notificação (signal)
+  - Pipes: Fluxo de comunicação unidirecional
+  - Message passing: Processos enviam e recebem mensagens (send/receive), podendo a comunicação ser individual (dois processos) ou em grupo
+
+### Exemplos de Aplicação
+
+- SIGNAL
+  - Similar a uma interrupção de hardware
+  - A comunicação se dá de forma assíncrona. O processo que recebe o sinal para sua execução
+  - Alarmes (ex. unix alarm()) é uma forma de programar recepção de sinais enviados pelo SO
+  - É comum o SO avisar a aplicação de eventos do sistema, tais como: (disk quota, CPU time, divide by zero, etc.) através de sinais
+- SEMAPHORE
+  - Utilizado para sincronização de processos
+  - A interface do semáforo é visível por todos os processos comunicantes
+  - Garante atomicidade das operações
+  - Utilizado para implementar a exclusão mútua de processos
+- PIPE
+  - Um processo escreve e o segundo processo efetua a leitura (ex. % ls | more)
+
+    ![exPipe](images/exPipe.png)
+  - shell:
+    1. Cria um pipe
+    2. Cria um processo para o comando (ls), configura a saída (stdout) de ls para escrever no pipe
+    3. Cria um processo para o comando (more), configura a entrada (stdin) de more para ler do pipe
+- MESSAGING PASSING
+  - Processos enviam e recebem mensagens através de primitivas de comunicação (send/receive)
+  - A comunicação pode ser síncrona ou assíncrona
+  - A comunicação pode ocorrer entre dois processos ou em grupo
+  - A comunicação pode ser realizada no mesmo sistema (LPC - local process communication) ou entre sistemas remotos (RPC - remote process communication)
+
+  ![messagePassingEx](images/messagePassingEx.png)
