@@ -905,3 +905,148 @@
 - "factível", se a taxa do canal e S bpc, o transmissor pode transmitir S bits, para então se preocupar com o reconhecimento
   - se cada primitiva tem "N" bits, a melhor janela e "S/N", mas ressalvando a importância de garantir que "N < S".
   - janela maiores do que "S/N" representam desperdício!
+
+## Redes de Computadores (Introdução)
+
+### 1. Conceitos Básicos e Aplicações Típicas
+
+- Definição: conjunto de computadores autônomos e interconectados
+  - ao exigir que os computadores sejam autônamos, excluímos da nossa definiçã mestre/escravo
+- classificação quanto a extensão geográfica
+  - LAN - Local Area Network - (10m a 1 km)
+  - CAN - Campus Area Network - (1km a 10km)
+  - MAN - Metropolitan Area Network - (5km a 100km)
+  - WAN - Wide Area Network - (100 a 5000km)
+- classificação quanto às máquinas:
+  - Homogêneas - computadores idênticos
+  - Heterogêneas - computadores não idênticos
+- Não se deve confundir redes de computadores com sistemas distribuídos, dado que tais sistemas constituem um caso especial das redes de computadores
+- sistema distribuído: a distinção chave é a de que a existência de múltiplos computadores é transparente, ou seja, não visível para o usuário
+  - em um sistema distribuído, o *software* apresenta alto grau de coesão e transparência, especialmente no nível do sistema operacional
+- Não obstante, há muitas intersecções entre os dois temas, p.ex., em ambos há a necessidade de manipulação de arquivos
+  - a diferença está em como isto se dá!
+- Benefícios decorrentes das Redes de Computadores
+  - compartilhamento de informações e recursos
+  - crescimento da capacidade de processamento
+  - diversidade de equipamentos e liberdade de escoha
+  - aumento de confiabilidade
+  - processamento de informação *in loco*
+  - um meio alternativo de comunicação
+- Impacto produzido pela Tecnologia de Rede:
+  - Ensino/Pesquisa
+  - Produção e Serviços
+  - Administração
+- Empresas de Telecomunicações - serviços de comunicação de dados:
+  - RENPAC - Rede Nacional de Comutação de Pacotes
+  - Serviços Multimídia - Áudio e Vídeo
+  - CAD cooperativo, Teleconferência, Telemedicina
+
+### 2. Estruturas de Redes de Computadores
+
+- utilizaremos a terminologia utilizada na Rede ARPANET (Advanced Research Project Agency Network)
+
+  ![ARPANETterms](images/ARPANETterms.png)
+- separando-se os aspectos da comunicação na rede (subrede) dos aspectos da aplicação (hosts), o projeto da rede pode ser simplificado
+
+![topologiasEx](images/topologiasEx.png)
+
+### 3. Arquiteturas de Redes de Computadores
+
+- para reduzir a complexidade no projeto, as redes são organizadas como uma série de camadas ou níveis, cada qual construída a sua predecessora
+
+![arcLayers](images/arcLayers.png)
+
+- exemplo: como prover comunicação para a última camada de uma rede estratificada em 7 camadas
+
+![7layerArc](images/7layerArc.png)
+
+- um aspecto importante que precisa ser ben entendido é a relação entre comunicação virtual e real bem como a diferença entre protocolos e interfaces
+- sem a abstração de processos pares, é muito difícil senão impossível o particionamento do projeto integral da rede em problemas menores e gerenciáveis
+- Alguns aspectos essenciais do projeto de redes de computadores estão presentes em várias das camadas, dentre eles destacamos
+  - toda camada deve prover um mecanismo para estabelecer conexão
+  - outro aspecto, diz respeito às regras que governam a transferência de dados, ou seja, simplex-communication, half-duples ou full-duplex
+  - tratamento de erros é igualmente importante, dado que circuitos que possibilitam a comunicação física não são perfeitos
+  - nem todos os canais de comunicação preservam a ordem de envio das mensagens
+  - inabilidade de tratar mensagens longas, exigindo mecanismos de desmontagem, transmisão e remontagem da mensagem
+
+### 4. Modelo OSI (Open System Interconnection)
+
+![OSImodel](images/OSImodel.png)
+
+#### Camada Física
+
+- Intimamente relacionada com o meio físico empregado: fibra óptico, cabo coxial, par trançado
+- Gera sinais elétricos, óticos ou eletromagnéticos para serem propagados
+- Função do protocolo da Camada Física:
+  - especificar qual a duração e intensidade do sinal
+  - técnica de multiplexação
+  - pinagem
+
+![hwLayer](images/hwLayer.png)
+
+#### Camada de Enlace
+
+- Utiliza a Camada Física para transmissão dos *data frames*
+- *Data Frames* são delimitados por sequências pré-estabelecidas
+- Transmite (Recebe) *data frames* aguardando (enviando) o respectivo quadro de reconhecimento
+- Algumas características do protocolo:
+  - transmissão não confiável (mesmo com reconhecimento de recepção)
+  - *data frames* podem ser duplicados ao chegar fora de ordem
+  - duplicações geralmente ocorrem quando o *data frame* de reconhecimento é deformado na transmissão
+  - controla o fluxo de *data frames*, evitando que um *host* envie quadros em uma taxa superior a que o receptor é capaz de processar
+
+#### Camada de Rede
+
+- Controla a operação da subrede
+- Algumas de suas Funções:
+  - roteamento de pacotes de *host* origem ao *host* destino
+  - o roteamento pode apresentar características dinâmicas ou estáticas
+  - fragmentação e remontagem de pacotes para atender limites impostos
+- Nota: em subredes de difusão esta camada é extremamente simples, uma vez que a principal função (roteamento) é inexistente
+
+![roteamentoEx](images/roteamentoEx.png)
+
+#### Camada de Transporte
+
+- Algumas de suas Funções:
+  - receber dados da camada de sessão
+  - particionar estes dados em unidades menores
+  - garantir envio de dados sem duplicação e na ordem correta
+- Possui 2 tipos de serviços:
+  - serviço rápico com mensagens de tamanho limitado e sem garantia de entrega, ordem ou ausência de duplicação
+  - serviço mais lento, porém altamente confiável e sem limites de tamanho de mensagens
+- É a primeira camada a promover comunicação *host-host*, assim controla o fluxo de dados entre 2 processos comunicantes
+
+#### Camada de Sessão
+
+- Permite que 2 *Application Process - APs* estabeleçam sessões entre si a fim de organizar e sincronizar a troca de informação
+- Conexão de Sessão => definição das regras de diálogo entre 2 APs
+  - Two Way Simultaneous (TWS)
+  - Two Way Alternate (TWA)
+  - One Way (OW)
+
+#### Camada de Apresentação
+
+- Serviços oferecidos:
+  - representação canônica de dados
+  - compressão de dados
+  - criptografia
+- Necessidade da Representação Canônica de Dados:
+  - quando arquiteturas diferentes devem se comunicar
+- Compressão é útil para o envio de grandes massas de dados
+- Criptografia é utilizada quando os dados são confidenciais
+
+#### Camada de Aplicação
+
+- Dispõe de serviços comumente utilizados por usuários de redes
+  - correio eletrônico
+  - *login* remoto
+  - serviços de diretório
+  - submissão de *jobs* remotos
+- Também se constitui em postos de acesso à rede por APs
+- *Application Program Interface - APIs* (em vias de padronização)
+  - são bibliotecas de funções para envio/recepção de mensagens
+
+### 4. Serviços e Protocolos do Modelo OSI
+
+- Modelo de Referência permite a especificação de várias Classes de Serviço
