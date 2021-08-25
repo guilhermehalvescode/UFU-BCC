@@ -950,6 +950,13 @@
 
 ![topologiasEx](images/topologiasEx.png)
 
+- "topologia típica" - de difusão da subrede de comunicação e na qual a informação transmitida é recebida por todos os dispositivos na rede
+- "domínio de colisão" - segmento lógico onde os pacotes transmitidos por elementos pertencentes a ele podem colidir uns com os outros
+- "colisão" - duas ou mais estações pertencentes ao mesmo segmento compartilhados de rede transmitem simultaneamente
+- "domínio broadcast" - conjunto de dispositivos que recebem qualquer pacote (unidade de informação da camada de rede) broadcast originário de qualquer dispositivo dentro do segmento de rede
+  - domínio broadcast pode ser segmentado através de VLANs, como será comentado mais a frente
+  - domínio broadcast pode ser segmentado por um roteador, no qual cada porta do roteador representa um domínio broadcast distinto. como será comentado mais a frente
+
 ### 3. Arquiteturas de Redes de Computadores
 
 - para reduzir a complexidade no projeto, as redes são organizadas como uma série de camadas ou níveis, cada qual construída a sua predecessora
@@ -960,7 +967,7 @@
 
 ![7layerArc](images/7layerArc.png)
 
-- um aspecto importante que precisa ser ben entendido é a relação entre comunicação virtual e real bem como a diferença entre protocolos e interfaces
+- um aspecto importante que precisa ser bem entendido é a relação entre comunicação virtual e real bem como a diferença entre protocolos e interfaces
 - sem a abstração de processos pares, é muito difícil senão impossível o particionamento do projeto integral da rede em problemas menores e gerenciáveis
 - Alguns aspectos essenciais do projeto de redes de computadores estão presentes em várias das camadas, dentre eles destacamos
   - toda camada deve prover um mecanismo para estabelecer conexão
@@ -1047,6 +1054,257 @@
 - *Application Program Interface - APIs* (em vias de padronização)
   - são bibliotecas de funções para envio/recepção de mensagens
 
-### 4. Serviços e Protocolos do Modelo OSI
+### 5. Serviços e Protocolos do Modelo OSI
 
-- Modelo de Referência permite a especificação de várias Classes de Serviço
+- "Modelo de Referência" permite a especificação de várias "Classes de Serviço", enquanto que uma Classe de Serviço permite a especificação de várias "Classes de Protocolos".
+  - no nível mais baixo de abstração, tem-se a implementação do protocolo, mais especificamente, tantas implementações quanto possíveis face as tecnologias utilizadas
+
+  ![protClasses](images/protClasses.png)
+- RM-OSI - propõe a estratificação da pilha de comunicação em camadas horizontais cuja finalidade consiste
+  - permite uma discussão da interação entre elementos pares
+  - desenvolvimento incremental dos serviços de cada camada
+  - sistema aberto pode ser visto como sucessão de sub-sistemas
+- "entidades" - são elementos ativos em cada camada
+  - entidades na Ln (Camada N) implementam serviços usados na L(n+1) (Camada N + 1), ou seja, Ln provê serviços para a L(n + 1)
+  - entidades na Camada N + 1 (L(n + 1)) usam/invocam serviços da Camada N (Ln), ou seja, L(n+1) usa/invoca serviços de Ln (Camada N)
+- "entidade" - elemento ativo uma cada camada, p.ex, processo
+- SAP - Service Access Point; CEP - Connection End Point
+
+  ![SAPex](images/SAPex.png)
+- "serviço orientado a conexão" - pressupõe o estabelecimento de um canal lógico entre as entidades pares, ou seja, canal lógico pelo fato de não dispor de uma conexão física exclusiva entre os elementos pares
+  - canais lógicos podem compartilhar uma mesma conexão física, bem com contemplar ou não os dispositivos ao longo do caminho entre o remetente e destinatário
+- "tipos de serviços orientados a conexão"
+  - mensagens - têm fronteira limitadas
+  - cadeias de bytes - não têm fronteiras limitadas
+  - serviços típicos - transferência de arquivos, login remoto, etc.
+- "serviço não orientado a conexão" - também denominados de serviços de datagrama, constituem-se em serviços análogos aos "serviços postais" dos correrios
+  - dentre os serviços típicos, destacam-se o acesso a banco de dados, sincronização de relógios, etc.
+- Com o objetivo de permitir que objetos como Entidades, SAPs e CEPs sejam referenciados, faz-se necessário um esquema de identificação
+  - identificadores de Entidades (entidades) = Titles
+  - identificadores de SAPs (Service Access Points) = Endereços
+  - identificadores de Conexões (Connection End Points) = CEP-identifier
+- "algumas associações possíveis"
+  - 1 Entidade N possui 1 Título N
+  - 1 SAP N possui 1 Endereço N
+  - 1 CEP N possui 1 identificador CEP n
+- "troca de dados" entre entidades ocorre de duas formas:
+  - "entidades pares" - p.ex., entre Entidades N+1 remotas, a troca de informações é governada pelo Protocolo N+1
+  - "entidades adjacentes" - p.ex., entre a Entidade N+1 e Entidade N no mesmo "host", a troca de informações se dá pelo SAP n
+  - "observação" - entidades trocam não somente informações de dados, mas também informações de controle
+- Neste contexto, são 4 os tipos de unidades de dados:
+  - "informação de controle de protocolo" - trocada entre entidades pares com a finalidade de coordenar as suas operações conjuntas
+  - "dado do usuário" - dado transferido entre uma E(n+1) e uma En, ou seja, dados transferidos entre entidades adjacentes
+  - "informação de controle de interface" - informação trocada entre E(n+1) e En para coordenar as suas interações através do SAPn
+  - "dado de interface" - dado transferido da Entidade N + 1 (E(n+1)) á Entidade N (En) afim de que seja enviado à Entidade N+1 par
+- 2 tipos de Unidade contendo informações de Dado e Controle:
+  - "unidade de dado do Protocolo N" (PDUn) - informação trocada entre entidades e constituída de controle e dado do usuário
+  - "unidade de dado de interface N+1" - informação trocada entre uma entidade N+1(E(n+1)) e uma entidade N (En) através de um SAPn, sendo constituída de controle e dado do usuário
+
+  ![uniDadoeControle1](images/uniDadoeControle1.png)
+- RM-OSI - não restringe o tamanho da Unidade de Dado
+- Formas de mapeamento possíveis:
+  - "segmentação" - função realizada pela entidade N (En) através da qual uma SDUn é mapeada em várias PDUs N
+  - "remontagem" - função realizada pela entidade N (En) par através da qual múltiplas PDUs N são mapeadas em uma SDUn
+
+  ![uniDadoeControle2](images/uniDadoeControle2.png)
+- Formas de mapeamento possíveis:
+  - "bloqueio" - função realizada por uma entidade N (En) que mapeia múltiplas SDUs N (SDUn) em uma PDUn
+  - "desbloqueio" - função realizada por uma entidade N par que mapeia uma PDU N (PDUn) em múltiplas SDUs N (SDUn) correspondentes
+
+  ![uniDadoeControle3](images/uniDadoeControle3.png)
+- Formas de mapeamento possíveis:
+  - "concatenação" - permite uma entidade N mapear múltiplas PDUs N (PDUn) em uma SDU n-1 (SDU(n-1))
+  - "separação" - permite uma entidade N par mapear uma SDU n-1 (SDU n-1) em múltiplas PDUs N (PDUn) correspondentes
+
+  ![uniDadoeControle4](images/uniDadoeControle4.png)
+- Modelo OSI estabelece 4 tipos de primitivas:
+  - "requisição" - uma entidade requer a execução de um serviço
+  - "indicação" - uma entidade é informada da ocorrência de um evento
+  - "resposta" - uma entidade deseja responder a um evento
+  - "confirmação" - uma entidade recebe o resultado de sua requisição
+
+  ![OSIchecks](images/OSIchecks.png)
+- "conceito clássico" - define a forma como entidades equivalentes interagem entre si para a realização de um objetivo comum para a prestação de serviços a entidades na camada superior
+- "protocolo da camada N" - conjunto de regras e formatos, representados por aspectos semânticos, sintáticos e temporais, que regem a comunicação entre entidades pares
+- "especificação de protocolo" - compreende a descrição
+  - dos serviços evocados para transferência de cada tipo de PDU
+  - formal da estrutura da cada PDU bem como os tipos de PDUs
+  - formal da operação da entidade de protocolo
+  - dos procedimentos do protocolo de cada tipo de PDU
+- "primitivas" - são formados por 2 pares:
+  - uma parte correspondente aos dados do usuário
+  - outra parte contendo informações de controle relativa ao protocolo
+- "estrutura das PDUs" - especificação do protocolo
+  - Cadeias de Bits - protocolos de camdas inferiores
+  - ASN.1 (Abstract Syntax Notation Number One) + Regras de Codificação - baseada na tipificação dos dados (sintaxe abstrata), normalmente presente em níveis mais alto - protocolos orientados a aplicação
+- "modelagem de um protocolo" - entidade de protocolo é modelada como uma máquina de estados finitos (autômato)
+  - transição de um estado para outro ocorre quando um evento válido ocorre na interface do autômato, gerando com resultado alguma ação
+- "exemplos de transições de estado"
+  1. recepção de uma primitiva de seriço na interface com a camada superior, p.ex., dados para serem transmitidos
+  2. recepção de uma primitiva na interface com a camada inferior, p.ex., retorno de chamadas de procedimento anteriormente realizadas
+  3. ocorrência de eventos locais da própria camada, também disparam ações e mudanças de estado na máquina de estado
+
+  ![OSIautomato](images/OSIautomato.png)
+  - associado à ocorrência de um evento válido, o autômato muda de estado e gera alguma ação interna específica
+  - método de especificação utiliza uma tabela evento-estado onde cada entrada na tablea especifica o evento saída e o novo estado
+  - novo estado para o qual o autômato deverá transitar devido a uma combinação de entrada e estado atual
+
+### 6. Padronização em Redes de Computadores
+
+- "padrões" - (standards) conjunto de normas e procedimentos, cujo cumprimento pode ser de obrigatório ou recomendável
+- "objetivo dos padrões"
+  - homogeneizar produtos e serviços
+  - minimizar investimentos em estoques
+  - compatibilizar equipamentos de diferentes procedências
+- Padrão de Facto - adotado sem nenhuma ação de entidade reguladora p.ex, IBM, Padrão de Facto da Internet
+- Padrões de Jure - produzidos por entidades reguladoras, nacionais ou internacionais, p.ex., ISO 9000
+- Entidades de Padronização - Eng. Elétrica
+- Brasil - Associação Brasileira de Normas Técnicas (ABNT)
+- EUA - America National Standard Institute (ANSI)
+- EUA - Institute of Electrical and Eletronic Engineers (IEEE)
+- Alemanha - Deutsch Industrie-Norm(DIN)
+- Inglaterra - British Standard Institution (BSI)
+- "entidades de padronização" - redes de computadores
+- ITU-TS "International Telecommunication Union - Telecommunication Standadization" antiga CCITT "Comité Consultatif International de Télégraphique et Téléphonique"
+- ISO "International Standard Organization"
+- Padrões ITU-TS:
+  - normalmente se referem a transmissão de dados a longas distâncias
+  - situam-se mais próximo do hardware
+- Padrões ISO:
+  - são mais voltados aos serviços que uma rede provê
+  - protocolos de conversação inter-hosts
+  - cobrem praticamente todo o espectro de tecnologias de rede
+- Modelo ISO/OSI ou OSI (Open Systems Interconnection):
+  - estipula que uma rede de computadores dever ser estipulada em 7 camadas, propondo um ou mais padrões para controlar cada camada
+  - estes padrões estão ainda em vias de se tornarem padrões de facto
+- Padrões de Facto são também chamados Padrões Internet:
+  - enfatizam o transporte confiável de um host para outro
+  - apenas três serviços são padronizados no nível de usuário: transferência de arquivo, correio eletrônico e login remoto
+- Serviço introduzidos (Comunidade ou Fabricante):
+  - Yellow Pages - diretório
+  - RPC "Remote Procedure Call"
+  - NFS "Network File System"
+- "tendência" - novos serviços como aqueles oferecidos por redes ISDN "Integrated System Digital Network" serão aderentes ao Modelo OSI
+
+### 7. Redes Públicas, ARPANET e BITNET
+
+- "rede pública" - denominação dada os sistemas das operadoras de redes utilizados no oferecimento de serviços de comunicação de dados para os hosts e terminais de seus clientes
+  - embora sejam diferentes em diferentes países, todas utilizam-se do Modelo OSI (ISO 7498) ou de Protocolos OSI ou ITU (antiga CCITT)
+  - as 3 camadas inferiores são conhecidas coletivamente como X.25 (CCITT Recommendation Number), entretando a ISO o adotou como um padrão
+  - para as demais camadas, padrões separados para a especificação do serviço e do protocolo são adotados pela ISO
+- ISO 8802 são derivados dos Padrões IEEE 802
+
+  ![ISOlayers](images/ISOlayers.png)
+- ARPANET - resultado do Projeto DARPA (Defense Advanced Research Projects Agency) do Departamento de Defesa do USA
+  - iniciado na década de 60 com o propóstio de pesquisar redes de computadores através de investimentos concedidos aos departamentos de ciência da computação e até mesmo coorporações privadas
+  - após a consolidação da tecnologia ARPANET no oferecimento de serviços por vários anos, uma rede militar - MILNET (Military Network) foi contruída com a mesma tecnologia
+  - a ARPANET tinha suas próprias LANs, eventualmente conectadas a IMPs conectando-a a ARPA Internet com milhares de hosts e centenas de milhares de usários durante a década de 1970
+  - os IMPs originais da ARPANET eram minicomputadores Honeywell DDP-516 com memória de 12 K palavras de 16-bits
+  - atualmente, são conhecidos por PSN Packet Switch Nodes ou simplesmente SN (Switch Nodes) mas com a mesma funcionalidade
+- ARPANET não segue o Modelo OSI, na verdade, pois antecedeu a proposta em mais de uma década sendo as vezes difícil compará-los
+  - p.ex., Protocolo IMP-IMP é uma mistura de Camada 2 e 3 do OSI
+- Protocolo de rede é o IP (Internet Protocol): projetado para permitir a interconexão de uma grande variedade de redes, porr isso é um protocolo não orientado a conexão
+- Protocolo de Transporte da ARPANET pode ser:
+  - TCP (Transmission Control Protocol): orientado a conexão
+  - UDP (User Datragram Protocol): não orientado a conexão
+- Não encontramos nem camada de sessão, nem de apresentação e até a década de 1980 pouco os nenhum uso tiveram
+- Quanto aos Serviços da Camada de Aplicação, destacam-se
+  - FTP(File Transfer Protocol)
+  - SMTP(Simple Mail Transfer Protocol)
+  - TELNET e outros
+
+  ![ARPANET](images/ARPANET.png)
+
+### 8. Aspectos Conceituais do RM-OSI
+
+- um pouco de história (RM-OSI da ISO)
+- "gatilho" - necessidade de "networking"
+
+  ![nwUSA](images/nwUSA.png)
+- "característica marcante" - heterogeneidade
+- Rede DARPA (Defense Advanced Reasearch Projects Agency) - 1976
+- Projeto DIX da Digital, Intel e Xerox - 1974/1976
+- "análise" - em ambos houve o aparecimento de Padrões Proprietários
+  - surgem os primeiros problemas de interoperabilidade, face a grande quantidade de redes com padrões proprietários
+  - surge a necessidade da padronização para que a interoperabilidade deixe de ser um problema, face a necessidade maior de comunicação entre as diferentes plataformas (pilhas de comunicação)
+- "Systemas Abertos" - "Open Systems"
+  - Iniciativa da ISO (International Standardization Organization)
+  - Criação do Comitê OSI (Open Systems Interconnection)
+- OSI - escopo de atuação único e exclusivamente sobre os aspectos de comhincação de dados
+
+  ![openSys](images/openSys.png)
+- Modelo de Referência OSI
+  - padrão concernente apenas aos aspectos da arquitetura de redes
+  - separa as funcionalidades e capacidades de rede em camadas
+  - define termos e objetos que são palavras reservadas no mundo das redes de computadores
+- "denominação" - apenas Modelo Referência OSI (7 camadas)
+  - camadas definem desde aspectos físicos, enlace, rede, transporte, sessão, apresentação e aspectos abstratos da aplicação
+  - camadas próximas ao meio físico referenciadas como de baixo nível e, camadas próxima do usuário são referenciadas com de alto nível
+- Modelo de Referência OSI - CAMADAS SUPERIORES
+
+  ![OSIupperLayers](images/OSIupperLayers.png)
+- Modelo de Referência OSI - CAMADAS INFERIORES
+
+  ![OSIbottomLayers](images/OSIbottomLayers.png)
+- "aspectos conceituais" - Modelo de Referência OSI
+  - comunicação entre camadas é feita através da requisição de serviço ou da resposta a serviços
+  - serviços são requisitados (respondidos) através de pontos específicos localizados nas interfaces entre as camadas
+  - estes pontos onde serviços são requisitados (respondidos) são chamados SAPs(Service Access Points)
+
+  ![SAP](images/SAP.png)
+  - e.g., SAPs são identificados pela interface da camada, ou seja, p.ex., SAP da Camada de Rede é o N-SAP
+
+  ![OSIlayersTransport](images/OSIlayersTransport.png)
+  - interações entre entidades de camadas "pares" e presentes em nós distintos se dá através de primitivas
+  - para que duas camadas "pares" se comuniquem eles devem especificar o mesmo conj. de primitivas (protocolo)
+  - serviços são requisitados (respondidos) na "vertical", enquanto que as primitivas são trocadas entre elementos pares, ou seja, entre elementos da mesma camada - "horizontal"
+
+  ![peerHorizontal](images/peerHorizontal.png)
+- "protocolos" - abstraem a comunicação da camada logo abaixo da camada que requisita os serviços
+  - quando uma entidade em uma camada solicita serviços à camada abaixo, supõe-se que o "provider" enviará os dados disponibilizados
+  - dados enviados são denominados genericamente de primitivas
+  - este processo se repete até a camada de mais baixo nível
+  - serviços de uma camada "K" implementam o respectivo protocolo e repassam através do "K-1"-SAP à camada inferior
+
+  ![7layer](images/7layer.png)
+- "primitiva" - unidade de informação encaminhada entre uma camada e outra pode ser do tipo: "request", "confirm" em TX
+- "request" - primitiva enviada pela camada "N+1" para a camada "N" ao requisitar um serviço - invocação de serviço
+- "indication" - primitiva entregue a camada "N+1" RX pela camada "N" RX para sinalizar a ativação de ums serviço requisitado ou de alguma ação iniciada pelo serviço da camada "N" TX
+- "response" - primitiva da camada "N+1" RX em resposta a uma primitiva "indication" RX para completar ou reconhecer uma ação previamente invocada pela primitiva "indication" RX
+- "confirm" - primitiva retornada para a camada "N+1" em TX da camada "N" em TX para reconhecer ou completar uma ação previamente invocada pela primitiva "request" em TX
+
+  ![layersResReq](images/layersResReq.png)
+- Quanto aos serviço, 2 grupos se destacam:
+  - "serviços confirmados" - serviço com as quatro fases, ou seja, prmitivas "request", "indication", "response" e "confirm"
+  - "serviços não confirmados" - serviços que especificam 2 fases, ou seja, primitivas "request" e "indication"
+- No OSI as camadas "pares" se comunicam através de um objeto denominado entidade da camada
+  - neste contexto, entidade é uma palavra reservada - termo que sempre vai significar uma capacidade de comunicação
+  - no modelo de protocolos em camada, a entidade de protocolo é definida como a entidade que processa um protocolo específico
+  - em cada camada, uma ou mais entidades implementam suas funcionalidades/serviços que a camada oferece
+  - cada entidade interage diretamente e somente com a camada logo abaixo e provê facilidades para serem usadas pela camada logo acima da camada em que se situa a entidade
+- Quando uma camada "N+1" requisita um serviço à camada "N", o conjunto de bytes enviados pode ser dividio em 2 partes:
+  - cabeçalho - parte de protocolo da camada(n+1)
+  - conteúdo - parte de dados da camada(n+1)
+- PDU - "Protocol Data Unit" = "cabeçalho" + "conteúdo"
+- PDU da camada "N + 1" se encaixa na perte de dados da PDU da camada "N" e, assim, recebe um novo nome na camamda "N", comumente denominado de SDU - "Service Data Unit"
+  - portanto, na fronteira superior, a camda recebe uma SDU, adiciona o protocolo da camada na qual se situa e se transiforam em PDU
+- "transormação da primitiva" - na fronteira superior, a camada recebe uma SDU, adiciona o protocolo da camada na qual se situa e a transforma em PDU da camada "N"
+
+  ![primitiveTransformation](images/primitiveTransformation.png)
+- N-PDU = N-SDU + N-Protocol
+- 1 SDU pode gerar várias PDUs
+  - camadas inferiores, devido às limitações dos meios de transmissão, são ricas em protocolo, mas pobres em serviço
+  - maior o número de serviços em uma mesma camada permite que poucos protocolos ofereçam toda a gama de serviços
+
+  ![PCI](images/PCI.png)
+- Relação entre Serviço e Complexidade de Protocolos ao longo do Modelo de Referência OSI
+- Quando uma camada requisita serviços da camada inferior, ela é dita usuário (user) dessa camada
+  - camada inferior abstrai a existência das outrsa camadas mais abaixo, oferencendo a somatória das funcionalidades de todas as camadas abaixo na forma de serviços
+  - "service provider" - abstração é chamada de provedor de serviços
+- O provimento de serviço abstrai inclusive o aspecto da comunicação com a camada parceira
+  - logo, o provedor de serviços oferece os serviços e a conexão da Camada "N + 1" a um usuário da Camada "N"
+
+  ![OSIcomplexity](images/OSIcomplexity.png)
+  - provedor ser serviços oferece os serviços e a conexão da Camada "N-1" a um usuário da Camada "N"
+
+  ![servicesN-1ToN](images/servicesN-1ToN.png)
