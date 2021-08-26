@@ -95,3 +95,23 @@
   2. Montar a matriz SWOT fazendo a relação entre os pontos do ambiente interno com os pontos externos
   3. Fazer a análise SWOT propriamente dita
   4. Definir as estratégias a partir da análise da matriz
+
+## **Vantagens Competitivas**
+
+- Visão baseada em recursos
+  - recursos + capacidades = desenvolver diferenciais competitivos
+- Recursos
+  - Humanos
+  - Financeiros
+  - Tecnológicos
+  - Estruturais
+  - Organizacionais (de Gestão)
+- Capacidades = o que é possível 'fazer' (transformar, criar, vender, etc) com os recursos disponíveis
+- Análise VRIO - um recurso tem que:
+  - possuir valor
+  - tem que ser raro
+  - difícil de imitar
+  - difícil de substituir
+  - absorvido pela organização
+- Teoria das Capacidades Dinâmicas
+  - a medida que oportunidades são observadas, a organização gasta seus recursos para utilizá-las
