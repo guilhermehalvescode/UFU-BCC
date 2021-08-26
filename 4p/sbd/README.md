@@ -1376,3 +1376,92 @@ GRANT SELECT, DELETE
   - Como recuperar o ssn dos empregados da hierarquia de um supervisor
   - Necessita uma mecanismo de Loop ou Recursão que não está especificado na AR
 - Veremos em SQL
+
+## _*Normalização de Relações em Projeto de BD - Parte 2 - 4FN e 5FN (pré-requisito -> Álgebra Relacional)*_
+
+### Além da Dependência Funcionais
+
+- Motivação: alguns problemas de redundância não são detectados por Dependências Funcionais-DF
+- Então, outras dependências são definidas, por exemplo:
+  - Dependências Multivaloradas
+  - Dependências de Junção
+  - Dependências de Inclusão
+
+### Dependência Multivalorada
+
+- Problema: mais de um atributo multivalorado
+- Seja a relação CPL(~~curso, professor, livro~~), onde:
+  - O curso pode ter mais de um professor
+  - O curso pode ter mais de um livro
+  - Professor e Livro ocorrem de forma independente em CPL
+
+  ![CPL](images/CPL.png)
+  - Chave é CPL
+  - Está na FNBC, mas há redundância
+  - Sugere outra FN que nos leve a normalização de CPL para CP e CL
+
+### Dependência Multivalorada - Intuição
+
+- Sejam r, R, X e Y conforme definido, a dependência multivalorada x -> -> Y é valida sobre r de R se para cada valor de X em r está associado um conjunto de valroes de Y e esse conjunto é independente dos valores de Z = R - (X U Y)
+- Intuitivamente o valor de um atributo determina um conjunto de valores de outro atributo!!!
+
+### Dependência Multivalorada - Definição alternativa
+
+- Se X -> -> Y então
+  - pi*YZ*(sigma*X=x*(R)) = pi*Y*(sigma*X=x*(R)) X pi*Z*(sigma*X=x*(R))
+- Garante que dado o valor de X os valores de Y e Z são independentes
+- Se exixte t*i* com (X=A e Y=B) e existe t*j* com (X=A e Z=C)
+- Então deve existir t*k*(X=A, Y=B, Z=C)
+
+### Dependência Multivalorada - Propriedades
+
+- toda dependência funcional é dependência multivalorada mas o recíproca não é necessariamente verdadeira
+- Se (X -> -> Y) e (Z = R-X U Y) então X -> -> Z
+- Se Y for subconjunto de X ou R = (X U Y) então a MVD (X -> -> Y) é trivial
+- Se a MVD não for trivial, para garantir a MVD, teremos que repetir valores em tuplas, gerando redundância... isto leva à 4FN
+
+### Quarta forna normal - 4FN
+
+- Definição. Um esquema de relação R está na 4FN com relação a um conjunto de dependências F (que inclui dependências funcionais e dependências multivaloradas) se, para cada dependência multivalorada não trivial X -> -> em F+, X é uma superchave para R
+- Obs: F+ é o conjunto de todas as dependências implicadas por F
+- Exemplo: skill (~~ecod, pno, place~~)
+  - ecod -> -> pno, mas -|(ecod -> pno)
+  - ecod -> -> place, mas -|(ecod -> place)
+  - Na 4FN:
+    - ep(ecod, pno)
+    - el(ecod, place)
+
+### Dependência de Junção
+
+- Uma dependência de junção (DJ), indicada por DJ(R1, R2, ..., Rn), especificada no esquema de relação R, determina uam restrição sobre os etados r de R. A restrição indica que cada estado válido r de R deve ter uma decomposição de junção não aditiva para R1, R2, ..., Rn. Logo, para cada r desse tipo, temos
+  - \* (pi*R1*(r), pi*R2*(r), ..., pi*Rn*(r))
+  - o símbolo * é usado como junção natural
+  - decomposição de junção não aditiva, ou decomposição de junção sem perda, é uma decomposição que mantêm a igualdade acima
+
+### Quinta forma normal - 5FN
+
+- Um esquema de relação R está na quinta forma normal (5FN) (ou forma normal projeção-junção - FNPJ) com relação a um conjunt ode dependências funcionais, multivaloradas e de junção se, para cada dependência de junção não trivial DJ(R1, R2, ..., Rn), em F+ (ou seja, implicada por F), cada Ri é uma superchave de R
+  - ou seja, cada decomposição tem que conter uma chave
+
+### Dependência de Junção - Exemplo
+
+- Exemplo: Seja X = (ecod, pno) e Y = (ecod, place) e SKILL = X natural join Y
+- DJ(X, Y) é uma dependência de junção em SKILL
+- SKILL(~~ecod, pno, place~~) não está na 5FN pois X e Y não contêm uma superchave de SKILL
+- Como vimos anteriormente, SKILL sequer está na 4FN. De fato a dependência multivalorada é um caso particular de dependência de junção, generalizando: DJ(X, Y) === (X intersec Y) -> -> (X-Y)
+
+### Quinta forma normal - 5FN - Exemplo
+
+- Exemplo: está NA 5FN
+  - emp(~~ecod~~, ename, title)
+  - proj(~~pno~~, pname, budget)
+  - asg(~~ecod, pno~~, resp, dur)
+  - pay(~~title~~, sal)
+- Obs: uma relação na 5FN não pode ser decomposta sem perda de informação
+- dependência de inclusão: define que algumas colunas estão contida em outras. Chave estrangeira é um exemplo de dependência de inclusão
+
+### Normalização 2 - Considerações finais
+
+- A decomposição multivias para a 5FN é restrição semântica bastante peculiar e a normalização para 5FN raramente é feita nestes termos
+- Uma alternativa à decomposição da relação universal é utilizar ferramentas de projeto conceitual e mapeamento para o relacional
+- Por exemplo, um mapeamento do Modelo de Entidades e Relacionamentos para o Modelo Relacional gera esquemas de BD na terceira forma normal
