@@ -21,8 +21,8 @@ for(i in 1:(length(xVec) - 2)) {
 d
 
 #e
-fe = function(x) {
-  (exp(-x) + 1)/(x + 10)
-}
-e = sum(fe(1:(length(xVec) - 1)))
+
+num = exp(-(xVec[2:250]))
+dem = xVec[1:249] + 10
+e = num/dem
 e
