@@ -947,3 +947,111 @@
   ![esFinaisAFmin](images/esFinaisAFmin.png)
   ![esTransAFmin](images/esTransAFmin.png)
   ![AFminFim](images/AFminFim.png)
+
+## *Linguagens Regulares*
+
+- Diversos formalismo possíveis
+- Reconhecedores (AFD, AFND, AFvazio)
+- Geradores (GR - GLD, GLE, GLUD e GLUE - e ER)
+
+  ![AlgsRegularLangs](images/AlgsRegularLangs.png)
+
+## *Autômato Finito com Saída: Máquina de Moore e Máquina de Mealy*
+
+### Geração de uma palavra de saída
+
+- estende a definição de AF
+- não altera a capacidade de reconhecimento
+  - reconhece a classe de linguagens regulares
+- saída
+  - não pode ser lida
+  - não pode ser usada como memória auxiliar
+- as saídas podem ser associadas
+  - às transições - Máquina de Mealy
+  - aos estados - Máquina de Moore
+
+### Saída
+
+- definida sobre um alfabeto especial
+  - alfabeto de saída
+  - pode ser igual ao alfabeto de entrada
+- saída
+  - fita independente da de entrada
+- cabeça da fita de saída
+  - move uma célula para direita
+  - a cada símbolo gravado
+- resultado do processamento
+  - estado final (condiçã ode aceita/rejeita)
+  - informação contida na fita de saída
+
+### Máquina de Mealy
+
+- para cada transição
+  - gera uma palavra de saída
+  - pode ser vazia
+- Definição
+  - 6-upla M = ($\Sigma$, Q, $\delta$, q0, F, $\Delta$)
+  - $\Sigma$ alfabeto de símbolos de entrada
+  - Q conjunto finito de estados
+  - $\delta$ função programa ou de transição
+    - $\delta$: Qx$\Sigma$ -> Qx$\Delta$*
+    - função parcial
+  - q0 estado inicial tq q0 $\in$ Q
+  - F conjunto de estados finais tq F $\subseteq$ Q
+  - $\Delta$ alfabeto de símbolos de saída
+- Exemplo
+
+  ![MealyEx](images/MealyEx.png)
+
+### Máquina de Moore
+
+- para cada estado da máquina
+  - gera uma palvra de saída
+  - pode ser vazia
+- possui uma função de saída
+- Definição
+  - 7-upla M = ($\Sigma$, Q, $\delta$, q0, F, $\Delta$, $\delta_{S}$)
+  - $\Sigma$ alfabeto de símbolos de entrada
+  - $\delta$ função programa ou de transição
+    - $\delta$: Qx$\Sigma$ -> Q
+    - função parcial
+  - Q conjunto finito de estados
+  - q0 estado inicial tq q0 $\in$ Q
+  - F conjunto de estados finais tq F $\subseteq$ Q
+  - $\Delta$ alfabeto de símbolos de saída
+  - $\delta_{S}$ função de saída
+    - $\delta_{S}$: Q -> $\Delta$*
+    - é total
+- Exemplo
+
+  ![MooreEx](images/MooreEx.png)
+
+### Exemplo: Analisadores Léxicos
+
+- p/ compiladores ou tradures de linguagens
+- analisador léxico
+  - basicamente é um AF
+  - em gera, determinístico
+- identifica os componentes básicos da linguagem
+  - números
+  - identificadores
+  - separadores
+  - etc
+- estado final
+  - associado a cada unidade léxica identificada
+  - saída: descreve ou codifica a unidade léxica
+- estado não-final
+  - saída: palavra vazia
+- como seria uma correspondente Máquina de Mealy?
+- Exemplo de "Analisador Léxico" - Checar a validade do valor monetário em dólar
+  - Características da palavra que deve ser validada
+    - Deve iniciar com os dois símbolos "U\$".
+    - A parte decimal (centavos) deve ser separada com ponto e sempre ter dois dígitos.
+    - Os milhares devem ser separados com vírgula e sempre que existirem 3 dígitos consecutivos (antes da parte decimal), devem ser separadas com vírgulas
+    - Exemplos de palavras válidas: U\$1,234.56 U\$234.56 U\$14.56 U\$ 1,234,000.56
+    - Exemplos de palavras inválidas: U\$1,234.5 U\$1234.56 U\$14.6 U\$ 1,24,000.56
+    - Dicas:
+      - usar a letra d para representar todos os dígitos na transição
+      - "programar" nas transições apenas as situações válidas e omitir as transições de erros (AF incompleto, ou seja, falhar por indefinição da transição)
+
+    ![AnalLexUSD](images/AnalLexUSD.png)
