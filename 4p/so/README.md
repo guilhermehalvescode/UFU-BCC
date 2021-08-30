@@ -419,3 +419,53 @@ int pthread_exit(void * retval);
   - A comunicação pode ser realizada no mesmo sistema (LPC - local process communication) ou entre sistemas remotos (RPC - remote process communication)
 
   ![messagePassingEx](images/messagePassingEx.png)
+
+### Compartilhamento de Recursos
+
+- Ex: Sistema Bancário - controle de conta
+
+```c
+READ(Arq_contas, Reg_cliente);
+READ(valor_dep_ret);
+Reg_cliente.Saldo = Reg_cliente.Saldo + valor_dep_ret;
+WRITE(Arq_contas, Reg_cliente);
+```
+
+![sysBancoControleDeConta](images/sysBancoControleDeConta.png)
+
+#### Solução: *Exclusão mútua*
+
+- Evitar com que mais de um processo execute sua região crítica
+- Região crítica é a seção de código dos processo que fazer acesso ao(s) recurso(s) compartilhado(s).
+
+```c
+READ(valor_dep_ret);
+READ(Arq_contas, Reg_cliente);          // Região Crítica
+Reg_cliente.Saldo = Reg_cliente.Saldo + valor_dep_ret;                          // Região Crítica
+WRITE(Arq_contas, Reg_cliente);         // Região Crítica
+```
+
+- Uma boa solução de exclusão mútua deve:
+  - Evitar que processos acessem ao mesmo tempo suas RC
+  - Processos fora de sua RC não podem bloquear outros processos
+  - Processos devem ter garantias de entrada na RC, envitando uma espera infinita
+- A implementação da Exclusão Mútua exige a sincronização entre processos
+  - Principais Problemas envolvendo sincronização:
+    - velocidade de execução dos processos
+    - Starvation
+    - Sincronização condicional
+- SOLUÇÃO: Exclusão Mútua
+  - Principais Problemas:
+    - Velocidade de execução dos processos
+
+    ![sol1ExclusaoMutuaProcs](images/sol1ExclusaoMutuaProcs.png)
+- SOLUÇÃO: Exclusão Mútua
+  - Principais Problemas:
+    - Starvation
+      - Prioridades/aleatoriedade: Escaloanamento justo (FIFO)
+    - Sincronização condicional
+      - ex. produtor/consumidor
+- SOLUÇÃO: Exclusão Mútua
+  - Soluções de Hardware:
+    - Desabilitar Interrupções
+    - TSL (Test and Set Lock)
