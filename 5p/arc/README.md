@@ -1308,3 +1308,182 @@
   - provedor ser serviços oferece os serviços e a conexão da Camada "N-1" a um usuário da Camada "N"
 
   ![servicesN-1ToN](images/servicesN-1ToN.png)
+
+## Physical Layer
+
+- "função principal da camada física" -
+  - geração de sináis elétricos, ópticos ou eletromagnéticos
+  - propagação destes sinais no meio físico
+- Cabe à Camada Física especificar:
+  - natureza do meio físico
+  - forma como os hosts e IMPs são conectados ao meio físico
+  - forma como 0s e 1s são codificados em sinais do meios físico
+  - parâmetros e respectivas tolerância de sinais
+  - procedimento de multiplexação de sinais no meio, se houver
+- Alguns Padrões: IEEE 802, CCITT X.21, etc.
+- Transmissão de Bits (... dos quadros da camada de enlace):
+  - full-fuplex - os dois hosts comunicantes transmitem simultaneamente
+  - half-duplex - apenas um host por vez transmite
+- Transmissão de bits pelo meio físico pode ser:
+  - serial- um bit é transmitido a cada intervalo de tempo
+  - paralela - bits (em conjunto) são transmitidos serialmente por N dutos independentes -> N bits por unidade de tempo
+- Transmissão Síncrona e Assíncrona:
+  - síncrona - bit é transmitido a cada intervalo de tempo bem definido
+  - assíncron - bit é transmitido num intervalo de tempo arbitrário
+- Na prática que tipo de transmissão é utilizada?
+  - transmissão assíncrona com bloco de bits "Start/ Stop"
+
+  ![blockTransmission](images/blockTransmission.png)
+
+### 1. Aspectos Teóricos de Comunicação de Dados
+
+- Análise por Série de Fourier - informações podem ser transmitidas através de meios físicos variando-se alguma propriedade física, como voltage (tensão elétrica) ou corrente elétrica
+  - reprentando o valor deste sinal como uma função do tempo, g(t), pode-se modelar o comportamento do sinal e analisá-lo matematicamente
+- "Jean Fourier" - provou que uma função periódica "g(t)", com período T pode ser contruída somando-se funções "seno" e "cosseno" com diferentes amplitudes...
+
+  ![gtFourier](images/gtFourier.png)
+  - onde f = 1/T é a frequência fundamental e an e bn são as amplitudes dos termos (harmônicas) das funções seno e cosseno
+- Através da Série de Fourier, uma função pode ser reconstruída
+  - ou seja, se o "T" é conhecido e as amplitudes são dadas, a função original pode ser achada realizando-se as somas da equação anterior
+- "an" pode ser obitido para uma função "g(t)" multiplicando-se ambos os lados da eq. por "sin(2pinft)" e integrando de 0 a T
+
+  ![intFourier](images/intFourier.png)
+  - para o cálculo dos coeficientes, vale as relações:
+
+    ![relacoesIntFourier](images/relacoesIntFourier.png)
+- e.g. ... dado uma taxa de "b" bits/s, o tempo requerido para enviar 8 bits é: b bits - 1 s, então 8 bits - t??
+  - t \* b = 8\*1 -> t = (8 \* 1)/b -> t = 8/b segundos e como se trata de um sinal periódico, a idéia é a de que o mesmo se repita após "t" seg.
+  - período da 1ª Harmônica é exatamente este tempo, ou seja, 8/b seg., então a frequência da 1ª Hármonica é o inverso - 1 / (8/b) = b/8 Hz
+- seja a tranmissão do caracter "01100010", então pela Análise da Série de Fourier os coeficientes "an", "bn" e "c" são:
+
+  ![exCalCoefSerieFourier](images/exCalCoefSerieFourier.png)
+
+- Fig 2.1 mostra a saída de voltagem do TX (Transmissor)
+
+  ![voltSaidaTX](images/voltSaidaTX.png)
+  ![voltSaidaTX2](images/voltSaidaTX2.png)
+
+- nenhum recurso de transmissão é capaz de transmitir sinais sem perder parte da energia no processo -> "**atenuações**"
+- no entanto, tais atenuações se dão de forma diferente para cada uma das componentes -> "**distorções**"
+- "**largura de banda**" - faixa de frequências transmitidas sem que as componentes sejam fortemente atenuadas
+  - trata-se de uma propriedade física do meio de transmissão que, geralmente depende da construção, expessura e comprimento do meio
+- e.g. ... dado uma taxa de "b" bits/s, o tempo requerido para enviar 8 bits é "8/b" s, ou seja, a frequência da primeira harmônica é o inverso do período da 1ª Harmônica... "b/8" Hz
+  - considere a transmissão deste byte por uma linha telefônica comum cuja frequência de corte está em cerca de 3000 Hz
+- O que significa esta restrição na Linha Telefônica ?? !!
+  - siginifica que o nro do harmônica mais alto transmitido é aproximadamente "3000/(b/8)" ou "24000/b"
+  - por outro lado, o sinal no receptor pode chegar alterado, considerando que algumas componentes serão atenuadas gerando um sinal resultante com distorções em relação ao sinal original
+- Fig. 2.2 mostra taxas comumente usadas e o efeito da largura de banda de uma linha telefônica comum com fcorte = 3000 Hz
+  - para 9600 bps em uma linha telefônica de qualidade de voz, o modelo sugerido da Fig 2.1 (a) assume a forma da Fig 2.1 (c) ... todas as demais harmônicas serão atenuadas e o resultado final contempla 2 comp.
+
+  ![tabTransTel](images/tabTransTel.png)
+- "Teorema de Nyquist" - um canal livre de ruído com largura de banda "H" transmitindo um sinal com "V" bauds possui uma taxa de tranmissão "T" <= "2 \* log2 v bps"
+- e.g., ... seja um canal de 3 kHz sem ruído, então podemos transmitir sinais binários (ou seja, 2 níveis = 2 bauds) a uma taxa de até ... 2 \* 3000 \* log2 2 = 2 \*3000 \* 1 = 6000 bps
+- Alguns valores para Taxas de Transmissão:
+  - Elétricos (par trançado - cobre) - 10 Mbps; 100 Mbps; 1000 Mbps
+  - Fibras Óticas - 100 Mbps; 1000 Mbps; 10s de 1000s
+  - ATM - faixa de Gbps
+- Nyquist provou que, se um sinal arbitrário atravessar um filtro com frequência de corte H, o sinal filtrado pode ser completamente reconstruído a partir de apenas 2*H amostras por segundo
+  - coletar amostras acima deste limite é inútil, pois este componentes serão filtrados/eliminados e/ou atenuados pelo canal
+- Entretando, se ruído está presente no canal, "Shannon" mostrou que a máxima taxa de transmissão T para um canal com largura de banda B é no máximo ... T <= B * Log2 (1 + S/N)  bps
+  - S/N - comumente denominada de relação "sinal/ruído" reflete a relação entre a potência do sinal propriamente dito e a potência do sinal de ruído
+- normalmente a relação sinal/ruído não é fornecida, ao invés disso, a quantidade 10*log10 s/n é fornecida (decibels - dB)
+  - p.ex: uma relação S/N de 10 e -> 10 dB, uma relação de 100 -> 20dB, uma relação de 1000 -> 30 dB e assim por diante
+- e.g., seja uma canal de 3000Hz de largura de banda e relação sinal/ruído de 30dB (parâmetro típico para linha de telefone)
+  - então B * log2 (1 + s/n) = 3000 * log 2 (1 + 1000) ... aprox. 30000 bps, ou seja, canal não poderá transmitir a mais que 30000 bps
+  - taxa máxima de transmissão independe do nro. de níveis ou "baus" do sinal (Teorema de Nyquist = T <= 2 * H * log2 v  bps)
+- "baud" - frequência dom que o sinal podde ser propagar no meio de transmissão, ou seja, um canal de 10 M bauds permite 10⁶ variações do sinal por segundo
+  - p.ex.: um canal de N bauds poderá transportar N bps com codificação On/Off ou N/2 com codificação Manchester
+- Como transportar em um canal de N "bauds" um número maior que N bps?
+  - e.g., ... usando sinal digital com codificação On/Off e 4 níveis de tensão representando as ocorrências dos bits 00, 01, 10 e 11 => 2 N bps
+  - no entanto, acarreta alta taxa de falhar na decodificação do sinal
+
+### 2. Meios de Tansmissão Guiados
+
+- "meio físico" - diferentes meios físicos podem ser usados para realizar a tranmissão, cada qual com características próprias de largura de banda, retardo, custo de instalação e manutenção
+- "meior magnéticos" - gravação de dados em fita magnética
+- e.g., ... considere unidades de fitas com capacidade de 200 GB (Giga Bytes), então 1000 unid. de fita perfazerm uma capacidade de 300 terabytes ou 1600 terabits (1 TB - 2¹² bytes)
+  - se considerarmos o trasporte deste volume de dados em 24 horas (86400 seg), então a largura de banda efetiva será:
+    - 1600 terabits/ 86400 seg = 19 Gbps ... nenhuma rede de computador sequer contempla desemplenho próximo deste valor
+- "par trançado" - dois fios enrolados de forma helicoidal para evitar que os fios assumam característica de antena, além disso minimiza a componente indutiva da impedância
+  - componente resistiva da impedância sofre o efeito pelicular
+
+  ![caboTrancado](images/caboTrancado.png)
+- Utilizados para transmissão de Sinais Analógicos e Digitais, em razão do baixo custo e facilidade de instalação
+- frequência máxima de tranmissão - depende do comprimento e espessura do par de fios, o que em última instância caracteriza a impedância elétrica do par
+  - 1000s de metros => transmissão não ultrapassa 2 Kbps
+  - 10s de metros => tranmissão pode atingir 100 Mbps
+- Obs: comum redes na faixa de 10 Mbps terem como meio de transmissão pares trançados para distâncias inferiores a 1Km
+- "largura de banda" - depende da espessura do fio e da distância percorrida, mas em muitos casos é possível alcançar 10s de 10⁶ ou Mbps por alguns quilômetros.
+- Há diversos tipos de cabeamento de pares trançados e dentre eles destacam-se Cabos UTP e STP de várias categorias:
+  - Cat. 3 - 16 MHz / Cat. 5 - 100 MHz
+  - Cat. 6 - 250 MHz / Cat. 7 - 600 MHz
+- Obs: Cabos Cat. 6 ocupam em média 30% mais de espaço que Cabos Cat.5/5e ... exigindo mais espaço na tubulação
+- "cabo coxial" - composto por um condutor cilíndrico isolado envolto por uma malha de cobre e uma capa plástica de proteção
+  - blindagem forma uma capa de proteção eletrostática ao condutor
+  - forma de contrução minimiza as perda em altas frequências
+  - estrutura assimétrica contribui para a atenuação da amplitude de sinal
+
+  ![coxialCable](images/coxialCable.png)
+- cabos de 50 ohms - comumente usados em transmissões digitais, são adequados ao suporte de uma frequência de transmissão ou duas no caso de FSK (Frequency Shift Keying)
+- cabos de 75 ohms - comumente usado em transmissões analógicas e de TV a Cabo, possuem largura de faixa estendida permitindo a multiplexação pela divisão da frequência (FDM)
+  - distância máxima de uma cabo depende da atenuação imposta ao sinal, mas o limite máximo de 30 dB é comumente estabelecido
+  - atenuação depende do comprimento do cabo, de suas características elétricas, da frequência do sinal e do número de conectores existentes
+- "fibra ótica" - composta de um núcleo de sílica envolto por uma casca também de sílica, tudo protegido por uma camada plástica
+  - luz é mantida no núcleo por reflexão na casca (Fibra Multimodo)
+  - possuem diâmtros entre 50 e 200 picometros
+  - atenuação de 1 a 4 dB / Km na potência do sinal ótico
+
+  ![fibraOtica](images/fibraOtica.png)
+- Características de um Sinal Ótico:
+  - luz policromáticas de onda centrado em 0.8 picometro
+  - sinal é produzido por diodos LED e captado por fotodetectores
+  - totalmente imune a interferências eletromagnéticas
+
+  ![Otica](images/Otica.png)
+- diferentes raios de luz incidindo na fronteira acima do ângulo crítico são refletidos internamente em diferentes ângulos e, por isso, os raios de luz tem modos específicos
+- "fibra multimodo" - fibra na qual diferentes raios de luz são refletidos em diferentes ângulos
+- "fibra monomodo" - fibra cujo diâmetro é tão reduzido que atua como um guia de onda, onde a luz dse propaga em linha reta
+  - fibra "monomodo" ou fibra de "modo único" são geralmente mais caras, mas são amplamente utilizadas em distâncias mais longas
+  - fibras disponíveis "monomodo" podem transmitir 50 Gbps por 100 Km sem necessidade de amplificação do sinal
+- Utilização de Fibras Óticas:
+  - são de difícil instalação e por isso utilizadas em redes com topologia em anel, onde o tráfego de informação se dá num único sentido
+  - conexão de um host numa fibra ótica é um processo complicado
+- Características de Redes baseadas em Fibra Ótica:
+  - operam a taxas de 100 Mbits/s
+  - taxas de Gbits/s com percursos de longas distâncias necessitam fibras monomodo (diâmtros de 5 a 10 picometros e luz produzida por diodos laser)
+- Sistema Óptico - consiste de três elemento básicos: da fonte de luz, meio de tranmissão e detector de luz
+- atenuação da luz no vidro depende do comprimento de onda da luz e, normalmente, é medida em decibéis
+  - 10 * log10 Potência Transmitida/ Potência Recebida   decibéis
+- e.g., ... considere um fator de perda = 2, ou seja, potência recebida é a 1/2 da potência transmitida, então a atenuação da luz é:
+  - 10 \* log10 2 = 10 \* 0,301030 aprox 3 dB (decibéis)
+- Fig. 2.7 - Atenuação do tipo de vidro usado nas Fibras em dB/Km para três bandas de comprimento de onda - 0,85; 1,30 e 1,55 pico
+
+  ![attenFibraOtica](images/attenFibraOtica.png)
+- "comunicação ótica" - utiliza três bandas de comprimento onda centralizadas em 0,85; 1,30 e 1,55 mícron, respectivamente
+  - as duas últimas, 1,30 e 1,55 mícron, apresentam boas propriedades de atenuação, inferior 5% por quilômetro
+  - outro ponto a ser considerado é a dispersão cromática, ou seja, expansão dos pulso de luz à medida que se propagam
+  - quando se produz os pulsos de uma forma especial, os mesmo viajam por 1000s de quilômetros sem que haja distorção significativa - também denominados "solitons"
+- "cabos de fibra" - são semelhantes aos cabos coaxiais, exceto por não terem a metálica, mas somente a capa plática ao redor
+  - normalmente as fibras são agrupadas em feixes, protegidas por um revestimento exterior - "sheath"
+
+  ![caboFibra](images/caboFibra.png)
+- Fibras podem ser conectadas de três maneiras:
+- "conectores" - conectores de extremidade permitem que as fibras sejam conectadas em soquetes de fibra
+  - tem a vantagem de permitirem a reconfiguração do sistema, mas geram perdas de 10% a 20% da luz
+- "união mecânica" - uma luva especial fixa as fibras uma vez que tenham sido cuidadosamente alinhadas
+  - normalmente exige tempo de alguns minutos de equipe treinada e resultam em perdas de 10% da luz
+- "fusão" - fusão da fibras para formar uma conexão sólida após serem cuidadosamente alinhadas
+  - desempenho tão bom quanto de uma fibra sem emendas
+- Para produzir os sinais, utilizam-se dois tipos de fontes de luz - "Light Emitting Diodes - LEDs" e "Semiconductor Lasers"
+  - extremidade de recepção consiste de um fotodiódo, que emite um pulso elétrico ao ser atingido pela luz e tem tempo de resposta em torno de 1 nanosegundo -> taxa de dados de 1 Gbps
+
+  ![ledXsemiCond](images/ledXsemiCond.png)
+- "fibras óticas" vs "fios de cobre"
+  - fibra óticas contemplam largura de banda muito alto do que fios de cobre, o que justifica seu uso nas redes de última geração
+  - nro de repetidores a cada 50 km em linha de fibra ótica, enquanto são necessárias a cada 5km em linha de cobre
+  - fibras óticas não são afetadas por picos de tensão, interferência eletromagnética ou quedas no fornecimento de energia
+  - fibras óticas são imunes a ação corrosiva de alguns elementos químicos no ar, adaptando-se muito bem a ambientes industriais
+  - fibras são mais leves que fios de cobre, e.g., 1000 pares trançados com 1km pesam oito toneladas, enquanto 2 fibras com igual capacidade pesam apenas 100 kg
+  - fibras não desperdiçam luz e dificilmente são interceptadas, assim, oferecem um excelente nível de segurança
+  - por outro lado, fibras são tecnologias menos familiares, exigindo conhecimento de profissionais especializados
+  - por outro lado, fibras são basicamente unidirecionais, então a comunicação bidirecional exige duas fibras ou duas bandas de frequência em um única fibra ótica
