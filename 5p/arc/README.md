@@ -1487,3 +1487,122 @@
   - fibras não desperdiçam luz e dificilmente são interceptadas, assim, oferecem um excelente nível de segurança
   - por outro lado, fibras são tecnologias menos familiares, exigindo conhecimento de profissionais especializados
   - por outro lado, fibras são basicamente unidirecionais, então a comunicação bidirecional exige duas fibras ou duas bandas de frequência em um única fibra ótica
+
+### 3. Transmissão sem Fio
+
+- "ondas eletromagnéticas" - resultado do movimento dos elétrons que poe se propagar pelo espaço livre ou mesmo no vácuo
+  - nro de oscilações por segundo de uma onda eletromagnética é chamado de frequência - "f" e é medida em Hz (Hertz)
+  - já a distância entre dois máximos ou mínimos consecutivos é chamada de comprimento de onda - "lambda"
+  - ondas eletromagnéticas viajam a mesma velocidade, independente da frequência - 3 * 10⁸ m/s = c (velocidade da luz)
+  - em meios físicos como cobre e fibra, esta velocidade cai par a 2/3 deste valor e se torna ligeiramente dependente da frequência
+    - lambda = c \* T = c \* 1/f ou lamda \* f = c
+
+  ![ondaEle](images/ondaEle.png)
+- e.g., na prática "lambda" é medido em metros e "f" em MHz, então: lamda \* f = c (velocidade da luz) ou 3 \* 10⁸ m/s
+  - lambda (m) \* f (MHz) = 300 \* 10⁶ m/s = aprox. 300
+  - ondas de 100 MHz tem cerca de 3 m (comprimento)
+  - ondas de 1000 MHz tem 0,3 m (comprimento)
+  - ondas de 3000 MHz tem 0,1 m (comprimento)
+- "espectro eletromagnético" - contempla porções de rádio, micro-ondas, infravermelho e luz visível do espectro
+  - podem ser usadas na transmissão de dados, desde que seja modulada a amplitude, frequência ou fase de ondas
+  - volume de informações que uma onda é capaz de transportar é diretamente proporcional à sua largura de banda
+
+  ![espectroOndaEle](images/espectroOndaEle.png)
+- Se diferenciarmos a equação "lambda * f = c" em relação a "lamda", obtem-se df/dlambda = c lambda² e, se na sequência considerarmos as diferenças finitas em vez de diferenciais, obtem-se:
+  - deltaF = c * deltaLambda/lambda²
+- e.g., considere a banda de 1,3 mícron, assim, temos lambda = 1,3 \* 10⁻⁶ e deltaLambda = 0,17 \* 10⁻⁶ enquanto deltaF = aprox. 30 THz
+  - 8 bits/ Hz -> 240 Tbps (não é a esmo que pessoas ligadas têm um carinho todo especial pelas fibra óticas)
+- "**transmissão de rádio**" - fáceis de gerar, percorrem longas distâncias e penetram facilmente em prédios, daí serem amplamente utilizadas em redes de comunicação
+  - são omnidirecionais, ou seja, viajam em todas as direções a partir da fornte, assim, TX e RX não precisam estar fisicamente alinhados
+- ondas de rádio dependem da frequência, p.ex., em baixas frequências elas atravessam obstáculos, mas a potência cai abruptamente à medida que a distância aumenta
+  - este decréscimo aumenta cerca de "1 / r²" no ar
+  - em altas frequências, as ondas tendem a viajar em linha reta e a ricochetear nos obstáculas -> necessidade alinhamento TX e RX
+- ondas que alcançam a ionosfera - camada de partículas carregadas situada em torno da terra a cerca de 100 a 500 km - são refratadas por elas e retornam à Terra
+
+  ![ionosfera](images/ionosfera.png)
+  ![waveTypes](images/waveTypes.png)
+- "transmissão de microondas" - ondas acima de 100 MHz trafegam em linha reta e, portanto, podem ser concentradas em uma faixa estreita do espectro de potência
+
+  ![espectroOndaEle](images/espectroOndaEle.png)
+  - demanda por mais espectro serve para manter o processo de aperfeiçoamento tecnológico, permitindo que as transmissões utilizem frequências cada vez mais altas
+  - bandas de 10 GHz já são rotineiras, mas a partir de 4 GHz surge um novo problema - absorção pela água
+  - e.g., considere ondas de 10 GHz, então o comprimento de onda "lambda" = 3 \* 10⁸ m/s / 10 \* 10⁹ Hz = 0,03 m = 3 cm
+    - estas ondas possuem alguns centímetros e são absorvidas pela chuva, exigindo o estabelecimento de novos enlaces para contornar o problema
+  - "vantagem" - microondas não exigem direitos sobre um caminho, o que constitui em vantagem significativa sobre fibra ótica
+  - possibilidade de concentrar um pequeno feixe de energia em uma antena parabólica oferece relação S/N muito alta, mas antenas de TX e RX devem estar alinhadas com o máximo de precisão
+  - microondas não atravessam muito bem as paredes de edifício diretamente das ondas de rádios
+- História - durante décadas as microondas formaram o núcleo do sistema de telefônica de longa distância (antes da fibra ótica)
+- "microondas" vs "fibra ótica"
+- microondas dispensam a necessidade de se ter direitos sobre um caminho, o que constitui em vantagem significativa sobre fibra:
+  - basta adquirir um pequeno lote de terra a cada estação repetidora, ou seja, a cada torre de retransmissão
+  - MCI - Microwave Communications Inc. tornou-se uma companhia telefônica de longa distância - com 100s de repetidores
+  - SPRINT investiu em cabos de fibra ótica, uam vez se formou a partir da Southern Pacific Railroad, que por deter um grande nro de concessões de direitos de percurso, investiu em linhas óticas
+- microondas são relativamente mais econômicas, pois a instalação de torres e antenas pode ser mais econômica que enterrar 1000s km de fibras em uma área urbana
+- "alocação de espectro" - governos nacionais alocam bandas de espectro para rádio, televisão, celulares, como também para empresas de telefonia, polícia, usuários marítimos ... etc
+  - ITU-R (contexto mundial) coordena a alocação de modo que possam ser fabricados dispositivos que funcionem em vários países
+- dentre as abordagens de concessão, destaca-se o leilão de frequências para telefonia móvel que por um lado enriquece governos e por outro dexa as concessionárias endividadas
+- outra abordagem é a de simplesmente não alocá-las, permitindo que quem queira fazer uso o faça
+  - ISM (Industrial, Scientific, Medical) - bandas para uso sem licença
+- ISM - Industrial, Scientific, Medical - uso sem licença
+  - banda 2,4 GHz está disponível na maioria dos países, mas é sujeita a inteferências de fornos de micro-ondas e instalações de radar
+  - Bluetooth e algumas LANs sem Fio seguem o Padrão 802.11, utilizam banda 2,4 GHz e mais recentemente 5,7 GHz, não obstante equipamentos que operam nesta faixa ainda são dispendiosos
+- U-NII Unlicensed National Information Infrastructure
+  - U-NII Low (U-NII-1) 5,15 a 5,25 GHz
+  - U-NII Mid (U-NII-2) 5,25 a 5,35 GHz
+  - U-NII Worldwide (U-NII-2e) 5,47 a 5,725 GHz
+  - U-NII Upper (U-NII-3) 5,725 a 5,850 GHz
+- "ondas de infravermelho" - ondas relativamente direcionais
+
+  ![espectroOndaEle](images/espectroOndaEle.png)
+- "ondas de infravermelho" - ondas usadas na comunicação de curto alcance como aparelhos de TV equip, estereofônicos
+
+  ![bandPatterns](images/bandPatterns.png)
+- "ondas de infravermelho" - são direcionais, econômicas e fáceis de montar, mas não atravessam paredes sólidas
+  - por isso, não é possível controlar o aparelho de televisão do vizinho com o seu controle remoto há alguns metros e separados por paredes
+- e.g., considere ondas de 1 GHz, então o comprimento de onda "lambda" = 3 \* 10⁸ m/s / 1 \* 10⁹ Hz = 0,3 m = 30 cm
+- e.g., considere ondas de 100 GHz, então o comprimento de onda "lambda" = 3 \* 10⁸ m/s / 100 \* 10⁹ Hz = 0,003 m = 3 mm
+- "segurança do sistema infravermelho" - ... mais seguro contra espionagem quando comparada aos sistemas de rádio
+- "transmissão de ondas de luz" - apontar um feixe laser com 1mm da largura para um alvo do tamanho da cabeça de um alfinete e a 500 m exige uma pontaria quase impossível
+
+  ![lightTransEx](images/lightTransEx.png)
+
+### 4. Satélites de Comunicação
+
+- "satélite de comunicação" - repetidor com diversos "transponders" - cada um ouve uma parte do espectro, amplifica os sinais de entrada e os transmite em outra frequência
+- Lei de Kepler - período orbital de um satélite varia de acoro com o raio da órbita elevado à poteência de 3/2
+  - ou seja, quanto mais alto o satélite, mais longo o período
+- e.g., satélites de baixa órbita saem da visão com bastante rapidez e tem período de 90 minutos, por isso faz-se necessário muitos deles para proporcionar cobertura contínua
+- satélite de comunicação e algumas propriedades como: altitude da terra, tempo RTT, e nro. de satélites para cobertura global
+
+  ![satAlt](images/satAlt.png)
+- "satélites geoestacionários" - satélites de alta órbita e também chamados satélites geossíncronos (tripulados)
+  - normalmente estão espaçados de 2 graus e se situam no plano equatorial de 360 graus a fim de evitar interferências
+  - isto significa 360/2 = 180 satélites no céu ao mesmo tempo, mas por outro lado cada "transponder" pode usar várias frequências e polarizações, com a finalidde de aumentar a largura de banda disponível
+
+  ![bandSat](images/bandSat.png)
+- "satélites de órbita média" - se deslocam lentamente em longitude, levando cerca de seis horas para cirular a Terra
+  - MEOs (Medium Earth Orbit) situam-se em órbitas mais baixas
+  - tem área de corbetura menor no solo o que por outro lado exige transmissores menos potentes para alcança-los
+- "satélites de órbita baixa" - estão muito próximos da Terra e se deslocam rapidamente, mas não necessários grandes quantidades desses satélites para formar um sistema completo
+  - satélites "iridium" estão possicionados em altitude de 750 km em órbitas polares circulares e organizados em eixos polares norte-sul, com um satélite a cada 32 graus de latitude
+  - organizados em eixos norte-sul com um satélite a cada 32 graus de latitude permite que toda a Terra seja coberta
+
+  ![satOrg](images/satOrg.png)
+  - propriedade interessante do Iridium é que a comunicação entre clientes distantes ocorre no espaço, com um satélite retransmitindo dados para o satélite seguinte
+
+  ![satCom](images/satCom.png)
+- "satélites" vs "fibra ótica"
+- Há 20 anos, pensava-se que o futuro da comuniação residia nos satélites de comunicações, uma vez que por 100 anos não houve sinais de mudança no sistema telefônico
+  - em meados da década de 80, companhias telefônicas começaram a substituir suas redes de longa distância por fibra ótica e introduziram serviços de alta largura de banda, com ADSL
+  - conexões de fibra ótica pareciam ser a melhor opção a longo prazo, no entando, satélites de comunicações contemplam alguns segmentos de mercado que a fibra ótica não é capaz de alcançar
+
+1. segmento - fibras óticas do sistema telefônico tratam diversar chamadas interurbanas ao mesmo tempo, mas não oferecem alta largura de banda aos usuários individualmente
+2. segmento - comunicação móvel demanda serviço onipresente e, neste sentido, é possível que uma combinação de rádio e fibra funcionem para a maioria dos usuários
+3. segmento - em momentos em que a difusão é essencial, satélites permitem que 1000s de estações terrestres recebem mensagens ao mesmo tempo
+4. segmento - em locais onde o terreno é inadquado ou a infraestrutura é pouco desenvolvida, lançar um satélite é mais econômico que estender 100s de cabos submarinos
+5. segmento - mercado de satélites cobre áreas em que a obtenção do direito de estender cabos de fibra é difícil ou excessivamente dispendiosa
+6. segmento - quando a exploração rápida tem importância crítica, como em sistemas de comunicação militares em guerra, satélites possibilitam uma montagem rápida do sistema
+
+- resumo - parece que a comunicação do futuro será por fibras óticas terrestres combinadas com rádio celular, mas, para algumas aplicações específicas, os satélites são melhores
+
+### 5. Rede Pública de Telefonia
