@@ -1606,3 +1606,168 @@
 - resumo - parece que a comunicação do futuro será por fibras óticas terrestres combinadas com rádio celular, mas, para algumas aplicações específicas, os satélites são melhores
 
 ### 5. Rede Pública de Telefonia
+
+- "problema" - como conectar sistemas computacionais de uma mesma empresa ou organização, mas em locais deferentes??
+  - quando as distâncias ficam grandes e é imprescindível atravessar uma estrada ou passagem pública, os custos de instalação de cabos privatos são proibitivos
+- "solução" - utilizar recursos de relecomunicações existentes, p.ex., PSTN - "Public Switched Telephone Network" ... projetada (1950) para tráfego de voz humana de forma audível
+- Alexandre Graham Bell (1876) - invenção do telefone e, na sequência, uma grande demanda pela nova invenção. Fig. (a)
+  - modelo de conexão de telefones exigia que cada apareglho fosse conectado com "n" outros aparelhos de usuários
+  - logo, ficou claro que este modelo de conexão de um telefone a outro, não seria escalável além de ser altamente dispendioso
+
+  ![topologiasABC](images/topologiasABC.png)
+- Bell Telephone Company - 1ª estação de comutação de telefonia (New Haven - Connecticut - 1878) .. Fig (b)
+  - necessidade de centralizar as conexões individuais dos assinantes através das estações de comutação -> aumenta escala
+
+  ![topologiasABC](images/topologiasABC.png)
+- Com a disseminação de Estações de Comutação da Bell System por todos os lugares (USA), tornou-se necessário a reorganização das estações em níveis ... Fig. (c)
+  - sistema telefônico (1890) passou a contemplar 3 elementos principais: estações de comutação/ rede inteligando usuários às estações de comutação e conexões de loga distância interligando estações
+
+  ![topologiasABC](images/topologiasABC.png)
+- Estações interurbanas, regionais e locais se comunicam através de "troncos" de alta largura de banda - "troncos entre estações".
+  - nro. de diferentes tipos de centros de comutação e sua topologia varia de país para país, dependendo da densidade telefônica do território.
+
+  ![telephoneLogic](images/telephoneLogic.png)
+- "loops locais" - normalmente formados por cabos Cat. 3, mas no início utilizou-se cabos sem isolamento separados por 25cm de distância um do outro fixados em postes telefônicos.
+  - constitui-se no último fragmento de tecnologia análogica
+- "estações de comutação" - interligadas por cabos coaxiais, antenas de microondas e principalmente fibra ótica
+  - com o advento da fibra ótica, eletrônica digital e computadores "desktop", os troncos e "switches" passam a ser totalmente digitais
+  - destaca-se os "loops" locais, os troncos e as estações finais interurbanas responsáveis pela comutação das chamadas
+
+  ![telInternetNetwork](images/telInternetNetwork.png)
+- "local loop" - utiliza sinalização analógica há 100 anos e é provável que continue a utilizá-la por mais algumas décadas
+  - quando se transmite dados digitais por uma linha de discagem analógica, primeiro os dados são convertidos para a forma analógica
+  - conversão é feita por dispositivos responsáveis pela "modulação" e "demodulação" dos sinais - (MODEMs 56 kbps)
+  - estação de comutação converte os dados para a forma digital, para serem transmitidos pelos troncos de longa distância
+- "sinalização analógica" - consiste na variação da tensão elétrica no tempo, de modo a representar um fluxo de informação
+  - como os meios de transmissão se comportam como filtros, então o sinal recebido não é igual ao sinal transmitido (atenuação, dispersão e retardo)
+- "ondas quadradas" - são representadas para os sinais digitais, no entanto, por contemplam um amplo espectro de frequências, estão sujeitas a forte atenuação bem como distorção
+  - diante de tais efeitos, utiliza-se sinalização AC(Alternate Current) ao invés de DC (Direct Current) na linha telefônica
+  - introduz-se um sinal contínuo na faixa de 1000 Hz a 2000 Hz, denominado portadora de onda senoidal na qual parâmetros como amplitude, fase ou frequência podem ser alterados
+
+  ![digitalSignal](images/digitalSignal.png)
+- "modulação" - constitui o chaveamento por deslocamento - "shift keying" - da amplitude, frequência ou fase da onda
+
+  ![digitalAnalogicSignal](images/digitalAnalogicSignal.png)
+- "modulador-demodulador" ou "modem" - dispositivo que aceita um fluxo serial de bits como entrada e produz um portadora modulada por um (ou mais) desses métodos (ou vice-versa)
+- Teorema de Nyquist - considerando um linha telefônica perfeita de 3000 Hz, não há razão para amostragem maior que 6000 Hz
+  - um canal livre de ruído com largura de banda "B" transmitindo um sinal com "V" bauds possui uma taxa de transmissão "T" <= "2 \* H \* log2 v  bps"
+  - modems realizam amostragem na faixa de 2400 vezes/seg e consentram-se em oubter mais bits por amostra
+- "baus" - nro de amostras ou símbolos por segundo, ou seja, durante cada "baud" envia-se um "símbolo" o que permite que uma linha de "n" bauds envia "n" símbolos / seg
+- e.g., considere uma linha de 2400 bauds e a modulação de uma símbolo "0" volts indica "0" lógico e o símbolo "1" volt indica "1" lógico, então qual será a taxa de transmissão ??
+  - se os símbolos 0, 1, 2 e 3 são usadas, ou seja, voltagens 0, 1, 2 e 3, então cada símbolo carrega 2 bits de informação e, assim qual será a taxa de transmisão ??
+- "modems avançados" - combinam técnicas de modulação como ASK, PSK e FSK para transmistir vários bits por baud
+  - observe os pontos a 45, 135, 225 e 315 graus com amplitude constante, uma vez que a distância a partir da origem é constante
+  - fase é indicada pelo ângulo formado entre a linha da origem até o ponto em questão e o eixo da abscissa - eixo "x"
+
+  ![modulacoes](images/modulacoes.png)
+- QPSK - contempla 4 combinações válidas e pode ser usada para transmitir 2 bits/símbolo
+- QAM-16 ou 16 "Quadratur Amplitude Modulation" com 4 amplitudes e 4 fases, permite 16 combinações diferentes
+  - pode transmitir 4 bits por símbolo, ou seja, em uma linha de 2400 bauds podemos transmitir até 9600 bits por segundo
+- QAM-64 ou 64 "Quadratur Amplitude Modulation" permite até 64 combinações diferentes, ou seja, 6 bits por símbolo
+  - pode transmitir 6 bits por símbolo, ou seja, em uma linha de 2400 bauds podemos transmitir até 14400 bits por segundo
+- QAM-16 ou 16 "Quadratur Amplitude Modulation" com 4 amplitudes e 4 fases, permite 16 combinações diferentes
+  - pode transmitir 4 bits por símbolo, ou seja, em uma linha de 2400 bauds podemos transmistir até 9600 bits por segundo
+
+  ![modulationTwistedPair](images/modulationTwistedPair.png)
+- V.32 bits ou QAM-128 - contém 6 bits de dados e 1 bit de paridade por amostra de 2400 bauds
+  - e.g., fax modems utilizam essa velocidade para transmitir páginas digitalizadas como mapas de bits
+
+  ![modulationHigher](images/modulationHigher.png)
+- Modems série padrão V.34 - funcionam em 28800 bps a 2400 bauds com 12 bits de dados/ símbolo
+  - Modems séris V.34 - utilizam 14 bits de dados/símbolo a 2400 bauds para atingir 33600 bits por segundo
+- Modems - permitem o tráfego em ambos os sentidos ao mesmo tempo, para tanto, utilizam frequências diferentes
+  - canal de transmissão pode ser "simplex", "half-duplex" ou "full-duplex"
+- Modems modernos param a 33600 bps, pois o limite de Shanon para o Sistema Telefônico é próximo de 35 kbps
+- Modems modernos param a 33600 bps, pois o limite de Shanon para o Sistema Telefônico é próximo de 35 kbps
+  - tal restrição está relacionada com o comprimento médio dos "loops" locais ou com a qualidade das linhas desses "loops" locais ??
+- Entretando, se ruído está presente no canal, "Shannon" mostrou que a máxima taxa de transmissão T para um canal com largura de banda B é no máximo ... T <= B * Log2 (1+ S/N) bps
+  - S/N - comumente denominada de relação "sinal/ruído" reflete a relação entre a potência do sinal propriamente dito e a potência do sinal de ruído
+  - tem-se 2 "loops" locais entre uma chamada de origem (Computador) e receptor (ISP #1)
+  - adicionalmente "loops" locais acrescentam ruído de sinal e, caso possamos eliminar um deles, a taxa pode ser duplicada
+
+  ![telInternetNetwork](images/telInternetNetwork.png)
+- Nyquist provou que, se um sinal arbitrário atravessar um filgro com frequência de corte H, o sinal filtrado pode ser completamente reconstruído a partir de apenas 2\*H amostras por segundo
+  - coletar amostras acima deste limite é inútil, pois os componentes serão filtrados/eliminados e/ou atenuados pelo canal
+- e.g., ... Modems 56 kpbs -a para um canal telefônico de 4000 Hz, o nro. máximo de amostras por segundo é 8000
+- Modems 56 kbps - para um canal telefônico de 4000 Hz, o nro. máximo de amostras independentes por segundo é 8000
+  - USA - um dos bits da amostra é usado para fins de controle, então podemos transmitir até 56000 bits/seg de dados do usuário
+  - Europa - 8 bits estão disponíveis para os usuários, então modems podem oferecer até 64000 bits/segundo de dados
+  - Modems V.90 - denominação para modems neste padrão
+- Modems V.92 - modems capazes de transmitir 48 kbps no canal "upstream" caso a linha possa lidar com esta funcionalidade
+- Serviço de Banda - Larga - serviço com maior largura de banda que o serviço da telefonia padrão e que utiliza a tecnologia xDSL (Digital Subscriber Line - linha digital do assinante)
+  - justificatvia para os modems serem lentos é que o sistema telefônico foi concebido e otimizado para transportar voz humana
+  - como não foram concebidos dados, a faixa de frequência de corte 300 Hz a 3400 Hz restringe fortemente a taxa de transmissão de dados
+- xDSL conecta-se um a tipo diferente de "switch", sem esse filtro, disponibilizado toda a capacidade de "loop" local
+  - limitador passa a ser a constituição física do "loop" local, não a largura de banda artifical de 3100 Hz criada pelo filtro
+  - esboço de largura de banda potencial como um função da distância em Cabo UTP de categoria 3 para xDSL
+
+  ![trPdis](images/trPdis.png)
+  - quando se escolhe uma velocidade para oferecer, está ao mesmo tempo escolhendo um raio a partir de suas estações finais, além da qual o serviço não pode ser oferecido
+    - quanto mais baixo a velocidade escolhida, maior o raio e maior o nro. de cliente cobertos, mas menos atraente é o serviço
+- Serviço xDSL foram criados visando certos objetivos
+  - devem funcionar nos "loops" locais de par trançado existente
+  - não deve afetar os telefones e aparelhos atuais de fax dos clientes
+  - devem ser muitoi mais rápido que 56 kbps
+  - devem estar sempre ativos e serem tarifados mensalmente
+- Proposta inicial do ADSL (AT&T) - divisão do espectro de frequência do "loop" local - divisão (1,1 MHz) em 3 bandas:
+  - POTS (Plain Old Telephone Service) - sinal de voz
+  - "upstream" - do usuário para a estação final
+  - "downstream" - da estação final para o usuário
+- AT&T empregou a técnica de Multiplexação por Divisão de Frequência (FDM - Frequência Division Multiplexing)
+- "abordatem alternativa" - DMT (Discrete MultiTone) que divide o espectro de 1,1 MHz do loop local em 256 canais de 4312,5 Hz
+- DMT (Discrete MultiTone) que divide o espectro do 1,1 MHz do loop local em 256 canais independentes de 4323,5 Hz cada
+  - canal "0" é usado para o POTS e canais "1" a "5" não são usados para impedir que o sinal de foz e os sinais de dados se interfiram
+  - 2 canais para controle "upstream" e "downstream" e 248 canais disponíveis para dados do usuário
+  
+  ![channels](images/channels.png)
+  - embora os canais possam ser usados por fluxos "full-duplex", harmônicos, linhas cruzdas e outros efeitos impedem o seu uso
+  - cabe ao prevedor definir quantos canais serão usados para "upstream" (10%) e para "downstream" (80% a 90%)
+- ADSL - "Assynchronous" DSL surgiu justamente da assimetria na divisão dos canais para "upstream" e para "downstream"
+  - divisão comum reserva 32 canais para "upstream" e 216 canais para "downstream", totalizando 248 canais + 2 para controle "up" e "down"
+- ADSL (ANSI T1.413 e ITU G.992.1) - permite velocidades de até 8 Mbps "downstream" e 1 Mbps "upstream"
+  - em cada canal, utiliza-se modulação semelhante ao v.34, com taxa de amostragem de 4000 bauds, em vez de 2400 bauds
+    - linha é monitorada constantemente de modo que a taxa de dados seja ajustada de forma contínua quando necessário
+    - dados são enviados com QAM-16, com até 15 bits por baud, usando um diagrama de constelação análogo ao da Figura 2.25(b)
+
+  ![modulacoes](images/modulacoes.png)
+- e.g., com 224 canais "downstream" e 15 bits/baud a 4000 bauds, a largura de banda downstream é 13,44 Mbps
+  - 224 canais \* 4000 bauds/canal \* 15 bits / baud = 13,44 Mbps
+  - mas na prática, a relação sinal/ruído nunca é boa o bastante par ase alcançar essa taxa, mas é possível utilziar 8 Mbps por curtos períodos
+- Instalação típica ADSL  contempla uma dispositivo (Network Interface Device - NID) instalado pela companhia nas dependências do cliente ADSL
+  - normalmente o NID + Filtro Analógico separa a banda 0 a 4000 Hz utilizada pelo POTS, asism o sinal é roteado até o telefone
+- Instalação típica ADSL - Sinal POTS é roteado até o telefone, e o sinal de dados é roteado até um modem ADSL
+  - ADSL é um processor de sinais digitais configurado para atuar como 250 modems QAM operando em paralelo em frequências diferentes
+
+  ![adsl](images/adsl.png)
+  - considerando que a maioria dos modems atuais é externo, o computador está conectado ao modem em alta velocidae
+    - isto pode ser feito inserindo-se uma placa Ethernet no computador e operando-se uma rede local de apenas 2 nós
+  - no lado da estação final, está instalado um divisor correspondente, assim, a voz é filtrada enviada ao switch de voz
+    - sinal acima de 26 kHz é roteado para o dispositivo DSLAM (Digital Subscriber Line Access Multiplexer)
+  - DSLAM (DSL Access Multiplexer) realiza o trabalho semelhante ao do Modem ADSL, o que permite a recuperação do sinal digital (fluxo de bits) que são enviados ao ISP
+  - desvantabem deste projeto é a presença do NID e do divisor no local do cliente, pois a instalação desses itens só pode ser feita por um técnico da companhia telefônica (dispendioso)
+
+    ![NIDdiv](images/NIDdiv.png)
+- "projeto alternativo" - G.lite ou ITU é G.992.2 é o ADSL sem o divisor, assim a linha telefônica é usada como está
+  - com uma pequena diferença que é a inserção de um microfiltro em cada tomada de telefone, entre o telefone ou o model ADSL e o fio
+  - microfiltro para o telefone é um filtro de banda baixa que elimina frequências acima de 3400 Hz
+  - microfiltro para o modem ADSL é um filtro de banda alta, que elimina frequências abaixo de 26 kHz
+- G.lite não é tão confiável quanto um divisor, e assim só pode ser usado até 1,5 Mbps (contra 8 Mbps para o ADSL com um dividor)
+
+  ![filterSpliter](images/filterSpliter.png)
+- "troncos vs multiplexação" - custo para instalaer e manter um tronco de alta largura de banda é o mesmo de um tronco de baixa largura de banda entre duas estações de comunicação
+  - companihas telefônicas desenvolveram esquemas para multiplexar o uso de um único tronco físico, melhorando a relação de custo e benefício
+- FDM (Frequency Division Multiplexing) - espectro de frequência é dividido em bandas de frequência, tendo cada usuário a posse exclusiva de alguma banda
+- TDM (Time Division Multiplexing) - os usuários se revezm (em um esquema de rodízio), e cada um obtém preiodicamente a largura de banda interia por um determinado período de tempo
+- FDM - 3 canais telefônicos são multiplexados, os filtros limitam a largura de banda utilizável a 3100 Hz por canal de voz
+
+  ![channelsEx](images/channelsEx.png)
+- FDM - apesar de haver intervalor entre os canais, há uma certa sobreposição entre canais adjacentes (limites não são nítidos)
+
+  ![channelsEx](images/channelsEx.png)
+- Padrão FDM - padrão muito difundido tem 12 canais de voz de 4000 Hz multiplexados na banda de 60 a 108 kHz (grupo)
+  - banda de 12 a 60 kHz pode ser utilizada por outro grupo
+  - permite que concessionárias de comunicações ofreçam o serviço de linha privada de 48 a 56 kbps baseado no grupo.
+- TDM (Time Division Multiplexing) - pode ser inteiramente manipulada por circuitos eletrônicos digitais
+  - como só pode ser usada par adados digitais e como os loops locais produzem sinais analógicos, é necessário uma conversão
+  - dados de computadores enviados por um modem também são analógicos, então, também é necessário a digitalização
+- WDM (Wavelength Division Multiplexing) - quatro fibras chegam juntas e um combinador óptico, cada uma com sua energia presente em um comprimento de onda distinto
