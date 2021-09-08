@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include "procs.h"
 #include <sys/shm.h>
 #define F1_KEY 1245
@@ -12,12 +11,13 @@ int main()
 {
   pid_t p;
   int id = 0, pipe0[2], pipe1[2];
+	Shared_area sm_f1_ptr;
 	Shared_area sm_f2_ptr;
   int canal[2];
   
   //gen f1 queue on shared mem
-  if(sm_f1_ptr = gen_shared_queue_area(F1_KEY)) {
-    printf("gen_shared_queue_area on f1 error!");
+  if((sm_f1_ptr = gen_shared_queue_area(F1_KEY)) == NULL) {
+    printf("gen_shared_queue_area on f1 error!\n");
     exit(-1);
   }
 
@@ -37,10 +37,9 @@ int main()
     exit(-1);
   }
 
-
   //gen f2 queue on shared mem
-  if(sm_f2_ptr = gen_shared_queue_area(F2_KEY)) {
-    printf("gen_shared_queue_area on f2 error!");
+  if((sm_f2_ptr = gen_shared_queue_area(F2_KEY)) == NULL) {
+    printf("gen_shared_queue_area on f2 error!\n");
     exit(-1);
   }
 /* 
@@ -49,7 +48,7 @@ int main()
   ...
   ...
 */
-  for(id = 1; id <= 7; id++){
+  for(id = 1; id <= 7; id++) {
     if ((p = fork()) < 0) {
       printf("fork error\n"); 
       exit(-1);
@@ -57,10 +56,11 @@ int main()
     if (p == 0) break;	  
   }
 
+
   if (id <= 3) {
-    p123(sm_f1_ptr, pid4); // how to get id = 4 pid
+    p123(sm_f1_ptr, id);
   } else if (id == 4) {
-    p4(sm_f1_ptr);
+    p4(sm_f1_ptr, pipe0, pipe1);
   } else if (id == 5) {
     printf("Executa o codigo de P5\n");
   } else if (id == 6) {

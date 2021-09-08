@@ -1,8 +1,17 @@
 #include <semaphore.h>
+#define MEM_SZ sizeof(struct shared_area)
+#define MAX 10
+
+// static queue on shared mem with counter
+struct queue {
+  int queue[MAX], ini, cont;
+};
+
 struct shared_area {
 	sem_t mutex;
 	int num;
 	struct queue queue;
+	pid_t consumer_pid;
 };
 
 typedef struct shared_area* Shared_area;
