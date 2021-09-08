@@ -468,4 +468,72 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 - SOLUÇÃO: Exclusão Mútua
   - Soluções de Hardware:
     - Desabilitar Interrupções
-    - TSL (Test and Set Lock)
+    - TSL (Test and Set Lock) - operação em assembly
+- SOLUÇÃO: Exclusão Mútua
+  - Soluções de Software:
+    - Semáforo (Dijkstra)
+      - Primitivas Up e Down
+      - Operações atômicas, implementadas como system calls
+
+      ![semaphore](images/semaphore.png)
+      ![semaphoreCode](images/semaphoreCode.png)
+- SOLUÇÃO: Exclusão Mútua
+  - Principais Problemas:
+    - Starvation - Prioridades/aleatoriedade: Escalonamento justo (FIFO)
+    - Sincronização condicional - ex. produtor/consumidor
+- SOLUÇÃO: Exclusão Mútua
+  - Soluções de Software:
+    - Monitores (Hoare)
+      - Remove do programador, parte das responsabilidades da programação com semáforo
+      - Encapsula procedimentos e variáveis utilizadas na programação de semáforos
+      - Implementado como um módulo (classe) que automaticamente realiza o sincronismo entre os procedimentos utilizados
+      - A implementação da exclusão mútua é realizada em tempo de compilação
+
+      ![monitorEx](images/monitorEx.png)
+- TROCA DE MENSAGENS
+  - usada para sincronização e comunicação entre processos:
+    - SEND(PID, MSG) / RCV(PID, MSG)
+  - Endereçamento
+    - Direto
+    - Indireto
+  - Modo
+    - Síncrono (rendezvous)
+    - Assíncrono
+
+#### DEADLOCKS
+
+- Quando processos se bloqueiam mutualmente na espera de um recurso indefinidamente
+- Dois processos (multitask) querendo imprimir um arquivo na impressora:
+  - Processo A bloqueia arquivo
+  - Processo B bloqueia impressora
+  - Processo A tenta usar a impressora
+  - Processo B tenta abrir o arquivo
+- Recursos preemptíveis e não preemptíveis
+  - Ex. memória (preempção) / impressora (não preempção)
+- Condições para deadlock (Coffman et al. 1971):
+  - Condição de exclusão mútua
+  - Utilização de dois ou mais recursos exclusivos
+  - Recursos sem preempção, liberados explicitamente pelo processo
+  - Condição de espera circular. Um encadeamento de dois ou mais processos que esperam pelo próximo processo da cadeia
+
+  ![dlEx](images/dlEx.png)
+- Garantir que uma ou mais das condições anteriores não ocorra:
+  - Condição de exclusão mútua
+    - Problemas de compartilhamento de recursos
+  - Utilização de dois ou mais recursos exclusivos
+    - Alocação antecipada, o que pode causar sub-utilização
+  - Recursos sem preempção, liberados explicitamente pelo processo
+    - Garantir preempção. Problemas de starvation e inconsistência podem ocorrer
+  - Condição de espera circular. Um encadeamento de dois ou mais processos que esperam pelo próximo processo da cadeia
+    - Excluir a possibilidade de múltiplas alocações de recursos exclusivos ao mesmo tempo.
+
+#### PREVENÇÃO DE DEADLOCKS
+
+- Detecção:
+  - Utiliza estruturas internas no kernel do SO
+  - Algoritmos de busca são específicas para cada SO, tais como time sharing e de tempo real
+  - Gera grande overhead no kernel, por isso, normalmente não se implementa tais funcionalidades
+- Correção:
+  - Preempção: Retirar recurso(s) de um processos fornecendo-o para outro processo
+  - Rollback: Utilização de checkpoints
+  - Processos killing: Remove um ou mais processos de cadeia de dependências
