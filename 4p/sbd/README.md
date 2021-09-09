@@ -1465,3 +1465,201 @@ GRANT SELECT, DELETE
 - A decomposição multivias para a 5FN é restrição semântica bastante peculiar e a normalização para 5FN raramente é feita nestes termos
 - Uma alternativa à decomposição da relação universal é utilizar ferramentas de projeto conceitual e mapeamento para o relacional
 - Por exemplo, um mapeamento do Modelo de Entidades e Relacionamentos para o Modelo Relacional gera esquemas de BD na terceira forma normal
+
+## _*SQL/DML no PostgreeSQL*_
+
+- A SQL/DML\* (Data Manipulation Language) é um subconjunto da SQL usada para consultar, inserir, atualizar, e excluir dados de tabelas do BD.
+
+### Parte 1 - Introdução
+
+#### Principais Comandos
+
+- INSERT - inserção de dados;
+- DELETE - exclusão de dados;
+- UPDATE - atualização de dados;
+- SELECT - consulta de dados;
+- obs: serão mostradas características do padrão SQL implementadas no PostgreSQL
+
+#### INSERT
+
+```sql
+INSERT INTO tabela [(coluna [, ...])]
+  {DEFAULT VALUES 
+    | VALUES ( { expressão | DEFAULT} [, ...] )
+            [, ...]
+          | comando-select
+  }
+```
+
+##### INSERT - Exemplo 1
+
+```sql
+INSERT INTO tabela VALUES (expressão [, ...])
+INSERT INTO employee
+  VALUES ('John', 'B', 'Smith', '123456789', DATE '1965-01-09', '731 Fondren, Houston, TX', 'M', 30000, '333445555', 5);
+```
+
+- Compatibilidade de tipos:
+
+```SQL
+/* 
+employee (
+  fname VARCHAR(5) NOT NULL,
+  minit CHAR,
+  lname VARCHAR(15) NOT NULL,
+  ssn CHAR(9) PRIMARY KEY,
+  bdate DATE,
+  address VARCHAR(30),
+  sex CHAR CHECK (sex IN ('M', 'F')),
+  salary DECIMAL(10, 2),
+  superssn CHAR(9),
+  dno INT NOT NULL
+)  
+*/
+```
+
+##### INSERT - Exemplo 2
+
+```sql
+INSERT INTO tabela VALUES (expressão [, ...])
+INSERT INTO employee (fname, minit, lname, ssn, dno)
+  VALUES ('John', 'B', 'Smith', '123456789', 5);
+```
+
+##### INSERT - Exemplo 3
+
+```sql
+INSERT INTO tabela comando-select)
+INSERT INTO works_on SELECT ssn, pnumber, 0 FROM employee, project;
+```
+
+#### DELETE
+
+```sql
+DELETE FROM tabela VALUES [[AS] alias]
+  [WHERE condição
+  | WHERE CURRENT OF cursor_name]
+DELETE FROM employee WHERE ssn = '123456789'
+```
+
+- obs: o uso de cursores será visto posteriormente
+
+#### UPDATE
+
+```sql
+UPDATE tabela [[AS] alias]
+  SET { coluna = {expressão | DEFAULT}
+    | (coluna [, ...]) = ({ expressão | DEFAULT } [, ...])
+  } [, ...]
+  [ WHERE condição | WHERE CURRENT OF cursor_name ]
+DELETE FROM employee WHERE ssn = '123456789'
+```
+
+- obs: o uso de cursores será visto posteriormente
+
+##### UPDATE - Exemplo 1
+
+```sql
+UPDATE employee
+  SET address = 'Av. Joao Naves de Avila, 2121', salary = salary * 1.5
+  WHERE ssn = '123456789'
+```
+
+##### UPDATE - Exemplo 2
+
+```sql
+UPDATE works_on
+  SET (pno, hours) = (1, 10)
+  WHERE essn = '123456789'
+```
+
+#### SELECT
+
+```sql
+SELECT [ALL | DISTINCT] -- DISTINCT não permite repetições na consulta
+  * | expressão [AS nome_saida][, ...]
+  FROM item_from [, ...]
+  [WHERE condição]
+  [GROUP BY expressão [, ...]]
+  [HAVING condição [, ...]]
+  [{ UNION | INTERSECT | EXCEPT } [ ALL ] select]
+  [ ORDER BY expressão [ASC | DESC | USING operador] [NULLS { FIRST | LAST }][, ...] ]
+  [ FOR {UPDATE | SHARE} 
+    [OF nome_tabela [, ...]] [NOWAIT][...]]
+```
+
+#### Consultas básicas, aninhadas, com funções de agregação recursivas
+
+- Considerando os diversos parâmetros do comando SELECT, para efeito didático, vamos dividir noss estudo em:
+  - consultas básicas: no WHERE não existe outro SELECT
+  - consultas aninhadas: no WHERE existe outro SELECT
+  - consultas com tabelas de junção e funções de agregação: tipos de junção, funções: máximo, soma, média, etc
+  - consultas recursivas: tabelas temporárias e fecho transitivo
+
+### Parte 1 - Consultas básicas
+
+#### SELECT-FROM-WHERE
+
+- Formato de comando SELECT para consulas básicas:
+
+```SQL
+SELECT lista-de-atributos
+  FROM lista-de-tabelas
+  WHERE condição
+```
+
+- obs:
+  - condições sem cláusula SELECT;
+  - os exemplos a seguir seguem a numeração de EN e estão baseados no BD company;
+
+#### Cláusula UNION
+
+- Ocorre quando é especificado um 'ou', unindo tabelas
+
+```SQL
+(SELECT DISTINCT pnumber
+FROM project, department, employee
+WHERE dnum = dnumber AND msgrssn = ssn AND lname = 'Wong')
+UNION
+(SELECT DISTINCT pnumber
+FROM works_on, employee
+WHERE essn = ssn AND lname = 'Wong')
+```
+
+#### Cláusula LIKE
+
+```SQL
+SELECT DISTINCT fname, minit, lname
+FROM employee
+WHERE address LIKE '%Houston%TX%' -- 'TX' retoma texas
+
+SELECT fname, minit, lname
+FROM employee
+WHERE CAST(bdate AS TEXT) LIKE '__5%' 
+-- '%' afirma que ter qualquer coisa entre o padrão
+-- '_' afirma que há um número
+```
+
+
+#### Usando expressões
+
+```SQL
+SELECT DISTINCT fname, minit, lname, salary*1.1 AS NewSalary
+FROM employee, project, works_on
+WHERE ssn=essn AND pno=pnumber
+  AND pname = 'ProductX'
+
+SELECT *
+FROM employee
+WHERE dno='5'
+  AND salary BETWEEN 30000 AND 40000
+```
+
+#### Cláusula ORDER BY
+
+```SQL
+SELECT dno, fname, lname, pno
+FROM employee, works_on
+WHERE essn = ssn
+ORDER BY dno, fname, lname
+```
