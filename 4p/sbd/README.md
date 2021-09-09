@@ -1663,3 +1663,100 @@ FROM employee, works_on
 WHERE essn = ssn
 ORDER BY dno, fname, lname
 ```
+
+### Parte 2 - Consultas Aninhadas e Comparação com Conjuntos
+
+#### Cláusula IN (pertinência)
+
+```SQL
+(SELECT pnumber
+FROM project, department, employee
+WHERE dnum = dnumber AND msgrssn = ssn AND lname = 'Smith')
+UNION
+(SELECT pno
+FROM works_on, employee
+WHERE essn = ssn AND lname = 'Smith')
+-- essa consulta pode ser reformulada, removendo a cláusula UNION e incluindo a cláusula IN
+
+SELECT DISTINCT pnumber FROM project
+WHERE pnumber IN (SELECT pnumber
+  FROM project, department, employee
+  WHERE dnum = dnumber AND msgrssn = ssn AND lname = 'Smith')
+OR pnumber IN (SELECT pno
+FROM works_on, employee
+WHERE essn = ssn AND lname = 'Smith')
+-- Obs: Não foi usado DISTINCT na versão com "UNION" porque é default, já no UNION ALL não
+```
+
+#### Comparando conjuntos com ALL, ANY ou SOME
+
+- Outras cláusulas para comparação de conjuntos:
+  - ALL
+  - ANY ou SOME (são sinônimos)
+- Ex: salary > ALL (SELECT salary FROM ...);
+- Ex: salary < ANY (SELECT salary FROM ...);
+- Ex: salary > SOME (SELECT salary FROM ...);
+
+#### Ambiguidade em consultas aninhadas - (apelidos de tabelas)
+
+```SQL
+SELECT e.fname, e.lname FROM employee as e
+WHERE e.ssn IN (SELECT essn
+  FROM dependent as d
+  WHERE fname = dependent_name AND e.sex = d.sex)
+```
+
+#### Substituindo subconsulta por junção
+
+```SQL
+SELECT e.fname, e.lname 
+FROM employee as e, dependent as d
+WHERE ssn = essn
+  AND fname = dependent_name
+  AND e.sex = d.sex;
+```
+
+#### FUNÇÃO EXISTS - consultas aninhadas correlacionadas
+
+```SQL
+SELECT e.fname, e.lname 
+FROM employee as e
+WHERE EXISTS
+  (SELECT * FROM dependent d
+    WHERE e.ssn = d.essn
+      AND e.fname = d.dependent_name
+      AND e.sex = d.sex);
+```
+
+#### FUNÇÃO NOT EXISTS - consultas aninhadas correlacionadas
+
+```SQL
+SELECT fname, lname 
+FROM employee
+WHERE NOT EXISTS
+  (SELECT * FROM dependent
+    WHERE ssn = essn);
+```
+
+#### Aninhamento em dois níveis (Divisão com dupla negação)
+
+```SQL
+SELECT lname, fname FROM employee
+WHERE NOT EXISTS
+  (SELECT * FROM project WHERE dnum = 4
+    AND NOT EXISTS
+      (SELECT * FROM works_on
+        WHERE essn=ssn
+        AND pnumber=pno))
+```
+
+#### Aninhamento em dois níveis (Divisão negação e subtração)
+
+```SQL
+SELECT lname, fname FROM employee e
+WHERE NOT EXISTS
+  (SELECT pnumber FROM project WHERE dnum = 4
+    EXCEPT
+      (SELECT pno FROM works_on w
+        WHERE w.essn = e.ssn))
+```
