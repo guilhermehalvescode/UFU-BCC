@@ -1,6 +1,8 @@
 #include <semaphore.h>
 #define MAX 10
 #define MAX_RANGE 1000
+#define F1_KEY 1245
+#define F2_KEY 6548
 #define MEM_SZ_F1 sizeof(struct shared_area_f1)
 #define MEM_SZ_F2 sizeof(struct shared_area_f2)
 
@@ -18,7 +20,7 @@ struct shared_area_f1 {
 
 struct shared_area_f2 {
 	sem_t mutex;
-	int counter, reps[MAX_RANGE], p56qnt; // p7 statistics
+	int p56qnt;
 	struct queue queue;
 };
 

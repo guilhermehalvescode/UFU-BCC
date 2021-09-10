@@ -1,6 +1,8 @@
 #include "procs.h"
 
 int p4IsConsuming = 0;
+int counter, reps[MAX_RANGE]; // p7 statistics
+
 struct args {
   Shared_area_f1 sm_f1_ptr; 
   int pipe;
@@ -15,7 +17,6 @@ void p123(Shared_area_f1 sm_f1_ptr) {
       //gen aleatory val bet [1, 1000], inserting into queue
       aleNum = 1 + (rand() % MAX_RANGE);
       queue_push(&sm_f1_ptr->queue, aleNum);
-      // printf("Pid-P123: %d gerou aleNum(%d)\n", id, aleNum);
       if(queue_full(&sm_f1_ptr->queue)) {
         sm_f1_ptr->num = 1;
         kill(sm_f1_ptr->consumer_pid, SIGUSR1);
@@ -46,13 +47,14 @@ void* p4Consumer(void* args) {
     }  
     sem_post((sem_t *) &sm_f1_ptr->mutex);
   }
+  close(pipeEntrance);
 }
 
 void p4Handler() {
   p4IsConsuming = 1;
 }
 
-// p4 need's to access global vars, signal can't pass args
+// p4Handler need's to access global vars, signal can't pass args
 // https://cboard.cprogramming.com/linux-programming/147409-pass-user-parameter-signal-handler-linux.html
 void p4(Shared_area_f1 sm_f1_ptr, int pipeEntrance1, int pipeEntrance2) {
   sem_wait((sem_t *) &sm_f1_ptr->mutex);
@@ -72,7 +74,6 @@ void p56(Shared_area_f2 sm_f2_ptr, int pipeExit) {
   while(1) {
     // if pipe is readable, process it
     if (read(pipeExit, &value, sizeof(int)) >= 0) {	
-      // printf("Pid-P56: %d pegou aleNum(%d) do pipe: %d\n", id, value, pipeEntrance);
       sem_wait((sem_t *) &sm_f2_ptr->mutex);
       if(!queue_full(&sm_f2_ptr->queue)) {
         // send to shared mem
@@ -82,14 +83,12 @@ void p56(Shared_area_f2 sm_f2_ptr, int pipeExit) {
       sem_post((sem_t *) &sm_f2_ptr->mutex);
     }	
   }
+  close(pipeExit);
 }
 
-void p7ShowStats(int* reps) {
+void p7ShowStats() {
   int i = 0, indexMode, indexMin, indexMax;
   int qntReps;
-  for(i = 0; i < MAX_RANGE; i++) {
-    printf("reps[%d] = %d\n", i, reps[i]);
-  }
   for(i = 0; !reps[i]; i++); // goto first observed num
   indexMin = i;
   indexMax = i;
@@ -103,24 +102,25 @@ void p7ShowStats(int* reps) {
     if(reps[i]) indexMax = i;
     i++;
   }
-  printf("Moda: %d / Valor minimo: %d / Valor maximo: %d", indexMode + 1, indexMin + 1, indexMax + 1);
+  printf("Moda: %d | Valor minimo: %d | Valor maximo: %d", indexMode + 1, indexMin + 1, indexMax + 1);
 }
 
 void* p7Threads(void* arg) {
   int i, signal, value;
-  Shared_area_f2 sm_f2_ptr = (Shared_area_f2) sm_f2_ptr;
+  Shared_area_f2 sm_f2_ptr = (Shared_area_f2) arg;
   while(1) {
     sem_wait((sem_t *) &sm_f2_ptr->mutex);
     if(!queue_empty(&sm_f2_ptr->queue)) {
-      queue_pop(&sm_f2_ptr->queue, &value);
-      printf("Valor: %d\n", value);
-      sm_f2_ptr->reps[value - 1]++;
-      // number used to count impressions
-      if(++sm_f2_ptr->counter == 10000) {
+      // counting impressions
+      if(counter < 10000) {
+        counter++;
+      } else {
         sem_post((sem_t *) &sm_f2_ptr->mutex);
         break;
-      } 
-
+      }
+      queue_pop(&sm_f2_ptr->queue, &value);
+      printf("%d\n", value);
+      reps[value - 1]++;
     }  
     sem_post((sem_t *) &sm_f2_ptr->mutex);
   }
@@ -131,5 +131,7 @@ void p7(Shared_area_f2 sm_f2_ptr) {
   pthread_create(&tid1, NULL, p7Threads, (void*) sm_f2_ptr);
   pthread_create(&tid2, NULL, p7Threads, (void*) sm_f2_ptr);
   p7Threads(sm_f2_ptr);
-  p7ShowStats(sm_f2_ptr->reps);
+  pthread_join(tid1, NULL);
+  pthread_join(tid2, NULL);
+  p7ShowStats();
 }

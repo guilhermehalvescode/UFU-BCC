@@ -1,16 +1,15 @@
-#include "procs.h"
-#define F1_KEY 1245
-#define F2_KEY 6548
-
+#include "./libs/procs.h"
+#include <sys/wait.h>
 
 int main()
 {
-  pid_t p;
+  clock_t startTime = clock();
+  pid_t pids[7];
   int id = 0, pipe1[2], pipe2[2];
 	Shared_area_f1 sm_f1_ptr;
 	Shared_area_f2 sm_f2_ptr;
   int canal[2];
-  
+  srand(time(NULL)); // seed to diff numbers between tests
   //gen f1 queue on shared mem
   if((sm_f1_ptr = gen_shared_area(F1_KEY, 1)) == NULL) {
     printf("gen_shared_area on f1 error!\n");
@@ -46,11 +45,11 @@ int main()
   }
 
   for(id = 1; id <= 7; id++) {
-    if ((p = fork()) < 0) {
+    if ((pids[id - 1] = fork()) < 0) {
       printf("fork error\n"); 
       exit(-1);
     }
-    if (p == 0) break;	  
+    if (pids[id - 1] == 0) break;	  
   }
 
   if (id <= 3) {
@@ -66,12 +65,31 @@ int main()
     p56(sm_f2_ptr, pipe2[0]);
   } else if (id == 7) {
     p7(sm_f2_ptr);
-  } else  if (id == 8) {
-    printf("Executa o codigo do Processo Pai\n");
-/*  Ele pode aguardar os demais processos ou simplesmente finalizar neste ponto. 
-    Lembre-se, o termino do Pai antes dos processos filhos nao causa o termino dos
-    processos filhos. 
-*/    
+    sem_wait((sem_t *) &sm_f2_ptr->mutex);
+    printf(" | Valores processados por P6 e P7: %d", sm_f2_ptr->p56qnt);
+    sem_post((sem_t *) &sm_f2_ptr->mutex);
+    clock_t endTime = clock();
+    printf(" | Tempo gasto: %f\n", (double) (endTime - startTime) / CLOCKS_PER_SEC);
+  } else if (id == 8) {
+    int i, j;
+    for(i = 0; i < 7; i++) {
+      wait(&id); // id is unused
+      // if one proc ends, shut down every one
+      if(i == 0) 
+        for(j = 0; j < 7; j++) 
+          kill(pids[j], SIGKILL);
+    }
+    // freeing all resources
+    sem_destroy((sem_t *) &sm_f1_ptr->mutex);
+    sem_destroy((sem_t *) &sm_f2_ptr->mutex);
+    close(pipe1[0]);
+    close(pipe1[1]);
+    close(pipe2[0]);
+    close(pipe2[1]);
+    shmdt(sm_f1_ptr);
+    shmctl(F1_KEY, IPC_RMID, NULL);
+    shmdt(sm_f2_ptr);
+    shmctl(F2_KEY, IPC_RMID, NULL);
   }
- exit(0); /* Executado por todos os processos ao finalizarem */
+ exit(0);
 }

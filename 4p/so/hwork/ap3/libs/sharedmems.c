@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <sys/shm.h>
-#include <errno.h>
 #include "sharedmems.h"
 #include <stdio.h>
 
@@ -11,15 +10,12 @@ void* gen_shared_area(key_t sm_key, int isF1) {
   int shmid;
 	void *sm = NULL;
 
-  if ((shmid = shmget(sm_key, isF1 ? MEM_SZ_F1 : MEM_SZ_F2, 0666|IPC_CREAT)) == -1) {
-    printf("err: %d", errno);
+  if ((shmid = shmget(sm_key, isF1 ? MEM_SZ_F1 : MEM_SZ_F2, 0666|IPC_CREAT)) == -1) 
 		return NULL;
-  }
   //shr_mem attach
 	if ((sm = shmat(shmid, NULL, 0)) == (void *) -1)
 		return NULL;
   // gen f1 or f2 starting it's queue
-
   if(isF1) {
     //casting to f1 and initializing
     Shared_area_f1 f1 = (Shared_area_f1) sm;
@@ -29,12 +25,9 @@ void* gen_shared_area(key_t sm_key, int isF1) {
     f1->num = 0;
   } else {
     //casting to f2 and initializing
-    int i;
     Shared_area_f2 f2 = (Shared_area_f2) sm;
     queue(&f2->queue);  
-    f2->counter = 0;
     f2->p56qnt = 0;
-    for(i = 0; i < MAX_RANGE; i++) f2->reps[i] = 0;
   }
   return sm;
 }
