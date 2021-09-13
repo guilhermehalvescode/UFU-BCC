@@ -537,3 +537,51 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
   - Preempção: Retirar recurso(s) de um processos fornecendo-o para outro processo
   - Rollback: Utilização de checkpoints
   - Processos killing: Remove um ou mais processos de cadeia de dependências
+
+## **Gerenciamento de processador**
+
+### Mecanismo de Interrupção de Processador (Timer Interrupt)
+
+  ![hwInterruption](images/hwInterruption.png)
+
+1. Salva os registradores não salvos pelo hardware
+2. Configura o novo contexto do tratador da interrupção
+3. Configura a pilha para o código de tratamento da interrupção
+4. Confirma interrupção para o controlador de interrupções (APIC)
+5. Copia os registradores salveos para a PCB do processo
+6. Executa o código do tratador da interrupção (interrupt handler)
+7. Escolha qual o próximo processo será executado
+8. Configura o SO para assumir o contexto do novo processo (espaço de endereçamento, pilha, etc.)
+9. Carrega os registradores com os dados do novo processo, incluindo o PC (program counter)
+10. Inicia a execução do novo processo
+
+### Escalonamento
+
+#### Tipos de Processos
+
+- CPU Bound: A maior parte do tempo, o processo se mantém rodando na CPU até o seu tempo máximo
+- I/O Bound: processo realiza mais operações de I/O bloqueantes do que processamento da CPU (processo sai da CPU antes do tempo máximo)
+
+#### Critérios de Escalonamento
+
+- Utilização da CPU
+- Throughput (nTasks/unid. tempo)
+- Turnaround
+- Tempo de Resposta
+
+#### Escalonador de processos
+
+- Invocado a cada n clock ticks
+
+  ![scheduler](images/scheduler.png)
+
+#### Tipos de Escalonamento
+
+- Não-preemptivo
+  - O processo executa na CPU até seu término ou repasse voluntário do recurso
+  - Não existe interferência do SO
+- Escalonamneto preemptivo
+  - A execução dos processo é interrompida pelo SO
+  - Cada troca de contexto gera um custo (overhead) para o sistema
+  - O mecanismo utilizado é normalmente a interrupção de clock
+  - Políticas de escalonamento fornecem parâmetros para os mecanismos de escalonamento (algoritmos)
