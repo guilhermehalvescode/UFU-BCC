@@ -1771,3 +1771,156 @@
   - como só pode ser usada par adados digitais e como os loops locais produzem sinais analógicos, é necessário uma conversão
   - dados de computadores enviados por um modem também são analógicos, então, também é necessário a digitalização
 - WDM (Wavelength Division Multiplexing) - quatro fibras chegam juntas e um combinador óptico, cada uma com sua energia presente em um comprimento de onda distinto
+
+## Link Layer
+
+- "objetivo" - descrever, entender e exemplificar os princípios de projeto de camada de enlace de dados
+  - entender algoritmos para comunicação eficiente e confiável entre dois "hosts" adjacentes no nível da camada de enlace
+    - adjacentes - duas máquinas fisicamente conectadas por meio de um canal (e.g., cabo coxial, linha telefônica ou canal sem fio ponto a ponto)
+    - fato de um canal se comportar como um fio é o fato de os bits serem entregues na ordem exata em que são enviados
+    - limitações com otaxa de transferência, erros no canal e atraso de propagação têm implicações na eficiência da transferência de dados
+
+### 1. Princípios de Projeto da Camada de Enlace
+
+- Destacam-se como "funções da camada de enlace":
+  - prover interface de serviço bem definida à camada de rede
+  - tratar erros de transmissão ao longo do canal de comunicação
+  - regular o fluxo de dados, de tal forma que receptores lentos não sejam atropelados por transmissores rápidos
+- Para alcançar estes objetivos a camada de enlace:
+  - encapsula pacotes da camada de rede em quadros para transmissão
+  - cada quando contém um "header", um campo de carga útil ou "payload", que conterá o pacote, e um campo final ou "trailer"
+- muitos dos princípios presentes na camada de enlace, como controle de erros e o controle de fluxo, são também encontrados em outros protocolos, e.g., protocolos de transporte
+  - não importa realmente a camada na qual estudaresmos muitos princípios, pois os princípios são quase idênticos
+
+  ![linkLayer](images/linkLayer.png)
+
+#### Serviços da Camada de Enlace
+
+- transferir dados de entidades da camada de rede do "host" origem para entidades da camada de rede do "host" destino
+- tarefa da camada de enlace é transmitir os bits ao "host" de destino, de forma que sejam entregues à camada de rede deste "host"
+
+  ![virtualPhysicalChannel](images/virtualPhysicalChannel.png)
+
+- "serviços típicos da camada de enlace" - dentro os serviços oferecidos com frequência pela camada de enlace, destacam-se:
+  - serviço sem conexão e sem informação
+  - serviço sem conexão com confirmação
+  - serviço orientado a conexão com confirmação
+  - serviço sem conexão e sem informação
+- serviço sem conexão e sem informação - "host" origem envia quadros independentes ao "host" destino, sem que o "host" de destino confirme o recebimento desses quadros
+  - apropriado quando a taxa de erros é muito baixa e a recuperação de erros fica a cargo de camadas mais altas
+  - apropriado para o tráfego em tempo real, no qual, a exemplo da fala humana, os dados atrasados causam mais problemas que dados recebidos com falhar
+- serviço sem conexão e com informação - "host" origem envia quadros ao "host" destino, mas cada quadro enviado pelo "host" origem é individualmente confirmado
+  - transmissor sabe se um quadro chegou corretamente ou não e, caso não chegue dentro de um intervalo de tempo específico, o quadro poderá ser reenviado - útil em canais não confiáveis
+  - em canais confiáveis, como em fibra óptica, o uso de um protocolo de enlace de dados muito sofisticado pode ser desnecessário mas, em canais sem fio, em sua inerente falta de confiabilidade, o custo compensa
+- serviço orientado a conexão e com informação - "host" origem e "host" destino estabelecem uma conexão antes de que os dados sejam transferidos
+  - cada quadro enviado pela conexão é numerado, e a camada de enlace de dados garante que cada quadro será de fato recebido
+  - garante que todos os quadros serão recebidos uma única vez, ou seja, elimina-se as duplicações bem como mantém-se a ordem
+- serviço orientado a conexão - pressupõe as fases de estabelecimento da conexão, trasferência dos dados e finalização da conexão, na qual libera-se as variáveis, os buffers e os outros recursos reservados quando a conexão foi estabelecida
+- e.g., considere uma sub-rede de uma rede metropolitana consistindo de roteadores conectados por linhas telefônicas
+  - quando um quadro chega a um roteador, o "hardware" verifica se há erros e depois repassa o quadro à camada de enlace de dados, cujo "software" pode estar incorporado a um chip da interface de rede
+
+  ![subNetEx](images/subNetEx.png)
+- software da camada de enlace verifica se esse é o quadro esperado e, se for o caso, passa o pacote contido no campo de carga útil - "payload" ao software de roteamento
+  - "software" de roteamento (camada de rede), por sua vez, seleciona a linha de saída apropriada e repassa o pacote ao software da camada de enlace de dados, que o retransmite
+
+  ![subNetEx](images/subNetEx.png)
+
+#### Enquadramento
+
+- "enquadramento" - aceita-se um fluxo de bits brutos e tenta entregá-lo ao destino, no entanto, não há uma garantia de que esse fluxo de bits seja livre de erros
+  - estratégia adotada é dividir o fluxo de bits em quadros e calcular o "checksum" - "soma verificação" para cada quadro
+  - no destino, o "checksum" é recalculado e, caso, seja diferente do que está contido no quadro, a camada de enlace de dados identifica que há erros de transmissão
+  - providências neste caso, incluem descarte do quadro defeituoso e envio de relatóroi de erros à origem
+- "problema" - divisão do fluxo de bites em quadros é mais difícil do que parece à primeira vista, pois a rede raramente oferece garantias em relação a temporização
+- "solução" - como é arriscado contar com a temporização para marcar início e fim do quadro, outros métodos foram criados:
+  - contagem de caracteres
+  - bytes de "flags", com inserção de bytes
+  - "flags" iniciais e finais, com inserção de bits
+  - violações de codificação da camada física
+- "contagem de caracteres" - utiliza um campo no cabeçalho para especificar o número de caracteres no quadro
+  - quando vê a contagem de caracteres, a camada de enlace de dados de destino sabe quantos caracteres devem vir em seguida, e consequentemente, onde está o fim do quadro
+
+  ![byteCount](images/byteCount.png)
+- "bytes de flags, com inserção de bytes" - contorna-se o problema de ressincronização após um erro, fazendo cada quadro começar com bytes especiais
+
+  ![byteFlags](images/byteFlags.png)
+- "desvantagem" - utilização desse método de enquadramento depende da utilização de caracteres de 8 bits
+  - nem todos os códigos de caracteres utilizam caracteres de 8 bits, e.g., UNICODE emprega caracteres de 16 bits
+  - com o desenvolvimento das redes, as desvantagens da inclusão do comprimento do quadro se tornam cada vez mais óbvias
+  - nova técnica teve de ser desenvolvida para permitir o uso de caracteres com tamanhos arbitrários de bits -> flexibilidade
+- "flags iniciais e finais com inserção de bits" - permite que os quadros de dados contenham um nro. arbitrário de bits
+  - nro. arbitrário de bits, ou seja, permite o uso de códigos de caracteres com um nro arbitrário de bits por caractere
+  - de acordo com essa técnica, cada quadro começa e termina com um padrão de bits, 01111110 (na verdade, um byte de flag)
+  - sempre que encontra cingo valores 1 consecutivos nos dados, o transmissor insere um bit 0 no fluxo de bits sendo enviado
+  - essa inserção de bits é semelhante à inserção de bytes na qual um byte de ESC é inserido no fluxo de caracteres enviado antes de ocorrer um byte de "flag" nos dados
+
+  ![bitStuffing](images/bitStuffing.png)
+- "violações na codificação da camada física" - aplicável em redes onde empregam decodificação no meio físico que contém algum nível de redundância
+  - algumas redes locais codificam 1 bit de dados utilizando 2 bits físicos, bits 1 contém uma transição alto-baixo, e bit 0 é uma transição baixo-alto
+  - esquema significa que todo bit de dados tem um a transição intermediária, facilitando a localização dos limites de bites pelo receptor
+  - combinações alto-alto e baixo-baixo não são usadas para dados, mas são empregadas na delimitação de quadros em alguns protocolos
+
+#### Controle de Erro - Camada de Enlace
+
+- "controle de erro" - como ter certeza de que os quadros serão entregues na camada de rede de destino e na ordem apropriada?
+  - suponha que o transmissor simplesmente continue a enviar os quadros sem se importar em sabe se eles estão chegando de maneira correta
+  - pode ser uma ótima opção para serviços sem conexão e sem confirmação, mas sem dúvida não é para serviços orientados a conexões
+- "solução" - uma forma de garantir entrega confiável é retornar ao transmissor algum "feedback" sobre o que está acontecendo no outro extremo da linha - receptor
+  - confirmação positiva - quadro chegou em segurança ao destino
+  - confirmação negativa - algo saiu errado e quadro deve ser retransmitido
+- "complicação adicional" - problemas de "hardware" podem fazer com que um quadro desapareça completamente e, neste caso, o receptor não reagirá de forma alguma
+  - protocolo no qual o transmissor envia um quadro e depois espera por uma confirmação, positiva ou negativa, permanecerá suspensa para sempre caso um quadro tenha sido completamente perdido
+- "solução" - introdução de "timers" na camada de enlace de dados sempre que o transmissor envia o quadro
+  - "timer" é ajustado para ser desativado após um intervalo suficientemente longo para o quadro chegar ao destino, ser processado e ter sua confirmação enviada de volta ao transmissor
+- "camada de enlace" - "timers" e "nros. de sequência"
+- "razão" - garantir que cada quadro seja realmente passado para a camada de rede do destino exatamente uma vez
+
+#### Controle de Fluxo - Camada de Enlace
+
+- "princípio de projeto" - como encaminhar quadros pelo transmissor sem que ocorra transbordo do receptor??
+  - muitos dos esquema de controle de fluxo tem por princípio regras bem definidas sobre quando um transmissor pode enviar o quadro seguinte
+  - tais regras impedem que os quadros sejam enviados até que o receptor tenha concedido permissão para tranmissão, implícita ou explícita
+- e.g., quando uam conexão é estabelecida, o receptor pode informar "você está autorizado a enviar N quadros, e na sequência aguardar até ser informado que deve prosseguir"
+
+### 2. Detecção e Correção de Erros
+
+- embora os erros sejam raros na parte digital, eles ainda são comuns nos "loops" locais do sistema de telefonia ou mesmo na comunicação sem fio à medida que se torna mais comum
+  - nestes casos as taxas de erros sãso várias ordens de grandeza piores e não se comparam com aas taxas de erros dos troncos de fibra óptica
+- "conclusão" - erros de transmissão ainda estarão presentes por muitos anos nos sistemas de comunicação
+
+#### Códigos de Correção de Erros
+
+- duas estratégias básicas para tratar os erros:
+  - "códigos de correção de erros" - incluir informações redundantes suficientes em cada bloco de dados, com isso, o receptor é capaz de deduzir quais foram os dados transmitidos
+  - "códigos de correção de erros" - são extensamente utilizados em enlaces sem fios, conhecidos por serem ruidosos e propensos a erros em comparação com a fiação de cobre ou a fibra óptica
+- "formalização" - quadro ocnsistem em "m" bits de dados e de "r" bits redundantes ou bits de verificação
+  - seja o tamanho total n (isto é, n = m + r), então, com frequência, uma unidade de "n" bits que contém bits de dados e bits de verificação é chamada palavra de código - "codeword" de "n" bits
+- e.g., dadas duas palavras de código, digamos 10001001 e 10110001, é possível determinar quantos bits correspondentes apresentam diferenças ... neste caso, 3 bits divergentes
+  - para determinar as diferenças, aplique a operação OR exclusivo entre as duas palavras de código, e ocnte o nro. de bits 1 no resultado
+- "diferença" entre duas "code words" - definida como o nro. de bits nos quais as "code words" se diferem
+  - "Hamming Distance" - mínima diferença entre duas "code words"
+- Código com "Hamming Distance" de "n", implica que qualquer combinação e até "n - 1" erros de bits pode ser detectada
+  - qualquer combinação até "(n-1)/2" de erros de bits por código pode ser corrigida se o repector interpretar toda paalvra de código não válida como a palavra de código válida mais próxima
+  - este método é formalmente chamada de "Maximum Likelihood Decoding" ou "Neareste Neighbor Decoding"
+- Aumentando a Distância de Hamming, escolhendo "code words" mais longas, seremos camazes de aumentar a confiabilidade de um código tanto mais quanto maior a "code word"
+- Obs.: Redundância de um Código determina seu poder de detexção e correção de erros de transmissão
+
+  ![hammingCode](images/hammingCode.png)
+- e.g. "hamming code" - em uma mensagem de "n" bits, inclui-se "c" bits de verificação => "n + c" bits na mensagem
+  - para "c" bits de verificação, temos: "n = 2^c - 1" assim o nro máximo de bits na mensagem será "n = 2^c - c - 1"
+  - e.g., para "n = 4" e "c = 3" (bits de paridade) => 7 bits na msg; para "n = 11" e "c = 4" (bits de paridade) => 15 bits na msg.
+- "Hamming Code" - bits na palavra de código são numerados de "1" a "m+c" e o "i-ésimo" bit é colocado na posição "2^i" .... para 1 <= i <= log2 (m + c)
+  - bits de verificação são colocados na palavra de código de tal maneira que a soma da posição dos bits que eles ocupam aponte para o bit errado para qualquer erro de 1 único bit
+  - quando uma posição é escrita como a soma de potências de 2, p.ex, (1 + 2 + 4), estas potências também apontam para os bits de verificação que cobrem o bit em questão ... neste caso bit de dados - 7
+
+  ![hammingCode](images/hammingCode.png)
+
+#### Códigos de Detecção de Erros
+
+- "baixa taxa de erros" - detecção de erros e retransmissão em geral é mais eficiente para lidar com o erro ocasional
+- "Cyclic Redundancy Check" - algoritmo de código cíclico ou "cyclic code" mais utilizado em redes de computadores
+  - ISO especifica um algoritmo similar denominado FCS (Frame Check Sequence) utilizado em seus protocolos IEEE802
+- CRC contempla o produto de bits de verificação de uma primitiva cuja amostragem é definida segundo um critério
+  - bits escolhidos fazem parte do fator (polinômio gerador) e, portanto, é transmitido o produto, ou seja, primitiva * fator
+  - no destino faz-se a divisão do que é recebiso pelo fator, se resto é zero significa ausência de erro ou erro não detectável
+  - método de divisão é específico e o fato (polinômio gerador) usado determinam o leque de erros de transmissão que podem ser detectados
