@@ -1924,3 +1924,124 @@
   - bits escolhidos fazem parte do fator (polinômio gerador) e, portanto, é transmitido o produto, ou seja, primitiva * fator
   - no destino faz-se a divisão do que é recebiso pelo fator, se resto é zero significa ausência de erro ou erro não detectável
   - método de divisão é específico e o fato (polinômio gerador) usado determinam o leque de erros de transmissão que podem ser detectados
+
+### 3. Protocolos Elementares de Enlace de Dados
+
+- Neste contexto, é útil explicar algumas suposições:
+  - "host" - deseja enviar um longo fluxo de dados ao "host" B utilizando um serviço confiável e orientado a conexões
+  - há processos independentes que se comunicam pelo envio das msgs. nas camadas física, de enlace e de redes
+  - "hosts" não sofrerão panes, isto é, esses protocolos lidam com erros de comunicação, mas não com problemas causados por "hosts" que sofrem panes e são reinicializados
+  - quando a camada de enlace de dados aceita um pacote, ela o encapsula um quadro, acrescentando-lhe um cabeçalho e um "trailer" de enlace de dados
+
+    ![frameC](images/frameC.png)
+- "premissa" - inicialmente o receptor aguarda algo acontecer, ou seja, a camada de enlace está esperando algo acontecer através de uma chamada de procedimento "wait_for_event(&event)"
+- "premissa" - procedimentos de biblioteca "to_network_layer" posssibilitam a recepção de um pacote e "from_network_layer" possibilitam o envio de um pacote
+- "premissa" - procedimentos de biblioteca "to_physical_layer" para transmitir um quadro e "from_physical_layer" para receber um quadro e armazená-lo no "frame" "r"
+
+  ![functionsC](images/functionsC.png)
+- ignoraremos todos os detalhes de atividades paralelas na camada de enlace de dados, e presumiresmos que ela se dedica em tempo integral apenas a tratamento do nosso canal
+
+  ![timerFuncsC](images/timerFuncsC.png)
+
+#### Protocolo Simplex sem Restrições
+
+- "Protocolo Utopia" - oferece transmissão de dados em um único sentido, ou seja, do transmissor para o receptor
+  - canal de comunicação é livre de erros e que o receptor é capaz de processar toda a entrada de uma forma infinitamente rápica
+  - protocolo absolutamente imaginário, que denominaremos "utopia" está descrito
+- procedimento transmissor é executado na camada de enlace de dados do "host" origem, enquanto o receptor na camada de enlace do "host" destino
+  - transmissor é um "loop" infinito que envia os dados o mais rápido possível, busca um pacote da camada de rede e cria um quadro utilizando a variável "s" e transmite o quadro ao destino
+
+  ![utopianSimplexProtSender](images/utopianSimplexProtSender.png)
+- camadas de rede do transmissor e do receptro estão sempre prontas à espera de informações; tempo de processamento pode ser ignorado; espaço disponível em buffer é infinito
+
+  ![utopianSimplexProtReceiver](images/utopianSimplexProtReceiver.png)
+
+#### Protocolo Stop-and-Wait
+
+- "premissa" - continuamos supondo que o canal de comunicação é "simplex" e não apresenta erros (canal sem erros)
+  - "host" - deseja enviar um longo fluxo de dados ao "host" B utilizando um serviço confiável e orientado a conexões
+- "problema" - como impedir que o transmisso inunde o receptor, mais rapidamente do que este é capaz de processor
+  - se o receptor necessitar de um tempo "t" para executar "from_physical_layer" e "to_network_layer", o transmissor terá de enviar os dados em uma velocidade média menor que um quadro por tempo "t"
+- "solução" - receptor enviar um "feedback" ao transmissor, premitidno a transmissão do próximo quadro
+  - após o envio de um quadro, o protocolo exige que o transmissor espere sua vez, até a chegada do pequeno quadro fictício (confirmação)
+  - como fica a premissa do canal ser simplex, ou seja, "host" deseja enviar um longo fluxo de dados ao "host" B??
+- "stop-and-wait" - protocolos nos quais o transmissor envia um quadro e em sequida espera por uma confirmação antes de continuar sua operação são chamados "stop-and-wait"
+  - emvora o tráfego de dados neste exemplo seja "simplex", ou seja, do transmissor para o receptor, há quadros em ambas as direções
+  - canal de comunicação entre as duas camadas de enlace deve ser capaz de realizar a transferência bidirecional de informações
+- "stop-and-wait" - protocolo com rígida alternância de fluxo, ou seja, transmissor envia um quadro e na sequência receptor confirma seu recebimento (ciclo se repete na mesma ordem)
+- enlace de dados do transmissor não precisa sequer inspecionar o quadro recebido, pois só há uma possibilidade - quadro recebido é sempre uma confirmação
+
+  ![stopWaitProtSender](images/stopWaitProtSender.png)
+- "receptor1" != "receptor2" - após entregar um pacote à camada de rede, o receptor2 envia um quadro de confirmação de volta ao transmissor, antes de entrar mais uma vez no "loop" de espera
+
+  ![stopWaitProtReceiver](images/stopWaitProtReceiver.png)
+
+#### Protocolo Stop-and-Wait + Canal com Ruído
+
+- "premissa" - canal de comunicação é passível de erros, além disso quadros podem ser danificados ou perdidos
+  - supõe-se que se um quadro for danificado, o "hardware" receptor detectará essa ocorrência ao calcular o soma verificação
+- "solução" - seja uma variação do protocolo 2, p.ex., com a inclusão de um "timer" - temporizado
+  - transmissor envia um quadro, mas o receptor retorna um quadro de confirmação se os dados são recebidos corretamente
+  - se um quadro danificado chegar ao receptor, ele seria descartado e após um certo tempo, o transmissor alcança seu "timeout" e retransmite
+  - procesos é repetido até que o quadro chegue intacto
+- "solução" - vejamos se é viável uma variação do protocolo 2, por exemplo, com a inclusão de um "timer"
+  - tranmissor envia um quadro, mas o receptor retorna um quadro de confirmação se os dados são recebidos corretamente
+  - se um quadro danificado chegar ao receptor, ele seria descartado e após um certo tempo, o transmissor alcança seu "timeout" e retransmite
+  - processo é repetido até que o quadro chegue intacto
+- Por que a inclusão do "timer" não funciona ?!
+- e.g., considere o cenário / situação:
+  - camada de rede de A envia Pckt #1 à sua camada de enlace de dados, pacote é corretamente recebido em B e repassando à camada de rede B, asism, B envia uma confirmação para A
+  - quadro de confirmação (B -> A) se perde por completo - no caso em que simplesmente nunca chega ao destino
+  - resultado é que todo o processo de troca de dados simplesmente para de funcionar!!
+- Obs: Tudo seria muito mais simples se o canal tivesse adulterado e perdido apenas quadros de dados, e não de controle
+- e.g., (cont) considere o cenário / situação:
+  - eventualmente, camada de enlace de dados de A tem seu limite de tempo esgotado e, como não recebeu uma confirmação, presume que seu quadro de dados se perdeu e retransmite
+  - quadro duplicado chega perfeitamente à camada de enlace de dados de B e é repassado de imediato, sem maiores problemas, à camada de rede
+- Obs: Se A envia um arquivo de B -> partes do arquivo serão duplicadas -> sistema falha !!
+- "constatação" - receptor precisa distinguir entre um quadro que ele está recebendo pela 1ª vez de uma retransmissão
+- "solução" - fazer o transmissor incluir um nro. de sequência no cabeçalho de cada quadro enviado
+  - receptor poderá verificar o nro. de sequência de cada quadro recebido para confirmar se é um novo ou se é uma duplicata
+- nro. de sequência de 1 bit (0 ou 1) a cada instante, o receptor espera o próximo número de sequência
+
+  ![stopWaitNoiseProtSender](images/stopWaitNoiseProtSender.png)
+  ![stopWaitNoiseProtSender1](images/stopWaitNoiseProtSender1.png)
+- "Positive Acknowledgment with Retransmission" ou "PAR" - protocolos nos quais o transmissor espera por uma confirmação positiva antes de passar para o próximo item de dados
+  - são também denominados "Automatic Repeat reQuest" ou "ARQ", solicitação de repetição automática
+- após enviar um quadro, o transmissor ativa o "timer" ou renicializa o "timer" para permitir a contagem de outro intervalo
+- intervalo deve ser definido de forma que haja tempo suficiente para o quadro chegar ao receptor e ser processado e para o quadro de confirmação ser enviado de volta ao transmissor
+
+  ![stopWaitNoiseProtReceiver](images/stopWaitNoiseProtReceiver.png)
+
+### 4. Protocolo de Janela Deslizante
+
+- "Protocolo Stop-and-Wait" - assume como premissa que os quadros de dados são transmitidos em apenas um sentido
+  - em situações reais, há necessidade de transmissão em dois sentidos
+
+- "tramissão full-duplex" - dois canais de comunicação distintos e uso de cada um para um tráfego de dados "simplex"
+  - tem-se dois circuitos físicos separados, cada um com um canal "direto" (para dados) e um canal "inverso" (para confirmações), mas nete caso a largura de banda do canal inverso é quase totalmente perdida
+  - na verdade, o usuário paga por dois circuitos, mas usa apenas a capacidade para dados de um deles
+- "solução" - usar o mesmo circuito para dados em ambos os sentidos, ou seja, quadros de dados enviados de A para B são misturados com os quadros de confirmação A para B
+- "alternativa" - retardar temporariamente as confirmações e enviá-las junto com o próximo quadro de dados - "piggybacking"
+  - vantagem do piggybacking em relação ao envio de quadros ACKs distintos é a melhor utilização da largura de banda disponível para o canal
+  - campo "ack" do cabeçalho de quadro precisa de apenas alguns bits, enquanto um quadro separado precisa de um cabeçalho, da confirmação e de um campo som verificação
+- "problema" - quanto tempo a camada de enlace deve esperar por um pacote ao qual deverá acrescentar a confirmação
+  - se a camada de enlace esperar durante um intervalo de tempo maior que o permitido pelo "timeout", o quadro será retransmitido, o que invalidará todo o processo de confirmação ?!
+- "solução" - se um novo pacote chegar da camada de rede, a confirmação será acrescentada ao pacote
+  - caso contrário, se nenhum pacote tiver chegado até o final desse intervalo de temp, a camada de enlace de dados simplesmente envia um quadro de confirmação em separado
+- "janela deslizante" - tamanho 1, com um nro. de sequência de 3 bits, permitindo até 8 quadros
+
+  ![slidingWindow](images/slidingWindow.png)
+
+#### Protocolo de Janela Deslizante de 1 bit
+
+- vamos examinar primeiro um protocolo de janela deslizante com um tamanho máximo de janela = 1
+  - este protocolo utiliza o stop-and-wait, pois o transmissor envia um quadro e aguarda sua confirmação antes de enviar o quadro seguinte
+- representação desse tipo de protocolo - como os demais, esse protocolo começa definindo algumas variáveis
+  - "next_frame_to_send" - informa o próximo quadro que TX enviará
+  - "frame_expected" - quadro que o receptor está esperando
+
+  ![slidingWindow1bitProtSenderReceiver](images/slidingWindow1bitProtSenderReceiver.png)
+  ![slidingWindow1bitProtSenderReceiver1](images/slidingWindow1bitProtSenderReceiver1.png)
+- Se B espera pelo 1ª quadro de A antes de enviar um de seus quadros, a sequência será (a) -> todos quados serão aceitos
+
+  ![dfdSlidingWindow1bit](images/dfdSlidingWindow1bit.png)
