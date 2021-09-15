@@ -580,8 +580,30 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 - Não-preemptivo
   - O processo executa na CPU até seu término ou repasse voluntário do recurso
   - Não existe interferência do SO
-- Escalonamneto preemptivo
+- Escalonamento preemptivo
   - A execução dos processo é interrompida pelo SO
   - Cada troca de contexto gera um custo (overhead) para o sistema
   - O mecanismo utilizado é normalmente a interrupção de clock
   - Políticas de escalonamento fornecem parâmetros para os mecanismos de escalonamento (algoritmos)
+- Não-preemptivo
+  - FIFO: Utilização da CPU por ordem de chegada na fila
+  - SJF (shortest-job-first): Processos com menor tempo de execução são selecionados primeiro
+  - Cooperativo: Os processos liberam voluntariamente a CPU. Ex. MS-Windows 3.1/3.11
+- Preemptivo
+  - Round-robin (circular): Baseado em time-slice/quantum
+    - Garante a execução das tarefas pela intervenção do SO, sendo esta sua principal vantagem em relação aos modelos não preemptivos
+    - Sua deficiência reside no tratamento não diferenciado entre processos CPU-bound e IO-Bound
+
+      ![RoundRobin](images/RoundRobin.png)
+  - Prioridades: Permite diferenciar procesos I/O bound de CPU bound. A prioridade pode ser estática ou dinâmica
+    - Processos IO-Bound possuirão maior prioridade em relação a processo CPU-Bound
+    - As prioridades podem ser:
+      - Estáticas: Atribuídas na criação do processo permanecendo durante toda a vida do processo
+      - Dinâmicas: Mudam de acordo com o comportamento do processo
+    - Exemplo: priority (1 \* quantum)/f, onde f = fração de tempo utilizada do quantun
+      - PID(100 - CPUbound): priority = (1 \* 300)/300 = 1
+      - PID(340 - IObound): priority = (1 \* 300)/2 = 150
+    - Em muitos sistemas UNIX-like, o comando nice é utilizando para alterar a prioridade de processos
+
+      ![prioridades](images/prioridades.png)
+  - Múltiplas Filas: Existem várias filas de processo prontos. Processos na mesma fila são tratados de forma igual, contudo, as filas entre si são tratadas em nível de prioridade. Ex. Filas de processos I/O bound tem maior prioridade qu as filas de processo CPU bound
