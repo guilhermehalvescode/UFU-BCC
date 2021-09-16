@@ -115,3 +115,17 @@
   - absorvido pela organização
 - Teoria das Capacidades Dinâmicas
   - a medida que oportunidades são observadas, a organização gasta seus recursos para utilizá-las
+
+### Estratégias
+
+1. Liderança em custo
+   - Permite à empresa gerar e capturar valor econômico por ter custos inferiores aos da concorrência
+
+    ![forcasLidCusto](images/forcasLidCusto.png)
+2. Diferenciação
+   - Permite aumentar o valor percebido de produtos e/ou serviços da empresa em relação ao dos da concorrência e possibilita desenvolver a preferência dos consumidores pela empresa
+   - Um produto diferenciado satisfaz melhor uma ou mais necessidades do que os produtos concorrentes
+3. Nicho ou enfoque
+   - Busca enfocar um determinado grupo pequeno, trazendo diferenciação para os mesmos e agregando valor para o preço ao diferenciar diretamente para aquele público
+4. Integralização vertical ou verticalização
+   - Vale a pena quando os negócios que compõem o todo corporativo valem mais do que valeriam sob controle independente. A sinergia pode ser obtida por aumento de receita ou redução de custo
