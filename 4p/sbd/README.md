@@ -1760,3 +1760,157 @@ WHERE NOT EXISTS
       (SELECT pno FROM works_on w
         WHERE w.essn = e.ssn))
 ```
+
+### Parte 3 - Tabelas de Junção e Funções de Agregação
+
+#### Tabela de Junção
+
+- As junções realizadas até agora foram construídas com produto cartesiano na cláusula FROM seguido da igualdade de junção na cláusula WHERE
+- Exemplo:
+
+```SQL
+SELECT fname, minit, lname, address
+FROM employee, department
+WHERE dno=dnumber AND dname='Research'
+```
+
+- A tabela de junção será construída na cláusula FROM
+
+#### Junção Interna (INNER JOIN)
+
+```SQL
+-- Listar o nome e endereço dos empregados que trabalham no departamento 'Research'
+SELECT fname, minit, lname, address
+FROM (employee JOIN department ON dno=dnumber)
+WHERE dname='Research'
+-- [INNER] JOIN
+```
+
+#### Junção Natural
+
+- Na junção natural iguala-se, de forma implícita, os atributos de mesmo nome
+
+```SQL
+-- Listar o nome e endereço dos empregados que trabalham no departamento 'Research'
+-- Supondo department.dnumber seja renomeado para department.dno ou employee.dno para employee.dnumber
+SELECT fname, minit, lname, address
+FROM employee NATURAL JOIN department
+WHERE dname='Research'
+```
+
+#### Junção Externa (OUTER JOIN)
+
+- A cláusula {LEFT | FULL | RIGHT} OUTER JOIN mantêm no resultado todas as tuplas da tabela da esquerda, das duas tabelas ou da tabela da direita da junção, respectivamente, inserindo NULL quando não há casamento (matching)
+
+```SQL
+-- Para cada empregado, liste o seu primeiro nome acompanhado do primeiro nome de seu supervisor, mesmo se o empregado não tiver superivsor, liste seu nome
+SELECT e.fname as employee_name, s.fname as supervisor_name
+FROM (employee AS e LEFT OUTER JOIN employee AS s ON e.superssn=s.ssn)
+-- LEFT [OUTER] JOIN
+```
+
+```SQL
+-- Liste o primeiro nome do supervisor e o primeiro nome de seus supervisionados, ordenado pelo primeiro. Mesmo se o empregado não for supervisor de ninguém, liste seu nome na primeira coluna se o empregado não tiver supervisor, liste seu nome na segunda coluna
+SELECT s.fname as supervisor_name, e.fname as employee_name
+FROM (employee AS e FULL OUTER JOIN employee AS s ON e.superssn=s.ssn)
+ORDER BY 1
+-- LEFT [OUTER] JOIN
+```
+
+#### Junções aninhadas
+
+```SQL
+-- Para todo projeto localizado em 'Stafford', listar o número do projeto, o número do departamento que o controlar o último nome do gerente do departamento
+
+SELECT pnumber, dnum, lname
+FROM ((project JOIN department ON dnum=dnumber)
+  JOIN employee ON mgrssn=ssn)
+WHERE plocation='Stafford';
+```
+
+#### Funções de agregação
+
+- COUNT
+- SUM
+- MAX
+- MIN
+- AVG
+- etc...
+
+```SQL
+-- Listar a soma de salários de todos os empregados, o maior salário e a média de salários
+
+SELECT
+  SUM(salary), MAX(salary), MIN(salary), AVG(salary)
+  FROM employee;
+```
+
+```SQL
+-- Listar a soma de salários de todos os empregados, o maior salário e a média de salários, somente para funcionários do departamento 'Research'
+
+SELECT
+  SUM(salary), MAX(salary), MIN(salary), AVG(salary)
+  FROM employee, department
+  WHERE dno=dnumber AND dname='Research';
+```
+
+```SQL
+-- Listar o número de empregado
+SELECT COUNT(*) FROM employee;
+-- Listar o número de salários distintos
+SELECT COUNT(DISTINCT salary) FROM employee;
+```
+
+#### Funções de agregação em subconsultas
+
+```SQL
+-- Listar o nome dos empregados que têm dois ou mais dependentes
+SELECT lname, fname
+FROM employee
+WHERE (SELECT COUNT(*) FROM dependent WHERE essn = ssn) >= 2;
+```
+
+#### Cláusulas group by
+
+```sql
+-- Listar para cada departamento seu número, a quantidade de empregados e a média salarial de seus empregados
+SELECT dnumber, COUNT(*), AVG(salary)
+  FROM department, employee
+  WHERE dno = dnumber
+  GROUP BY dnumber;
+-- OBS: o agrupamento deve incluir todas as colunas da projeção que não incluem função de agregação
+```
+
+```sql
+-- Listar para cada projeto seu número, nome e a quantidade de empregado que trabalham no projeto
+SELECT pnumber, pname, COUNT(*)
+  FROM project, works_on
+  WHERE pno=pnumber
+  GROUP BY pnumber, pname;
+```
+
+#### Cláusulas group by e having
+
+```sql
+-- Listar para cada projeto onde trabalham mais de dois empregados seu número e a quantidade de empregados que trabalham no projeto
+SELECT pnumber, pname, COUNT(*)
+  FROM project, works_on
+  WHERE pno=pnumber
+  GROUP BY pnumber, pname
+  HAVING COUNT(*) > 2;
+```
+
+#### Cláusulas group by e consultas aninhadas com cláusula IN
+
+```sql
+-- Listar para cada departamento que tem mais que 2 empregados, o número do departamento e o número de empregados que ganham mais que 40000
+SELECT dno, COUNT(*)
+  FROM employee
+  WHERE salary > 40000
+    AND dno IN
+      (SELECT dnumber FROM department
+        WHERE (SELECT COUNT(*)
+          FROM employee e2
+          WHERE e2.dno = dnumber) > 2)
+GROUP BY dno;
+```
