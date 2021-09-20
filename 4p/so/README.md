@@ -607,3 +607,63 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 
       ![prioridades](images/prioridades.png)
   - Múltiplas Filas: Existem várias filas de processo prontos. Processos na mesma fila são tratados de forma igual, contudo, as filas entre si são tratadas em nível de prioridade. Ex. Filas de processos I/O bound tem maior prioridade qu as filas de processo CPU bound
+
+## **Gerenciamento de memória**
+
+### Estratégias de Alocação
+
+#### Sistemas Monoprogramados (Alocação Contígua)
+
+- O usuário tem controle sobre toda memória
+- O SO pode ser protegido, através de registrador de violação de acesso
+- Caso o processo não use toda a memória, existirá sub-utilização do recurso
+- Os processos eram limitados ao tamanho da memória
+- A utilização de técnicas de *overlay* foi utilizada para executar processos maiores que a memória principal
+
+  ![monoProgramMem](images/monoProgramMem.png)
+- *Técnica de Overlay*
+
+    ![overlay](images/overlay.png)
+
+#### Sistemas Monoprogramados (Alocação Contígua - resumo)
+
+- Utiliza alocação contígua simples
+- Contorna o problema do tramanho do processo na memória atrvés de técnicas de *overlay*
+- Pode-se beneficiar de proteção de memória por registrado de controle de acesso
+
+#### Sistema Multiprogramados
+
+- Alocação Particionada (Estática)
+  - Absoluta (Endereços físicos são absolutos em toda a memória)
+
+    ![alocStaticAbs](images/alocStaticAbs.png)
+  - Realocável
+
+    ![alocStaticRealoc](images/alocStaticRealoc.png)
+
+- Alocação Particionada Estática: Problema de Fragmentação!
+
+  ![alocStaticFragProblem](images/alocStaticFragProblem.png)
+  - **Dinâmica**: Primeira tentativa de solução
+    - Não existe mais o conceito de partições de tamanho fixo
+    - A memória é alocada por demanda
+
+      ![alocDinamicSol](images/alocDinamicSol.png)
+
+- Alocação Particionada Dinâmica:
+  - A dinâmica de liberação de pequenas áreas de memória causam novamente a fragmentação
+
+    ![alocDinamicProblem](images/alocDinamicProblem.png)
+
+- Alocação Particionada Dinâmica com Relocação:
+  - Introduz algoritmos de busca e compactação de áreas de memória
+  - Não elimina por completo o problema de fragmentação, mas ameniza bastante
+  - Incrementa sensivelmente a sobrecarga no sistema, devido a execução contínua deste algoritmos
+  - Em caso do processo solicitar mais memória ao sistema (Ex. heap, stack segment) esta solução é inviável
+
+### Escolha da Partição
+
+#### Estratégias
+
+- First-fit
+  - Escolhe a primeira partição livre com tamanho
