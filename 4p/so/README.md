@@ -595,7 +595,7 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
     - Sua deficiência reside no tratamento não diferenciado entre processos CPU-bound e IO-Bound
 
       ![RoundRobin](images/RoundRobin.png)
-  - Prioridades: Permite diferenciar procesos I/O bound de CPU bound. A prioridade pode ser estática ou dinâmica
+  - Prioridades: Permite diferenciar processos I/O bound de CPU bound. A prioridade pode ser estática ou dinâmica
     - Processos IO-Bound possuirão maior prioridade em relação a processo CPU-Bound
     - As prioridades podem ser:
       - Estáticas: Atribuídas na criação do processo permanecendo durante toda a vida do processo
@@ -666,4 +666,34 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 #### Estratégias
 
 - First-fit
-  - Escolhe a primeira partição livre com tamanho
+  - Escolhe a primeira partição livre com tamanho suficiente para acomodar o processo
+- Best-fit
+  - Escolhe a partição que o processo deixará o menor espaço sem utilização
+- Worst-fit
+  - Escolhe a partição que o processo deixará o maior espaço sem utilização
+
+### Swapping
+
+- Permite a criação de um número maior de processos do que o total suportado pela memória principal
+- Processos são armazenados em disco (swap-out) para dar lugar a outros processos. Ao retornar do disco para a memória principal (swap-in), o processo interrompido continua sua execução do ponto que ele parou
+- O principal problema é a relocação do processo no swap-in. Esperar pela partição inicial resolve, contudo, não é viável na prática
+
+### Relocação Dinâmica
+
+- A solução é utilizar a relocação dinâmica:
+  - Um registrador de relocação é utilizado
+  - Ao ser carregado, o registrador de relocação recebe o endereço inicial da memória física
+  - Qualquer referência à memória pelo processo, passa pela MMU (memory management unit), que adiciona à referência o endereço inicial armazenado no registrador de relocação
+  - O acesso à memória, realizado pelo processo, usa o endereço produzido pela MMU
+
+#### Endereço Lógico e Físico
+
+  ![mmu](images/mmu.png)
+
+### Memória Virtual
+
+- É a técnica de combinar a memória principal com a secundária, formando um único espaço de endereçamento
+- Os processos não endereçam a memória principal diretamente, fazendo referência a posições virtual
+- Os endereços virtuais são mapeados para o endereçamento real
+- O papel do compilador é essencial para o sucesso deste mecanismo de endereço virtual
+- Metáfora do Vetor: Ilustração de Endereçamento Virtual e Mapeamento
