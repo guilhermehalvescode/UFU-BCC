@@ -2042,6 +2042,142 @@
 
   ![slidingWindow1bitProtSenderReceiver](images/slidingWindow1bitProtSenderReceiver.png)
   ![slidingWindow1bitProtSenderReceiver1](images/slidingWindow1bitProtSenderReceiver1.png)
+- e.g., suponha que A esteja tentando enviar seu quadro "0" ao B e que B esteja tentando enviar seu quadro "0" ao A
+  - imagine que A envia um quadro a B, mas o intervalo de "timeout" de A é curto demais, então A pode completar o "timeout" repetidas vezes, enviando uma série de quadros idênticos, todos com seq = 0 e ack = 1
+  - quando o 1º quadro válido chegar a B, ele será aceito, e "frame_expected" será definido como "1"
+  - todos os quadro"s" subsequentes serão rejeitados, porque B agora está esperando quadros com número de sequência "1", e não "0"
+  - além disso, como todas as cópias têm ack = 1 e B ainda está aguardando uma confirmação de "0", B não buscará um novo pacote em sua camada de rede
+- (cont.) e.g., suponha que A esteja tentando enviar seu quadro "0" ao B e que B esteja tentando enviar seu quadro "0" ao A
+  - após a chegada de todas as cópias rejeitadas, B enviará um quadro para A contendo seq = 0 e ack = 0
+  - eventualmente, um desses quadros chegará sem erros à máquina A, fazendo com que A comece a enviar o próximo pacote
+  - nenhuma combinação de quadros perdidos ou "timeouts" prematuros pode fazer o protocolo entregar pacotes duplicados à camada de rede, ignorar um pacote ou chegar a um impasse 
 - Se B espera pelo 1ª quadro de A antes de enviar um de seus quadros, a sequência será (a) -> todos quados serão aceitos
 
   ![dfdSlidingWindow1bit](images/dfdSlidingWindow1bit.png)
+- "Situação Peculiar" - ambos os lados enviam simultaneamente um pacote inicial -> dificuldade de sincronização
+
+  ![dfdSlidingWindow1bit](images/dfdSlidingWindow1bit.png)
+- Se A e B iniciarem a comunicação ao mesmo tempo, seus primeiros quadros se cruzarão e as camadas de enlace recairão em (b)
+
+  ![dfdSlidingWindow1bit](images/dfdSlidingWindow1bit.png)
+- Na situação anormal de (b), 1/2 dos quadros contém cópias, embora não haja erros de transmissão
+  
+  ![dfdSlidingWindow1bit](images/dfdSlidingWindow1bit.png)
+- Situações similares podem ocorrer com "timeouts" prematuros, mesmo quando está claro que um lado começa primeiro
+
+  ![dfdSlidingWindow1bit](images/dfdSlidingWindow1bit.png)
+
+#### Protocolo Go-back-N
+
+- "Janela Deslizante (suposição)" - tempo de transmissão para a chegada de um quadro até o receptor + tempo de transmissão para o retorno da confirmação é insignificante
+  - esta suposição é, as vezes, nitidamente falsa!!
+- Necessidade de uma janela grande do lado transmissor surge sempre que o produto da largura de banda * RTT é grande
+  - se a largura de banda for alta, mesmo para um retardo moderado, o transmissor esgotará sua janela rapidamente
+  - se o tempo de retardo for alto, o transmissor irá esgotar sua janela até mesmo no caso de uma largura de banda moderada
+- "largura de banda" * "RTT" - capacidade do canal
+  - então cabe o transmissor a capacidade de preencher a janela sem interrupções, a fim de operar com eficiência máxima - "pipelining"
+- e.g., seja a capacidade do canal for "R" bps, tamanho do quadro de "L" bits e o tempo de propagação de ida e volta for RTT seg. -> transmissão de um único quadro será L/R seg.
+  - depois do último bit de um quadro tiver sido enviado, haverá um retardo RTT/2 antes desse bit chegar ao receptor, e outro retardo de RTT/2 até o recebimento da confirmação, totalizando um retardo igual a RTT
+  - no protcolo stop-and-wait, a linha está ocupada durante o tempo "L/R" e está ociosa durante todo o tempo de RTT, o que resulta em L / (L + R * RTT) de utilização do canal de dados
+- "pipelining e recuperação de erros" - efeito de um erro quando (a) tamanho da janela receptora é igual a 1
+
+  ![pipelining](images/pipelining.png)
+- "pipelining e recuperação de erros" - efeito de um erro quando (b) tamanho da janela receptora é grande
+
+  ![pipeliningBigWindow](images/pipeliningBigWindow.png)
+- protocolo de pipelining no qual a camada de enlace receptora aceita apenas quadros em ordem
+
+  ![gobackN0](images/gobackN0.png)
+  - quadros que vierem depois de um quadro com erro são descartados
+
+  ![gobackN1](images/gobackN1.png)
+- Observe que no máximo MAX_SEQ quadros, e não MAX_SEQ + 1, mesmo que haja 0, 1, 2, ..., MAX_SEQ. nros de sequência
+
+  ![gobackN2](images/gobackN2.png)
+  ![gobackN3](images/gobackN3.png)
+  ![gobackN4](images/gobackN4.png)
+  ![gobackN5](images/gobackN5.png)
+  ![gobackN6](images/gobackN6.png)
+- Obs: Tem-se que no máximo MAX_SEQ quadros, e não MAX_SEQ + 1 pendentes em qualquer instante
+  - ainda que tenhamos MAX_SEQ + 1 nros de sequência distintos, ou seja, 0, 1, 2, ..., MAX_SEQ
+- Para saber por que essa restrição é necessária, considere a situação a seguir, com MAX_SEQ = 7
+  - transmissor envia quadros de 0 a 7
+  - confirmação com piggyback com quadros 7 volta ao TX
+  - TX envia mais 8 quadros, novamente com nros de sequência de 0 a 7
+  - chega outra confirmação com piggyback correspondente ao quadro 7
+
+#### Protocolo de Repetição Seletiva
+
+- "Go-back-N" - funciona bem quando há poucos erros
+  - mas se a linha estiver muito ruidosa, há desperdício de largura de banda com os quadros retransmitidos
+- "alternativa" - lidar com erros é permitir que RX aceite no "buffer" os quadros subsequentes a um quadro danificado/perdido
+- TX e RX mantêm uma janela de nros. de sequência aceitáveis
+  - janela do transmissor é medida a partir de 0 e atinge um número máximo predefinido, MAX_SEQ
+  - janela do receptor tem sempre um tamanho fixo e igual a MAX_SEQ, pois o receptor tem um buffer reservado para cada nro. de sequência dentro de sua janela de recepção que é fixa
+- Sempre que um quadro chega, função "berween" verifica seu nro. de sequência para confirmar se ele se enquadra na janela
+  - se isso ocorrer e se o quadro ainda não tiver sido recebido, ele será aceito e armazenadao na camada de enlace
+  - essa ação é executada sem levar em conta se o quadro contém ou não o próximo pacote esperado pela camada de rede
+  - mantém-se o quadro na camada de enlace, mas não o repassa à camada de rede, até que todos os quadros de nros. mais baixos tenham sido entregues à camada de rede na ordem correta
+  - associado a cada buffer há um bit (arrived) que informa se o buffer está cheio ou vazio
+
+  ![selectiveRepeat0](images/selectiveRepeat0.png)
+  ![selectiveRepeat1](images/selectiveRepeat1.png)
+  ![selectiveRepeat2](images/selectiveRepeat2.png)
+  ![selectiveRepeat3](images/selectiveRepeat3.png)
+  ![selectiveRepeat4](images/selectiveRepeat4.png)
+  ![selectiveRepeat5](images/selectiveRepeat5.png)
+  ![selectiveRepeat6](images/selectiveRepeat6.png)
+
+### 5. Protocolos ANSI SDLC e ISO HDLC
+
+- Protocolo SDLC (Synchronous Data Link Control) - protocolo de controle de enlace de dados síncrono proposto pela IBM
+  - IBM submeteu o SDLC ao ANSI (USA) e à ISO (Mundo) e no mundo inteiro, respectivamente
+- SDLC - desenvolvido nos 70 para uso de ambiente SNA, foi a 1ºa camada de protocolo de ligação de operação "bit-oriented"
+  - SNA (System Network Architecture) inclui a estrutura lógica em camada, formatos, protocolos e sequências operacionais que são usadas para transmistir unidades de informação através de redes
+- ANSI modificou SDLC, transformando-o no ADCCP (Advanced Data Communication Control Procedure) - procedimento de controle de comunicação de dados avançado
+- ISO alterou o SDLC, para transformá-lo no HDLS, (High-level Data Link Control - controle de enlace de dados de alto nível)
+- CCITT adotou e modificou o HDLC e o transformou em seu LAP (Link Access Procedure - procedimento de acesso de enlace), como parte do padrão de interface de rede X.25
+
+#### Protocolo HDLC
+
+- SDLC, ADCCP, HDLC e LAP - são orientados a bits e utilizam a técnica de inserção de bits para transparência de dados
+  - "delimitadores" - flags "01111110" transmitidos de forma contínua e que contém no mínimo 3 campos e totaliza 32 bits, excluindo os "flags" de cada extremidade
+
+  ![HDLC](images/HDLC.png)
+  - todos os protocolos orientados a bits utilizam a estrutura de quadro apresentada abaixa, onde o campo "address" identifica um dos terminais nas linhas com vários terminais
+  - no caso de linhas ponto a ponto, este campo pode ser utilizado para fazer distinção entre comandos e respostas
+
+  ![HDLC](images/HDLC.png)
+- "controle" - usado para nro. de sequência, confirmações e outras finalidades, como será discutido a seguir
+- "dados" - pode ser arbitrariamente longo, embora a eficiência do "checksum" diminua com o aumento do tamanho do quadro, devido à maior probabilidade de erros em rajada
+- "checksum" - variação do código de redundância cíclica
+
+  ![HDLC](images/HDLC.png)
+- São 3 tipos de quadros: Quadro de Informação, Quadro Supervisor e Quadro não Numerado
+  - protocoo utiliza uma janela deslizante, com o campo "seq" (nro. de sequência) de 3 bits, ou seja, até 7 quadros não confirmados pendentes
+  - próximo campo é confirmação transportada por piggyback
+
+  ![HDLCquadro](images/HDLCquadro.png)
+- "P/F" - Poll/Final - bit "P" ativado quando o terminal encaminha os quadros, com exceção do quadro final - "F" ativado
+  - em alguns protocolos "P/G" é utilizado para forção o outro "host" enviar imediatamente um quadro supervisor, em vez de aguardar o tráfego inverso para inserir nele as informações da janela
+
+  ![HDLCquadro](images/HDLCquadro.png)
+- "tipo" = "0" - quadro de confirmação "RECEIVE READY" usado para indicar o próximo quadro esperado
+- "tipo" = "1" - REJECT - quadro de confirmação negativa
+
+  ![HDLCquadro](images/HDLCquadro.png)
+- "tipo" = "2" - RECEIVE NOT READY - que confirma todos os quadros até (mas não incluindo) próximo, exatamente como RECEIVE READY, mas solicita que o TX interrompa o envio
+- "tipo" = "3" - SELECTIVER REJECT - solicita a retransmissão apenas do quadro específico
+
+  ![HDLCquadro](images/HDLCquadro.png)
+- "Quadro Não Numerado" - utilizado para fins de controle, mas também pode transportar dados quando se utiliza o serviço não confiável sem conexão
+- Obs: protocolos orientados a bits diferem consideravelmente nesse ponto, ao contrário dos outros dois tipos, nos quais eles são quase idênticos
+
+  ![HDLCquadro](images/HDLCquadro.png)
+- "Unnumbered Acknowledgment" - quadro de controle especial utilizado também para confirmação
+  - quadros de controle podem estar perdidos ou danificados, da mesma foram que os quadros de dados e, assim, eles também devem ser confirmadoo
+  - como apenas um quadro de controle pode estar pendente, nunca haverá ambiguidade em relação ao quadro de controle que está sendo confirmado
+- Os quadros de controle restantes se referem à inicialização, ao polling e a relatório de "status"
+  - também existe um quadro de controle que pode conter informações arbitrárias, o UI (Unnumbered Information)
+  - esses dados não são repassados à camada de rede, mas se destinam à própria camada de enlace de dados do receptor
+- Apesar de sua ampla utilização, o HDLC está longe de ser perfeito. Uma discussão sobre a variedade de problemas associados a ele pode ser encontrada em (Fioniri et al., 1994) 
