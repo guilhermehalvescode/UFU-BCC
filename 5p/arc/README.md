@@ -2180,4 +2180,218 @@
 - Os quadros de controle restantes se referem à inicialização, ao polling e a relatório de "status"
   - também existe um quadro de controle que pode conter informações arbitrárias, o UI (Unnumbered Information)
   - esses dados não são repassados à camada de rede, mas se destinam à própria camada de enlace de dados do receptor
-- Apesar de sua ampla utilização, o HDLC está longe de ser perfeito. Uma discussão sobre a variedade de problemas associados a ele pode ser encontrada em (Fioniri et al., 1994) 
+- Apesar de sua ampla utilização, o HDLC está longe de ser perfeito. Uma discussão sobre a variedade de problemas associados a ele pode ser encontrada em (Fioniri et al., 1994)
+
+## Subcamada de Acesso ao Meio ou MAC
+
+- Redes podem ser divididas em duas categorias: aqueles que utilizam de conexões ponto-a-ponto e aquelas que usam canais broadcast
+
+  ![topologiasEx](images/topologiasEx.png)
+- problema: como determinar quem irá utilizar o canal ou meio de transmissão broadcast quando houver mais de um host competindo por ele?
+  - na literatura, canais broadcast são frequentemente, referenciados como canais de acesso múltiplo ou canais de acesso aleatório
+- Nestes canais, determinar querm será o próximo a transmitir não é uma tarefa simples e, assim, várias são as aboradagens utilizadas, dentre elas destacam:
+  - abordagem aleatória e determinística
+- Técnicas mais difundidas de Controle de Acesso ao Meio:
+  - técnicas baseadas no acesso aleatório (contenção)
+  - técnicas baseadas na passagem de permissão
+- Acesso Aleatório - para redes de topologias de barramento
+  - a idéia é que, quando um host necessitar transmitir um quadro, o host simplesmente o faz
+- Passagem de Permissão - para redes de topologias em anel
+  - a idéia básica é ter-se uma ficha (token) circulando pelo anel, de host para host. O host que detiver o token está autorizado a transmitir
+- Redes de Longa Distância - o Enlace se dá entre IMPs
+  - ao decidir transmitir um quadro, o IMP simplesmente seleciona o segmento conectado ao destinatário e invoca os serviços da camada física referente ao segmento
+- Redes Locais - meio físico é compartilhado por todos os hosts
+  - a transmissão de um quadro requer um procedimento de acesso ao meio (MAC - Medium Access Control) que varia em complexidade em função da topologia e demais características da rede
+
+### 1. Redes Locais e Metropolitanas
+
+- A camada MAC é especialmente importante nas LANs, que quser sempre utilizam-se do canal com acesso múltiplo como base para sua comunicação
+- LANs são normalmente caracterizadas por:
+  - seu diâmetro não ultrapassa alguns quilômetros
+  - a taxa total de dados é de ao menos alguns Mbps
+  - é controlado, geranciada e mantida por um único dono
+  - em contra-partida, nas Redes WANs os links qua são do tipo ponto-a-ponto proporcionam taxas mais baixas e são mantidas por múltiplas organizações
+- Entre as LANs e WANs encontramos as MANs, ou seja, redes que combre mcidades mas se utiliaam da tecnologia das LANs
+- Redes LANs diferem de sua primas WANs em vários aspectos, mas a principal razão é que projetistas de WANs são forçados quase sempre por razões políticas, econômicas e legais a usar a rede telefonia pública
+  - outro aspecto é que nas LANs as taxas de erros são 1000 vezes menores que nas WANs, o que diretamente impacta nos protocolos
+  - em WANs, a baixa confiabilidade significa que o tratamento de erros deve ser feito em cada camada e não somente nas camadas inferiores como nas LANs
+
+#### Alocação Estática de Canal em LANs e MANs
+
+- Um modo tradicional de alocar um único canal entre múltiplos competidores pode ser resolvido simplesmente utilizando-se FDM, entretando na presença de variações contínuas no número de estações, alguns problemas aparecem:
+  - ou seja, assumir que o número de usuários possa de alguma forma manter-se constante e dividir o canal em sub-canais estáticos é inerentemente ineficiente
+- A baixa performance da multiplexação FDM estática pode ser facilmente constatada a partir da avaliçaõ da teoria de filas:
+  - T = 1/(uC - lambda)
+  - onde T é o atraso médio, C é a capacidade do canal em bps; lambda é a taxa de chegada de pacotes em frames/segundo e comprimento médio do frame (exponencial) dado por 1/u bits/frame
+- Com a equação dada e considerando a divisão do canal em N independentes sub-canais, podemos recalcular T:
+
+  ![tfdm](images/tfdm.png)
+  - ou seja, o atraso médio em FDM é N vezes pior se todos os frames fossem de alguma maneira enfileirados numa única filha
+- A mesma análisa cabe para TDM, posto que, cada usuário tem o canal à sua disposição a cada Nth slots de tempo
+
+#### Alocação Dinâmica de Canal em LANs e MANs
+
+- Para discutirmos a alocação dinâmica do canal, ou seja, o uso do mesmo com um número variável de estações, faz-se necessário definirmos alguns termos:
+- station model: o moeelo consiste de N independentes estações, cada qual com o seu programa que gera frames para transmissão
+- single channel assumption: um único canal está disponível para todos, ou seja, todas as estações podem transmitir e receber por ele
+- collision assumption: se dois frames forem transmitidos simultaneamente, eles irão se sobrepor e o sinal resultante será coletado
+- continuous time: transmissão de frames pode se dar a qualquer instante, ou seja, não há um relógio para dividir o tempo em intervalos discretos
+- slotted time: o tempo é dividido em intervalos discretos (slots) e, assim, toda transmissão deve inicar no começo de um intervalo
+- carrier sense: estações verificam se o canal está em uso antes de alocá-lo e, caso esteja sendo usado, nenhuma estação irá alocá-lo antes de ser liberado
+- no carrier sense: estações não escutao o canal para ver se está sendo usado, simplesmente usam quando precisam transmitir
+- Nesta abordagem, a suposição de um único canal é o coração do problema, ou seja, não há outra maneira de se comunicar senão alocando o canal
+
+### 2. Protocolo ALOHA e Slotted ALOHA
+
+- Em 1970, Norman Abramson da Universidade do Hawai desenvolvou um método para solucionar o problema da alocação do canal
+  - embora o trabalho inicial tenha sido realizado sobre uma rede broadcasting de rádio, a idéia básica é aplicável a qualquer sistema onde usuários não coordenados competem pelo uso de um único canal
+
+#### ALOHA Puro e Slotted ALOHA
+
+- tem como idéia básica permitir que usuários transmitam a qualquer momento que eles queiram transmitir
+
+  ![ALOHAraw](images/ALOHAraw.png)
+- Algoritmo do ALOHA Puro
+  1. sempre que um host necessitar transmitir um quadro, o host simplesmente o faz e aguarda o reconhecimento da recepção por T unidades de tempo - (caso ocorra colisão, o quadro será propagado com erro, causando um descarte pelo destinatário, caso não ocorra colisão, FIM)
+  2. o host gera um número aleatório r entre [0;R]
+  3. se o emissor detectar colisão (não recebimento do reconhecimento), a próxima retransmissão se dará após em r unidades de tempo
+- A técnica de ALOHA Pura apresenta baixa eficiência, dado que, uma tranmissão em curso está sempre sujeita a interferência de outra que se inicia
+- Neste cenário, é claro que haverá colisões e frames destruídos como resultado da colisões, mas a questão é como medir a eficiência do método?
+  - seja frame time o tempo necessário para transmitir um fram de comprimento padrão, ou seja, tramanho do fram dividido pela taxa em bps
+  - assume-se trambém que a população infinita de usuários gere novos frames segundo a distribuição de Poisson com média S frames por frame time
+  - para que o sistema funcione, espera-se 0 < S < 1, pois S > 1, então frames são gerados a uma taxa superior aquela que o canal é capaz de processar
+  - assuma também que a probabilidade de k tentativas de transmissão por frame time, seja uma distribuição de Poisson com média G por frame time
+  - o período de vulnerabilidade pode ser visto na figura abaixo
+
+    ![ALOHAvul](images/ALOHAvul.png)
+  - seja t o tempo para transmitir um frame, assim, se algum outro usuário gerar um frame entre o tempo t0 e t0 + t, o final deste fram irá colidir com o início do fram hachurado
+  - o mesmo acontece se o fram for gerado entre t0 + t e t0 + 2t, ou seja, o seu início irá gerar uma colisão
+  - assuma que a probabilidade de k frames sejam gerados durante um dado frame time seja uma distribuissão de Poisson:
+
+    ![poisson](images/poisson.png)
+  - então, a probabilidade de gerar 0 frames é de e^(-G) e o número médio de frames num intervalo de 2 tempos de fram é 2G
+  - logo a probabilidade de nenhum outro tráfego ser gerado durante o período de vulnerabilidade é p0 = e^(-2G) e usando S = Gp0, obtemos:
+    - S = Ge^(-2G)
+- Observe que a máxima vazão ocorre em G = 0.5, com S = 1/(1e), ou seja, em torno de 0.184 (18% de utilização do canal)
+
+  ![ALOHAfdp](images/ALOHAfdp.png)
+
+#### Slotted ALOHA
+
+- Slotted Aloha: método variante do ALOHA Puro que impede interferências numa transmissão em curso, permitindo que transmissões se iniciem em intervalos de tempo bem definidos (partições)
+- Algoritmos do Slotted Aloha:
+  1. aguarda o beep do início da partição
+  2. transmite o quadro e aguarda o reconhecimento da recepção por T unidades de tempo - (se ocorrer colisão, o quadro será propagado com erro, causando um descarte pelo destinatário, caso não ocorra colisão, FIM)
+  3. o host gera um número aleatório r entre [0;R]
+  4. se o emissor detectar colisão (não recebimento do reconhecimento), a próxima retransmissão se dará após um r unidades de tempo
+  - se o período de transmissão for superior ao tempo de transmissão de um quadro, uma transmissão que inicou sem colisão será concluída sem colisão, mas caso contrário, podemos ter colisão
+- Para o Slotted Aloha, o melhor que podemos fazer é obter 37% dos slots vazios, 37% dos slots preenchidos e 26% de colisões
+
+  ![ALOHAslottedFdp](images/ALOHAslottedFdp.png)
+
+### 3. Protocolos de Redes Locais
+
+- Em Redes Locais de Computadores é possível que uma estação detecte o que outra está fazendo e, assim, possa adaptar-se de acordo com o contexto
+
+#### Carrier Sense Multiple Access Não Persistente
+
+- O host somente inicia a transmissão se detectar o meio em repouso
+- Algoritmo do CSMA Não Persistente:
+  1. escute o meio físico
+  2. se o meio estiver em repouso (sem transmissão)
+     - transmite o quadro
+     - aguarda o reconhecimento da recepção por T unidades de tempo - (caso ocorra colisão, o quadro será propatgado com erro, causando um descarte pelo destinatário, caso não ocorra colisão, FIM)
+     - vá para 1
+  3. caso contrário (transmissão em curso)
+     - o host gera um número aleatório r entre [0;R]
+     - vá para 1 após um r unidades de tempo
+
+#### CSMA 1-Persistente
+
+- Idêntico ao anterior, apenas fazendo o intervalo aleatório r = 0, ou seja, escuta permanente do meio até cessar a transmissão em curso
+- CSMA Não Persistente - se a transmissão terminar logo após o início do intervalo aleatório, uma sub-utilização do meio é acarretada
+- CSMA 1-Persistente - evita as esperas com o meio físico em repouso quando comparado ao CSMA Não Persistente, aumentando portanto a taxa de utilização do canal
+- CSMA 1-Persistente - aumenta a utilização do canal, sob pena de um aumento da possibilidade de colisões quando dois hosts estão sensoriando o meio ocupado por um terceiro host
+
+#### CSMA p-Persistente
+
+1. escuta o meio até ser detectada uma condição de repouso
+2. o host gera um número aleatório s entre [0;1]
+3. se s >= p:
+   - transmite um quadro
+   - aguarda o reconhecimento da recepção por T unidades de tempo - (caso não ocorra colisão, FIM)
+   - vá para 1
+4. se s < p:
+   - o host gera um número aleatório r entre [0;R]
+   - aguarde r unidades de tempo
+   - escute o meio; se em repouso vá para 2
+   - caso contrário (transmissão em curso):
+     - o host gera um número aleatório u entre [0;U]
+     - vá para 1 após u unidades de tempo
+
+#### CSMA Collision Detection
+
+- CSMA CD: adiciona ao CSMA a detecção de colisões sem a necessidade de aguardar reconhecimento por parte do receptor, o que a permite suportar serviços de datagrama sem confirmação
+- Algoritmo do CSMA-CD:
+
+1. escute o meio até se rdetectada a condição de repouso
+2. inicie a transmissão do quadro, escutando o meio para se certificar que apenas esta transmissão está em curso - (o host compara o sinal do meio com aquele sendo transmisido); encerrada a transmissão do quadro sem colisão, FIM
+3. detectada uma colisão, o host reforça a colisão (jamming)
+4. caso o número de colisões c na transmissão deste quadro exceder um limiete, sinalize um erro à camada superior e termine
+5. o host gera um número aleatório r entre [0; R.c]
+6. vá para 1 após r unidades de tempo
+
+- a figura abaixo mostra a vazão versus o tráfego para todos os 3 protocolos, bem como para o Aloha Puro e Aloha Particionado
+
+  ![CSMAALOHA](images/CSMAALOHA.png)
+- CSMA-CD assim como outros protocolos de LANs usam o modelo conceitual que consiste de períodos de transmissão e conteção alternado, com período vazios presente quando todas as estações estão em repouso.
+
+  ![CSMACD](images/CSMACD.png)
+  - seja t o tempo de propagação do sinal entre as duas estações em extremos opostos da rede e t0 o instante em que uma estação começa a transmitir
+  - em t - e, um instante antes do dinal atingir a estação no extremo oposto, a estação no extremo oposto começa a transmitir
+  - naturalmente qu esta estação rapidamente detecta a colisão e para, mas para a estação que iniciou a transmissão recebe este sinal somente em 2T - e
+
+### 4. Padrão IEEE 802 para Redes Locais
+
+- IEEE 802.3 ou CSMA/CS: A primeira rede CSMA/CD foi construída pela Xerox interligando 100 estações de trabalho através de um cabo de 1 km e operava a 2.94 Mbps tendi sido chamada Ethernet
+  - o nome vem do fato de que achava-se que a radiação propagava no luminiferous ether (ou seja, cabo no qual as onda propagavam)
+  - ainda hoje esté utilizado genericamente para referenciar todos o Protocolos CSMA/CD, embora de fato refere-se a um produto específico (802.3)
+- Todas as implementações 802.3, incluindo a Ethenert, utilizam a codificação Manchester, pois a presença da transição no meio do intervalo possibilita ao receptor sincronizar-se com o transmissor
+
+#### IEEE 802.3 ou CSMA/CD
+
+- Configuração usual para a Ethenert:
+
+  ![ethernet](images/ethernet.png)
+  - o transceiver acomoda circuitos eletrônicos que tratam a detecção da portadora e de colisões e, no último caso, injeta um sinal inválido para assegurar que todos os outros transceivers irão detectar a colisão
+  - o transceirer cable pode ser de até 50 metros e acomodar 5 pares trançados e blindados, sendo que 2 dos pares são para dados de entrado e saída
+- Estrutura do frame do Protocolo 802.3:
+  
+  ![frame802](images/frame802.png)
+- PAD - caso o número de butes seja insuficiente para atingir o tamanho mínimo de quadro (64 bytes a partir do byte do início), um pad de 0 a 46 bytes completa a informação do quadro
+- A imposição por um tamanho mínimi de quadro se dá por duas razões:
+  - quadros muitos curtos nos extremos do cabo podem entrar em colisão sem que os respectivos emissores a detectem
+  - reforçar o checksum, diminuindo a probabilidade de diferentes arranjos de bits gerarem o mesmo checksum
+- Após uma colisão no CSMA/CD, o tempo é dividido em slots discretos cujo comprimento é igual ao pior caso do tempo de round-trip, ou seja, 2t
+  - para acomodar o comprimento máximo permitido, ou seja, 2,5 Km e 4 repetidores, o slot tiime deve ser de 512 tempos de bit, ou 51,2 us.
+  - em geral, após i colisões, um número aleatório entre [0; 2^(i - 1)] é escolhido e então espera-se por este número de slots para transmitir novamente
+  - entretando, após 10 colisões o intervalo de escolha é congelado em 1024 slots e após 16 colisões o controledor interrompe o processo e reporta o erro
+  - este algoritmo é conhecido como exponencial backoff e adapta dinamicamente o número de estações tentando transmitir
+- Para avaliarmos a performance do protocolo sob condições em que k estaçẽos estão sempre prontas para transmitir, podemos por simplicidade assumir uma probabilidade de retransmissão constante em cada slot, assim:
+  - se cada estação transmite durante o slot de contenão com probabilidade p, a probabilidade A que alguma estação aloque o meio durante aquele slot é:
+    - A = kp(1 - p)^(k - 1)
+    - A assume o valor máximo quando p = 1/k, com A -> 1/e e k -> (infinito)
+- A probabilidade que o intervalo de contenção tenha exatamente j slots é A(1 - A)^(j - 1), então o número médio de slots por contenção é dado por:
+
+  ![sumIEEE802](images/sumIEEE802.png)
+  - com dada slot tem duração 2t, o intevalo médio de conteção, w é 2t/A
+- Eficiência do 802.2 a 10 Mbps com slot times de 512 bits:
+
+  ![IEEE802eff](images/IEEE802eff.png)
+
+#### Padrão IEEE 802.4 ou Token Bus
+
+- Embora a 802.3 fosse largamente utilizada, durante o seu desenvolvimento a General Motors e outras companhias interessadas na automação das fábricas tinham algumas reservas acerca do protocolo - tempo de espera pode ser alto
+  - combinar a robustez do Padrão 802.3, mas adicionar determinismo para o tempo de espera de transmissão, ou seja, se tivermos n estações e cada uma levar T segundos para enviar um frame, nenhum frame terá que esperar mais que nT segundos para transmitir - Token Bus
+
+    ![tokenBus](images/tokenBus.png)
