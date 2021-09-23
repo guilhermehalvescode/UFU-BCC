@@ -1179,8 +1179,28 @@
   - Suponha que L é regular (prova por absurdo). Então, pelo L.Bomb $\exist N \: | \: |w| \geq N \rarr w = uvz$. Seja N a cte do lema, então $w = 2^N \in L$ e $|w| \geq N$.
   - Portanto é possível reescrever $w = 2^N$ em 3 partes uvz, com |uv| <= N e |v| >= 1
   - Quais são as "quebras" possíveis?
-  - Seja $w = 2^{N-1}$, com (u + v) <= N e V >= 1
+  - Seja $w = 2^{N-1}2^{N-1}$, com (u + v) <= N e V >= 1
   - Pelo L.Bomb, $\forall i \geq 0 \rarr w' = uv^iz \in L$
   - p/ i = 0 -> w1 = a$^u$a$^z$b$^N$ = a$^{u+z}b^N$
   - Como (u + v + z) = N e v >= 1 => u + z < N, ou seja, número de as < número de bs e w' $\notin$ L.
   - $\therefore$ L não é regular
+
+## *Linguagens Livres de Contexto*
+
+- Estudo da Classe das Linguagens Livres de Contexto ou Tipo 2 é de fundamental importância
+  - universo mais amplo de linguagem comparativamente com as LR
+  - trata, adequadamente, questões típicas de linguagens de programação
+    - parênteses balanceados
+    - construções bloco-estruturadas, etc.
+- Algoritmos reconhecedores e geradores
+  - relativamente simples
+  - eficiência razoável
+- Aplicações típicas
+  - centradas em linguagens artificiais
+    - em especial, nas linguagens de programação
+  - analisadores sintáticos
+  - tradutores de linguagens
+  - processadores de texto em geral
+- Hierarquia de Chomsky
+  - Classe das Linguagens Livres do Contexto
+  - contém propriamente a Classe das Linguagens
