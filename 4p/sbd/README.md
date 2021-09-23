@@ -2030,3 +2030,241 @@ SELECT DISTINCT leve, superssn, ssn
 FROM tSup
 ORDER BY 1, 2, 3;
 ```
+
+## _*Visões*_
+
+- Visão é uma tabela derivada de outras tabelas
+- OBS: geralmente é montada dinamicamente, uma tabela virtual, mas pode existir fisicamente, neste caso, chamamos de visão materializada
+
+### Objetivos
+
+- Disponibilidade: simplificar e centralizar a definição de consultar frequentes, evitando erros e melhorando a produtividade de usuários
+- Confidencialidade: restringir acesso somente a projeções ou seleções de tabelas reais
+- Integridade: evitar alterações indevidas no BD
+
+### Disponibilidade em Visões - Exemplo
+
+```sql
+CREATE VIEW worksname
+  AS SELECT fname, lname, pname, hours
+  FROM employee, works_on, project
+  WHERE ssn=essn AND pno=pnumber;
+
+GRANT SELECT ON worksname TO usuario
+
+SELECT * FROM worksname
+
+-- OBS: a última consulta é mais simples (para o usuário da visão)
+```
+
+### Confidencialidade em Visões - Exemplo
+
+```sql
+CREATE VIEW empdpto5
+  AS SELECT fname, minit, lname, ssn, address, sex, superssn
+  FROM employee WHERE dno=5;
+
+-- OBS: o usuário da visão terá acesso somente a uma projeção ou seleção dos dados de empregados, neste caso:
+-- projeção não inclui coluna "salary"
+-- seleção restringe aos dados de empregados do departamento 5
+```
+
+### Integridade em Visões - Exemplo
+
+```sql
+CREATE VIEW worksname
+  AS SELECT fname, lname, pname, hours
+  FROM employee, works_on, project
+  WHERE ssn=essn AND pno=pnumber;
+
+-- OBS: 
+-- não é viável fazer atualização por meio de uma visão como esta
+-- então, um usuário com acesso por meio dessa visão não pode atualizar o BD
+-- diminuindo a chance de alterações indevidas no BD
+```
+
+### Implementação de Visões
+
+- Existem duas formas de um SBGD implementar visões:
+  - modificação de consultas (QM): a visão é criada a cada consulta
+  - Materialização de Visões(VM): a visão é criada na primeira consulta
+
+### Modificação de Consultas - QM
+
+- A visão é criada a cada consulta
+- VANTAGEM: não é necessário mecanismo de atualização para garantia de consistência da visão em relação às tabelas-base
+- DESVANTAGEM: desempenho de consultas frequentes é prejudicado
+
+### Materialização de Visão - VM
+
+- A visão é criada na primeira consulta
+- VANTAGEM: consultas frequentes à visão têm bom desempenho
+- DESVANTAGEM: atualizações nas tabelas-base devem ser propagadas para as visões
+- OBS: são muito utilizadas em aplicações onde os dados podem ficar temporariamente desatualizados, com atualizações periódicas, por exemplo, dados estatísticos, pois mantẽm a vantagem de desempenho sem prejuízo na propagação de atualizações
+
+### Visões Atualizáveis
+
+- Visões são chamadas atualizáveis se permitem aos usuários realizarem alterações nos dados do banco de dados por meio da visão
+- O PostgreSQL não implementa diretamente visões atualizáveis, mas pode-se implementá-la por meio de gatilhos, ou seja, ativar um gatilho quando receber um update na visão, atualizando a(s) tabela(s) base(s)
+
+### Atualizações por meio de visões
+
+```sql
+UPDATE empdepto5
+  SET lname = 'Watson'
+WHERE ssn = '123456789'
+-- OBS: para isso a visão deve ser definida como atualizável, o que não é o caso
+```
+
+### SQL92 e Visões Atualizáveis
+
+```sql
+CREATE VIEW visao [(coluna [,...])]
+  AS SELECT ...
+  [WITH [CASCADE | LOCAL] CHECK OPTION]
+
+-- WITH ... CHECK OPTION: torna a visão "atualizável", controlando atualizações somente de dados que pertencem à visão
+-- CASCADE: propaga atualizações às visões derivadas, se houverem
+-- OBS: a implementação pode ser por meio de QM ou VM
+```
+
+### Visões Atualizáveis - Exemplo
+
+```sql
+CREATE VIEW empdepto5
+  AS SELECT fname, minit, fname, ssn, address, sex, superssn
+  FROM employee WHERE dno=5
+WITH CHECK OPTION;
+
+UPDATE empdepto5
+  SET lname = 'Watson'
+WHERE ssn = '123456789';
+
+-- OBS: observer que a chave primária faz parte da visão, o que facilita a atualização do banco de dados
+```
+
+### O problema de Visões Atualizáveis
+
+- O problema de atualização por meio de visões é a ambiguidade na interpretação do comando
+- Por exempo, seja a visão:
+
+```sql
+CREATE VIEW seg(ssn, name, sex) AS
+  (SELECT ssn, fname, sex FROM employee)
+  UNION
+  (SELECT essn, name, sex FROM dependent)
+WITH CHECK OPTION;
+
+INSERT INTO seg ('123456789', 'José', 'M');
+-- Em qual tabela base será inserida a tupla?
+```
+
+### Restrições para visões atualizáveis
+
+- Em geral, para ser atualizável a visão não deve conter:
+
+  1. junção
+  2. função de agregação
+  3. subconsultas com tabela na cláusula FROM
+  4. cláusula DISTINCT
+
+### Restrições para visões atualizáveis - Junção
+
+```sql
+CREATE VIEW emphours AS
+  (SELECT lname, essn, hours FROM employee JOIN works_on ON ssn=essn)
+
+UPDATE emphours
+  SET lname='Silva'
+WHERE hours > 20;
+-- OBS: caso a atualização fosse aplicada, seria o lname da tabela employee, mas o mesmo empregado poderia trabalhar menos de 20 horas em outro projeto, portanto esta visão não pode ser atualizável
+```
+
+### Restrições para visões atualizáveis - Função agregação
+
+```sql
+CREATE VIEW empsumhours AS
+  (SELECT essn, SUM(hours) 
+  FROM works_on 
+  GROUP BY essn)
+-- OBS: não há correspondência direta da soma de horas com um atributo da tabela base, portanto esta visão não pode ser atualizável
+```
+
+### Restrições para visões atualizáveis - Subconsultas com tabelas da cláusula FROM
+
+```sql
+CREATE VIEW supervisors AS
+  (SELECT ssn, lname, superssn FROM employee WHERE ssn IN (SELECT superssn FROM employee))
+UPDATE supervisors
+  SET superssn = '123456789'
+WHERE superssn = '987654321'
+-- OBS: superssn = '123456789' inicialmente pode não fazer da visão, então haveria uma inserção? E os outros atributos? portanto esta visão não pode ser atualizável
+```
+
+### Restrições para visões atualizáveis - DISTINCT
+
+```sql
+CREATE VIEW empname AS
+  (SELECT DISTINCT lname FROM employee)
+UPDATE empname
+  SET lname = 'S.'
+WHERE lname = 'Silva'
+-- OBS: cada tupla de empname pode corresponder a várias tuplas de employee, então não há correspondência direta de um atributo da visão com um atributo da tabela base, portanto esta visão não pode ser atualizável
+```
+
+### Condição para visões atualizáveis
+
+- Em geral, para ser atualizável, a visão deve ser derivada de apenas uma tabela base e deve conter a chave primária da tabela
+
+### Visões no PostgreSql
+
+- O postgresql implementa visões por meio de Modificação de Consultas(QM), portanto as visões não são materializadas
+- As visões no PostgreSql não são atualizáveis
+- O PostgreSql tem um mecanismo próprio de definir visões atualizáveis e materializadas por meio de "rules"
+- Outro mecanismo de alteração de visões é o uso de gatilhos
+
+### Visões e DDL no PostgreSql
+
+```sql
+CREATE [ OR REPLACE ]
+  [TEMP | TEMPORARY]
+  VIEW nomevisao [(nomecoluna [, ...])]
+  AS consulta
+-- OBS: TEMP indica que a visão será automaticamente removida no término da sessão
+
+ALTER VIEW nomevisao RENAME TO novonomevisao;
+
+DROP VIEW [IF EXISTS]
+  nomevisao [, ...]
+  [CASCADE | RESTRICT]
+-- Onde,
+-- IF EXISTS: não retorna erro caso a visão não exista
+-- CASCADE: remove automaticamente outras visões que dependem desta
+-- RESTRICT: rejeita operação caso existam dependências
+-- No padrão o DROP afeta uma visão por vez e não existe a cláusula IF EXISTS
+```
+
+### Visões Exemplo a
+
+```sql
+-- a) Visão 'managers' contendo nome do departamento, nome do gerente e o salário do gerente para todos os departamentos do BD
+CREATE OR REPLACE VIEW managers AS
+  SELECT dname,
+    fname || ' ' || minit || ' ' || lname AS managem,
+    salary
+  FROM employee, department
+  WHERE mgrssn=ssn;
+```
+
+### Visões Exemplo b
+
+```sql
+-- a) Visão 'researches' contendo nome do empregado e, salário do empregado e nome de seu supervisor, para todos os empregados do departamento 'Research';
+CREATE OR REPLACE VIEW researches AS
+  SELECT e.fname || ' ' || e.minit || ' ' || e.lname AS Employee,
+  s.fname || ' ' || s.minit || ' ' || s.lname AS Supervisor,
+  s.salary AS EmpSalary
+FROM employee e, employee s, department d
+WHERE d.name = 'Research' AND d.dnumber = e.dno
+AND s.ssn = e.superssn; 
+```
