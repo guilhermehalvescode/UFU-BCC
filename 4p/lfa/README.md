@@ -1055,3 +1055,102 @@
       - "programar" nas transições apenas as situações válidas e omitir as transições de erros (AF incompleto, ou seja, falhar por indefinição da transição)
 
     ![AnalLexUSD](images/AnalLexUSD.png)
+
+## *Lema do Bombeamento*
+
+### Propriedades das LR
+
+- LR podem ser representadas por formalismos
+  - pouca complexidade
+  - grande eficiência
+  - fácil implementação
+- Entretando, por ser um classe relativamente simples
+  - é restrita e limitada
+  - fácil definir linguagens não-regulares
+- Assim, algumas questões sobre LR necessitam ser analisadas
+  - como determinar se uma linguagem é regular?
+  - é fechada para operações de união, concatenação e intersecção?
+  - como verificar se uma LR é infinita, finita ou vazia?
+  - é possível analisar duas LR e concluir se são iguais ou diferentes?
+- Análise de cada propriedade
+  - desenvolvida para um dos formalismos estudados
+  - para os demais: é suficiente traduzi-los
+
+  ![AlgsRegularLangs](images/AlgsRegularLangs.png)
+- Obs: Autômato Finito x Complexidade de Algoritmos
+- Autômatos finitos pertencem à classe de algoritmos
+  - mais eficientes em termos de tempo de processamento
+  - supondo que toda a entrada necessita de ser lida
+    - se relaxada, podem-se imaginar formalismos mais eficientes
+    - exemplo: reconhecer a linguagem $\Sigma^*$ (por quê?)
+  - Qualquer autômato finito que solucione o problema é igualmente eficiente
+    - a menos de eventual redundância de estados
+    - não influi no tempo de processamento
+  - Redundância de estados pode ser facilmente eliminada
+    - Autômato Finito (Determinístico) Mínimo
+
+### Bombeamento para as LR
+
+- Lema do Bombeamento
+  - útil no estudo das propriedades das LR
+- Idéia básica
+  - se uma linguagem é regular, então
+    - é aceita por um AFD com n estados
+  - se o autômato reconhece w de comprimento maior ou igual a n
+    - assume algum estado q mais de uma vez
+    - existe um ciclo na função programa que passa por q
+- Exp: Bombeamento para as Linguagens Regulares
+
+  ![afdLeidoBombeamento](images/afdLeidoBombeamento.png)
+  - n = 4
+  - para w = abbba
+- w pode ser dividida em três subpalavras w = u v z
+  - | uv | <= n, | v | >= 1
+  - v é a parte de w reconhecida pelo ciclo
+  - tal ciclo pode ser executado (bombeado) zero ou mais vezes
+    - para qualquer i >= 0, u v$^i$ z, é aceita pelo autômato
+
+  ![leiBomb](images/leiBomb.png)
+- Suponha que
+  - n é o cardinal de Q
+  - existe w = a1a2...am palavra de L de comprimento m tal que m >= n
+  - $\sigma$(q0, a1) = q1
+  - ...
+  - $\sigma$(qm-1, am) = qm
+- Como m >= n, então existem r e s com 0 <= r < s <= n tais que
+  - qr = qs
+  - $\sigma$(q0, a1 ... ar) = qr
+  - $\sigma$(qr, ar + 1 ... as) = qs
+  - $\sigma$(qs, as + 1 ... am) = qm
+- ou seja, o autômato passa mais de uma vez no estado qr = qs
+- Sejam
+  - u = a1...ar
+  - v = ar+1...as
+  - z=as+1...am
+- Como r < s <= n, então
+  - | v | >= 1 e | uv | <= n
+- Como qr=qs, então:
+  - v é reconhecida em um ciclo
+- Portanto, para todo i >= 0, u v$^i$ z é palavra de L
+- Diversos bombeamentos???
+  - duplo bombeamento: {$a^nb^n$ | n >= 0 e m >= 0}
+  - triplo bombeamento: {$a^nb^ma^r$ | n >= 0, m >= 0 e r >= 0}
+
+### Investigação se é LR
+
+- Mostrar que é LR
+  - representar usando um dos formalismos regulares
+- Mostrar que não é LR
+  - desenvolvida para cada caso
+  - ferramenta útil Lema do Bombeamento
+- Ex: Linguagem Não-Regular
+  - L = {w | w possui o mesmo número de símbolos a e b}
+- Por absurdo. Suponha que L é regular
+  - existe AFD M com n estados que aceita L
+- Seja w = a$^n$b$^n$ sendo |w| = 2n >= n. Logo (Bombeamento) w = u v z talque
+  - |u v| <= n
+  - |v| >= 1
+  - para todo i >= 0, u v$^i$ é palavra de L
+- Absurdo !!! Como |uv| <= n
+  - uv é composta exclusivamente por símbolos a
+  - u v² z não pertence a L (número de a será maior que o de b)
