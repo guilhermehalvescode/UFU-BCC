@@ -1640,7 +1640,6 @@ WHERE CAST(bdate AS TEXT) LIKE '__5%'
 -- '_' afirma que há um número
 ```
 
-
 #### Usando expressões
 
 ```SQL
@@ -1913,4 +1912,121 @@ SELECT dno, COUNT(*)
           FROM employee e2
           WHERE e2.dno = dnumber) > 2)
 GROUP BY dno;
+```
+
+### Parte 4 - WITH QUERIES e Consultas Recursivas
+
+#### WITH QUERIES
+
+- A Cláusula WITH define tabelas temporárias chamadas "Common Table Expressions-CTE"
+- OBJETIVOS:
+  - simplificar consultas complexas por meio da criação de tabelas temporárias
+  - expandir a expressividade do SQL permitindo, por exemplo, codificar em SQL o fecho transitivo de uma hierarquia (Ver BD Dedutivo e Datalog)
+
+##### Exemplo - O problema
+
+```sql
+-- Listar (essn, SUM(hours) AS totalhours), onde totalhous é a soma de horas do empregado nos projetos (em works_on). Listar somente os empregados com totalhours inferior à média de totalhous de todos os empregados que trabalham em projetos
+-- Observe que é necessário obter a média das somas para fazer a seleção de empregados
+
+-- Sol1: dois níveis de subconsulta
+SELECT essn, SUM(hours) AS totalhours
+  FROM works_on
+  GROUP BY 1
+  HAVING 
+    SUM(hours) < 
+    (SELECT AVG(sumhours)
+      FROM(SELECT essn, SUM(hours)
+        FROM works_on
+        GROUP BY 1)
+        as temp(essn, sumhours)
+    )
+
+-- Sol2: uma tabela de visão e um nível de subconsulta
+CREATE OR REPLACE VIEW tSumHours(essn, totalHours)
+  AS (SELECT ess, SUM(hours)
+      FROM works_on
+      GROU BY 1);
+SELECT essn, totalHours
+FROM tSumHours
+WHERE totalHours < (SELECT AVG(totalHours) FROM tSumHours)
+
+-- obs: gera entrada no catálogo para a visão, talvez desnecessária, causando "namespace pollution"
+
+-- Sol3: Usando WITH e um nível de subconsulta
+WITH tSumHours (essn, totalHours) AS
+  (SELECT essn, SUM(hours)
+  FROM works_on
+  GROUP BY 1
+  );
+SELECT essn, totalHours
+FROM tSumHours
+WHERE totalHours < (SELECT AVG(totalHours) FROM tSumHours)
+
+-- Sol4: WITH com duas tabelas temporárias e cláusula IN
+WITH tSumHours (essn, totalHours) AS
+  (SELECT essn, SUM(hours)
+  FROM works_on
+  GROUP BY 1),
+  tLowEmployee (essn) AS (
+    SELECT essn FROM tSumHours
+      WHERE totalHours <
+      (SELECT AVG(totalHours) FROM tSumHours)
+  )
+SELECT essn, totalHours FROM tSumHours
+WHERE essn IN (SELECT essn FROM tLowEmployee);
+```
+
+#### Cláusula RECURSIVE
+
+- A Cláusula opcional RECURSIVE transforma o WITH, permitindo expandir a expressividade do SQL
+
+```sql
+-- Exemplo 1: Soma dos números inteiros de 1 a 100
+WITH RECURSIVE tempTab(n) AS (
+  VALUES(1)
+  UNION ALL
+  SELECT n+1 FROM tempTab WHERE n < 100
+)
+
+SELECT SUM(n) FROM tempTab;
+```
+
+#### WITH RECURSIVE-FATORIAL
+
+```sql
+-- Exemplo 2: FATORIAL DE 1 A 9
+WITH RECURSIVE temp(n, fact) AS (
+  SELECT 0, 1
+    UNION ALL
+    SELECT n+1, (n+1)*fact FROM temp
+    WHERE n < 9
+)
+SELECT * FROM temp;
+
+SELECT SUM(n) FROM tempTab;
+```
+
+#### Hierarquia - O problema do fecho
+
+- Uma das limitações da Algebra Relacional e do SQL-92 é não ter consultas recursivas e, diante disso, não ser capaz de expressar uma hierarquia (fecho transitivo)
+- Exemplo: no BD Company há uma hierarquia de supervisores,
+
+  ![supTree](images/supTree.png)
+- Como listar (superssn, ssn) para uma hierarquia qualquer? (O fecho transitivo)
+
+#### WITH RECURSIVE - Hierarquia
+
+```sql
+WITH RECURSIVE tSup(level, superssn, ssn) AS (
+  SELECT 1, root.superssn, root.ssn
+  FROM employee root WHERE root.superssn='888665555'
+    UNION ALL
+  SELECT level+1, child.superssn, child.ssn
+  FROM tSup parent, employee child
+  WHERE parent.ssn = child.superssn
+)
+SELECT DISTINCT leve, superssn, ssn
+FROM tSup
+ORDER BY 1, 2, 3;
 ```
