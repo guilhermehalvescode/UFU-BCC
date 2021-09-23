@@ -1154,3 +1154,33 @@
 - Absurdo !!! Como |uv| <= n
   - uv é composta exclusivamente por símbolos a
   - u v² z não pertence a L (número de a será maior que o de b)
+- Outra prova
+  - Se L é uma linguagem regular
+  - Então: Existe uma constante N tal que, para qualquer palavra w $\in$ L, sendo |w| >= N, w pode ser definida como w = u v z onde: |u v| <= N e |v| >= 1 e para todo i >= 0, temos que w' = u v$^i$ z é palavra de L
+- Exemplo: Seja L = {a$^i$b$^i$}, com i >= 0. Provar que L não é regular
+  - Suponha que L é regular (prova por absurdo). Então, pelo L.Bomb $\exist N \: | \: |w| \geq N \rarr w = uvz$. Seja N a cte do lema, então $w = a^nb^n \in L$ e $|w| \geq N$.
+  - Portanto é possível reescrever $w = a^nb^n$ em 3 partes uvz, com |uv| <= N e |v| >= 1
+  - Quais são as "quebras" possíveis?
+  - Seja $w = a^ua^va^zb^N$, com (u + v) <= N e V >= 1
+  - Pelo L.Bomb, $\forall i \geq 0 \rarr w' = uv^iz \in L$
+  - p/ i = 0 -> w1 = a$^u$a$^z$b$^N$ = a$^{u+z}b^N$
+  - Como (u + v + z) = N e v >= 1 => u + z < N, ou seja, número de as < número de bs e w' $\notin$ L.
+  - $\therefore$ L não é regular
+- Obs: Não é necessário achar uma contradição para todo valor de i. Mas, outros valores poderiam ser utilizados. Por exemplo, i = z: w' = $a^ua^{zv}a^zb^N = a^{u+zv+z}b^N = a^{n+v}b^N$, como v >= 1, número de as > número de bs e w' $\notin$ L.
+
+#### Ponderações sobre o Lema do Bombeamento
+
+- O segredo na utilização do Lema do Bombeamento é escolher a palavra adequada w (w $\in$ L e |w| >= N), de tal forma que ao ser "quebrada" de acoro com o enunciado do lema, seja impossível você encontrar uma quebra na qual para todo valor de i, a palvra pertece a L
+- O seja, w é um contra-exemplo d oque o Lema diz. Então, como o Lema é "inquestionável", a gente pode concluir que L não é regular
+- Nem sempre essa escolha é simples. Por vezes escolhemos uma palavra que atende ao lema(w $\in$ L e |w| >= N) e não conseguimos mostrar isso. Ou seja, por mais que L não seja regular e w atenda ao lema, pode acontecer de existir uma quebra que o bombeamento dá certo. Ou seja, a palavra bombeada continua a pertecer a L
+- O que fazer? Desistir e dizer que L é provavelmente é regular mesmo?
+- Não. Devemos tentar encontrar outra palavra que seja um contra-exemplo do Lema do Bombeamento
+- Exemplo2: Provar que L = {w $\in$ {a}* | |w| = 2$^i$ e i >= 0 }
+  - Suponha que L é regular (prova por absurdo). Então, pelo L.Bomb $\exist N \: | \: |w| \geq N \rarr w = uvz$. Seja N a cte do lema, então $w = 2^N \in L$ e $|w| \geq N$.
+  - Portanto é possível reescrever $w = 2^N$ em 3 partes uvz, com |uv| <= N e |v| >= 1
+  - Quais são as "quebras" possíveis?
+  - Seja $w = 2^{N-1}$, com (u + v) <= N e V >= 1
+  - Pelo L.Bomb, $\forall i \geq 0 \rarr w' = uv^iz \in L$
+  - p/ i = 0 -> w1 = a$^u$a$^z$b$^N$ = a$^{u+z}b^N$
+  - Como (u + v + z) = N e v >= 1 => u + z < N, ou seja, número de as < número de bs e w' $\notin$ L.
+  - $\therefore$ L não é regular
