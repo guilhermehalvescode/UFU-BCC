@@ -1176,10 +1176,9 @@
 - O que fazer? Desistir e dizer que L é provavelmente é regular mesmo?
 - Não. Devemos tentar encontrar outra palavra que seja um contra-exemplo do Lema do Bombeamento
 - Exemplo2: Provar que L = {w $\in$ {a}* | |w| = 2$^i$ e i >= 0 }
-  - Suponha que L é regular (prova por absurdo). Então, pelo L.Bomb $\exist N \: | \: |w| \geq N \rarr w = uvz$. Seja N a cte do lema, então $w = 2^N \in L$ e $|w| \geq N$.
-  - Portanto é possível reescrever $w = 2^N$ em 3 partes uvz, com |uv| <= N e |v| >= 1
-  - Quais são as "quebras" possíveis?
-  - Seja $w = 2^{N-1}2^{N-1}$, com (u + v) <= N e V >= 1
+  - Suponha que L é regular (prova por absurdo). Então, pelo L.Bomb $\exist N \: | \: |w| \geq N \rarr w = uvz$. Seja N a cte do lema, então $w = a^{2^N} \in L$ e $|w| \geq N \rarr 2^N \geq N$.
+  - Portanto é possível reescrever $w = a^{2^N}$ em 3 partes uvz, com |uv| <= N e |v| >= 1
+  - Seja $w = a^{2^{N-2}}a^{2^{N-2}}a^{2^{N-1}}$, com (u + v) <= N e V >= 1
   - Pelo L.Bomb, $\forall i \geq 0 \rarr w' = uv^iz \in L$
   - p/ i = 0 -> w1 = a$^u$a$^z$b$^N$ = a$^{u+z}b^N$
   - Como (u + v + z) = N e v >= 1 => u + z < N, ou seja, número de as < número de bs e w' $\notin$ L.
