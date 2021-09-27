@@ -697,3 +697,56 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 - Os endereços virtuais são mapeados para o endereçamento real
 - O papel do compilador é essencial para o sucesso deste mecanismo de endereço virtual
 - Metáfora do Vetor: Ilustração de Endereçamento Virtual e Mapeamento
+
+  ![vectorMet](images/vectorMet.png)
+- Mapeamento: Todo processo tem uma ou mais tabelas de mapeamento
+
+  ![tabelasMap](images/tabelasMap.png)
+
+### Memória Virtual - Paginação
+
+- Divida o espaço de endereçamento virtual em unidades de tamanho fixo chamadas páginas (frames);
+- O mapeamneto é realizado em nível de páginas através de tabelas de páginas (PT)
+- O endereçamento virutal é realizado usando um número de página e um deslocamento (offset) dentro desta página
+- Na tabela de páginas, um campo de presença (present/absent bit) indica se a página referenciada está na memória principal ou não;
+- Quando um processo referencia um endereço virtual que, ao ser mapeado, aponta para uma página que não está presente na memória principal (RAM), esta condição é chamada de page fault
+- Quando ocorre um page fault, as páginas solicitadas são transferidas da memória secundária para a principal
+- O processo de carregamento de páginas da memória secundária para a principal é chamado de paginação por demanda
+- Páginas de memória principal, que não estão sendo utilizadas ou são pouco utilizadas, são descarregadas na memória secundária, cedendo seu lugar para novas páginas
+- Uma tendência é a utilização de paginação antecipada, de forma ampliar a performance do processo de paginação
+- Páginas da memória principal, que não estão sendo utilizadas ou são pouco utilizadas, são descarregadas na memória secundária, cedendo seu lugar para novas páginas
+- Uma tendência é a utilização de paginação antecipada, de forma ampliar a performance do processo de paginação
+- Para cada page fault existirá no mínimo uma operação de I/0 em disco
+- A taxa de page faults gerada por um processo depende de como a aplicação foi desenvolvida e da política de gerenciamento de memória
+- O sistema deve procurar manter, em memória principal, aquelas páginas com acesso mais frequente (working set)
+- O working set de um processo está relacionado com o conceito de localidade, que é a tendência em se referenciar posições de memória uniforme por períodos de tempo
+- A partir do conceito de localidade o modelo de working set foi definido por (Denning 1970)
+- Working set e Localidade:
+
+  ![workingSet](images/workingSet.png)
+- Estrutura do Programa:
+  - considerando:
+
+    ```c
+    char A[1024][4096];
+    for(j = 0; j < 4096; j++) 
+      for(i = 0; i < 1024; i++) 
+        A[i][j] = 0;
+    ```
+
+  - suponha:
+    - processo ocupa 1 página (frame) na (RAM)
+    - Para alocação do vetor, cada linha ocupa 1 página na VM(1024 páginas) => 1024 x 4096 page faults!
+- Estrutura do Programa:
+
+  ```c
+  char A[1024][4096];
+  for(i = 0; i < 4096; i++) 
+    for(j = 0; j < 1024; j++) 
+      A[i][j] = 0;
+  ```
+
+  - Neste caso somente 1024 page faults!
+  - Compiladores:
+    - Separam código de dados
+    - Mantêm rotinas que chamam outras juntas
