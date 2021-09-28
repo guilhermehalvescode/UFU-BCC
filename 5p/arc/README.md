@@ -2395,3 +2395,181 @@
   - combinar a robustez do Padrão 802.3, mas adicionar determinismo para o tempo de espera de transmissão, ou seja, se tivermos n estações e cada uma levar T segundos para enviar um frame, nenhum frame terá que esperar mais que nT segundos para transmitir - Token Bus
 
     ![tokenBus](images/tokenBus.png)
+
+### 5. Protocolo de Banda Larga (Tópicos Avançados)
+
+### 6. Protocolo BlueTooth (Tópicos Avançados)
+
+### 7. Protocolo RFID (Tópicos Avançados)
+
+### 8. Comutação na Camada de Enlace
+
+- "Interconexão de LANs" - redes locais podem ser conectadas por dispositivos chamados "pontos"
+  - "pontes" - examinam os endereços da camada de enlace de dados para efetuar o repasse de um enlace para outro enlace
+- "comutador de camada de enlace" - não têm de examinar o campo de carga útil dos quadros que repassa, logo:
+  - podem transportar pacotes ou datagramas IPv4, IPv6, AppleTalk, ATM, OSI Ou quaisquer outros tipos de pacotes
+- "comutador de camada de rede" - examinam os endereços em pacotes e efetuam o roteamento com base nesses endereços
+
+#### Utilização das Bridges
+
+- Quais as razões da necessidade de várias LANs em uma Organização / Empresa / Universidade
+- "autonomia de seus proprietários" - universidades e departamentos tem suas próprias redes locais para conectar os computadores e estações bem como os servidores
+- "dispersão geográfica" - para uma organização geográficamente dispersa, pode ser mais econômico ter redes locais separadas em cada edifício e interconectá-las
+- "balanceamento de carga" - pode ser necessário dividir uam rede local única em redes locais separadas para acomodar a carga
+- "confiabilidade" - pontes podem ser inseridas em pontos específicos para impedir que um nó defeituoso contine a transmitir um fluxo contínuo de "lixo" na rede local
+- "segurança" - maioria das interfaces de LANs tem um modo promíscuo, no qual todos os quadros são enviados ao "host" e não apenas os quadros endereçados a ele
+  - com a inserção de pontes e o cuidado para não encaminhar tráfego de natureza sigilosa, um administrador de sistema pode isolar partes da rede
+
+#### Aprendizado das Bridges
+
+- "bridge" - dispositivos para ligar estações e "hubs"
+  - estações ligadas à mesma porta pertencem ao mesmo domínio de colisão, o que é diferente do domínio de colisão das outras portas
+
+    ![bridges](images/bridges.png)
+- "bridge" - desenvolvidas para "Ethenert" clássica e, assim, são apresentadas em topologias com cabos "multidrop"
+  - Obs: no entando, topologias atuais são compostas de cabos ponto a ponto e "switches" em vez de "bridges" com cabos "multidrop"
+
+    ![bridges](images/bridges.png)
+- Para fazer a ponte entre "LANs Multidrop", basta adicionar uma "bridge" como uma nova estação entre as LANs
+  - para ligar LANs ponto-a-ponto, "hubs" são conectados as "bridges" ou substituídos por uma "bridge" para aumentar o desempenho
+
+    ![bridges](images/bridges.png)
+- "bridge" devem decidir quando encaminhar ou discartar cada "frame" e, no primeiro caso, em qual porta encaminhar
+  - se A envia um frame para B, B1 receberá o "frame" na P1 e na sequência discarta, pois o "frame" já se encontra na porta correta
+
+    ![bridges](images/bridges.png)
+- "bridge" devem decidir quando encaminhar ou discartar cada "frame" e, no primeiro caso, em qual porta encaminhar
+  - A envia um "frame" para D, então B1 recebe o "frame" na P1 e o repassa em P4, e B2 recebe o "frame" na P4 e o repassa para P1
+
+    ![bridges](images/bridges.png)
+- "operação" - "bridges" operam no modo promíscuo e podem acomodar uma tabela "hash" internamente
+  - tabela pode listar cada possível destino a a porta associada
+  - Na fig (b), B1 poderia listar D como associada a P4, assim B1 sabe em qual porta encaminhar "frames" para chegar a "D"
+
+    ![bridges](images/bridges.png)
+- Quando as pontes são inicialmente conectadas, todas as tabelas de "hash" estão vazias, ou seja, nenhuma "bridge" sabe onde estão os destinatários
+  - "algoritmo de inundação" - cada quadro de entrada para um destino desconhecido é enviado para todas as LANs às quais a "bridge" está conectada, com exceção da LAN da qual o quadro originou
+- "Backward Learning" ou "Algoritmo do Aprendizado Reverso" - "bridges" operam no modo promíscuo, assim, elas vêem todo quadro enviado em qualquer uma das suas LANs
+- e.g., Seja a "bridge" B1 na fig (b). B1 vê o "frame" em P3 vindo de "C", então B1 sabe que "C" é atingível via P3, então insere uma entrada na tabela "hash"
+  - qualquer "frame" subsequente endereçado para "C" vindo de B1 em qualquer outra porta será encaminhado por P3
+
+    ![bridges](images/bridges.png)
+- "topologias dinâmicas" - sempre que uma entrada de "hash" é criada, o tempo de chegada do quadro é indicado na entrada
+  - sempre que chega um quadro cujo destinatário já esteja na tabela, sua entrada é atualizada com a hora atual
+  - assim, o tempo associado a cada entrada informa a última vez que foi visto um quadro proveniente dessa máquina
+  - Periodicamente, um processo varre a tab. "hash" e expurga todas as entradas que tenham mais de alguns minutos
+- "procedimento de repasse" - considera a rede local de origem e da rede local de destino e segue as seguintes regras:
+  - se a rede local de origem e rede local de destino forem uma só rede, o quadro será descartado
+  - se a rede local de origem e rede local de destino forem redes locais diferentes, o quadro será encaminhado
+  - se a rede local de destino for desconhecida, o quadro será difundido pelas redes locais por inundação
+    - "algoritmo de inundação" - cada quadro de entrqada para um destino desconhecido é enviado para todas as LANs às quais a "bridge" está conectada, com exceção da LAN de que ele veio
+- "operação da bridge" - pode-se olhar para a operação de uma "bridge" em termos de pilha de protocolos para entender o que significa ser um dispositivo de camada de enlace
+  - considere o "frame" enviado por A para D no cenário da Fig (a) e no qual as redes locais são "Ethernet"
+
+    ![bridges](images/bridges.png)
+  - "frame" irá transpassar a "bridge"
+
+    ![stackBridge](images/stackBridge.png)
+
+#### Bridges Spanning Tree
+
+- "confiabilidade" - para aumentar a confiabilidade, enlaces redundantes podem ser utilizados entre "bridges"
+  - projeto garante que se um dos enlaces é eliminado, a rede não será dividia em 2 conjuntos de estações que não irão se falar
+
+    ![bridgesParallel](images/bridgesParallel.png)
+- "problema" - redundância introduz "loops" na topologia
+  - como cada "bridge" seque a rerga padrão para lidar com os destinos desconhecidos, ou seja, inundação dos quados nos dois enlaces
+  - após B1 ao receber o "frame" f0, B1 envia as cópias f1 e f2 deste quadro para as suas outras portas(todas as portas)
+
+    ![bridgesParallel](images/bridgesParallel.png)
+  - cada estação se liga a apenas uma "bridge", mas há conexões redundantes entre as "bridges" que implica no encaminhamento de quadros em "loops" se todos os enlaces forem usados
+
+    ![bridgeMST](images/bridgeMST.png)
+- "solução" - sobreposição da topologia real por uma árvore geradore a partir da topologia e que atinga todos os nós
+
+  ![bridgeMST](images/bridgeMST.png)
+  - uma vez que as "bridges" concordem com a "spanning tree", teremos um único caminho entre cada fonte e cada destino
+
+    ![bridgeMST](images/bridgeMST.png)
+- "spanning tree" - para construir a árvore, as "bridges" executam um algoritmo distribuído tendo por base as msgs. de configuração que recebem das "bridges" vizinhas
+
+#### Hubs, Bridges, Switchrs e Routess
+
+- "hubs, bridges, switches e routers" - chave para entender estes dispositivos é perceber que operam em diferentes camadas
+  - diferentes dispositivos utilizam informações diferentes para decidir como comutar a informação de um enlace para outro
+
+  ![packetLayer](images/packetLayer.png)
+- "repeaters" - dispositivos analógicos que manipulam sinais nos cabos com os quais estão conectados
+  - sinal analógico em um enlace (cabo) é filtrado, amplificado e colocado em um outro enlace (cabo)
+  - repetidores não entendem "frames", "packets" ou mesmo "headers", mas reconhecem símbolos que codificam "bits" em "volts"
+- "Ethernet Clássica" - projetada para permitir quatro repetidores que ao reforçar o sinal analógico, possibilitaram a extensão dos cabos de 500m (comprimento inicial máximo) para 2500m
+- "hubs" - contempla inúmeras linhas de entrada que se juntam eletricamente, assim, "frames" que chegam em uma das linhas são encaminhados para todas as outras linhas
+  - como o sinal é repetido em todas as outras linhas (enlaces), todas as linhas de "hubs" operam na mesma velocidade
+  - por outro lado, se "frames" chegam ao mesmo tempo -> colisão (pois todos os enlaces constituem um único domínio de colisão
+- diferentemente do "repeaters", "hubs" usualmente não amplificam sinais nas linhas de entrada e são projetados para acomodar múltiplas linhas de entrada com poucas diferenças
+  - assim, como os "repeaters", "hubs" são dispositivos da camada física e, por isso, não examinam endereços da camada de enlace
+- "bridge" - contemplam múltimas portas, usualmente entre 4 e 48 linhas de entrada aderentes a um tipo de meio físico
+  - diferentemente dos "hubs", cada porta está isolada e constitui um domínio de colisão único
+  - para porta com linhas "full-duplex", não há a necessidade do CSMA/CD uma vez que temos um enlace ponto-a-ponto
+  - "bridge" extrai o endereço do cabeçalho de um "frame" e busca na sua tabela informação acerca para onde encaminhá-lo
+- e.g., endereços de "frames" "ethenert" contém 48 bits e, são normalmente representados na base 16, "byte" a "byte"
+- "bridges" - inicialmente projetada para interligar diferentes tipos de redes locais, tais como "ethernet" e "token ring"
+  - interligar diferentes tipos de redes locais nunca funcionou bem em razão das grandes diferenças entre estas redes
+    - formatos diferentes de "frames" exigem cópia, remontagem do "frame" e recálculo do "checksum" -> exige tempo de processador
+    - diferentes comprimentos máxmimos de "frames" constituem-se sérios problemas cujas soluções não são adequadas
+    - "segurança" e "qualidade de serviço" - duas outras áreas onde as redes locais se diferem consideravelmente
+- "briges" - solução para a "ethernet" clássica, ou seja, permite a junção de aluumas poucas redes locais e contemplam relativamente poucas portas para conexão
+- "swiches" - são "bridges" modernas cujo nome contempla mais o apelo comercial do que aspectos técnicos diferentes
+- "switches" utilizam-se de enlaces ponto-a-ponto como par trançado, assim, computadores individuais ligam-se diretamente no "switch" que por sua vez contemplam inúmeras portas
+- Obs: assim como "repeaters" e "hubs" são similares, "bridges" e "switches" contemplam similaridades entre si
+- "routers" - bem diferentes dos "repeaters", "hubs", "bridges" e "switches", são responsáveis pelo roteamento dos "packets".
+  - quando o pacote chega ao roteador, o cabeçalho e o rodapé do "frame" são retirados e o pacote localizado no campo "payload" do "frame" é repassado para o "software" de roteamento
+
+  ![packetLayer](images/packetLayer.png)
+- software de roteamento - utiliza informações do cabeçalho do pacote para decidir o caminho que o pacote irá tomar
+- e.g., Pacote IP contém endereços de 32-bits no IPv4 ou 128-bits no IPv6, mas o endereço IEEE 802 é 48-bits
+  - software de roteamento não enxerga o endereço do "frame" e não sabe nem mesmo de onde o "frame" veio
+    - ou seja, se da rede local ou de uma linha ponto-a-ponto
+
+#### Redes Locais Virtuais
+
+- "primordios das redes locais" - equipamentos eram interligados através de derivações de um cabo principal - "yellow cables" sem a preocupação da rede local ao qual pertenciam
+  - escritórios de pessoas próximas perteciam a mesma rede local, ainda que pertencessem ou não à mesma rede local
+  - "yellow cable" - cabo coaxial (this yellow cable / thick yellow cable)
+- "1990s" - mudança radical face ao apareciento do par trançado, pois as instalaões tiveram seus cabos, considerados caros, eliminados para dar lugar aos cabos de pares trançados
+- "1990s" - isntalações tiveram seus cabos, considerados caros, eliminados para dar lugar aos cabos de pares trançados
+
+  ![oldLocalNetwork](images/oldLocalNetwork.png)
+- "dias atuais" - "hubs" foram substituídos pelos "switches", mas o padrão de cabeamento (par trançado) é o memso
+  - agora tem-se a possibilidade de configurar redes locais logicamente e fisicamente, enquanto que no passado a possibilidade era apenas de configuração física
+- e.g., Como proporcionar a uma Companhia que adquiriu "k" "switches", "k" Redes Locais (LANs) ?
+  - escolhendo-se cuidadosamente quais conectores utilizar em quais "switches", os ocupantes de uma rede local podem ser escolhidos de modo que formem um grupo no sentido organizacional
+- "segurança" - administradores de rede normalmente organizam grupo de usuários como reflexo da estrutura organizacional, sem se preocupar necessariamente com o "layout" físico
+  - algumas redes locais contém servidores de uso público enquanto outras redes locais contém dados de uso restrito
+- Nestes casos, colocar todos os computadores fisicamente em uma única rede local e não permitir que nenhum dos servidores seja acessado na rede local passa a fazer sentido!!!
+  - muitos acham que este arranjo é impossível!!
+- "carga" - algumas redes locais tem mais tráfego que outras, então, separá-las pode ser uma solução
+- e.g., redes locais nas quasi um grande nro de experimentos é executado, pode sair do controle e saturar a rede local
+  - embora uma solução possível seja aumentar a lagura de banda da rede, a relação custo x benefício pode não favorecer a mudança
+- "broadcast traffic" - "bridges" usam o tráfego de difusão quando a localização do destino não é conhecida, assim como protocolos de camadas superiores também usam "broadcasting"
+- e.g., quando um usuário quer encaminhar uma pacote para um endereço "X" IP, como ele sabem qual endereço MAC deve ser usado para inserir no "frame"??
+  - faz-se um "broadcast" com um "frame" com uma pergunta "Quem detém o endereço IP X?", aguarda-se pela resposta
+- "broadcast" - consome mais capacidade da rede local que "freames" regulares, pois ele deve ser entregue a todos os nós
+  - assim, não manter as redes locais tão grandes quanto poderiam ser, reduz o impacto do tráfego "broadcast"
+- "broadcast storm" - tráfego que gera mais tráfego
+  - capacidade total da rede é ocupada por "frames"
+  - todas as máquinas em nas redes locais interconectadas estão apenas processando e descartando os "frames" de "broadcast"
+- "Virtual LAN" - padronizado pelo Comitê IEEE 802 é utilizado largamente por diferentes organizações
+  - para configurar um rede baseada em VLANs, o administrador de rede define a quantidade de VLANs; quais os computadores estarão em qual VLAN e como as VLANs serão chamadas
+  - frequentemente e informalmente VLANs são nomeadas por cores, assim é possivel imprimir diagramas motrando o "layout" físico das máquinas com os membros na cor da VLAN
+- A figura abaixo contempla 9 máquinas na VLAN G - "gray" e 5 máquinas pertencem a VLAN W - "white" e espalhadas ao longo de 2 "switches", incluindo 2 conectadas por "hubs"
+  
+  ![VLANs](images/VLANs.png)
+- e.g., suponha que um estação "gray" ligada na "bridge" B1 envie um "frame" para um destinatário não observado ainda
+  - "bridge" B1 irá receber o "frame" e verificar se ele veio de uma máquina na VLAN "gray" e irá inundar todas sa portas cujo rótulo é "G", exeto a porta da qual o "frame" chegou
+  - "frame" será enviado para as demais 5 estações ligadas a B1 assim como para o enlace que liga B1 a "bridge" B2
+  - B2 por sua vez, encaminha o "frame" para todas as portas G
+  - B2 envia para uma estação e para o "hub" que, por sua vez, transmite o "frame" para todas as suas estações ("cinza" e "branco")
+
+  ![VLANs](images/VLANs.png)
+- Obs: "frame" não é enviado para portas que não "G", pois a "bridge" sabe que não há máquinas na VLAN "gray" que possam ser alcançadas por estas portas
