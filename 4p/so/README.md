@@ -750,3 +750,65 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
   - Compiladores:
     - Separam código de dados
     - Mantêm rotinas que chamam outras juntas
+- No processo de realocação de páginas, a escolha das página que serão swapped out é muito importante para o desempenho do sistema de VM
+- Páginas modificadas devem obrigatoriamente serem armazenadas para futura carga
+- A melhor estratégia de realocação seria aquela que escolhesse uma página que não fosse referenciada num futuro próximo
+- A estratégia de realocação é fundamental para o desempenho da VM
+- Estratégia de troca de página:
+  - Aleatória: Qualquer página do working set tem a mesma chance de ser selecionada
+  - FIFO: A página que foi utilizada primeiro é utilizada
+  - NRU(Not-Recently-Used): Páginas que não foram recentemente utilizadas
+  - LRU (Least-Recently-Used): Páginas menos recentemente utilizada
+  - LFU(Least-Frequently-Used): Seleciona a página menos referenciada. As páginas mais utilizadas são conservadas
+- Estratégias de troca de página (FIFO):
+  - O SO mantém uma lita encadeada de páginas ordenada pela carga das páginas na memória (frames)
+  - A cada page fault, a entrada (página) no início da lista é escolhida para ser substituída
+  - Possui baixo custo de implementação
+  - Páginas sendo usadas atualmente podem ser selecionadas, o que é indesejável
+- Estratégias de troca de página (NRU):
+  - É necessário manter estatísticas de uso das páginas
+    - bits de controle estão presentes em cada entrada na tabela de página
+    - Reference bit (R) e Modified bit (M):
+      - R -> página acessada (leitura/escrita) M -> paǵina modificada (escrita)
+  - Quando o processo é criado, os bits R e M das suas página são zerados
+    - Esses valores são alterados a cada acesso feito nas páginas
+  - Periodicamente (ex. cada clock tick) o bit R é zerado
+  - A cada page fault o SO percorre todas as entradas da tabela de página do processo que estão residentes (presentes) na memória e as organiza em classes
+- Estratégias de troca de página (NRU):
+  - Classe 0 (00): Não Referenciada, Não Modificada.
+  - Classe 1 (01): Não Referenciada, Modificada.
+  - Classe 2 (10): Referenciada, Não Modificada.
+  - Classe 3 (11): Referenciada, Modificada.
+  - Após a classificação das páginas residentes, remove uma ou mais páginas, aleatoriamente, dentre as classe de ordem mais baixa (00, 01, ...)
+  - Possui bom desempenho
+  - Necessário suporte de hardware (ou emulação por software) dos bits de controle
+- Estratégias de troca de página (LRU):
+  - Considere que páginas usadas nas últimas instruções provavelmente serão usadas nas próximas instruções
+    - portanto, o objetivo é não remover essas páginas e sim aquelas há mais tempo sem terem sido usadas
+  - O SO mantém uma lista encadeada de todas as páginas na memória (página usada mais recentemente no início e página usada menos recentemente no final da lista)
+  - A lista deve ser atualizada a cada referência (acesso) à memória
+    - custo elevado mesmo sendo feito via HW
+- Estratégias de troca de página (LFU):
+  - A cada page fault, a página com menor número de referências (acessos) é substituida
+  - Necessária um contador de acessos por página (HW ou SW)
+  - Sofre influência de páginas que foram muito acessadas no início da execução do processo e não são mais usadas
+    - uma solução pode ser deslocar a contagem 1 bit à direita, em intervalos regulares (ex. n clock ticks)
+- Segmentação:
+  - Os programa são dividos logicamente em blocos (segmentos) na memória
+  - Cada segmento, que acomoda parte do processo na memória, possui tamanho diferente do demais segmentos que armazenam o processo
+  - O mecanismo de mapeamento é praticamento e o mesmo do modelo de paginação
+  - Cada entrada na tabela possui o tamanho do segmento tendo em vista que os segmentos não são de tamanho fixo
+
+    ![segmentation](images/segmentation.png)
+- Segmentação com Paginação:
+  - O endereço virtual = Nr. do segmento + Nr. Pág. + Deslocamento da página (offset)
+  - As páginas possuem tamanho fixo mas os segmentos possuem tamanho variável
+  - A acomodação do processo é baseada em segmentos
+  - O processo de paginação por demanda é realizado sobre as páginas
+- Compartilhamento de Memória:
+  - Vários processos utilizam a mesma área de código (reentrância) evitando várias cópias do mesmo código na memória
+  - Em sistemas que implementam VM, cada tabela de mapeamento aponta para a mesma área de memória a ser compartilhada
+  - Para o compartilhamento de memória, a segmentação é mais indicada por considerar as estruturas lógicas dos programas, facilitando o compartilhamento
+  - O compartilhamento se restringe a regiões de memória do tipo read-only. Segmentos/páginas que sofrem operações de escritas são copiadas (COW - copy on write)
+
+    ![sharedMem](images/sharedMem.png)
