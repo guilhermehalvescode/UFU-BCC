@@ -1180,9 +1180,6 @@
   - Portanto é possível reescrever $w = a^{2^N}$ em 3 partes uvz, com |uv| <= N e |v| >= 1
   - Seja $w = a^{2^{N-2}}a^{2^{N-2}}a^{2^{N-1}}$, com (u + v) <= N e V >= 1
   - Pelo L.Bomb, $\forall i \geq 0 \rarr w' = uv^iz \in L$
-  - p/ i = 0 -> w1 = a$^u$a$^z$b$^N$ = a$^{u+z}b^N$
-  - Como (u + v + z) = N e v >= 1 => u + z < N, ou seja, número de as < número de bs e w' $\notin$ L.
-  - $\therefore$ L não é regular
 
 ## *Linguagens Livres de Contexto*
 

@@ -2573,3 +2573,207 @@
 
   ![VLANs](images/VLANs.png)
 - Obs: "frame" não é enviado para portas que não "G", pois a "bridge" sabe que não há máquinas na VLAN "gray" que possam ser alcançadas por estas portas
+
+## Network Layer
+
+### 1. Aspectos de Projeto da Camada de Rede
+
+- "camada de rede" - responsável pela transferência de pacotes (packets) ou datagramas da origem para o destino
+  - vários "hops" (saltos) no núcleo da rede (roteadores intermediários) ao longo do caminho dntre fonte e destino
+- "contraste" - camada de enlace tem o objetivo mais modesto de apenas mover quadros de uma extremidade de um fio até a outra
+  - deve conhecer a topologia da sub-rede de comunicação (todos os roteadores) e escolher os caminhos mais apropriados através da sub-rede segundo algum critério
+  - deve escolher rotas que evitem sobrecarregar linhas de comunicação e roteadores enquanto eeixa rotas ociosas
+- "objetivos da camada de rede"
+  - serviços oferecido à camada de transporte
+  - roteamento de pacote na sub-rede
+  - controle de congestionamento
+  - conexão de múltiplas sub-redes
+- terceira e última camada onde o fluxo de informação leva em conta as peculiaridades da sub-rede de comunicação (IMPs no OSI)
+- na maioria das redes a camada de rede roda sobre IMPs enquanto que a camada de transporte sobre "hosts" >> interface entre estas camadas é a interface enter a sub-rede e os "host"
+
+#### Chaveamento Store-and-Forwarding
+
+- "contexto" - operam os protocolos na camada de rede
+  - acomoda e contempla como principais elementos do sistema, os roteadores e as linhas de transmissão que os conectam
+
+  ![storeFw](images/storeFw.png)
+  - "hot" transmite o datagrama para o roteador mais próximo (própria rede local) ou sobre um enlace ponto a ponto para a concessionária de comunicações
+  - pacote é armazaenado integralmente no roteador, de forma que o "checksum" ou "soma de verificação" possa ser conferido
+  - na sequência, pacote é encaminhado para o próximo roteador ao longo do caminho, até alcançar o "host" de destino
+  - "host" destino demultiplexa o pacote, extrai o "payload" e entrega à entidade da camada de transporte
+- "mecanismo de comutação" - "store-and-forward"
+
+#### Serviços Providos p/ Camada de Transporte
+
+- "serviços à camada de transporte" - interface entre a camada de rede e camada de transporte
+- "objetivos dos serviços da camada de rede" -
+  1. devem ser independentes da tecnologia de roteadores
+  2. camada de transporte deve ser isolada do número, do tipo e da topologia dos roteadores presentes
+  3. endereços de rede que se tornarem disponíveis para a camada de transporte devem usar um plano de numeração uniforme, mesmo nas LANs e WANs
+- "constatação" - projetistas da camada de rede têm muita liberdade para escrever especificações detalhadas dos serviços a serem oferecidos à camada de transporte
+- "problema" - tal liberdade constuma se transformar em uma violenta batalha entre duas facções no tocante ao tipo de serviço
+- "discussão" - camada de rede deve fornecer serviço orientado a conexão ou serviço não orientado a conexão?
+- "Comunidade da Rede Internet" vs "Companhias Telefônicas"
+- "Rede de Internet" - defende que a tarefa dos roteadores é tão somente movimentar pacotes, pois a sub-rede é inerentemente pouco confiável, independente e como tenha sido projetada
+  - hosts devem aceitar o fato de que a rede é pouco confiável e se responsabilizarem eles próprios pelo controle de erros (ou seja, detecção e correção de erros) bem como o controle de fluxo
+- "companhias telefônicas" - alegam que a sub-rede deve fornecer um serviço orientado a conexões confiável
+  - afirmam que os 100 anos de experiência bem-sucedida com o sistema telefônica mundial servem como um "bom guia"
+  - nesta visão, a qualidade serviço é o fator dominante e, sem conexões na sub-rede, é muito difícil alcançar qualidade de serviço, em especial no caso de tráfego de tempo real
+
+#### Serviços Não Orientado a Conexão
+
+- "serviço sem conexão" - pacotes são injetados individualmetne no núcleio da rede de modo independente uns dos outros - não se faz necessária nenhuma configuração antecipada
+  - pacotes frequentemente são chamadas datagramas (analogia com os telegramas) e a sub-rede será denominada sub-rede de datagramas
+- "serviço orientado a conexão" - necessidade de se estabelecer um caminho deste o roteador de origem até o roteador de destino, antes de enviar quaisquer pacotes de dados
+- "circuito virtual" - em analogia com os circuitos físicos do sistema telefônico, a sub-rede é denominada sub-rede de circuitos virtuais
+- "rede de datragramas" - suponha que P1 em H1 encaminhe uma longa mensagem para P2 em H2.
+
+  ![datagramNetwork](images/datagramNetwork.png)
+- P1 entrega a msg. à camada de transporte, coom instruções para que ela seja entregue a P2 do "host" H2
+  - código da camada de transporte em H1, em geral dentro do sistema operacional, acrescenta um cabeçaho à msg. e entrega o resultado à camada de rede
+- "premessa" msg é 4 vezes mais longa que o tamanho máximo do pacote, então divide-se a msg. em quatro pacotes
+  - todo roteador consulta uma tabela de roteamento para decidir por onde devem ser enviados os pacotes
+  - com alterações na tabela de rotas, pacotes da mesma msg. podem ser encaminhados por rotas diferentes
+
+  ![datagramNetwork](images/datagramNetwork.png)
+
+#### Serviços Orientado a Conexão
+
+- "redes de circuitos virtuais" - ao estabelecer um circuito, evita-se a necessidade de escolher uma nova rota para cada pacote
+
+  ![virtualNwCircuit](images/virtualNwCircuit.png)
+- "estabelecimento de conexão" - escolhe-se uma rota desde o "host" origem até o "host" destino como parte da conexão
+- "troca de dados" - cada pacote transporta um identificador de circuito, nro do circuito virtual ao qual pertence, o que permite que o roteador ao consultar a tabela de roteamento saiba como encaminhá-lo
+  - rota é usado por todo o tráfego que flui pela conexão, exatamente como ocorre no sistema telefônico
+- "encerramento de conexão" - encerramento do circuito virutal
+- H1 estabele a conexão C1 com H2, assim o identificador aparece 1ª entrada de cada uma das tabelas de roteamento
+
+  ![virtualNwCircuit](images/virtualNwCircuit.png)
+- 1ª linha de A informa que, se um pacote contendo o indentificador de conexão 1 chegar de H1, ele será enviado ao roteador C e receberá o identificador de conexão 1
+
+  ![virtualNwCircuit](images/virtualNwCircuit.png)
+- De oodo semelhante, a primeira entrada em C faz roteamento do pacote para E, também com o identificador de conexão 1
+
+  ![virtualNwCircuit](images/virtualNwCircuit.png)
+
+#### Redes de Circuitos Virtuais vs Datagrama
+
+- "espaço da memória do roteador"
+- "circuito virtual" - permite que os pacotes contenham números de circuitos em vez de endereços de destino completos
+  - pacotes tendem a ser muito pequenos, um endereço de destino completo em cada pacote poderá representar um volume significativo de overhead e, portanto, haverá desperdício de largura de banda
+  - preço pago pelo uso de circuitos virtuais internamente é o espaço de tabela dentro dos roteadores
+  - custo relativo de circuitos de comunicação em comparação com a memória do roteador, um ou outro pode ser mais econômico
+  - "datagrama" - pacotes necessitam de endereço fonte e endereço destino, "overhead" maior comparado com circuitos virtuais
+
+  ![virtualChannelxDatagramChannel](images/virtualChannelxDatagramChannel.png)
+- "tempo de configuração" e "tempo de análise de endereço"
+- "circuitos virtuais" - requer uma fase de configuração, o que leva tempo e consome recursos
+  - descobrir o que fazer com um pacote de dados em uma sub-rede de circuitos virtuais - roteador só utiliza o número do circuito para criar um índice em uma tabela e descobrir para onde vai o pacote
+- "rede de datagramas" - não requer tempo de configuração do circuito virtual, ou serja, serviço sem conexão
+  - necessário procedimento de pesquisa mais complexo para localizar a entrada correspondente ao destino
+
+### 2. Algoritmos de Roteamento
+
+- "roteador" - indica tabela de repasse e determina a interface de enlace para a qual o pacte deve ser encaminhado
+- "algoritmos de roteamendo" - trocam e calculam informações que são utilizadas para configurar as tabelas de repasse
+- "camada de rede" - determina o caminnho que os pacote percorre entre remetentes e destinatários
+- serviço de datagrama, pacotes diferentes podem percorrer rotas diferentes para o mesmo par remetente e destinatário
+- serviço de circuitos virtuais, pacotes diferentes percorrem a mesma rota para o mesmo par remetente e destinatário
+- "roteador default" ou "roteador de 1ª salto" - roteador ao qual está ligado o "host" remetente ou destinatário
+- "roteador da fonte" - roteador "default" para o "host" remetente
+- "roteador do destino" - roteador "default" para o "host" destino
+- "problema" - dado um conjunto de roteadores conectados por enlaces, deseja-se descobrir um caminho do roteador fonte para o roteador de destino segundo uma função de custo
+- "Grafo G = (N, E)" - conjunto de "N" nós e "E" arestas no qual cada aresta é um par de nós do conjunto "N" de todos os nós
+  - no contexo do roteamento da camada de rede, os nós do grafo representam roteadores e as arestas representam os enlaces físicos
+- e.g., Seja o Grafo G = (N, E), onde N = { u, v, w, x, y, z } e
+- E = { (u, v), (u, x), (u, w), (v, x), (v, w), (x, w), (x, y), (w, y), (w, z), (y, z) }
+
+  ![grafo](images/grafo.png)
+- "caminho" - sequência de nós "(x1, x2, ..., xp)" tal que cada um dos pares "(x1, x2)", "(x2, x3)", ..., "(xp-1, xp)" são arestas em "E"
+- "considerações" - para qualquer aresta "(x, y)" em "E", "c(x, y)" representa o custo da aresta entre os nós "x" e "y"
+  - grafos são direcionais, ou seja, uma aresta "(x, y)" é igual a aresta "(y, x)", assim como "c(x, y)" é igual a "c(y, x)"
+  - custo do caminho "(x1, x2, ..., xp)" é a soma de todos os custo dos pares "(xk, xk+1)", ou seja, "c(x1, x2)" + ... + "c(xp-1, xp)"
+
+  ![grafo](images/grafo.png)
+- "hipótese" - se todas as arestas do grafo tiverem o mesmo custo, encontrar o caminho de menor custo significa encontrar o caminho no grafo com o menor nro. de enlaces entre fonte e destino
+- "função custo" - pode ser inversamente proporcional à largura de banda do enlace ou proporcional ao congestionamento do mesmo
+- Qual o caminho de MENOR CUSTO??
+  - diferentes algoritmos fornecem diferentes respostas em razão da função custo utilizada para encontrar o caminho de menor custo
+  - "algoritmos de roteamento" - trocal e calculam informações que são utilizadas para configurar as tabelas de repasse
+- "algoritmo de roteamento global" - calcular o caminho de menor custo entre fonte e destino com informações de toda a rede, ou seja, considera-se todos os nós e custos de todos os enlaces
+  - são também denominados de "algoritmos de estado de enlace" ou "algoritmos" com informação global de estado de enlace
+- "algoritmos de roteamento descentralizado" - calcula-se o caminho de menor custo usando o conhecimento parcial de rede, ou seja, não há informação dos custo de todos os enalces
+  - são denominado de "algoritmo de vetor de distâncias", pois cada nó mantém um vetor de estimativas de custos (distâncias) de um nó até todos os outros nós da rede
+- "algoritmos de roteamento estático" - rotas mudam muito lentament ao longo do tempo, muitas vezes por intervernção humana
+- "algoritmos de roteamento dinâmico" - rotas mudam à medida que mudam as cargas de tráfego ou mesmo a topologia da rede
+- "alooritmo sensível à carga" - custos dos enlaces variam dinamicamente para refletir o nível corrente de consgestionamento, com tendência a escolha de rotas que envitem tais enlaces
+- "algoritmo insenvível à carga" - custos dos enlaces não refletem explicitamente seu nível de congestionamento, assim, a escolha de rota não considera o congestionamento dos enlaces
+
+#### Princípio da Otimização
+
+- "princípio de otimização" - se o roteador J estiver no caminho ótimo entre o roteador I e o roteador K, o caminho ótimo de J até K também estará na mesma rota
+- "demonstração" - para confirmar a asserção, seja a rota entre "I" e "J" de r1 e entre "J" e "K" de rota r2.
+  - se existisse uma rota melhor que r2 entre J e K, ela poderia ser concatenada com r1 para melhorar a rota entre I e K, contradizendo nossa afirmação de que a r1 + r2 é otma
+- "consequência o princípio de otimização" - podemos observar que o conjunto de rotas ótmias de toas as origens para um determinado destino forma uma árvore com raiz no destino
+- "árvore de escoamento" - árvore na qual a unidade métrica de distância é o número de hops (saltos)
+  - observe que uma árvore de escoament não é exclusiva, podem existir outras árvore com caminhos de mesmo tamanho
+  - desse modo, diferentes roteadores podem ter idéias ou visões diferentes da topologia atual
+
+  ![nwTree](images/nwTree.png)
+
+#### Algoritmo de Roteamento Link-State
+
+- "Algoritmo de Dijkstra" - tanto a topologia da rede quanto os custos dos enlaces são conhecidos por todos os nós
+  - normalmente, estas informações são encaminhadas a cada um dos nós atráves de "broadcast de estado do enlace"
+  - adicionalmente, todos os nós compartilham, o mesmo conjunto de informações da rede, permitindo que tenham uma visão idêntica
+  - cada nó pode com base nas informações, rodar o algoritmo e calcular o conjunto de caminhos de menor custo para todos os nós
+  - algoritmo iterativo que tem a propriedade de, após a k-ésima iteração, conhecer os caminhos de menor custo para "k" nós de destino, dentro os caminhos de menor custo até todos os nós de destino
+- "notação de termos" - Algoritmo de Dijkstra
+- c(x, y) - custo do enlace do nó "x" a "y", normalmente representado por um inteiro quando vizinhos e "infinito" se não vizinhos
+- Dx (v) - custo do caminho de menor custo entre o nó fonte "x" e o nó "v" até a iteração corrente do algoritmo
+- p(v) - nó anterior ou vizinho de "v" ao longo do caminho corrente de menor custo desde o nó fonte "x" até o nó "v"
+- N - subconjunto de nós do Conjunto de Todos os NÓS "N" cujo caminho de menor custo é conhecido (pode ser calculado)
+  
+  ![grafo](images/grafo.png)
+- Algoritmo de Estado de Enlace - nó fonte "u"
+
+  ![iniDijkstra](images/iniDijkstra.png)
+  ![loopDijkstra](images/loopDijkstra.png)
+  ![grafo](images/grafo.png)
+- Seja alguns dos estágios de execução do Alg. Dijkstra
+  - na inicialização, os caminhos de menor custo correntemente conhecidos a partir de "u" até os vizinhos diretamente ligados "v", "x" e "w" são inicializados para 2, 1 e 5 respectivamente
+  - custos até "y" e "z" são estabelecidos como "infinito", pois este nós não estão diretamente conectado a "u"
+
+    ![grafo](images/grafo.png)
+- Seja alguns dos estágios de execução do Alg. Dijkstra
+  - na inicialização, os caminhos de menor custo correntemente conhecidos a partir de "u" até os vizinhos diretamente ligados "v", "w" e "x" são inicializados para 2, 1 e 5 respectivamente
+  - custos até "y" e "z" são estabelecidos como "infinito", pois estes nós não estão diretamente conectados a "u"
+
+  ![grafo](images/grafo.png)
+  ![tableDijkstra](images/tableDijkstra.png)
+- Ex.. slides
+- Qual a complexidade do cálculo do Alg. de Dijkstra?
+  - em termos gerais, o nro. total de nós que precisamos pesquisar em todas as iteração é "n * (n + 1)/2" e, assim, a complexidade do algoritmo de estado de enlace para o pior caso é de ordem "n²" ou O(n²)
+  - Caminhos de Menor Custo resultantes da execução do algoritmo bem como a tabela de repasse do nó "u" para a rede
+
+  ![exDijkstra](images/exDijkstra.png)
+- e.g., considere uma topologia onde os custo dos enlaces são iguais a carga transportada pelo enlace (diretamente proporcional)
+  - além disso, neste contexo, os custos dos enlaces não são simétricos, isto é, "c(u, v)" é igual a "c(v, u)" somente se a carga transportada em ambos os sentidos for a mesma
+
+  ![roteamentoExProblem](images/roteamentoExProblem.png)
+  - nó "z" origina uma unidade de tráfego destinada a "w"; nó "x" origina uma unidade destinada a "w"
+  - após o algoritmo ser executado, os nós "x", "y" e "z" detectam um caminho de custo zero até "w" no sentido anti-horário e todos direcionam o seu tráfego para as rotas anti-hoŕarias
+  
+  ![roteamentoExProblem](images/roteamentoExProblem.png)
+  - ná proxima vez em que o algoritmo for executado, os nós "x", "y" e "z" detectam um caminho de custo zero até "w" no sentido horário e todos direcionam o seu tráfego para as rotas horárias
+  - "problema" - como evitar tais oscilações?!?!
+- "Solução #1" - custo dos enlace não dependa da intensidade de tráfego, por outro lado, um dos objetivos do roteamento é evitar enlaces muito congestionados, logo, necessário repensar
+- "Solução #2" - assegurar que os roteadores (todos) não executem o algoritmo sincronamente ou de forma coordenada, embora possam executar com a mesma periodicidade
+  - pesquisas mostram que roteadores na Internet podem se auto sincronizar, mesmo que inicialmente executem o algoritmo com o mesmo período, mas em diferentes momentos
+  - para evitar essa auto sincronização, cada roteador pode variar aleatoriamente o momento em que envia um anúncio de enlace
+
+#### Algoritmo de Roteamento Distance Vector
+
+- "Alg. Vetor de Distâncias" - algoritmo distribuído onde cada nó tem informação parcial da topologia da rede, normalmente de nós vizinhos e sobre os quais calcula as rotas
+- "iterativo" - troca de informações acerca da topologa é contínua até que os nós vizinhos não tenham mais informações para trocar
+- "assíncrono" - nós executam o algoritmo quando detectam alteração nos enlaces ou quando recem novas métricas dos vizinhos, ou seja, nós executam o algoritmo de modo assíncorno
