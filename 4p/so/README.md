@@ -812,3 +812,53 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
   - O compartilhamento se restringe a regiões de memória do tipo read-only. Segmentos/páginas que sofrem operações de escritas são copiadas (COW - copy on write)
 
     ![sharedMem](images/sharedMem.png)
+- Arquivos Mapeados em Memória
+  - Permite a manipulação de posições do arquivo da mesma forma como nas operações em memória
+    - X = 10 (Memória)
+    - Record.X = 10 (Arquivo mapeado)
+  - O arquivo é mapeado no espaço de endereçamento do processo
+  - O mapeamento deve contemplar todo o arquivo ou apenas partes do mesmo
+  - Exemplo de system calls:
+    - MAP, UNMAP, MSYNC, etc.
+
+  ![arqMemMap](images/arqMemMap.png)
+  ![arqMemMapCopy](images/arqMemMapCopy.png)
+  - MMAP()
+
+    ![tradRead](images/tradRead.png)
+    ![mapRead](images/mapRead.png)
+
+### Hardware
+
+- O subsistema de gerenciamento de memória depende do hardware para executar várias tarefas
+- O componente de hardware responsável por essas tarefa é a MMU (Memory Management Unit)
+  - a MMU situa-se entre a CPU e a memória principal
+  - a tarefa primária da MMU é a tradução de endereços virtuais para endereços reais
+- Tabelas de páginas (page tables - PT) são usadas para auxiliar no processo de mapeamento de memória virutal para real
+- Tipicamente, existe uma PT para o Kernel e uma ou mais por processos
+- Uma tradução de endereço pode falhar pelas segintes razões
+  - Bound error: O endereço não está na faixa de endereço válido para o processo. Não existe PTE (Page Table Entry) para a página
+  - Validation error: A PTE é marcada inválida. Normalmente isso ocorre porque a página não está na memória principal (gera a exceção de page fault)
+  - Protection error: A página não permite o tipo de acesso desejado (ex. acesso de escrita em uma página read-only, tentativa de execução de uma página NX)
+    - A funcionalidade NX é denominada pela Intel de XD (eXecute Disable) e pela ADM de EVP (Enhanced Virus Protection)
+- Quando ocorrem os caso acima a MMU gera uma exceção e passa o controle para um handler do Kernel
+  - em nível de kernel todas exceções dessa natureza são consideradas page fault
+  - o handler recebe o tipo de exceção e realiza seu tratamento específico
+- Em casos onde a page fault não é resolvida trazendo a página para a memória, o handler notifica o processo enviando um sinal SIGSEGV
+- Toda vez que uma página sofre uma escrita, o modified bit é ligado na PTE da página
+- Esse bit é usado pelo Kernel para identificar dirty pages que devem ser sincronizadas com o conteúdo na memória secundária
+- Se o hardware suporta referenced bit na sua PTE, então para cada referência para a página esse bit é marcado
+  - isso permite ao Kernel controlar as páginas que estão sendo usadas e aquelas que podem ser recicladas
+
+### Hardware (Intel x86)
+
+- Exemplo de linear address space no Linux (IA-32)
+
+  ![virtualMemIntel86](images/virtualMemIntel86.png)
+  ![virtualMemIntelLinux86](images/virtualMemIntelLinux86.png)
+- Mapeamento em 2 níveis no x86
+
+  ![twoLevelMap](images/twoLevelMap.png)
+- Formato da PTE
+
+  ![pteFormat](images/pteFormat.png)
