@@ -2777,3 +2777,102 @@
 - "Alg. Vetor de Distâncias" - algoritmo distribuído onde cada nó tem informação parcial da topologia da rede, normalmente de nós vizinhos e sobre os quais calcula as rotas
 - "iterativo" - troca de informações acerca da topologa é contínua até que os nós vizinhos não tenham mais informações para trocar
 - "assíncrono" - nós executam o algoritmo quando detectam alteração nos enlaces ou quando recem novas métricas dos vizinhos, ou seja, nós executam o algoritmo de modo assíncorno
+- "notação de termos" - Algoritmo Vetor de Distâncias
+- dx(y) - custo do caminho menor custo do nó "x" ao nó "y" cujo valor é dado pela Equação de Bellman-Ford - minv { c(x, v) + dv(y) } onde "minv" é calculado para todos os vizinhos de "x".
+  - ao transistarmos do nó "x" para nó "y" pelo nó "v", o caminho de menor custo de "x" a "y" será o caminho com o menor valor da expressão c(x, y) + dv(y) para todos os vizinhos "v"
+- e.g., Seja o Grafo G = (N, E), onde N = { u, v, w, x, y, z } e E = { (u, v), (u, x), (u, w), (v, x), (v, w), (x, w), (x, y), (w, y), (w, z), (y, z) }
+  - nó "u" tem como vizinhos os nós "v", "x" e "w" e para vários caminhos do grafo é fácil perceber que dv(z) = 5; dx(z) = 3; dw(z) = 3
+  - ao considerar estes valores na Eq. Bellman-Ford juntamento com c(u, v) = 2, c(u, x), e c(u, w) = 5 teremos o caminho de menor custo
+- "caminho de menor custo" - min {2 + 5; 1 + 3; 5 + 3} = 4
+
+  ![grafo](images/grafo.png)
+- "Eq. Bellman-Ford" - cada nó começa com Dx(y), ou seja, uma estimativa do custo do caminho de menor custo do próprio nó "x" e no nó "y" para todos os nós em "N"
+- Dx = [Dx(y):y em N] - vetor de distâncias do nó "x", ou seja, vetor de estimativas de custo e "x" até todos os outros nós, "y" em "N"
+  - cada nó mantém o custo para cada um dos seus vizinhos, ou seja, c(x, v) com o qual está diretamente ligado
+  - cada nó mantém Dx = [Dx(y): y em N] contendo a estimativa de "x" para seus custos até todos os destinos "y" em "N"
+  - cada nó mantém os vetores de distâncias de seus vizinhos, isto é,
+  - Dv = [Dv(y) : y em N] para cada vizinho "v" em "N"
+- Alg. Vetor de Distância (DV):
+
+  ![distVet0](images/distVet0.png)
+  ![distVet1](images/distVet1.png)
+- "estado de enlace" - algoritmo global no sentido de que requer quer acada nó obtenha em primeiro lugar, um mapa completo da rede antes de rodar o Alg. de Dijkstra
+  - OSPF (Open Shortest Path First)
+- "vetor de distâncias" - algoritmo descentralizado onde cada nó utiliza informações que recebe de seus vizinhos, ou seja, não há um mapa completo da rede antes de rodar o Alg. DV
+  - RIP (Routing Information Protocol)
+  - BGP (Border Gateway Protocol)
+  - ISO IDRP, IPX da Novell, ARPAnet da Arq. TCP/IP
+- e.g., considere 3 nós interconectados por 3 enlaces cujos custos são apresentados abaixo - Alg. de Vetor de Distância .. "x" e "y"
+
+  ![exVecDist0](images/exVecDist0.png)
+  ![exVecDist1](images/exVecDist1.png)
+- Mudanças no Custo do Enlace e Falha do Enlace:
+  - quando um nó detecta uma mudança no custo do enlace até um vizinho (10-11), ele atualiza seu vetor de distâncias (13-14)
+  - se houver modificação no custo do caminho de menor cursto, também informa a seus vizinhos (16-17) seu vetor de distâncias
+
+  ![vecDistCostChange](images/vecDistCostChange.png)
+- "problema" - aumento do custo de enlace propaga-se muito devagar fazendo-se com que a convergência seja lenta
+  - problema é denominado "problema da contagem ao infinito"
+- "solução" - cenário descrito anteriormente pode ser evitado usando-se a técnica "poisoned reverse"
+  - se Z passa por Y para chegar a X, "z" informa a "y" que sua distância a "x" é infinita, assim, "y" não mais irá rotear para "x" passando por "z"
+  - Obs.: avaliação mais abrangente mostre que a "reversão envenenada" não resolve o problema da contagem ao infinito para "loops" que envolvam 3 ou mais nós, pois não são detectadas pela técnica
+- "complexidade da mensagem"
+  - LS - com "N" nós e "E" enlaces >> O(N * E) mensagens enviadas
+  - DV - troca msgs. apenas entre vizinhos >> tempo convergência varia
+- "velocidade de convergência"
+  - LS - algoritmo O(N²) requer O(N * E) mensagens (pode ter oscilações)
+  - DV - tempo de convergência varia; podem ter "loops" de roteamento bem como o problema da contagem ao infinito
+- "robustez" - o que acontece se roteador der defeito?
+  - LS - nó pode anunciar custo incorreto do enlace; cada nó calcula apenas sua própria tabela de repassse
+  - DV - nó pode anunciar custo incorreto do enlace e como a tabela de cada nó é utilizada por outros nós >> erro se propaga pela rede
+
+#### Roteamento Hierárquico
+
+- "premissa" - o roteamento é ideal, ou seja, todos os roteadores são idênticos bem como o algoritmo de roteamento
+- "possíveis problemas"
+  - "escalabilidade" - quando maior o nro. de roteadores, maior é a sobre-carga de cálculo, armazenamento bem com a comunicação de informações para a tabela de roteamento
+  - "autonomia administrativa" - autonomia na gestão de roteadores pela empresas sob as quais são mantidos
+  - "autonomia administrativa" - transparência ao público quanto a organização interna da redes são fatores que devem ser considerados
+  - "solução" - agrupar os roteadores em ASs, ou seja, criar grupos de roteadores sob o mesmo domínio administrativo (p.ex, mesmo ISP ou mesma Rede Corporativa)
+- "solução" - agrupar os roteadores em ASs, ou seja, criar grupos de roteadores sob o mesmo domínio administrativo (p.ex., mesmo ISP ou mesma Rede Coorporativa)
+- "Protocolo Intra-AS" - denominação do algorito de rotemanto dentro de um Sistema autônomo (AS) da Internet
+  - para conectar ASs entre si, um ou mais "roteadores de borda" em AS tem a tarefa de transmitir pacotes a destinos externos ao AS
+
+  ![roteamentoHierarquico](images/roteamentoHierarquico.png)
+
+- Como um roteador que está dentro de algum AS sabe como rotear um pacote até um destino que está fora do AS ?
+  - para os casos em que se tem apenas um roteador de borda, o algoritmo de roteamento Intra-AS já determinou o caminho de menor custo entre cada roteador interno e o roteador de borda do AS
+  - uma vez que o pacote seja roteado para fora do AS através do roteador de borda, então o AS que está na outra extremidade do enlace assume a responsabilidade de rotear o pacote até o destino final
+- Como um roteador que está dentro de algum AS sabe como rotear um pacote até um destino que está fora do AS
+  - para os casos em que um AS possui 2 ou mais enlaces levam para fora do AS, o repasse é significamente mais desafiador
+  - embora a tarefa seja decidir qual enlace de saída o pacote será repassado, tal decisão exige que cada AS saiba quais destinos são alcançãveis a partir de cada outro AS vizinho ou não
+  - informações sobre condições de alcance de AS vizinhos bem como a propagação dessas informações para todos os roteadores internos são gerenciadas pelo Protocolo de Roteamento Inter-ASs
+  - Obs: ASs da Internet rodam o mesmo Protocolo de Roteamento Inte-ASs, ou seja, o BGP4 permitindo que os roteadores recebam informações de protocolos de roteamento Intra-ASs e Inter-ASs
+- "solução" - utilizar o roteamento da "batata quente", ou seja, AS repassa o pacote através do caminho de menor custo o mais rápico possível com o menor custo possível
+  - roteador enviar o pacote ao roteador de borda que tiver o menor custo roteador-roteador de borda entre todos os roteadores de borda que tem um caminho para o destino ora estabelecido
+- Obs.: ASs tem bastante flexibilidade para decidir quais destinos irá anunciar a seus ASs vizinhos, ou sea, decisão "política" que depende mais de questões econômicas do que técnicas
+
+#### Roteamento Broadcast
+
+- "broadcast" - enviar pacote a todos os destinos simultaneamente é chamado difusão (broadcasting)
+- Maneiras de se implementar o "broadcast":
+- "unicast" - exigem envia o pacote para cada um dos destinos, ou seja, não exige recursos especiais da sub-rede;
+  - no entano, desperdiça largura de banda como também exige que a origem tenha uma lista completa de todos os destinos
+- "problema" - consome a maior largura de banda dentre todos os outros algoritmos de difusão
+- "algoritmo de inundação" - é um candidato óbvio, ainda que seja inadequado para a comunicação ponto a ponto
+  - ainda que o algoritmo de inundação seja inadequado para a comunicação ponto a ponto, ele pode ser considerado, se nenhum dos métodos descritos a seguir for aplicável
+- "problema" - algoritmo de roteamento ponto a ponto, ou seja, gera muitos pacotes e consome largura de banda em excesso
+- "roteamento de vários destinos" - cada pacote contém uma lista de destinos ou um mapa de bits indicando destinos desejados
+  - quando um pacote chega a uma roteador, este verifica todos os destinos para determinar o conjunto de linhas de saída que serão necessárias de modo a alcançar todos os destinos
+  - após o nro. suficiente de "hops", cada pacote trasnportará somente um destino e poderá ser tratado como um pacote normal
+  - semelhante a utilizar pacotes endereçados separadmente, exceto pelo fato de, quando vários pacotes tiverem de seguir a mesma rota, um deles pagará todo a passagem
+- "árvore de amplitude" - árvore de escoamento para o roteador que inicia a difusão, ou seja, subconjunto da sub-rede que inclui todos os roteadores, mas não contém nenhum "loop"
+  - se cada roteador sabe quais de suas linhas pertencem à árvore de amplitude, ele poderá copiar um pacote de difusão de entrada em todas as linhas da árvore de amplitudo, exceto aquela em que o pacote chegou
+- "problema" - cada roteador deve ter conhecimento de alguma árvore de amplitude para que o método seja aplicável
+  - se essas informações estão disponíveis (e.g., roteamento por estado de enlace), o roteador terá conhecimento da árvore de amplitude
+  - se essas informações não estão disponíveis (e.g., roteamento com vetor de distância), o roteador não terá conhecimento da árvore de amplitude
+- "algoritmo de difusão" - quando um pacote de difusão chega a um roteador, o roteqador verifica se o pacote chegou pela inha que normalmente é utilizada para o envio de pacotes à origem
+  - se sim, há uma excelente possibilidade de que o pacote de difusão tenha seguido a melhor rota a partir do roteador, ou seja, é a primeira cópia a chegar no roteador
+  - se for esse o caso, roteador encaminha cópias do pacote para todas as linhas, exceto aquela por onde o pacote chegou
+
+- ... slides faina ...
