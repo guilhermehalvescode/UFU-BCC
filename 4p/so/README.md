@@ -862,3 +862,44 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 - Formato da PTE
 
   ![pteFormat](images/pteFormat.png)
+
+## **Sistema de Arquivos**
+
+### Arquivo
+
+- Dados armazenados de forma persistente
+- Possui os seguintes atributos:
+  - Nome: Uma forma amigável de referência do recurso
+    - Formato: Composição, Tamanho, Conjunto de caracteres permitidos, etc.
+  - Estrutura: Sequência de bytes, Conj. de Registrados do mesmo tipo, registro de tipos diferentes, etc
+  - Tipos:
+    - Diretórios: Conjunto de arquivos
+    - Regulares: ASCII ou Binários
+    - Especiais: Representam algum recurso/dispositivo do sistema
+  - Acesso:
+    - Sequencial
+    - Aleatório
+- Possui os seguintes atributos (cont.):
+  - Atributos: Dependente de cada sistema, são exemplos:
+    - Proteção (read, write, execute, cópia, execução, etc.)
+    - Propriedade: (criador, dono, grupo de acesso, etc.)
+    - Acesso: (data da criaçao, último acesso, modificação, etc.)
+    - Tamanho: (bytes armazenados, tamanho máximo definido, etc.)
+  - Operações de manipulação
+    - Criação/Remoção
+    - Abertura/Fechamento
+    - Leitura/Escrita
+    - Inserção (Append)
+    - Localização (Seek)
+    - Mascaras de Atributos (Get/Set)
+    - Renomear
+    - Truncar
+    - outras...
+- Ex. disco rígido:
+
+  ![hardDrive](images/hardDrive.png)
+  - O número de trilhas por disco, setores por trilhas e bytes por setor é determinado pela formatçaão física do disco
+    - realizada pelo fabricantes
+  - O número de setores por cluster é determinado pela formatação lógico que dependerá do tipo de sistema de arquivos
+  - Essas configurações dependem diretamente da capacidade de armazenamento do disco
+    - Algumas (ex. setores por cluster) dependem do tamanho da partição
