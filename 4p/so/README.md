@@ -865,7 +865,9 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 
 ## **Sistema de Arquivos**
 
-### Arquivo
+### Conceitos Básicos
+
+#### Arquivos
 
 - Dados armazenados de forma persistente
 - Possui os seguintes atributos:
@@ -903,3 +905,55 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
   - O número de setores por cluster é determinado pela formatação lógico que dependerá do tipo de sistema de arquivos
   - Essas configurações dependem diretamente da capacidade de armazenamento do disco
     - Algumas (ex. setores por cluster) dependem do tamanho da partição
+- Setor é a menor unidade de armazenamento físico no disco
+- Cluster é a menor unidadade de armazenamento lógico
+- Portanto, podemos afirmar que:
+  - um cluster é composto de no mínimo 1 setor
+  - um arquivo ocupa, no mínimo, um cluster
+- Quanto de espaço físico é necessário para armzenar um arquivo de 1 byte
+- Considere a seguinte configuração
+  - Capacidade: 500 Mbytes
+  - Bytes por setor: 512
+  - Setores por Cluster: 8
+- Nesse caso, um arquivo de 1 byte ocupa fisicamente no disco 8 x 512 = 4096 bytes
+- Capacidade máxima em arquivos de 1 byte seria 128 mil arquivos
+  - Isso significa apenas 125Kbytes armazenados
+
+### Organização Interna
+
+#### Arquivo
+
+  ![fileStr](images/fileStr.png)
+
+### Diretório
+
+- Estrutura de armazenamento de dados sobre arquivos
+
+![dirStr.png](images/dirStr.png)
+
+### Controle de Espaço Livre
+
+- Mapa de Bits
+  - Armazena informações sobre blocos livres/utilizados do disco
+- Ligação Encadeada
+  - Cada bloco (livre) aponta para o próximo bloco disponível
+- Tabelas de Blocos Livres
+  - A tabela contém uma entrada para o primeiro bloco e a quantidade de blocos livres contíguos ao endereço apontado
+
+### Alocação de Espaço
+
+  ![spaceAlloc](images/spaceAlloc.png)
+
+- Alocação Contígua
+  - Aloca a quantidade de blocos necessários para armazenar o arquivo. Todos os blocos devem estar dispostos contiguamente
+  - Problema: Fragmentação dos blocos livres após certo tempo de uso e a necessidade de alocar blocos em séris
+  - Solução: Rotinas de Defragmentação amenizam a fragmentação
+- Alocação Encadeada
+  - Cada bloco aponta para o próximo, que não necessariamente precisa estar contíguo a ele
+  - Problema: Fragmentação do arquivo, causando aumento no tempo de acesso. O acesso só pode ser realizado de forma sequencial
+  - Solução: Rotinas de Defragmentação amenizam a fragmentação
+- Alocação Indexada
+  - Existe um bloco de índice com ponteiros para os blocos de dados
+  - Elimina a limitação do acesso sequencial
+  - Remove os ponteiros dos blocos de dados
+  - Exige estrutura adicional para o bloco de índice
