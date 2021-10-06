@@ -1200,3 +1200,178 @@
 - Hierarquia de Chomsky
   - Classe das Linguagens Livres do Contexto
   - contém propriamente a Classe das Linguagens
+- Entretando, é uma classe relativamente restrita
+  - fácil definir linguagens que não pertencem a esta classe
+- Abordagens
+  - Gramática Livre de Contexto (axiomático ou gerador)
+    - restrições na forma das regras de produção
+    - mais livre que na gramática regular
+  - Autômato com Pilha (operacional ou reconhecedor)
+    - análogo ao autômato finito não-determinístico
+    - adicionalmente: memória auxiliar tipo pilha
+    - pode ser lida ou gravada
+- Relativamente às GLC
+  - Árvore de derivação
+    - representa a derivação de uma palavra na forma de árvore
+    - parte do símbolo inicial como a raiz
+    - termina em símbolos terminais como folhas
+  - Gramática Ambígua
+    - pelo menos uma palvra com duas ou mais árvores de derivação
+  - Simplificação de Gramática (produções)
+    - sem reduzir o poder de geraçaão
+  - Forma Normal: restrições rígidas na forma das produções
+    - sem reduzir o poder de geração da gramática
+- Autômato com pilha construído a partir de uma GLC
+  - construção de um reconhecedor a partir de sua gramática
+    - simples e imediata
+  - estrutura de pilha é suficiente como única memória
+    - pode ser reconhecida por autômato com pilha com um estado
+    - estados não são necessários para "memorizar" o passado
+
+### 1. Gramática Livre do Contexto
+
+#### Gramática Livre do Contexto (GLC)
+
+- G(V, T, P, S)
+- qualquer regra em P é da forma:
+  - A => $\alpha$,  
+  - A é variável de V 
+  - $\alpha$ é palavra de (V $\cup$ T)*
+  - lado esquerdo = uma variável
+
+#### Linguagem Livre do Contexto (GLC)
+
+- Linguagem gerada pela gramática livre do contexto G
+  - GERA (G) = { w $\in$ T* | S $\Rarr^+$ w }
+- Portanto, é livre do contexto
+  - qualquer linguagem regular
+- Relação entre as classes de linguagens estudadas
+
+  ![chomskyVennRed](images/chomskyVennRed.png)
+- "Livre de contexto" ???
+  - mais geral classe de linguagens cuja produção é da forma A $\rarr \alpha$
+  - em uma derviação, a variável A devia $\alpha$
+    - sem depender ("livre") de qualquer análise
+    - dos símbolos que antecedem ou sucedem A (o "contexto")
+    - na palavra que está sendo derivada
+- Exp: GLC: Duplo Balanceamento
+  - L1 = {$a^nb^n | n \geq 0$}
+- G1 = ({S}, {a, b}, P1, S)
+  - P1 = {S -> aSb | $\varepsilon$}
+  - GERA(G1) = L1
+- Derivação da palavra aabb
+  - S => aSb => aaSbb => aa$\varepsilon$bb => aabb
+- Importante: Duplo Balanceamento
+  - analogia com estruturas de duplo balanceamento
+    - em linguagens de programação
+  - linguagens bloco-estruturadas
+    - $begin^n end^n$ e similares
+  - lingugagens com parênteses balanceados
+    - $(^n)^n$
+- Ex: GLC: Expressões Aritméticas
+  - L2 - expressões ariméticas com colchetes balanceados, dois operadores e um operando
+    - G2 = ({E}, {+, *, [, ], x}, P2, E)
+  - P2 = {E -> E+E | E*E | [E] | x}
+  - existe outra sequência de derivação? quantas?
+  - quais produções controlam o duplo balanceamento de parênteses?
+- Obs: BFN: Backus Naur Form
+  - Maneira usual de representar uma GLC
+    - variáveis
+      - palavras delimitadas pelos símbolos < e >
+    - terminais
+      - palavras não-delimitadas
+    - representação de uma regra de produção A -> $\alpha$
+      - A ::= $\alpha$
+- Exp: BNF: Identificador em Pascal
+  - A variável \<identificador> é o simbolo inicial
+    - \<identificador> ::= \<letra> | \<identificador>\<letra> | \<identificador>\<dígito>
+    - \<letra> ::= a | b | ... | z
+    - \<dígito> ::= 0 | 1 | ... | 9
+
+### 2. Árvore de Derivação
+
+- Derivação de palavra na forma de árvora
+  - partindo do símbolo inicial como a raiz
+  - terminando em símbolo terminais como folhas
+- Conveniente em muitas aplicações
+  - Compiladores
+  - processadores de textos
+
+#### Árvore de Derivação
+
+- Raiz: símbolo inicial
+- Vértices interiores: variáveis
+  - Se A é um vértice interior e X1, X2, ..., Xn são os "filhos" de A
+    - A -> X1X2...Xn é uma produção da gramática
+    - X1, X2, ..., Xn são ordenados da esquerda para a direita
+- Vértices folha ou folha: terminal ou o símbolo vazio
+  - se vazio: único filho de seu pai (A -> $\varepsilon$)
+- Exp: Árvore de Derivação: aabb e [x+x]*x
+
+  ![derivTree](images/derivTree.png)
+- Uma árvore de derivação
+  - pode representar derivações distintas de uma mesma palavra
+
+#### Derivação mais à Esquerda (Direita)
+
+- Sequência de produções aplicada sempre à variável mais à esquerda (direita)
+- Ex Derivação mais à Esquerda (Direita): x+x*x
+
+  ![lrDerivTree](images/lrDerivTree.png)
+
+### 3. GLC Ambígua
+
+- Gramática ambígua
+  - uma palavra associada a duas ou mais árvores de derivação
+- Pode ser desejável que a gramática usada seja não-ambígua
+  - desenvolvimento e otimização de alguns algoritmos de reconhecimento
+- Nem sempre é possível eliminar ambiguidades
+  - é fácil definir linguagens para as quais qualquer GLC é ambígua
+
+#### Gramática (Livre do Contexto) Ambígua
+
+- Existe pelo menos uma palavra que possui duas ou mais árvores de derivação
+- Exp: Gramática Ambígua: x+x*x
+
+  ![exAmbigTree](images/exAmbigTree.png)
+  - Mais de uma derivação à esquerda (direita)
+- Forma equivalente de definir gramática ambígua
+  - existe pelo menos uma palavra com duas ou mais derivações mais à esquerda
+    - alternativamente, mais à direita
+
+#### Teormema: Gramática Ambígua
+
+- Uma GLC é uma Gramática Ambígua se existe pelo menos uma palavra
+  - com duas ou mais derivações à esquerda ou
+  - duas ou mais derivações à direita
+
+#### Linguagem Inerentemente Ambígua
+
+- Qualquer GLC é ambígua
+- Ex: Linguagem inerentemente Ambígua
+  - { w | w = $a^nb^nc^md^m$ ou w=$a^nb^mc^md^n$, n >= 1, m >= 1 }
+- Ex: Linguagem Inerentemente Ambígua: contra-exemplo
+  - Expressões aritméticas é não-ambígua (exercício)
+  - Correto entedimento da solução é especialmente importante
+    - justifica a maneira aparentemente "estranha" de definir expressões
+    - na maioria da gramaticas das linguagens de programação
+
+### 4. Simplificação de GLC
+
+- Simplificação de alguns tipos de produções
+  - sem reduzir o poder de geração das GLC
+- Simplificações são importantes
+  - construção e otimização de algoritmos
+  - demostração de teoremas
+- Simplificações
+  - Símbolos inúteis
+    - exclusão de variáveis ou terminais não-usados
+  - Produções vazias, da forma A -> $\varepsilon$
+    - se $\varepsilon$ pertence à linguagem: incluída produção vazia específica
+  - Produções que substituem variáveis, da forma A -> B
+    - substituem uma variável por outra
+    - não adicionam informação de geração de palavras
+- Provas omitidas
+  - algoritmos de simplificação atingem os objetivos propostos
+
+#### Símbolos Inúteis
