@@ -2876,3 +2876,7 @@
   - se for esse o caso, roteador encaminha cópias do pacote para todas as linhas, exceto aquela por onde o pacote chegou
 
 - ... slides faina ...
+
+- Prova 2
+  - Questões abertas - [camada física](#physical-layer) - teorema de Nyquist, análise de Fourier e teorema de Shannon
+  - Questão fechada - [link layer](#link-layer) - [Enquadramento](#enquadramento) camada MAC (bit stuffing)
