@@ -2268,3 +2268,260 @@ FROM employee e, employee s, department d
 WHERE d.name = 'Research' AND d.dnumber = e.dno
 AND s.ssn = e.superssn; 
 ```
+
+## _*Funções e Gatilhos no PostgreSQL*_
+
+### SQL em Funções e Gatilhos
+
+- Def: Funções e Gatilhos, procedimentos armanezenados, interpretados e executados no servidor de Bd, escritos em uma linguagem procedural que permite controle de fluxo e cálculos complexos, além de acesso ao BD via SQL
+- As funções são chamadas de forma explícita e os gatilhos por meio de eventos, implementando o conceito de "BD Ativo"
+
+### OBJETIVOS de FUNÇÕES e GATILHOS
+
+- padronizar acesso por vários programas
+- orientar execuções para o servidor
+- controlar acesso via GRANT específico
+- adicionar estruturas de controle
+- implementar restrições de integridade
+- realizar cálculos complexos 
+
+### FUNÇÕES e GATILHOS no PostgreeSQL
+
+1. O SGBD armazena no catálogo comandos em linguagens procedurais com ou sem instruções SQL
+2. Há um interpretador da linguagem
+3. O interpretador também é uma função
+4. Linguagens: PL/PgSQL, PL/Tcl, PL/Perl, PL/Python
+5. Devem ser habilitadas pelo super-usuário, por exemplo: `CREATE LANGUAGE plpgsql`
+6. Outros interpretadores podem ser desenvolvidos pelo usuário
+
+### Funções em PlpgSql
+
+#### PlpgSql - Exemplo 0
+
+```SQL
+CREATE OR REPLACE FUNCTION ehoras(employee.ssn%TYPE)
+  RETURNS DECIMAL(6,2) AS $$
+DECLARE
+  myhoras DECIMAL(6, 2);
+BEGIN
+  SELECT SUM(hours) FROM works_on INTO myhoras
+    WHERE essn = $1;
+  RETURN myhoras;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM ehoras('123456789');
+-- OBS: aspas (') é uma alternativa ao delimitador $$
+```
+
+### PlpgSql - Bloco de senteça (Formato)
+
+```SQL
+-- UM BLOCO DE SENTENÇA:
+[<< label >>]
+[DECLARE
+  declarações de variáveis]
+BEGIN
+  sentenças
+END;
+```
+
+- OBS:
+  - um bloco é uma senteça
+  - tudo é convertido para caixa-baixa, exceto se "..."
+  - variáveis de tipos semelhantes ao SQL com peculiaridades...
+
+### PlpgSql - Definindo Variáveis (Exemplos)
+
+- `nome [CONSTANT] tipo [NOT NULL] [ {DEFAULT |:=} expression ];`
+- Exemplos:
+  - user_id INTEGER;
+  - quantity NUMERIC(5);
+  - url VARCHAR;
+  - myrow tablename%ROWTYPE;
+  - myfield tablename.fieldname%TYPE;
+  - arow RECORD;
+  - quantity INTEGER DEFAULT 32;
+  - url varchar := "http://mysite.com";
+  - user_id CONSTANT INTEGER := 10;
+- Obs: neste caso, myfield é uma variável associada a uma atributo específico e myarow.field é uma variável associada ao atributo field
+  
+### PlpgSql - Parâmetros e aliases (Exemplo)
+
+- \$1, \$2, etc
+- Aliases: subtotal ALIAS FOR \$1;
+
+### PlpgSql - A variável FOUND (Exemplo)
+
+```SQL
+CREATE OR REPLACE FUNCTION 
+  does_employee_exist(employee.ssn%TYPE) RETURNS bool AS $$
+DECLARE
+  key ALIAS FOR $1;
+  myemployee employee%ROWTYPE;
+BEGIN
+  SELECT INTO myemployee * FROM employee
+    WHERE ssn = key;
+  IF NOT FOUND THEN RETURN false;
+  END IF;
+  RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+### PlpgSql - ESTRUTURAS de CONTROLE (Tipos)
+
+- Retorno
+- Condicionais
+- Laços
+
+### PlpgSql - RETURN (Tipos)
+
+- RETURN expression; -- encerra a função
+- Exemplos:
+  - RETURN mytext;
+  - RETURN myrecord;
+  - RETURN mynum;
+  - RETURN true;
+- RETURN NEXT expression; -- retorna linha e não encerra a função
+
+```sql
+some_func() RETURNS SETOF sometype ...
+=> SELECT * FROM some_func();
+```
+
+### PlpgSql - CONDIÇÕES (Formatos e exemplo)
+
+- CONDIÇÕES
+  - IF ... THEN ... END IF
+  - IF ... THEN ... ELSE ... END IF
+  - IF ... THEN ... ELSE IF ... END IF END IF
+  - IF ... THEN ... ELSIF ... THEN ... ELSE ... END IF
+- Exemplo
+
+```sql
+IF myrow.sex = "F"
+  THEN mysexo := "Feminino";
+  ELSE IF myrow.sex = "M"
+    THEN mysexo := "Masculino";
+  END IF;
+END IF;
+```
+
+### PlpgSql - LAÇOS (Introdução)
+
+- Laços: WHILE ou FOR usando expressão e conjunto de sentenças
+- Executam repetidamente um conjunto de sentenças até:
+  - EXIT [label]; ou
+  - WHEN expression; ou
+  - RETURN
+- Conjunto de sentenças em Laços
+
+```sql
+[<< label >>]
+LOOP
+  senteças
+END LOOP;
+```
+
+### PlpgSql - WHILE (Formato do comando)
+
+```sql
+[<< label >>]
+WHILE expressão
+  LOOP
+    sentenças
+  END LOOP;
+```
+
+### PlpgSql - FOR com CONTADOR (Formato do comando)
+
+```sql
+[<< label >>]
+FOR nome_var IN [REVERSE] exp_from..exp_to
+  LOOP
+    sentenças
+  END LOOP;
+```
+
+### PlpgSql - FOR percorrendo RESULTADO (Formato do comando)
+
+```sql
+[<< label >>]
+FOR {record | row} IN select_query
+  LOOP
+    sentenças
+  END LOOP;
+```
+
+### PlpgSql - FOR percorrendo RESULTADO (Exemplo)
+
+```sql
+CREATE OR REPLACE FUNCTION vemp()
+RETURNS SETOF employee AS $$
+DECLARE
+  wrow employee%rowtype;
+BEGIN
+  FOR wrow IN SELECT * FROM employee
+  LOOP
+    RETURN NEXT wrow;
+  END LOOP;
+  RETURN;
+END;
+$$ LANGUAGE plpgsql;
+SELECT * FROM vemp();
+```
+
+### PlpgSql - Consultas dinâmicas (Exemplo)
+
+- `EXECUTE query-string;`
+- Exemplo:
+
+```sql
+EXECUTE "UPDATE tab SET" 
+  || quote_ident(fieldname) || " = " || quote_literal(newvalue)
+  || "WHERE ...";
+```
+
+- resultados de consultas podem ser usados em FOR-IN-EXECUTE
+- GET DIAGNOSTICS variable = ROW_COUNT
+
+### PlpgSql - Varrendo resultado de consulta (Formato)
+
+```sql
+[<< label >>]
+FOR {record | row} IN EXECUTE text exp
+  LOOP
+    sentenças
+  END LOOP;
+```
+
+### PlpgSql - IGNORANDO RESULTADOS (Exemplo)
+
+```sql
+PERFORM * FROM works_on WHERE essn = myssn;
+IF NOT FOUND THEN
+  RAISE NOTICE "..."
+END IF;
+```
+
+### PlpgSql - FUNÇÕES (Exemplo 1)
+
+```sql
+CREATE OR REPLACE FUNCTION tgenero(company.employee.ssn%TYPE)
+  RETURNS TEXT AS $$
+DECLARE
+  myrow company.employee%ROWTYPE;
+  mysexo TEXT DEFAULT '';
+BEGIN
+  SELECT * INTO myrow FROM company.employee WHERE ssn = $1;
+  IF myrow.sex = 'F' THEN mysexo := 'Feminino';
+  ELSE IF myrow.sex = 'M' THEN mysexo := 'Masculino';
+    END IF;
+  END IF;
+  RETURN myrow.fname || '' || myrow.minit || '.' || myrow.lname || '-' || mysexo;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM tgenero('123456789');
+```
