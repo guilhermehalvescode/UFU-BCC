@@ -1339,7 +1339,7 @@
   - existe pelo menos uma palavra com duas ou mais derivações mais à esquerda
     - alternativamente, mais à direita
 
-#### Teormema: Gramática Ambígua
+#### Teorema: Gramática Ambígua
 
 - Uma GLC é uma Gramática Ambígua se existe pelo menos uma palavra
   - com duas ou mais derivações à esquerda ou
@@ -1355,6 +1355,48 @@
   - Correto entedimento da solução é especialmente importante
     - justifica a maneira aparentemente "estranha" de definir expressões
     - na maioria da gramaticas das linguagens de programação
+
+#### Remoção de Ambiguidade
+
+- Não existe um algoritmo que funcione para todos os casos
+- É preciso verificar cada GLC para verificar as fontes de ambiguidade
+- Nessa análise você pode vira a concluir que a ambiguidade vem da própria linguagem, ou seja, trata-se de uma Linguagem Inerentemente ambígua. Nessa situação, não é possível remover a ambiguidade da gramática, sem alterar a linguagem gerada
+- Entretando, existem exemplo de GLCs tratadas na literatura, para remoção de ambiguidade. Quando entendemos esses exemplos, podemos estender a solução e aplicar na remoção de ambiguidde para gramáticas com fontes similares
+- O exemplo mais comum é o de GLCs para a construção de expressões aritméticas, como vista anteriormente
+  - G2 = ({E}, {+, *, [, ], x}, P2, E)
+  - P2 = {E -> E+E | E*E | [E] | x}
+- Vamos analisar as fontes dessa ambiguidade, antes de removê-las
+- Existem duas fontes de ambiguidade, que nos levam à adoção de 2 estratégias na remoção
+  1. Ambiguidade em operadores em um mesmo nível de escopo (sem analisar as precedências entre eles)
+     - Essa situação ocorre em palavras simples como x + x + x, que aplica apenas o operador + e todos estão em um mesmo escopo (sem [e])
+
+        ![exAgrupTreeLR](images/exAgrupTreeLR.png)
+  2. Ambiguidade em operadores diferentes em um mesmo nível de escopo, com diferentes precedências
+     - Essa situação ocorre em palavras simples como x + x \* x, que aplica apenas os operadores + e \* em um mesmo escopo (sem [e]).
+
+        ![exAgrupTreeLR1](images/exAgrupTreeLR1.png)
+- Para eliminarmos a ambiguidade na GLC, adotaremos duas estratégias:
+  1. Operações de mesma precedência serão agrupadas pelas esquerda -> lado esquerdo das árvores mais profundo
+
+      ![escolhaAgruTreeSamePrec](images/escolhaAgruTreeSamePrec.png)
+      - Obs: aqui poderíamos ter escolhido agrupar pela direita (1º árvore). Não existe lado certo ou errado, é apenas escolher 1 opção
+  2. Operações com precedências diferentes, a operação de maior precedência deve ser realizada primeiro -> maior profundidade para operações > precedência
+
+      ![escolhaAgruTreeDiffPrec](images/escolhaAgruTreeDiffPrec.png)
+      - Obs: Nesse caso, escolhemos o "lado certo", ou seja, o que coloca a mior precedência em maior profundidade. Do ponto de vista da gramática, não existiria lado certo ou errado, apenas a necessidade de escolha de um deles para eliminar a ambiguidade. Mas utilizamos a semântica de que trata-se de gerar expressões matemáticas para definir o que é certo
+- G2 = ({E}, {+, \*, [, ], x}, P2, E), P2 = {E -> E+E | E\*E | [E] | x}
+- Resumindo, para o exemplo da gramática dada, eliminaremos a ambiguidade adotando:
+  1. Operações de mesma precedência serão agrupadas pela esquerda -> lado esquerdo das árvores mais profundo
+  2. Operações com precedências diferentes: operações de maior precedência -> maior profundidade
+- Por termos 3 níveis (+, * e operando), sendo que o operando pode ser um novo escopo ([..]), iremos adotar 3 variáveis para separar em níveis:
+  - E: Expressão -> Pode representar uma operação de soma (com possibilidade de agrupamento pela esquerda) ou um Termo (próximo nível)
+    - E -> T | E + T
+  - T: Termo -> Pode representar uma operação de multiplicação (com possibilidade de agrupamento pela esquerda) ou um Fator (próximo nível).
+    - T -> F | T \* F
+  - F: Fator -> representa os operandos ou um novo escopo (expressão dentro)
+    - F -> x | [E]
+- Nova gramática:
+  - G3 = ({E, T, F}, {+, \*, [, ], x}, P3, E), P2 = {E -> T | E + T, T -> F | T \* F, F -> x | [E]}
 
 ### 4. Simplificação de GLC
 
@@ -1375,3 +1417,125 @@
   - algoritmos de simplificação atingem os objetivos propostos
 
 #### Símbolos Inúteis
+
+- símbolos não-usados na geração de palavras de terminais
+- Simplificação exclui
+  - produções que fazer referência a esses símbolos
+  - os próprios símbolos inúteis
+  - não é necessária qualquer modificação adicional
+- Algoritmo
+  - Etapa 1: qualquer variável gera terminais
+    - restringe o conjunto de variáveis
+    - considera todas as variáveis que geram terminais diretamente (exemplo A -> a)
+    - adiciona, sucessivamente, variáveis que geram terminais indiretamente (exemplo: B -> Ab)
+  - Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial
+    - analisa as produções da gramátia a partir do símbolo inicial
+    - considera exclusivamente o símbolo inicial
+    - sucessivamente as produções da gramática são aplicadas:
+      - símbolos referenciados são adicionados aos novos conjuntos
+
+#### Algoritmo: Exclusão dos Símbolos Inúteis
+
+- G(V, T, P, S)
+- Etapa 1: qualquer variável gera terminais. Gramática resultante
+  - G1 = (V1, T, P1, S)
+  - construção de V1 $\subseteq$ V
+- V1 = $\empty$
+- repita V1 = V1 U { A | A -> $\alpha \in$ P e $\alpha \in$ (T U V1)* } até que o cardinal V1 não aumente
+- P1 possui os mesmos elementos que P, excetuando-se
+  - produções cujas variáveis não pertencem a V1
+- Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial. Gramática resultante
+  - G2 = (V2, T2, P2, S)
+- T2 = $\empty$
+- V2 = { S }
+- repita
+  - V2 = V2 U { A | X -> $\alpha A\beta \in$ P1, X $\in$ V2 }
+  - T2 = T2 U { a | X -> $\alpha a\beta \in$ P1, X $\in$ V2 }
+- até que os cardinais de V2 e T2 não aumentem
+- P2 possui os mesmos elementos que P1, excetuando-se
+  - produções cujos símbolos não pertencem a V2 ou T2
+- Se as etapas forem executadas em ordem inversa (Etapa 2 antes da Etapa 1)
+  - pode não atingir o resultado esperado
+  - demostração: apresentar um contra-exemplo (exercício)
+- Exp: Exclusão dos Símbolos Inúteis
+  - G = ({S, A, B, C}, {a, b, c}, P, S)
+  - P = {S -> aAa | bBb, A -> a | S, C -> c}
+- Etapa 1: qualquer variável gera terminais
+
+  ![uselessSymbolsE1](images/uselessSymbolsE1.png)
+- S -> bBb é excluída: B não pertence ao novo conjunto de variáveis
+- gramática resultante da etapa 1
+  - G1 =({A, C, S}, {a, b, c}, {S -> aAa, A -> a | S, C -> c}, S)
+- Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial
+
+  ![uselessSymbolsE2](images/uselessSymbolsE2.png)
+- C -> c é excluída: C e c não pertencem aos novos conjuntos
+- gramática resultante da etapa 2
+  - G2 = ({S, A}, {a}, {S -> aAa, A -> a | S}, S)
+
+#### Produções Vazias
+
+- Exclusão de produçẽos vazias (da forma A -> $\varepsilon$)
+  - pode determinar modificações diversas nas produções
+- Algoritmo
+  - Etapa 1: variáveis que constituem produções vazias
+    - A -> $\varepsilon$: variáveis que geram diretamente $\varepsilon$
+    - B -> A: sucessivamente, variáveis que indiretamente geram $\varepsilon$
+  - Etapa 2: exclusão de produções vazias
+    - considera apeans as produções não-vazias
+    - cada produção cujo lado direito possui uma variável que gera $\varepsilon$, determina uma produção adicional, sem essa variável
+  - Etapa 3: geração da palavra vazia, se necessário
+
+#### Def: Algoritmo: Exclusão das Produções Vazias
+
+- G = (V, T, P, S)
+- Etapa 1: variáveis que constituem produções vazias
+  - $V_{\varepsilon}$ , conjunto das variáveis que geram $\varepsilon$
+- $V_{\varepsilon}$ = { A | A -> $\varepsilon$}
+- repita
+  - $V_{\varepsilon}$ = $V_{\varepsilon}$ U { X | X1...Xn $\in$ P tal que X1, ..., Xn $\in$ $V_{\varepsilon}$}
+- até que o cardinal de $V_{\varepsilon}$ não aumente
+- Etapa 2: exclusão de produções vazias. Gramática resultante
+  - G1 = (v, T, P1, S)
+  - construção de P1
+- P1 = { A -> $\alpha$ | $\alpha \not={\varepsilon}$ }
+- repita
+  - para toda A -> $\alpha \in$ P1, X $\in V_{\varepsilon}$ tal que $\alpha = \alpha_{1}X\alpha_{2}, \alpha_{1} \alpha_{2} \not={\varepsilon}$
+  - faça P1 = P1 U { A -> $\alpha_{1} \alpha_{2}$ }
+- até que o cardinal de P1 não aumente
+- Etapa 3: geração da palavra vazia, se necessário
+  - se $\varepsilon$ pertence à linguagem
+    - introduz a produção S -> $\varepsilon$
+  - gramática resultante
+    - G2 = (V, T, P2, S)
+  - P2 = P1 U {S -> $\varepsilon$}
+- Exp: Exclusão das Produções Vazias
+  - G = ({S, X, Y}, {a, b}, P, S)
+  - P = {S -> aXa | bXb | $\varepsilon$, X -> a | b | Y, Y -> $\varepsilon$}
+- Etapa 1: variáveis que constituem produções vazia
+
+  ![emptyPE1](images/emptyPE1.png)
+- Etapa 2: exclusão de produções vazias
+
+  ![emptyPE2](images/emptyPE2.png)
+- Gramática resultante
+  - G1 = ({S, X, Y}, {a, b}, {S -> aXa | bXb | aa | bb, X -> a | b | Y}, S)
+- Etapa 3: geração da palavra vazia, se necessário
+  - palavra vazia pertence à linguagem: S -> $\varepsilon$ é incluída
+- Gramática resultante
+  - G2 = ({S, X, Y}, P2, S)
+  - P2 = {a, b}, {S -> aXa | bXb | aa | bb | $\varepsilon$, X -> a | b | Y}
+- Observe
+  - Y, originalmente um símbolo útil, resultou em um símbolo inútil
+  - exclusão de produções vazias gerou símbolo inútil
+- Conclusão
+  - não é qualquer combinação de simplificações de gramática que atinge o resultado desejado
+
+#### Produções que Substituem Variáveis
+
+- Produção que substitui uma variável por outra
+- tipo A -> B
+  - não adiciona informação em termos de geração de palavras
+  - se B -> $\varepsilon$, então
+    - A -> B pode ser substituída por A -> $\varepsilon$
+  - generalização da idéia: algoritmo proposto
