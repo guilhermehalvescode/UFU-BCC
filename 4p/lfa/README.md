@@ -1434,7 +1434,7 @@
     - sucessivamente as produções da gramática são aplicadas:
       - símbolos referenciados são adicionados aos novos conjuntos
 
-#### Algoritmo: Exclusão dos Símbolos Inúteis
+##### Algoritmo: Exclusão dos Símbolos Inúteis
 
 - G(V, T, P, S)
 - Etapa 1: qualquer variável gera terminais. Gramática resultante
@@ -1457,9 +1457,11 @@
 - Se as etapas forem executadas em ordem inversa (Etapa 2 antes da Etapa 1)
   - pode não atingir o resultado esperado
   - demostração: apresentar um contra-exemplo (exercício)
-- Exp: Exclusão dos Símbolos Inúteis
-  - G = ({S, A, B, C}, {a, b, c}, P, S)
-  - P = {S -> aAa | bBb, A -> a | S, C -> c}
+
+###### Exp: Exclusão dos Símbolos Inúteis
+
+- G = ({S, A, B, C}, {a, b, c}, P, S)
+- P = {S -> aAa | bBb, A -> a | S, C -> c}
 - Etapa 1: qualquer variável gera terminais
 
   ![uselessSymbolsE1](images/uselessSymbolsE1.png)
@@ -1486,7 +1488,7 @@
     - cada produção cujo lado direito possui uma variável que gera $\varepsilon$, determina uma produção adicional, sem essa variável
   - Etapa 3: geração da palavra vazia, se necessário
 
-#### Def: Algoritmo: Exclusão das Produções Vazias
+##### Def: Algoritmo: Exclusão das Produções Vazias
 
 - G = (V, T, P, S)
 - Etapa 1: variáveis que constituem produções vazias
@@ -1539,3 +1541,175 @@
   - se B -> $\varepsilon$, então
     - A -> B pode ser substituída por A -> $\varepsilon$
   - generalização da idéia: algoritmo proposto
+- Algoritmo
+  - Etapa 1: fecho transitivo de cada nível
+    - conjunto de variáveis que podem substituí-la transitivamente
+    - ex: se A -> B e B -> C, então B e C pertencem ao fecho de A
+  - Etapa 2: exclusão das produções que substituem variáveis
+    - se $\alpha$ é atingível a partir de A através de seu fecho
+    - substitui A -> B por A -> $\alpha$
+
+##### Def: Algoritmo: Exclusão das Produções que Substituem Variáveis
+
+- G = (V, T, P, S)
+- Etapa 1: fecho transitivo de cada variável
+  - para toda A $\in$ V
+  - faça FECHO-A = { B | A $\not =$ B e A $\rArr^+$ B usando exclusivamente produções de P da forma X -> Y}
+- Etapa 2: exclusão das produções que substituem variáveis
+  - Gramática resultante
+    - G1 = (V, T, P1, S)
+  - construção de P1
+  - P1 = { A -> $\alpha$ | A -> $\alpha \in$ P e $\alpha \notin$ V }
+    - para toda A $\in$ V e B $\in$ FECHO-A
+    - faça se B -> $\alpha \in$ P e $\alpha \notin$ V
+    - então P1 = P1 U { A -> $\alpha$ }
+
+##### Exp: Exclusão das Produções que Substituem Variáveis
+
+- G = ({S, X}, {a, b}, P, S)
+- P = {S -> aXa | bXb, X -> a | b | S | $\varepsilon$}
+- Etapa 1: fecho transitivo de cada variável
+  - FECHO-S = $\empty$
+  - FECHO-X = {S}
+- Etapa 2: exclusão das produções da forma A -> B
+
+  ![prodVarSubE1](images/prodVarSubE1.png)
+- G1 = ({S, X}, {a, b}, P1, S)
+- P1 = { S -> aXa | bXb, X -> a | b | $\varepsilon$ | aXa | bXb }
+
+#### Simplificações Combinadas
+
+- Não é qualquer combinação de simplificações de GLC
+  - que atinge o resultado esperado
+- Exemplo: gramática sem símbolos inúteis, mas com produções que substituem variáveis
+  - algoritmo para excluir produções que substituem variáveis pode gerar símbolos inúteis (por quê?)
+- Sequência de simplificação recomendada
+  - Exclusão das produções vazias
+  - Exclusão das produções que substituem variáveis
+  - Exclusão dos símbolos inúteis
+
+### 5. Formas Normais
+
+- Formas Normais
+  - restrições rígidas na forma das produções
+  - sem reduzir o poder de geração das GLC
+    - executando-se a geração da palavra vazia
+
+- Aplicações
+  - desenvolvimento de algoritmos
+    - destaque para reconhecedores de linguagens
+  - prova de teoremas
+
+- Forma Normal de Chomsky: produções são da forma
+  - A -> BC ou A -> $\alpha$
+- Forma Normal de Greibach: produções são da forma
+  - A -> a$\alpha$ / $\alpha$ palavra de variáveis
+- Algoritmos de conversão
+  - provas omitidas
+  - de que os algoritmos atingem os objetivos propostos
+
+#### Forma Normal de Chomsky (Def)
+
+- G = (V, T, P, S)
+- Todas produções são da forma (A, B e são variáveis, a é terminal)
+  - A -> BC ou A -> a
+- Palavra vazia
+  - não pertence à linguagem gerada por uma gramática na FNC
+- Algoritmo: três etapas
+  - Etapa 1: simplificação da gramática
+    - A -> $\varepsilon$ -- linguagem não possui $\varepsilon$
+    - A -> B -- um símbolo no lado drieto
+    - símbolos inúteis -- opcional
+  - Etapa 2: variáveis no lado direito das produções
+    - lado direito de comprimento >= 2: exclusivamente variável
+    - se for um terminal?
+  - Etapa 3: exatamente duas variáveis no lado direito das produções
+    - como transformar produções da forma A -> B1B2...Bn (n >= 2)
+
+##### Algoritmo - Forma Normal de Chomsky
+
+- G = (V, T, P, S) // GLC tal que $\varepsilon \notin$ GERA(G)
+- Etapa 1: simplificação da gramática
+  - G1 = (V1, T1, P1, S) // gramática resultante
+  - simplificaçoes combinadas (algoritmos estudados)
+    - produções vazias
+    - produções que substituem variáveis
+    - símbolos inúteis (opcional) 
+- Etapa 2: transformação do lado direito das produções de comprimento maior ou igual a dois
+  - G2 = (V2, T1, P2, S) // gramática resultante
+- construção de V2 e P2 (para cada variável a, suponha Ca $\notin$ V2)
+- V2 = V1
+- P2 = P1
+  - para toda A -> X1X2...Xn $\in$ P2 tal que n >= 2
+  - faça se para r $\in$ {1, ..., n}, Xr é um símbolo terminal então (suponha Xr = a)
+    - V2 = V2 U {Ca}
+    - substitui a por Ca em A -> X1X2...Xn $\in$ P2
+    - P2 = P2 U {Ca -> a}
+- Etapa 3: transformação do lado direito das produções de comprimento maior ou igual a três em produções com exatamente duas variáveis
+  - G3 = (V3, T1, P3, S) // gramática resultante
+  - construção de V3 e P3
+    - a cada ciclo, suponha D1 $\notin$ V3, ..., $D_{n-2} \notin V3$
+  - V3 = V2
+  - P3 = P2
+    - para toda A -> B1B2...Bn $\in$ P3 tal que n >= 3
+    - faça P3 = P3 - { A -> B1B2...Bn }
+      - V3 = V3 U { D1, ..., $D_{n-2}$ }
+      - P3 = P3 U { A -> B1D1, D1 -> B2D2, ..., $D_{n - 3} \rarr B_{n-2} D{n-2}, D_{n-2} \rarr B_{n-1}B_{n}$ }
+
+##### Exp: Algoritmo: Forma Normal de Chomsky
+
+- G = ({E}, {+, *, [, ], x}, P, E) // expr. aritméticas
+- P = {E -> E + E | E * E | [E] | x}
+- Etapa 1: simplificação da gramática // já está simplificada
+- Etapa 2: lado direito das produções de comprimento >= 2
+  - E -> x está OK
+  - demais produções
+    - E -> E$C_{+}$E | E$C_{*}$E | $C_{[}EC_{]}$
+    - $C_{+} \rarr +$
+    - $C_{*} \rarr *$
+    - $C_{[} \rarr [$
+    - $C_{]} \rarr ]$
+- Etapa 3: exatamente duas variáveis no lado direito das produções
+  - produções
+    - E -> E$C_{+}$E | E$C_{*}$E | $C_{[}EC_{]}$
+  - substituída por
+  - E -> ED1 | ED2 | $C_{[}$D3
+  - D1 -> $C_{+}$E
+  - D2 -> $C_{*}$E
+  - D3 -> $EC_{]}$
+- Gramática resultante, na Forma Normal de Chomsky
+  - $G_{FNC}$ = ({E, $C_{+}$, $C_{*}$, $C_{[}$, $C_{]}$, D1, D2, D3}, {+, *, [, ], x}, $P_{FNC}$, E)
+  - Produções de $P_{FNC}$
+    - E -> ED1 | ED2 | $C_{[}$D3 | x
+    - D1 -> $C_{+}$E
+    - D2 -> $C_{*}$E
+    - D3 -> $EC_{]}$
+    - $C_{+} \rarr +$
+    - $C_{*} \rarr *$
+    - $C_{[} \rarr [$
+    - $C_{]} \rarr ]$
+
+#### Forma Normal de Greibach (Def)
+
+- G = (V, T, P, S)
+- Todas as suas produções são da forma ($\alpha$ é uma palavra de V*)
+  - A -> a$\alpha$
+- Palavra vazia
+  - não pertence à linguagem gerada por uma gramática na FNG
+- TODO
+
+### 6. Recusão à Esquerda
+
+- $A\rArr^+ A\alpha$
+- Frequentemente é desejável que a gramática não seja recursiva à esquerda
+  - exemplo: desenvolvimento de algoritmos reconhecedores
+- Algoritmo
+  - quatro primeiras etapas do algoritmo Forma Normal de Greibach
+
+#### Def: Algoritmo: Gramática sem Recursões à Esquerda
+
+- G = (V, T, P, S)
+- Etapa 1: simplificação da gramática
+- Etapa 2: renomeação das variáveis em uma ordem crescente qualquer
+- Etapa 3: produções na forma Ar -> As$\alpha$, na qual r <= s
+- Etapa 4: exclusão das recursões da forma Ar -> Ar$\alpha$
