@@ -1713,3 +1713,62 @@
 - Etapa 2: renomeação das variáveis em uma ordem crescente qualquer
 - Etapa 3: produções na forma Ar -> As$\alpha$, na qual r <= s
 - Etapa 4: exclusão das recursões da forma Ar -> Ar$\alpha$
+
+### 7. Autômato com Pilha
+
+- **Classe das Linguagens Livres do Contexto**
+  - pode ser associada a uma formalismo do tipo autômato
+  - Autômato com Pilha
+- **Autômato com pilha**
+  - análogo ao autômato finito
+  - incluindo uma pilha como memória auxiliar
+  - não-determinismo
+- **Pilha**
+  - independente da fita de entrada
+  - não possui limite máximo de tamanho
+  - "tão grande quanto se queira"
+  - baseada na noção de conjunto infinitamente contável
+- **Não-determinismo: importante e necessário**
+  - aumenta o poder computacional dos AP
+  - exemplo
+    - { ww$^r$ | w é palavra sobre {a, b} }
+    - reconhecimento só é possível por um AP Não-Determinístico
+- **AP x Número de estados**
+  - qualquer LLC pode ser reconhecido por um AP
+    - com somente um estado
+    - (os três estados, dependendo da definição)
+  - pilha é suficiente como única memória
+    - estados não são necessários
+    - para "memorizar" informações passadas
+  - estados no AP
+    - poderiam ser excluídos
+    - sem se reduzir o poder computacional
+  - como a pilha não possui tamanho máximo
+    - AP pode assumir tanto estados quanto se queira
+
+#### Definição do Autômato com Pilha
+
+- **Duas definições universalmente aceitas**
+  - estados finais
+    - para aceitando ao atingir um estado final
+    - inicialmente a pilha é vazia
+  - pilha vazia
+    - para aceitando quando a pilha estiver vazia
+    - inicialmente, a pilha um símbolo inicial da pilha
+    - não existem estados finais
+  - definições equivalentes (possuem o mesmo poder computacional)
+    - adotada a definição que usa estados finais
+
+- **AP Não-Determinístico ou simplesmente AP**
+- Fita
+  - análoga à do autômato finito
+- Pilha
+  - memória auxiliar
+  - pode ser usada para leitura e gravação
+- Unidade de Controle
+  - reflete o estado corrente da máquina
+  - possui: cabeça de fita e cabeça de pilha
+- Programa, Função Programa ou Função de Transição comanda
+  - leitura da fita
+  - leitura e gravação da pilha
+  - define o estado da máquina
