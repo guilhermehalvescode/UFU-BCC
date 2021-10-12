@@ -1047,3 +1047,4 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 
   ![ufsDiskSeg](images/ufsDiskSeg.png)
   ![inodeBlockArrayUFS](images/inodeBlockArrayUFS.png)
+  ![ufsOverall](images/ufsOverall.png)
