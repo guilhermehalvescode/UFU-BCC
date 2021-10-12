@@ -925,13 +925,13 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 
   ![fileStr](images/fileStr.png)
 
-### Diretório
+#### Diretório
 
 - Estrutura de armazenamento de dados sobre arquivos
 
 ![dirStr.png](images/dirStr.png)
 
-### Controle de Espaço Livre
+#### Controle de Espaço Livre
 
 - Mapa de Bits
   - Armazena informações sobre blocos livres/utilizados do disco
@@ -940,7 +940,7 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 - Tabelas de Blocos Livres
   - A tabela contém uma entrada para o primeiro bloco e a quantidade de blocos livres contíguos ao endereço apontado
 
-### Alocação de Espaço
+#### Alocação de Espaço
 
   ![spaceAlloc](images/spaceAlloc.png)
 
@@ -957,3 +957,93 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
   - Elimina a limitação do acesso sequencial
   - Remove os ponteiros dos blocos de dados
   - Exige estrutura adicional para o bloco de índice
+
+#### Segurança
+
+- Mecanismos:
+  - Senha e Acesso: Arquivo, Diretório, Filesystem
+  - Grupo de Usuários: Arquivo, Diretórios
+  - ACL (access control list): Lista de controle de acesso, associada ao arquivo, especificando o(s) usuário(s) e a(s) operação(ões) que pode(m) ser executada(s)
+    - TESTE.EXE (Aluno1, RW-, Aluno2R-X, ...)
+  - Capabilities Lists (C-lists): Informações de sessão que especificam o que um processo pode fazer baseado em suas credenciais (UID, GID, SysTime, etc.)
+
+#### Confiabilidade
+
+- Gerenciamento de Bad Blocks
+  - Normalmente implementado no controle de espaço livre
+- Consistência do FS
+  - Checa o estado do filesystem, baseando-se nas informações de alocação blocos, ponteiros de arquivos e diretórios;
+    - Ex. Norton ndd, scandisk, fsck
+  - Sistemas de Arquivos Robustos (Ex. Journaling)
+    - São normalmente baseados em modelos transacionais
+
+#### VIRTUAL FILE SYSTEM (VFS)
+
+- É uma camada no Kernel que fornece uma API unificada para serviços de FS, independente da implementação física
+- Permite ao S.O. suportar diversos sistemas de arquivos de forma transparente para as aplicações
+- As implementações físicas de FS (ufs, jfs, nfs, etc.) devem ser integradas com o VFS
+- O acesso aos vários FS supoertados é transparente para as aplicações
+- Ex. Sun Solaris
+
+  ![vfsAPI](images/vfsAPI.png)
+- Ex. Suporte a NFS (Network File System)
+
+  ![nfs](images/nfs.png)
+
+#### IMPLEMENTAÇÃO
+
+- Alocação contígua:
+  - Ex: BFS, ISO9660
+- Tabela de Alocação:
+  - FAT12/16/32, VFAT and NewWare
+- Árvore Balanceada (B+Tree):
+  - HFS, NSS, Reiser FS and Spiralog filesystem
+- Journaling
+  - BeFS, HTFS, JFS, NSS, SpiralogFS, VsFS and XFS
+
+### Estudo de Caso: Unix File System
+
+- Arquivos são acessados, em use leve, utilizano conceito de descritores
+- Quando um processo chama open(), o kernel cria uma open file object (OFO) para representar a instância do arquivo aberto no processo
+  - Esse objeto é glocal e fica armazenado no espaço de endereçamento do kernel
+- O retorno da open() é um descritor de arquivo, que tem como função referenciar um OFO associado ao processo
+  - Um descritor de arquivo (fd) é um objeto específico do processo e, portanto, fica armazenado em seu espaço de endereçamento
+- O processo usa o fd para realizar operações sobre o arquivo aberto (referenciado por fd)
+
+  ![fdsUFS](images/fdsUFS.png)
+  ![fdsFilesAccessUFS](images/fdsFilesAccessUFS.png)
+  - Processo P1 referencia dois open file objects (OFO)
+  - Processo P2 referencia OFO usando dois descritores
+- Uma partição é considerada um array de blocks
+  - Cada partição tem seu próprio sistema de arquivos
+- Blocos (clusters) são múltiploes de 512 bytes (1 setor)
+- Toda partição tem um setor de boot
+- O setor de boot é seguido pelo superblock(SB)
+  - O SB contém metadados referentes ao fs como um todo
+    - Tipo de sistema de arquivos
+    - Tamanho em blocos
+    - Tamanho em blocos da lista de inodes
+    - Número de blocos livres e inodes
+    - Lista de blocos livres
+    - Lista de inodes livres
+- Seguindo o SB tem-se a lista de inodes (inode list)
+  - Cada arquivo tem um inode associado
+  - Um inode armazena metadados do arquivo
+    - tipo do arquivo, permissões, etc
+    - número de hard links para o arquivo
+    - UID do dono do arquivo
+    - GID do dono do arquivo
+    - tamanho em bytes
+    - vetor de endereços de bloco
+    - data/hora do último acesso
+    - data/hora da última modificação
+    - data/hora da última modificação no inode (exceto para os dois anteriores)
+  - Após a lista de inodes tem-se os blocos de dados
+- Arquivos são acessados, em user level, utilizando o conceito de descritores
+- Quando um processo chama open(), o kernel cria um open file object (OFO) para representar a instância do open file object (OFO) para representar a instância do arquivo aberto no processo
+  - Esse objeto é global e fica armazenado no espaço de endereçamento do kernel
+- O retorno da open() é um descritor de arquivo, que tem como funçao referenciar um OFO associado ao processo
+  - Um descritor de arquivo (fd) é um objeto específico do processo e, portanto, fica armazenado em seu espaço de endereçamento
+
+  ![ufsDiskSeg](images/ufsDiskSeg.png)
+  ![inodeBlockArrayUFS](images/inodeBlockArrayUFS.png)
