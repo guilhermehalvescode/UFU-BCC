@@ -1772,3 +1772,12 @@
   - leitura da fita
   - leitura e gravação da pilha
   - define o estado da máquina
+
+## *Linguagens Livres de Contexto - Lei do Bombeamento*
+
+### Teorema: Bombeamento para as LLC
+
+- Similar a prova do lema do bombeamente da LR
+- Existe N, tal que |w| >= N
+- dessa forma w pode ser quebrada como, w = u x v y z, com |xvy| <= N e |xy| >= 1
+- tal que, para todo i >= 0, $ux^ivy^iz$ é palavra de L

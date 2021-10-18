@@ -1048,3 +1048,48 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
   ![ufsDiskSeg](images/ufsDiskSeg.png)
   ![inodeBlockArrayUFS](images/inodeBlockArrayUFS.png)
   ![ufsOverall](images/ufsOverall.png)
+
+## **Gerenciamento de E/S**
+
+### Hardware de E/S
+
+- Sistema computacionais possuem diferentes componentes de HW de E/S
+- Os engenheiros se preocupam com o funcionamento interno do HW
+- Projetistas e programadores de SO se preocupam com a interface de SW envolvida na comunicação com esse HW e como abstrair seus detalhes para as aplicações
+  - a programação do HW de E/S também exige significativo conhecimento do funcionamento interno do HW
+
+### Dispositivos de E/S
+
+- Os dispositivos de E/S podem ser divididos em duas categorias:
+  - Dispositivos de bloco: processam os dados em blocos de tamanho fixo (ex. hd, cd-rom, usb-drives)
+- Dispositivos de caractere: processam os dados em fluxos de caracteres (bytes) (ex. teclado, mouse, impressora)
+- Cada dispositivo de E/S pode apresentar uma ampla variação de taxas de operaçao de entrada/saída, exigindo do software diferentes formas de interação
+- A tabela a seguir ilustra as taxas e frequência de dados de alguns dispositivos
+
+  ![ioDevice](images/ioDevice.png)
+
+### Controlador do Dispositivo
+
+- Os dispositivos de E/S consistem, geralmente, em um componente mecânico e um componente eletrônico
+  - O componente mecânico é o dispositivo de E/S propriamente dito (ex. monitor de vídeo, cd-rom)
+  - O componente eletrônicos é chamado de controlador ou adaptador do dispositivo (ex. adaptador de vídeo, controladora de disco)
+- A interface entre o controlador do dispositivo e o dispositivo pode ser padrão ou proprietária
+- Exemplos de padrões de interface:
+  - VGA, HDMI, RJ-45, RJ-11, IDE, SATA, SCSI, PS2, USB
+- O controlador pode ser externo (placa individual) ou interno (integrado na motherboard)
+
+  ![deviceControllers](images/deviceControllers.png)
+  ![busControllers](images/busControllers.png)
+
+### E/S Mapeada em Memória
+
+- Cada controlador tem alguns registradores usados par comunicação com a CPU
+  - Por meio da escrita nesses registradores o SO comanda o funcionamento do dispositivo controlado
+  - Ao ler esses registradores o SO pode descobrir o estado do dispositivo
+  - Alguns dipositivos contam também com um buffer que o SO pode ler e escrever
+- A questão é como a CPU se comunica com os registradores e buffers dos dispositivos?
+  - Espaço de Portas de E/S (port-mapped I/O - PMIO)
+  - E/S mapeada na memória (memory-mapped I/O - MMIO)
+- (a) Espaços de I/O e memória separados. (b) Memory-mapped I/O. (c) Híbrido
+
+  ![IOMappedMem](images/IOMappedMem.png)
