@@ -1093,3 +1093,99 @@ WRITE(Arq_contas, Reg_cliente);         // Região Crítica
 - (a) Espaços de I/O e memória separados. (b) Memory-mapped I/O. (c) Híbrido
 
   ![IOMappedMem](images/IOMappedMem.png)
+
+### Acesso Direto à Memória (DMA)
+
+- Independente de como a CPU requisita dados de um controlador, seja por PMIO ou MMIO, isso normalmente ocorre um byte de cada vez
+  - resultando em um desperdiço de tempo de CPU
+- O DMA permite que os dados do dispositivo sejam carregados para a memória sem a intervenção da CPU
+  - isso somente é possível quando existe um controlador de DMA
+  - o controlador de DMA pode ser específico por um dispositivo ou um único para todo o sistema
+- De forma geral o controlador de DMA contém:
+  - registrador de end. de memória.
+  - registrador de contador de byte
+  - registrador(es) de controle
+- Exemplo de operação de DMA
+
+  ![dmaOpEx](images/dmaOpEx.png)
+- Os controladores de DMA variam em termos de sofisticação
+  - Os mais simples tratam uma transferência por vez, enqunato os mais sofisticados podem realizar múltiplas transferências simultâneas
+- Alguns controladores operam em nível de palavra/byte ou em nível de bloco
+- A transferência pode variar, sendo mais comum o modo direto. Alguns controladores de DMA recebem os dados do dispositivo para armazená-lo no destino
+- A maioria dos controladores de DMA usa endereços da memória física, mas existem aqueles que utilizam endereços virtuais
+
+### Interrupçoes (IRQs)
+
+- O mecanismo de tratamento das interrupções de HW (IRQs) é similar ao tratamento das interrupções de SW (system calls)
+
+  ![hwInterruption](images/hwInterruption.png)
+- As interrupções podem ser precisar ou imprecisas
+- Propriedade de uma interrupção precisa:
+  1. O PC (program counter) é salvo em um lugar conhecido
+  2. Todas as instruções antes daquela pelo PC foram completamente executadas
+  3. Nenhuma instrução além daquela apontada pelo PC foi processada
+  4. O estado de execução da instrução apontada pelo PC é conhecido
+- (a) Interrupção precisa. (b) interrupção imprecisa
+
+  ![interruptions](images/interruptions.png)
+
+### Princípios de SW de E/S
+
+- Objetivos do SW de E/S:
+  - Independência do dispositivo
+    - Os programas devem ser aptos a acessar qualquer dispositivo sem a necessidadde e conhecer seus detalhes (ex. % sort < input > output)
+- Nomeação uniforme
+  - O nome de um arqivo ou dispositivo deve ser independente do dispositivo (ex. "/home/backup.dat" está em um USB ou HD drive?)
+- Tratamento de erros
+  - Realizando o mais próximo possível do HW, ocultando os detalhes do funcionamento do dispositivo de programas
+- Tipo de transferência
+  - Síncrona (bloqueante) ou assíncrona (orientada a interrupção)
+  - Bufferizada ou não bufferizada
+- Compartilhamento
+
+### E/S Programada
+
+- Existem três formas de realizar E/S:
+  - programada, por interrupção e via DMA
+- A E/S programada é mais simples das três formas cirtadas
+  - Exemplo de impressão de caracteres na impressora
+
+  ![programmedES](images/programmedES.png)
+- A E/S programada é simples, mas tem a desvantagem de segurar a CPU até que a E/S não for concluída
+- Para dispositivos com baixa vazão de processamento, o tempo ocioso da CPU se torna uma desvantagem dessa abordagem
+
+### E/S Usando Interrupção
+
+- Nessa abordagem o dispositivo avisa quando está pronto, evitano o tempo de espera da CPU enquanto o dispositivo não se encontra pronto, como ocorre na E/S programada
+
+  ![interruptionsES](images/interruptionsES.png)
+
+### E/S Usando DMA
+
+- No exemplo da impressora, uma desvantagem do mecanismo de E/S orientado à interrupção é a ocorrência de uma interrupçao de cada caractere
+- Tratar interrupções tem um custo computacional que pode ser significativo em muitos casos
+- Ao usar o acesso direto à memória, ou seja, fazer o controlador de DMA alimentar a impressora, caractere por caractere, tem-se a CPU livre para realizar outras atividades
+- O DMA executa uma E/S programada sem a participação da CPU
+- A grande vantagem é reduzir o número de interrupções da CPU de uma por caractere para uma por buffer impressoro
+
+  ![dmaES](images/dmaES.png)
+
+### Camadas de SW de E/S
+
+- O software de E/S normalmente é organizado em 4 camadas:
+
+  ![ESlayers](images/ESlayers.png)
+
+### Interrupt Handlers
+
+- Passos executaos em SW após a IRQ ter sido concluída:
+  1. Salva quaisquer registradores que não foram salvos pelo HW de interrupção (ex. APIC)
+  2. Estabelece um contexto para a rotina de tratamento da interrupção (ISR - Interrupt Service Routine). Ex. alterar a MMU para a PT da ISR, alterar o PC para o início da ISR, etc.
+  3. Estabele a pilha para a ISR
+  4. Sinaliza o controlador (APIC). Se não existe um controlador de interrupção, reabilita as interrupções que neste caso seriam desabilitadas antes do passo 1
+  5. Copia os registradores de onde eles foram salves, provisoriamente, para a PCB do processo que foi interompido
+  6. Execute a ISR
+  7. Escolhe o próximo a executar
+  8. Estabelece um novo contexto (ex. reconfigura a MMU -> PT)
+  9. Carrega os registradores com o contexto de HW do próximo processo, incluindo o PC.
+  10. Inicializa a execução do próximo processo.
