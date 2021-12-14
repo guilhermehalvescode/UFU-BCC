@@ -365,3 +365,44 @@
 6. Melhorar o desempenho aplicando a predição
 7. Empregar sistema hierárquico de memórias
 8. Obter estabilidade pelo emprego de redundância
+
+## IAS MACHINE (Programming) - Von Neumann Architecture
+
+### IAS HARDWARE
+
+- Principais conceitos
+  1. Conceito de programa armazenado
+  2. Os dados e instruções são armazenados em uma única memória de leitura e gravação
+  3. A Unidade Lógica e Aritmética (ALU) é capaz de operar com dados binários
+  4. O conteúdo desta memória é endereçavel por local, sem se referira ao tipo de dados contido nela
+  5. Unidade de controle, que interpreta e executa as instruções na memória
+  6. A execução ocorre de maneira sequencial de uam instrução para a próxima, a menos que seja explicitamente modificada
+  7. Os equipamentos de entrada/saída são operados pela unidade de controle
+- Dispões de 4 regristadores
+  - PC = Program Counter
+  - IR = Instruction Register
+  - AC = Accumulator Register
+  - MQ = Multiplier Quotient Register
+    - Used in Multiplication and division
+  
+### ORGANIZAÇÃO DA MEMÓRIA E FORMATO DA INSTRUÇÃO
+
+  ![iasMemOrganizationFormat](images/iasMemOrganizationFormat.png)
+
+### FETCH-DECODE-EXECUTE CYCLE
+
+- Existem seis fases fundamentais do ciclo de execução de instruções:
+  1. Buscar instrução (também conhecida como pré-busca)
+  2. decodificação de instrução
+  3. avaliar endereço (geração de endereço)
+  4. buscar operandos (ler dados da memória)
+  5. executar (acesso ALU)
+  6. armazenar resultado (dados da memória de write-back)
+
+### IAS CODE CHEAT SHEET
+
+- O IAS tem [códigos](IAS/IAS-refcard.pdf) de [comandos](IAS/ISA_IASmach.pdf) que são codificados em binário, mas para melhor interpretação, são escritos em símbolos, convertidos para hexadecimal
+
+#### EXEMPLO 1
+
+  ![iasCodeEx1](images/iasCodeEx1.png)
