@@ -406,3 +406,196 @@
 #### EXEMPLO 1
 
   ![iasCodeEx1](images/iasCodeEx1.png)
+
+## Como o Processador Funciona
+
+### Arquitetura von Neumann
+
+- Como discutido anteriormente, os projetos dos computadores modernos são baseados na Arquitetura de John von Neumaan
+- A Arquitetura von Neumaan se fundamenta em três conceitos chaves:
+  - Dados e Instruções são armazenados em uma única memória de leitura-escrita
+  - Os conteúdos da memória são endereçados por posição, sem considerar o tipo de dados armazenado
+  - A execução ocorre em modo sequencial
+
+### Aboordagens de Hardware e Software
+
+  ![sfHwApproaches](images/sfHwApproaches.png)
+
+### O que é um programa?
+
+- Uma sequência de passoa
+- Em cada passo, uma operação lógica ou aritmética é realizada
+- Em cada operação, um conjunto diferente de sinais de controle são necessários
+
+### Função da Unidade de Controle
+
+- Para cada operação é provido um código único
+  - ex. ADD, MOV
+- Um módulo de hardware interpreta o código e fornece os sinais de controle
+- Assim, temos um computador
+
+### Componentes Básicos de um Computador
+
+- A Unidade de Controle e a Unidade Lógica e Aritmética constituem a Unidade Central de Processamento (CPU)
+- Dados e instruções precisam entrar no sistema e os resultados, sairem
+  - Via mecanismos de Entrada/Saída
+- Armazenagem temporária do código e resultados se faz necessária
+  - Memória principal
+
+### Componentes do Computador (Top Level View)
+
+  ![topLevelViewComputerComponents](images/topLevelViewComputerComponents.png)
+
+### Ciclo de Execução de Instruções
+
+- Ciclo de dois estágios
+  - Busca (fetch)
+  - Executa
+
+    ![fetchExecCycleS](images/fetchExecCycleS.png)
+
+### Ciclo de Busca (Fetch Cycle)
+
+- O Contador de Programa (PC) mantém o endereço da próxima instrução na memória
+- O processador busca (fetch) a instrução armazenada na posição de memória referênciada por PC
+- Realiza o incremento do PC
+  - Se não houver comando indicando o contrário
+- A instrução é carregada no Registrador de Instrução (IR)
+- O processador interpreta a instrução e realiza as ações requeridas
+
+### Ciclo de Execução (Execute Cycle)
+
+- Movimentação Processador - Memória
+  - transferência de dados entre CPU e memória principal
+- Movimentação Processador - E/S
+  - transferência de dados entre CPU e módulo de E/S
+- Processamento de Dados
+  - Realiza alguma operação lógica ou aritmética nos dados
+- Operações de Controle
+  - Alteração da sequência da execução de instruções
+  - ex.: desvios condicionais e não-condicionais (jump)
+- Combinação das operações listadas anteriormente
+
+### Execução de um Programa (Máquina Hipotética)
+
+  ![hypotheticalMachine](images/hypotheticalMachine.png)
+
+### Exemplo de Execução de um Programa (Processando a expressão: B = B + A)
+
+  ![execExample](images/execExample.png)
+
+### Ciclo de Instrução - Diagrama de Estados
+
+  ![instructionCycleStateDiagram](images/instructionCycleStateDiagram.png)
+
+### Interrupções
+
+- Mecanismos pelos quais outros módulos (ex. E/S) podem interromper a sequência normal de processamento
+- Fontes de interrupções:
+  - Programa
+    - ex. overflow, division by zero
+  - Timer
+    - Gerado pelo processamento interno do relógio (timer)
+    - Usado em sistema multi-tarefa preemptivos
+  - E/S
+    - a partir do controlador de E/S
+  - Falha de Hardware
+    - ex. memory parity error
+
+### Fluxo de Controle do Programa
+
+  ![interruptionFlow](images/interruptionFlow.png)
+
+### Interrupt Cycle (ciclo de interrupção)
+
+- Acrescentado ao ciclo de instrução
+- Processador verifica se há interrupção
+  - Indicado por um sinal de interrupção
+- Se não há interrupção, busca a próxima instrução na memória
+- Se houver interrupções pendente:
+  - Suspende a execução do programa corrente
+  - Salva o contexto
+  - Configura PC com o endereço de início da rotina de tratamento da interrupção (interrupt handler routine)
+  - Processamento da interrupção
+  - Restaura o contexto e contiuna com o programa interrompido
+
+### Ciclo de Instruções (com interrupções) - Diagrama de Estado
+
+  ![interruptionInstructionCycle](images/interruptionInstructionCycle.png)
+
+### Cenário com Múltiplas Interrupções
+
+- Desabilitar Interrupções
+  - O processador ignorará futuras interrupções enquanto processa uma interrupção
+  - Interrupções permanecem pendentes e serão conferidas a primeira interrupção ter sido processada
+  - Interrupção são manipuladas na sequência que elas acontecem
+- Definir Prioridades
+  - Interrupções de baixa prioridade são interrompidas por interrupções de alta prioridade
+  - Quando a interrupção de mais alta prioridade foi processada, o processador retorna a interrupção anterior
+
+### Múltiplas Interrupções - Sequencial
+
+  ![sequentialInterruption](images/sequentialInterruption.png)
+
+### Múltiplas Interrupções - Aninhadas (nested)
+
+  ![nestedInterruption](images/nestedInterruption.png)
+
+## Aritmética Computacional
+
+### Unidade Lógica e Aritmética
+
+- Faz os cálculos lógicos e aritméticos
+- Tudo, num sistema computador, está lá para servir esta unidade
+- Manipula valores inteiros (ponto fixo)
+- Manipula valores reais (ponto flutuante)
+- A FPU pode ser uma unidade separada
+  - Co-processador matemático (maths co-processor)
+  - A FPU pode ser um chip separado (486DX +)
+
+### Interface da ULA: entradas e saídas
+
+  ![aluInterface](images/aluInterface.png)
+
+### Representação Inteira
+
+- Utiliza os símbolos 0 e 1 para representar todas as coisas
+- Números positivos são armazenados no formato binário
+  - Exemplo: 41 = 00101001
+  - Sem sinal de negativo
+  - Sem vírgula
+- Representações de valores sinalizados:
+  - Sinal-magnitude (Sign-Magnitude)
+  - Complemento-a-dois (Two's compliment)
+- De modo geral, se a sequência de n dígitos binários a_(n-1)a_(n-2)...a1a0 for interpretada como um número inteiro sem sinal A, seu valor será dado por:
+
+  ![intRep](images/intRep.png)
+
+### Representação Sinal-Magnitude (Sign-Magnitude)
+
+  ![signMagnitude](images/signMagnitude.png)
+
+- O bit mais a esquerda é o bit de sinal
+  - 0 significa que o valor é positivo
+  - 1 significa que o valor é negativo
+  - +18 = 00010010
+  - -18 = 10010010
+- Problemas:
+  - É necessário considerar o sinal e a magnitude nas operações aritméticas
+  - Duas representações para o zero (+0 and -0)
+- Expressão geral:
+
+  ![signMagnitudeExpression](images/signMagnitudeExpression.png)
+
+### Representação em Complemento-de-Dois:
+
+- Benefícios:
+  - Uma única representação para o zero
+  - As operações aritméticas são simples
+    - (mais tarde, veremos mais detalhes)
+  - A negação é aparentemente simples
+    - 3 = 00000011
+    - Fazendo a complementação booleana, temos:
+      - 11111100
+      - Adicionando 1 ao LSB, temos:
+        - 11111101 = -3
