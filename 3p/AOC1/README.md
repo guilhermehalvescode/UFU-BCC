@@ -407,6 +407,11 @@
 
   ![iasCodeEx1](images/iasCodeEx1.png)
 
+### Desvio De Fluxo
+
+- Como expressar comandos de seleção condicional como if-then-else ou comandos de repetição for e while
+- A implementação destes comando é feita através de saltos no código da aplicação. No caso do computador do IAS, a instrução JUMP+ M(X) pode ser utilizada para desvia o fluxo de execução, ou saltar, para instrução no endereço X da memória
+
 ## Como o Processador Funciona
 
 ### Arquitetura von Neumann
