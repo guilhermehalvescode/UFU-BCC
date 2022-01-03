@@ -592,7 +592,7 @@
 
   ![signMagnitudeExpression](images/signMagnitudeExpression.png)
 
-### Representação em Complemento-de-Dois:
+### Representação em Complemento-de-Dois
 
 - Benefícios:
   - Uma única representação para o zero
@@ -604,3 +604,63 @@
       - 11111100
       - Adicionando 1 ao LSB, temos:
         - 11111101 = -3
+
+| Características importantes: | |
+|------------|-----------|
+| Faixa de Valores representáveis | -2^(n-1) a 2^(n-1)-1 |
+| Representações para o zero | 1 |
+| Negação | Pegue o complemento booleando de cada bit do número positivo correspondente e então some 1 ao padrão de bits resultante, tratado como um número inteiro sem sinal |
+| Expansão do número de bits | Acrescente posições de bit à esquerda  e preencha esses bits com o valor do bit de sinal original |
+| Regra de overflow | Se dois número com o mesmo sinal forem somados, ocorrerá overflow apenas se o resultado tiver sinal oposto |
+| Regra de subtração | Para subtrair B de A, pegue o complemento de dois de B e some-o com A |
+
+- Expressão Analítica
+
+  ![twoComplementExpression](images/twoComplementExpression.png)
+- Caso especial 1 - Negar o zero
+  - Ignorando o overflow, temos:
+    - -0 = 0
+
+    ![zeroNegation](images/zeroNegation.png)
+- Caso especial 2 - Negar o -128
+  - -(-128) = -128 ... Monitorar o MSB(Sign bit)
+  - O valor deveria mudar durante a negação
+
+    ![signBitNegation](images/signBitNegation.png)
+- Representação geométrica de inteiros
+
+  ![geoRepTwoComplement](images/geoRepTwoComplement.png)
+
+### Aritmética de Inteiros
+
+- Adição de Inteiros
+
+  ![binaryAdd](images/binaryAdd.png)
+- Subtração de Inteiros
+
+  ![binarySubtraction](images/binarySubtraction.png)
+- Aritmética de Números Inteiros (Adição e Subtração)
+  - Adição:
+    - Operação aritmética binária normal
+    - Monitora o bite de sinal para overflow
+  - Subtração:
+    - Realiza o complemento-dois do subtraendo e adiciona ao minuendo
+    - Isto é, a - b = a + (-b)
+  - Precisamos, somente, dos circuitos de complemento e de adição
+
+- Hardware para Adição e Subtração
+  
+  ![addSubHw](images/addSubHw.png)
+- Aritmética de Números Inteiros:
+  - Multiplicação
+    - Comparada as operações de adição e subtração, a operação de multiplicação é de maior complexidade
+    - Realizar produtos parciais para cada dígito
+    - Tomar cuidado com a posição do valor (coluna)
+    - Adicionar os produtos parciais
+    - O resultado terá o dobro do tamanho (em bits) dos operandos
+
+      ![unsignedMulBinary](images/unsignedMulBinary.png)
+
+- Unsigned Binary:
+
+  ![unsignedMulBinaryDiagram](images/unsignedMulBinaryDiagram.png)
