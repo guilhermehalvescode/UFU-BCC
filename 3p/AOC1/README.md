@@ -664,3 +664,31 @@
 - Unsigned Binary:
 
   ![unsignedMulBinaryDiagram](images/unsignedMulBinaryDiagram.png)
+- Diagrama para multiplicação não sinalizada
+
+  ![unsignedMulDiagram](images/unsignedMulDiagram.png)
+- Execução de multiplicação não sinalizada
+
+  ![unsignedMulExecution](images/unsignedMulExecution.png)
+- Multiplicação de Números sinalizados
+  - O método anterior não funciona para valores sinalizados (representados em complemento-dois)
+  - Solução #1
+    - Converter para positivo
+    - Multiplicar, como feito anteriormente
+    - Se os sinais forem diferentes, negar o resultado
+  - Solução #2
+    - Booth's algorithm
+- Booth's Algorithm
+  - Multiplicador e multiplicando armazenados nos registradores Q e M respectivamente.
+  - O resultado da multiplicação é guardado nos registradores A e Q
+  - Existe um registrador de um bit adicional, colocado a direda do LSB de Q, denominado Q(-1)
+  - A e Q(-1) serão inicializados com o valor 0 (zero)
+  - Como antes, a lógica de controle examina os bits do multiplicando, um de cada vez
+  - Quando cada bit for examinado, também será examinado o bit a sua direita
+    - Se esses dois bits forem iguais (1-1 ou 0-0), então todos os bits dos regs. A, Q, Q(-1) serão deslocados 1 bit a direita
+    - Se eles forem diferentes, o multiplicando será somado ou subtraído do registrador A, dependendo se os dois bits forem (0-1 ou 1-0), respectivamente. Após a adição ou subtração, ocorre o deslocamento aritmético de um bit a direita
+
+    ![boothAlgorithm](images/boothAlgorithm.png)
+- Exemplo do Booth's Algorithm
+
+  ![boothAlgorithmEx](images/boothAlgorithmEx.png)
