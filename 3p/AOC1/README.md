@@ -692,3 +692,53 @@
 - Exemplo do Booth's Algorithm
 
   ![boothAlgorithmEx](images/boothAlgorithmEx.png)
+
+### Aritmética de Ponto Flutuante
+
+#### Como representar números reais?
+
+- Notação de Ponto Fixo
+  - Utiliza um ponto que funciona da mesma forma que o ponto da notação decimal. Dígitos à esquerda do ponto representam a parte inteira do valor, e os dígitos à direita do ponto representam a parte fracionária.
+  - 010.101 = 0 x 2² + 1 x 2¹ + 0 x 2⁰ + 1 x 2⁻¹ + 0 x 2⁻² + 1 x 2⁻³
+- Notação de Ponto Flutuante
+  - O problema do Ponto Fixo, é que o tamanho da parte inteira e da fracionária fica fixo com relação a seu armazenamento em memória
+  - Para números com a parte apenas inteira, a região alocada para tratar a parte fracionária será inutilizada e vice-versa
+- Notação Ciêntífica:
+  - 976,000,000,00,000
+    - 9.76 * 10¹⁴
+  - 0.0000000000000976
+    - 9.76 * 10⁻¹⁴
+  - Mover dinamicamente o ponto decimal para uma posição conveniente e usar o exponente para assegurar o valor original
+  - Um número pode ser representado na forma:
+    - +- M . B^(+-E)
+- Representação em Ponto-flutuante
+
+  ![floatingPoint](images/floatingPoint.png)
+  - +/- 1.mantissa x 2^(exponente)
+  - O nome (PF) não expressa a representação
+  - O ponto é fixo entre o bit de sinal e o corpo da mantissa
+  - O valor do exponente (polarizado) indica a posição do ponto
+- Ponto Flutuante: exemplos
+
+  ![floatingPointEx](images/floatingPointEx.png)
+- Sinais para o Ponto Flutuante
+  - A mantissa é armazenada em complemento-dois
+  - O expoente é representado na notação excess ou biased (polarizado)
+    - Exemplo:
+      - Excess (bias) 127 significa
+      - Campo exponente de 8 bit
+      - Faixa de valores puros 0-255
+      - Subtraia 127 para obter o valor correto
+      - Nova faixa -127 to +128
+- Normalização
+  - Números em FP são frequentemente normalizados 
+  - i.e., o expoente é ajustado para que o bit mais significativo (leading bit) da mantissa seja 1
+  - Sendo ele (leading bit) sempre 1, não há necessidade de armazená-lo
+  - Considerando a notação científica, os números são normalizados para terem somente um dígito antes do ponto decimal
+    - Exemplo: 3.123 x 10³
+- Valores representáveis:
+
+  ![representableValues](images/representableValues.png)
+- Density of Floating-Point Numbers
+
+  ![densityFpNumbers](images/densityFpNumbers.png)
