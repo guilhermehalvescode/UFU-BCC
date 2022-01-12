@@ -742,3 +742,20 @@
 - Density of Floating-Point Numbers
 
   ![densityFpNumbers](images/densityFpNumbers.png)
+
+- IEEE754 Formats
+
+  ![ieee754](images/ieee754.png)
+
+- Floating-Point Numbers and Arithmetic Operations
+
+  ![fpArithmetic](images/fpArithmetic.png)
+- Floating-Point Addition and Subtraction
+
+  ![fpAddSub](images/fpAddSub.png)
+- Floating-Point Multiplication
+
+  ![fpMul](images/fpMul.png)
+- Floating-Point Division
+
+  ![fpDiv](images/fpDiv.png)
