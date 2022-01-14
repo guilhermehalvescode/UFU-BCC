@@ -759,3 +759,32 @@
 - Floating-Point Division
 
   ![fpDiv](images/fpDiv.png)
+- Considerações sobre Precisão - Guard Bits
+  - Considere dois números nos formato normalizado IEEE, com valores muito próximos
+  - x = 1,00 ... 00 * 2¹ e y = 1,11 ... 11 * 2⁰
+  - Se o número menor foir subtraído do maior, ele deve ser deslocado 1 bit para a direita para alinhar os expoentes
+
+    ![guardBitsEx](images/guardBitsEx.png)
+- Considerações sobre Precisão - Arredondamentos
+  - IEEE standard approaches:
+    - Round to nearest:
+      - The result is rounded up to the nearest representable number
+    - Round toward +infinity:
+      - The result is rounded up toward plus infinity
+    - Round toward -infinity:
+      - The result is rounded down toward negativa infinity
+    - Round toward 0:
+      - The result is rounded toward zero
+- Intervalo Aritmético
+  - Fornece um método eficiente para monitorar e controlar erros em cálculos de ponto flutuante, produzindo dois valores para cada resultado
+  - Os dois valores correspondem aos pontos limite inferior e superior de um intervalo que contém o resultado verdadeiro
+  - A largura do intervalo indica a precisão do resultado
+    - Se os pontos de extremidade não puderem ser representados, os pontos de extremidade do intervalo serão arredondados para baixo e para cima, respectivamente
+    - Se o intervalo entre os limites superior e inferior for suficentemente estreito, obtém-se um resultado suficientemente preciso
+  - Arredondamento para Menos infinito e arredondamento para o Maior são úteis na implementação do intervalo aritmético
+  - Truncamento:
+    - Round em direção a zero
+    - Bits extras são ignorados
+    - Técnica mais simples
+    - Um bias consistente em direção a zero na operação
+      - Bias grave porque afeta todas as operações para as quais existem bits extras diferentes de zero
