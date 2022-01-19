@@ -788,3 +788,119 @@
     - Técnica mais simples
     - Um bias consistente em direção a zero na operação
       - Bias grave porque afeta todas as operações para as quais existem bits extras diferentes de zero
+
+## Sistema de Memória
+
+![memoryHierarchy](images/memoryHierarchy.png)
+![memorySecondaryHierarchy](images/memorySecondaryHierarchy.png)
+![memoryPyramid](images/memoryPyramid.png)
+
+### Características do Sistema de Memória
+
+- Localização (CPU, Interna, externa)
+- Capacidade (Tamanho da palavra, número de palavras)
+- Unidade de Transferência (palavra, bloco)
+- Método de Acesso (sequencial, direto, aleatório, associativo)
+- Desempenho (tempo de acesso, tempo de ciclo, taxa de transferência)
+- Tipo Físico (semicondutor, superfície magnética)
+- Características Físicas (volátil, não volátil, apagável ou não)
+- Organização
+
+### Localização
+
+- Do ponto de vista do processador a memória pode ser vista como interna ou externa
+  - A memória interna é frequentemente denominada como memória principal ou primária
+    - O processador requer a sua própria memória local, na forma de registradores
+    - Caches é outra forma de memória interna
+  - A memória externa consiste em dispositivos de armazenamneto periféricos acessíveis ao processador por meio de controladores de E/S
+    - Solid State Disks, Hard Disks, e Optical Disks
+
+### Capacidade
+
+- Tamanho da palavra
+  - A unidade natural da organização
+- Quantidade de palavras
+  - ou Bytes
+
+### Unidade de Transferência
+
+- Interna
+  - Usualmente governada pela largura do barramento de dados
+- Externa
+  - Usualmente um bloco que é muito maior que uma palavra
+- Unidade Endereçável
+  - Menor localização que pode ser unicamente endereçada
+  - Internamente o endereçamento é feito por palavras
+  - Em unidades de discos - blocos denominados clusters
+
+### Métodos de Acesso (1)
+
+- Sequencial
+  - O acesso deve ser feito em uma sequencia linear específica
+  - O tempo de acesso depende da localização dos dados e da localização anterior
+  - ex. unidade de fita (tape)
+- Direto
+  - Blocos individuais tem endereços únicos
+  - O acesso é feito por um salto de aproximação seguido por acesso sequencial
+  - O tempo de acesso depende da localização de da localização anterior
+  - ex. discos
+
+### Métodos de Acesso (2)
+
+- Aleatório (Random)
+  - Endereços individuais identificam localizações de maneira exata
+  - O tempo de acesso é independente da localização ou do acesso anterior
+  - ex. RAM
+- Associativa
+  - Dados são localizados atráves de uma comparação com o conteúdo de uma porção do armazenador
+  - O tempo de acesso é independente da localização ou do acesso anterior
+  - ex. cache
+
+### Hierarquia de Memória
+
+- Registradores
+  - na CPU
+- Interna ou Memória principal
+  - Pode incluir um ou mais níveis de cache
+  - "RAM"
+- Memória Externa
+  - Armazenador secundário (backing store)
+
+### Parâmetros de Desempenho
+
+- Tempo de Acesso (latência)
+  - Tempo decorrido entre a apresentação do endereço e a obtenção do dado válido
+    - Para memória de acesso aleatório (RAM), é o tempo necessário para executar uma operação de leitura ou gravação
+    - Para memória de acesso não aleatório, é o tempo que leva para posicionar o mecanismo de leitura-gravação no local desejado
+- Tempo do Ciclo de Memória
+  - Tempo de acesso mais qualquer tempo adicional necessário antes que o segundo acesso possa ser iniciado
+    - Tempo adicional pode ser necessário para que os transientes desapareçam nas linhas de sinal ou para regenerar os dados se eles forem lidos destrutivamente
+    - Tempo de ciclo é:
+      - Tempo de acesso + recuperação
+- Taxa de Transferência
+  - A taxa na qual os dados podem ser transferidos para dentro ou para fora de uma unidade de memória
+    - Para memória de acesso aleatório é igual a 1/(tempo de ciclo)
+
+### Tipos Físicos
+
+- Semicondutor
+  - RAM
+- Magnético
+  - Disk & Tape, flash memory
+- Ótico
+  - CD & DVD
+- Outros
+  - Magneto-optical
+  - Bubble
+  - Hologram
+
+### Características Físicas
+
+- Declínio (Decay)
+- Volatilidade (Volatility)
+- Apagável (Erasable)
+- Consumo de Energia
+
+### Processor x Memory - Performance Gap
+
+![processorXmemoryGap](images/processorXmemoryGap.png)
