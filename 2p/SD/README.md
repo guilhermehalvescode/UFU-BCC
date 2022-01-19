@@ -64,26 +64,12 @@
    - = A [teo - A + 0 = A]
 
 5. A + A'B = A + B
-   - Caso 1: A = 0, B = 0
-     - 0 + 0'0 = 0 + 0
-     - 0 + 1.0 = 0
-     - 0 + 0 = 0
-     - 0 = 0
-   - Caso 2: A = 0, B = 1
-     - 0 + 0'1 = 0 + 1
-     - 0 + 1.1 = 1
-     - 0 + 1 = 1
-     - 1 = 1
-   - Caso 3: A = 1, B = 0
-     - 1 + 1'0 = 1 + 0
-     - 1 + 0.0 = 1
-     - 1 + 0 = 1
-     - 1 = 1
-   - Caso 4: A = 1, B = 1
-     - 1 + 1'1 = 1 + 1
-     - 1 + 0.1 = 1
-     - 1 + 0 = 1
-     - 1 = 1
+   - A + A'B = A.1 + A'B
+   - = A(B + 1) + A'B
+   - = AB + A.1 + A'B
+   - = B(A + A') + A
+   - = B + A
+   - = A + B
 
 6. A(A' + B) = AB
    - A(A' + B) = AA' + AB
@@ -91,22 +77,35 @@
    - = AB [teo - A + 0 = A]
 
 7. A + BC = (A + B)(A + C)
-   - Provando (A + B)(A + C) = A + BC
-   - (A + B)(A + C) = AA + AC + AB + BC
-   - = A + AC + AB + BC [teo - A.A = A]
-   - = A + AC + BC [teo ex.1 - A + AB = A]
-   - = A + BC [teo ex.1 - A + AC = A]
+   - A + BC = A.1 + BC
+   - = A(1 + (B + C)) + BC
+   - = A + A(B + C) + BC
+   - = A + AB + AC + BC
+   - = A.A + AB + AC + BC
+   - = A(A + B) + C(A + B)
+   - = (A + C)(A + B)
+   - = (A + B)(A + C)
 
 8. A(B + C) = AB + AC
+   - A(B + C) = AB + AC
 
 9. AB + A'C = (A + C)(A' + B)
-   - Provando (A + C)(A' + B) = AB + A'C
-   - (A + C)(A' + B) = AA' + AB + A'C + BC
-   - = 0 + AB + A'C + BC [teo - A.A' = 0]
-   - = AB + A'C + BC [teo - A + 0 = A]
+   - AB + A'C = AB + A'C.1
+   - = AB + A'C(1 + (A + B))
+   - = AB + A'C + AA'C + A'BC
+   - = B(A'C + A) + A'(AC + C)
 
-10. (A + B)(A' + C) = AC + A'B
+10. (A + B)(A' + C) = AC + A'B (INVERSO DA ANTERIOR)
     - (A + B)(A' + C) = AA' + AC + A'B + BC
+
+11. AB + A'C + BC = AB + A'C
+    - AB + A'C + BC = 0 + AB + A'C + BC
+    - = A.A' + AB + A'C + BC
+    - = A(A' + B) + C(A' + B)
+    - = (A + C)(A' + B) = AB + A'C (teo ex.9)
+
+12. (A + B)(A' + C)(B + C) = (A + B)(A' + C)
+    - (A + B)(A' + C)(B + C) = (A + B)(A' + C)((B + C) + A.A')
 
 ## O Teorema de Morgan
 
@@ -122,7 +121,7 @@
   2. Forma de produto padrão de somas
 
 - Exemplo: Dada a funções lógica de quatro variáveis
-  - F(,B,C,D) = (A' + BC)(B + C'D)
+  - F(A,B,C,D) = (A' + BC)(B + C'D)
   - expressar como uma soma de produtos
     - A'B + A'C'D + BBC + BCC'D
     - A'B + A'C'D + BC
