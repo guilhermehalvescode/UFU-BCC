@@ -904,3 +904,92 @@
 ### Processor x Memory - Performance Gap
 
 ![processorXmemoryGap](images/processorXmemoryGap.png)
+
+## Organização Hierárquica de Memória
+
+![memoryHierarchyInfo](images/memoryHierarchyInfo.png)
+
+### Objetivos do projeto de um Sistema de memória
+
+- Prover capacidade de armazenagem
+- com nível de desempenho aceitável
+- a um custo razoável
+
+  ![memoryPyramid](images/memoryPyramid.png)
+
+### Quatro maneiras para alcançar o objetivo
+
+- Usar umas estrutura hierárquica de módulos de armazenagem
+- Desenvolver métodos de alocação onde espaço automático para uso eficiente da memória
+- Atráves de técnicas de memória virtual, liberar o  usuário das tarefas de gerenciamento de memória
+- Projetar a memória e sua estrutura de interconexão relacionada de maneira que o processador possa operar a uma máxima ou próxima
+
+### Estrutura Hierárquica
+
+- Core Registers
+- L1 Cache
+- L2 Cache
+- L3 Cache
+- Main memory
+- Disk cache
+- Disk
+- Optical
+- Tape
+
+![cacheHierarchy](images/cacheHierarchy.png)
+
+### Organização hierárquica de memória em dois níveis
+
+![twoLevelMem](images/twoLevelMem.png)
+
+- Tempo de acesso do nível 1 é de 1 us
+- Tempo de acesso do nível 2 é de 10 us
+- teff = H.tcache + (1 - H).tmem
+- teff = H.(1) + (1 - H).(10) us
+- Onde:
+  - teff = effective access time
+  - H = probability of a cache hit (hit rate)
+  - tcache = cache access time
+  - tmem = main memory access time
+
+![hitRatio](images/hitRatio.png)
+
+### Organização hierárquica: Cache & RAM
+
+- Pequena quantidade de memória rápida
+- Localizado entre a memória principal e a CPU
+- Pode estar localizado internamente ao chip da CPU ou, em um módulo externo
+
+  ![twoLevelMem](images/twoLevelMem.png)
+  ![threeLevelCache](images/threeLevelCache.png)
+
+### Estrutura RAM/Cache
+
+![ramCacheStructure](images/ramCacheStructure.png)
+
+### Operação de leitura do cache
+
+![cacheRead](images/cacheRead.png)
+
+### Operação do Cache - Revisão
+
+- CPU faz referência ao conteúdo (dados) de uma determinada posição de memória
+- Primeiro, efetua consulta no cache
+- Se presente, obtém do cache (rápido)
+- Se não presente, transfere o bloco requerido da memória principal para o cache
+- Finalmente, transfere do cache para a CPU
+- O cache inclui etiquetas para identificar qual bloco de memória principal está em cada seção do cache
+
+### Organização Típica do Cache
+
+![cacheOrganization](images/cacheOrganization.png)
+
+### Memória Virtual
+
+- Facilidade que permite aos programas endereçar memória de um ponto de vista lógico, sem considerar a quantidade de memória física disponível
+- Quando usada, os campos de endereços de uma instrução de máquina(assembly) conterá endereços virtuais
+- Nas operações de leitura e escrita da memória, um mecanismo de hardware(memory management unit - MMU) traduz cada endereço virtual para um endereço físico da memória principal
+
+### Logical and Physical Caches
+
+![logicalPhysicalCaches](images/logicalPhysicalCaches.png)
