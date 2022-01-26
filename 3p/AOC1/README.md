@@ -993,3 +993,132 @@
 ### Logical and Physical Caches
 
 ![logicalPhysicalCaches](images/logicalPhysicalCaches.png)
+
+### Exemplo: Hierarquia de Memória
+
+![memoryHierarchyEx](images/memoryHierarchyEx.png)
+
+### Elementos de Projeto da Memória Hierárquica
+
+- Tamanho da cache - Cache Size
+- Função de Mapeamento - Mapping Function
+  - Direto
+  - Associativo
+  - Associativo por Conjuntos
+- Algoritmo de Substituição - Replacement Algorithm
+  - LRU, FIFO, LFU, Random
+- Política de Escrita - Write Policy 
+  - Write Through
+  - Write back
+  - Write once
+- Tamanho do Bloco - Block Size
+- Número de Caches - Number of Caches
+  - Single- or two-level
+  - Unified or split
+
+### O tamanho importa
+
+- Custo
+  - Mais cache, maior é o custo
+- Velocidade
+  - Quando maior for o cache, maior é a velocidade obtida (até certo ponto)
+  - Efetuar consultas de dados no cache consome tempo
+
+> Nota: gostaríamos que o tamanho da cache seja suficientemente pequeno, de forma que, o custo médio global por bit esteja próximo do custo da memória principal (DRAM), com capacidade grande o suficiente, e que o tempo mério de acesso efetivo esteja próximo ao tempo do cache
+
+### Função de Mapeamento
+
+- Como há um número menor de linhas cache me relação ao número de blocos sda memória principal, um algoritmo faz-se necessário para mapear blocos de memória para linhas cache. Além de uma maneira para descobrir qual bloco da memória principal, em determinado momento, ocupa uma linha cache
+- A escolha da função de mapemanto determina como o cache está organizado
+- Três técnicas podem ser utilizadas:
+  - direto, associativo e associativo por conjuntos
+- Configuração para análise:
+  - Cache de 64 KBytes
+  - Bloco Cache de 4 bytes
+    - isto é, o cache tem 16k (2¹⁴) linhas de 4 bytes
+  - Memória principal de 16MBytes
+  - Endereços de 24 bits
+    - (2²⁴ = 16M)
+
+### Função de Mapeamento: Direto ou Associativo
+
+![directAssociativeMemMap](images/directAssociativeMemMap.png)
+
+### Mapeamento Direto - Direct Mapping
+
+- Cada bloco da memória principal mapeia sempre em uma única linha cache
+  - isto é, se um bloco está no cache, ele deve estar em um local específico
+- O endereço é dividido em duas partes
+- Os w bites menos significativos indentificam uma única palavra
+- Os s bits mais significativos especificam um bloco de memória
+- Os MSBs são divididos em um campo r na linha de cache e uma etiquta (tag) com os s-r bits (mais significativos)
+
+### Mapeamento Direto - Estrutura do Endereço
+
+![directMappingStructure](images/directMappingStructure.png)
+
+- Endereço de 24 bits
+- Identificador de palavra -> 2 bits (4 bytes por bloco)
+- Identificador de bloco -> 22 bits
+  - 8 bit tag (= 22 - 14)
+  - 14 bits slot ou linha
+- Dois blocos na mesma linha não tem a mesma etiqueta (tag)
+- A consulta à um conteúdo da cache é feita em dois passos: primeiro, identifica a linha cache e, segundo, testa a etiqueta(tag)
+
+### Mapeamento Direto - Cache Line Table
+
+- O mapeamento é expresso como:
+  - i = j módulo m
+  - onde
+    - i = número da linha cache
+    - j = número do bloco da memória principal
+    - m = número de linhas cache
+- Cache line  Main Memory blocks held
+- 0           0, m, 2m, 3m ... 2^s-m
+- 1           1, m + 1, 2+ + 1, 2^s-m+1
+- ...
+- m-1         m-1, 2m-1, 3m-1 ... 2^s - 1
+
+### Organização do Cache com Mapeamento Direto
+
+![directAssociativeMemMapOrg](images/directAssociativeMemMapOrg.png)
+
+### Exemplo de Mapeamento Direto
+
+![directMappingEx](images/directMappingEx.png)
+
+### Mapeamento Direto (pros & cons)
+
+- Simples
+- Baixo custo (Inexpensive)
+- Localização fixa para um dado bloco
+  - Se um programa acessa dois blocos que mapeiam para a mesma linha cache repetidamente, é grande o número de faltas de cache
+
+### Mapeamento Associativo - Associative Mapping
+
+- Um bloco de memória principal pode ser carregado em qualquer linha cache
+- Endereços de memória são interpretados como uma etiqueta (tag) e palavra
+- A etiqueta unicamente identifica um bloco de memória
+- Toda etiqueta (tag) da linha cache é examinada por comparação (match)
+- Pesquisar o cache é uma operação de alto custo
+
+### Organização do cache totalmente Associativo
+
+![totalAssociativeCache](images/totalAssociativeCache.png)
+
+### Exemplo do Mapemanto Associativo
+
+![totalAssociativeCacheEx](images/totalAssociativeCacheEx.png)
+
+### Mapeamento Associativo - Estrutura de Endereço
+
+![associativeMapStructure](images/associativeMapStructure.png)
+
+- Etiqueta (tag) de 22 bites armazenada em cada bloco de dados de 32 bits
+- Compara o campo Tag com cada entrada no cache para verificar se há um acerto (hit)
+- Os dois bits menos significativos do endereço identificam qual palavra de 16 bits é requerida do bloco de dados de 32 bits
+- exemplo:
+  - Address       Tag       Data      Cache line
+  - FFFFFC        FFFFFC    24682468  3FFF
+
+### Mapeamento Associativo por Conjuntos
