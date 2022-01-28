@@ -1122,3 +1122,145 @@
   - FFFFFC        FFFFFC    24682468  3FFF
 
 ### Mapeamento Associativo por Conjuntos
+
+- O cache é dividido em conjuntos
+- Cada conjunto contém um certo número de linhas
+- Um determinado bloco mapeia para qualquer linha de um conjunto
+  - ex. o bloco Bi pode estar em qualqer linha do conjunto i
+  - ex. 2 linhas por conjunto
+    - 2 way associative mapping
+    - Um dado bloco pode estar em uma linha de duas possíveis de um determinado conjunto
+
+### Two Way Set Associative Cache Organization
+
+![twoWaySetAssocCacheOrg](images/twoWaySetAssocCacheOrg.png)
+
+### Set Associative Mapping - Address Structure
+
+![setAssocMapping](images/setAssocMapping.png)
+
+- Utiliza o Set field para determinar o conjunto cache alvo da busca
+- Compara o campo tag para verificar a presença
+- exemplo:
+
+| Address | Tag |   Data   | Set number |
+|---------|-----|----------|------------|
+| 1FF7FFC | 1FF | 12345678 | 1FFF       |
+| 0017FFC | 001 | 11223344 | 1FFF       |
+
+### Two Way Set Associative Mapping Example
+
+![assocMappingEx](images/assocMappingEx.png)
+
+### Algoritmo de Substituição - Mapeamento Direto
+
+- Nenhuma escolha
+- Cada bloco tem mapeamento em uma única linha cache
+- Substitua esta linha
+
+### Algoritmo de Substituição - Associativo & Associativo por Conjuntos
+
+- Algoritmo implementado em hardware (speed)
+- Least Recently Used (LRU) - **mais usado**
+  - ex.: 2-way set associative
+  - qual dos dois blocos é o menos recentemente usado (lru)
+- First-in, first-out (FIFO)
+  - substitua o bloco que está no cache a mais tempo
+- Least frequently used
+  - substitua o bloco que teve poucas referências no último intervalo de tempo
+- Random
+
+### Tratamento de falhas de cache
+
+- O tratamento de falhas de cache é feito em colaboração com a unidade de controle do processador. O processamento de um erro de cache paralisa todo o processador, essencialmente congelando o conteúdo de todos os registradores enquanto espera pela memória
+- As etapas executadas em uma falha de cache são:
+  - Instrua o próxima nível de memória para ler o valor ausente
+  - Aguarde a resposta da memória (pode levar vários ciclos de clock)
+  - Atualiza a linha de cache correspondente com os dados recebidos da memória
+  - Refetch e reinicie a execução da instrução, desta vez encontrando-a no cache
+- Processadores mais sofisticados podem permitir a execução fora de ordem de outras instruções enquanto aguardam uma falha no cache
+
+### Política de Escrita - Write Policy
+
+- Não deve sobrescrever o bloco cache a não ser que a memória principal esteja atualizada
+- Múltiplas CPUs devem ter módulos caches próprios
+- Controladoras de I/0 podem endereçar memória principal diretamente
+
+### Tratamento de Escritas (atualizações)
+
+- Como lidar com write hits - considere uma instrução de armazenamento em que uma ocorrência de atualização de dados é apenas escrita no cache, sem alterar a memória principal
+- Então, o cache e a memória teriam valores diferentes
+  - Nesse caso, o cache e a memória são considerados inconsistentes
+- Como lidar com write misses - devemos buscar o bloco correspondente da memória para o cache e, em seguida, sobrescrever com a palavra que causou a falha(chamada de "write allocate") ou devemos simplesmente escrever a palavra na memória principal (chamada de "no write allocate") ?
+
+### Política de Escrita: write through
+
+- Todas as escritas são efetuadas simultaneamente na cache e memória principal
+- Múltiplas CPUs podem monitorar o tráfego da memória principal para manter a cache local (a CPU) atualizada
+- Gera muito tráfego
+- Atrasa as escritas
+
+### Política de Escrita: write back
+
+- Inicialmente, as atualizações são realizadas somente na cache
+- Cada slot cache possui um update bit que são configurados quando uma atualização ocorre
+- Caso o bloco venha ser substituido, uma escrita na memória principal é feita se o update bit sinalizar
+- Outras caches estarão fora de sincronismo
+- E/S deverá acessar memória principal através da cache
+- Nota: 15% das referências a memória são escritas
+
+### Tamanho da Linha Cache (slot)
+
+![cacheLineSize](images/cacheLineSize.png)
+
+### Multilevel Caches
+
+- Com o aumento da densidade lógica, foi possível ter um cache no mesmo chip do processador
+- O cache on-chip reduz a atividade de barramento externo do processador e acelera o tempo de execução e aumenta o desempenho geral do sistema
+  - Quando a instrução ou os dados solicitados são encontrados no cache on-chip, o acesso ao barramento é eliminado
+  - Os acessos ao cache no chip serão concluídos consideravelmente mais rápido do que os ciclos de barramento de estado de espera zero
+  - Durante este período, o barramento é liberado para atender outras transferências
+- Cache de dois níveis:
+  - Cache interno designado como nível 1 (L1)
+  - Cache externo designado como nível 2 (L2)
+  - A economia potencial devido ao uso de um cache L2 depende das taxas de acerto em ambos os cache L1 e L2
+- O uso de caches multiníveis complica todos os problemas de design relacionados aos caches, incluindo tamanho, algoritmo de substituição e política de gravação
+
+### Hit Ratio (L1 & L2) - For 6Kbyte and 16Kbyte L1
+
+![hitRatioL1&L2](images/hitRatioL1&L2.png)
+
+### Unified Versus Split Caches
+
+- Tornou-se comum dividir o cache:
+  - Um dedicado a instruções
+  - Um dedicado a dados
+  - Ambos existem no mesmo nível, normalmente como dois caches L1
+- Vantagens do cache unificado:
+  - Maior taxa de acerto
+    - Equilibra a carga de instruções e busca de dados automaticamente
+    - Apenas um cache precisa ser projetado e implementado
+- A tendência é dividir caches no L1 e caches unificados para níveis mais altos
+- Vantagens do cache dividido:
+  - Elimina a contenção de cache entre a unidade de busca / decodificação de instrução e a unidade de execução
+    - Importante em pipelining
+
+### Pentium 4 - Cache
+
+![pentium4Cache](images/pentium4Cache.png)
+
+### Pentium 4 - Block Diagram
+
+![pentium4BlockDiagram](images/pentium4BlockDiagram.png)
+
+### Pentium 4 - Cache Operationg Modes
+
+![pentium4CacheOperatingModes](images/pentium4CacheOperatingModes.png)
+
+### ARM Cache Features
+
+![armCacheFeatures](images/armCacheFeatures.png)
+
+### ARM Cache and Write Buffer Organization
+
+![armCacheWriteBufferOrganization](images/armCacheWriteBufferOrganization.png)
