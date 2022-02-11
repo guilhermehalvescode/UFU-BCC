@@ -1264,3 +1264,109 @@
 ### ARM Cache and Write Buffer Organization
 
 ![armCacheWriteBufferOrganization](images/armCacheWriteBufferOrganization.png)
+
+## Sistema de Interconexão
+
+### Estrutura de Interconexão
+
+- Todas as unidades devem estar conectadas
+- Cada Unidade com seu tipo de conexão:
+  - Memória
+  - Entrada/Saída
+  - CPU
+
+### Conexões de Memória
+
+### Conexões de Entrada/Saída
+
+- Similar a memória do ponto de vista do computador
+- Saída (output)
+  - Recebe dados do computador
+
+### Conexões da CPU
+
+- Leitura de instruções e dados
+- Escrita de dados (após processamento)
+- Envia sinais de controle para outras unidades
+- Recebe (& reage em) sinais de interrupções
+- Conclusão
+  - A estrutura de interconexão deve dar suporte aos seguintes tipos de transferências:
+    - CPU = Memória
+    - CPU = I/O
+    - Memória = I/O (DMA)
+
+### O que é um barramento
+
+- Um caminho de comunicação conectando dois ou mais componentes
+- Usualmente por difusão (broadcast)
+- Frequentemente agrupados
+  - Diversos canais em um barramento
+  - Exemplo:
+    - barramentos de dados de 32 bits existe 32 vias de comunicação separadas, uma para cada bit
+- Linhas de energia podem não ser mostradas
+
+### Barramentos de dados (Data bus)
+
+- Transporta dados
+  - Lembre que não há diferênça entre "dados" e "instruções" neste nível
+- Largura do barramento é um fator determinante para o desempenho
+  - 8, 16, 32, 64 bit
+
+### Barramento de endereço (Address bus)
+
+- Identifica a fonte ou origem dos dados
+- Exemplo:
+  - CPU precisa ler uma instrução (ou dado) de uma dada localalização de memória
+- Largura do barramento determina a capacidade máxima da memória do sistema
+  - Por exemplo: o 8086 tem barramento de endereço
+
+### Barramento de Controle (Control bus)
+
+- Informações de Controle e Temporização (Control and timing)
+  - Memory read/write
+    - causes dad on the bus to be read/written into the addressed location
+  - I/O read/write
+    - causes data on the bus to be input/ouput from/to the addressed I/O port
+  - Transfer ACK
+    - indicates that data have been accepted from or placed on the bus
+  - Bus request
+    - indicates that a module needs to gain control of the bus
+  - Bus grant
+    - indicates that a requesting module has been granted control of the bus
+  - Interrup request
+    - indicates that an interrupt is pending
+  - Interrupt ACK
+    - acknowledges that the pending has been recognized
+  - Clock signal
+    - is used to synchronize operations
+  - Reset
+    - initializes all modules
+
+### Bus Interconnection Scheme
+
+![busInterconnectionScheme](images/busInterconnectionScheme.png)
+
+### High Performance Bus
+
+![highPerformanceBus](images/highPerformanceBus.png)
+
+### Elementos de Projeto de Barramentos
+
+1. Tipo
+   - Dedicado
+   - Multiplexado
+2. Tipo de Transferência de Dados
+   - Leitura
+   - Escrita
+   - Leitura-modificação-escrita
+   - Leitura-após-escrita
+   - Em bloco
+3. Método de Arbitração
+   - Centralizado
+   - Distribuído
+4. Temporização
+   - Síncrona
+   - Assíncrona
+5. Largura do Barramento
+   - Endereço
+   - Dados
