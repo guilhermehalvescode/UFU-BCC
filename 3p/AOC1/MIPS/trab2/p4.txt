@@ -1,8 +1,0 @@
-Não necessariamente, na soma de A com B pode ter ocorrido uma perda de informação
-se o valor de A fosse muito grande comparado ao de B, pois ao realizar a
-normalização dos expoentes para realizar esse tipo de soma, os bits significativos de B
-foram perdidos no deslocamento a direita dele, resultando em uma soma de A com 0.
-
-Por exemplo: 
-  1213121313213 + 1, o valor de B é perdido na soma e soma-se
-  1213121313213 + 0  
