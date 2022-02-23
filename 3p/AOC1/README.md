@@ -1275,13 +1275,38 @@
   - Entrada/Saída
   - CPU
 
+![busModules](images/busModules.png)
+
 ### Conexões de Memória
+
+- Tipicamente, memória consistirá de N palavras de mesmo comprimento. Cada palavra tem um endereço numérico único (0, 1, ..., N-1)
+- Transmite e recebe dados (send/receive)
+- Requer endereços (localidade do conteúdo)
+- Requer sinais de controle
+  - Read
+  - Write
+  - Timing
+
+![busMemoryModule](images/busMemoryModule.png)
 
 ### Conexões de Entrada/Saída
 
 - Similar a memória do ponto de vista do computador
 - Saída (output)
   - Recebe dados do computador
+  - Envia dados para os periféricos
+- Entrada (input)
+  - Recebe dados dos periféricos
+  - Envia dados para o computador
+
+![IOBusModule](images/IOBusModule.png)
+
+- Recebe sinais de controle do computador
+- Envia sinais de controle para perféricos
+  - Por exemplo: spin disk (rotação do disco)
+- Recebe endereços do computador
+  - Por exemplo: número da porta para identificar o periférico
+- Envia sinais de interrupção (control)
 
 ### Conexões da CPU
 
@@ -1294,6 +1319,13 @@
     - CPU = Memória
     - CPU = I/O
     - Memória = I/O (DMA)
+
+### Barramentos de Sistema (Buses)
+
+- Há inúmeros sistemas de interconexão
+- Estruturas de um único barramento ou múltiplos barramentos são as mais comuns
+  - ex. Control/Address/Data bus (PC)
+  - ex. Unibus (DEC-PDP)
 
 ### O que é um barramento
 
@@ -1318,7 +1350,7 @@
 - Exemplo:
   - CPU precisa ler uma instrução (ou dado) de uma dada localalização de memória
 - Largura do barramento determina a capacidade máxima da memória do sistema
-  - Por exemplo: o 8086 tem barramento de endereço
+  - Por exemplo: o 8086 tem barramento de endereço de 20 bits determinando um espaço de endereçamento de 1024k (1M)
 
 ### Barramento de Controle (Control bus)
 
@@ -1346,6 +1378,27 @@
 
 ![busInterconnectionScheme](images/busInterconnectionScheme.png)
 
+### Big and Yellow?
+
+- O que os barramentos parecem?
+  - Linhas paralelas em circuito impresso
+  - Ribbon cables
+  - Strip connector on mother boards
+    - ex. PCI, ISA, AGP
+  - Conjunto de fios
+
+### Problemas: Single Bus
+
+- Muitos dispositivos em um barramento acarretam:
+  - Atraso de propagação
+    - Quanto maior o número de dispositivos, maior é o atraso de propagação
+    - O atraso determina o tempo gasto para a coordenar o uso do barramento, caso a transferência de dados total se aproximar da capacidade máxima
+- A maioria dos sistemas utilizam múltiplos barramentos para superar estes problemas
+
+### Traditional (ISA) (with cache)
+
+![traditionalISAWithBusAndCache](images/traditionalISAWithBusAndCache.png)
+
 ### High Performance Bus
 
 ![highPerformanceBus](images/highPerformanceBus.png)
@@ -1370,3 +1423,96 @@
 5. Largura do Barramento
    - Endereço
    - Dados
+
+### Tipos de Barramentos (Bus Types)
+
+- Dedicados
+  - Linhas de Dados & endereços separadas
+- Multiplexados
+  - Linhas compartilhadas
+  - Linha de controle de endereços válidos ou dados válidos
+  - Vantagem - poucas linhas
+  - Desvantagem
+    - Controle mais complexo
+    - Redução potencial de desempenho, desde que certos eventos que compartilham as mesmas linhas não podem ser realizadas em paralelo
+
+### Tipos de Transferência de Dados
+
+![busDataTransferTypes](images/busDataTransferTypes.png)
+
+### Arbitragem de Barramento (Bus Arbitration)
+
+- Diversos dispositivos podem precisar usar o barramento ao mesmo tempo, portanto deve haver uma maneira de arbitrar várias solicitações
+- Esquemas de arbitragem de barramento geralmente tentam equilibrar
+  - Prioridade - o dispositivo de maior prioridade deve ser atendido primeiro
+  - Justiça (fairness) - mesmo o dispositivo de prioridade mais baixa nunca deve ser completamente impedido de usar o barramento
+- Os esquemas de arbitragem de barramento podem ser divididos em quatro classes:
+  - Daisy chain arbitration
+  - Arbitragem centralizada e paralela
+  - Arbitragem distribuída por auto seleção - cada dispositivo que deseja ganhar acesso ao barramento coloca um código indicando sua identidade
+  - Arbitragem distribuída por detecção de colisão - o dispositivo usa o barramento quando não está ocupado e se ocorrer uma colisão (porque algum outro dispositivo também decide usar o barramento), o dispositivo tenta novamente mais tarde (Ethernet)
+
+### Daisy Chain Bus Arbitration
+
+![daisyChainBusArbitration](images/daisyChainBusArbitration.png)
+
+- Vantagem: simples
+- Desvantagem:
+  - Não garante justiça - dispositivos de baixa prioridade podem ter o acesso impedido indefinidamente
+  - Lentidão - o sinal daisy chain grant limita a velocidade do barramento
+
+### Arbitragem (Bus Arbitration)
+
+- Arbitragem Centralizada
+  - Um único dispositivo de hardware controlando o acesso ao barramento
+    - Bus Controller
+    - Arbiter
+  - Pode ser parte da CPU ou separado dela
+- Arbitragem Distribuída
+  - Cada módulo pode reivindicar o barramento
+  - Controle lógico em todos os módulos
+
+### Temporização (Timing)
+
+- Coordenação de eventos no barramento
+  - Síncrono (Synchronous)
+    - Eventos determinados pelo sinal do relógio (clock)
+    - Barramento de controle inclui linha de clock
+    - Uma transição de 0-1 é definida como ciclo de barramento
+    - Todos os dipositivos podem ler a linha de clock
+    - Usualmente sincronizados na transição
+    - Usualmente um único ciclo por evento
+  - Assíncrono
+    - Ciclos de barramento com duração variável (sem clock)
+    - Ocorrência de um novo evento depende de um evento anterior
+    - Controle por sinais específicos: MSYN E SSYN
+    - Usado tipicamente em barramento de E/S
+      - Vantagens: mais adaptável e suporta barramentos mais compridos
+      - Desvantagens: maior overhead e necessita de lógica dedicada
+  
+### Timing of Synchronous Bus Operations
+
+![timingSyncBusOps](images/timingSyncBusOps.png)
+
+### Asynchronous Timing Diagram
+
+![asyncTimingDiagram](images/asyncTimingDiagram.png)
+
+### Timing of Asynchronous Bus Operations
+
+![timingAsyncBusOps](images/timingAsyncBusOps.png)
+
+### Asynchronous Bus Handshaking Protocol
+
+- Output (read) data from memory to an I/O device
+
+    ![asyncBusHandshaking](images/asyncBusHandshaking.png)
+  - I/O device signals a request by raising ReadReq and putting the addr on the data lines
+
+1. Memory sees ReadReq, read addr from data lines, and raises Ack
+2. I/O device sees Ack and realeases the ReadReq and data lines
+3. Memory sees ReadReq go low and drops Ack
+4. When memory has data ready, It places it on data lines and raises DataRdy
+5. I/O device sees DataRdy, reads the data from data lines, and raises Ack
+6. Memory sees Ack, releases the data lines, and drops DataRdy
+7. I/O device sees DataRdy go low and drops Ack
