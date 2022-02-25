@@ -1516,3 +1516,127 @@
 5. I/O device sees DataRdy, reads the data from data lines, and raises Ack
 6. Memory sees Ack, releases the data lines, and drops DataRdy
 7. I/O device sees DataRdy go low and drops Ack
+
+### Desempenho do Sistema de Entrada/Saída
+
+- Projetar um sistema de E/S para atender a um conjunto de restrições de largura de banda e/ou latência significa
+  - Encontrar o elo mais fraco no sistema de E/S - identificar o componente que restringe o projeto
+    - O processador e o sistema de memória
+    - A interconxão subjacente (por exemplo, barramento)
+    - Os controladores de E/S
+    - Os próprios dispositivos de E/S
+- (Re) configurar o elo mais fraco para atender aos requisitos de largura de banda e/ou latência
+- Determinar os requisitos para os componentes restantes e (re) configurá-los para suportar esta latência e/ou largura de banda
+
+### Estudo de Caso (QPI & PCIe)
+
+#### Point-to-Point Interconnect
+
+- Prinpal razão para a mudança foram as restrições elétricas encontradas com o aumento da frequência em barramentos síncronos largos
+- Com taxas de dados cada vez mais altas, torna-se cada vez mais difícil realizar as funções de sincronização e arbitragem em tempo hábil
+- Um barramento compartilhado convencional no mesmo chip ampliou as dificuldades de aumentar a taxa de dados de barramento e reduzir a latência do barramento para acompanhar a velocidade dos processadores
+- Reduzir a latência, aumentar a taxa de dados e melhorar escalabilidade
+
+#### Quick Path Interconnect (QPI)
+
+- Introduced in 2008
+- Multiple direct connections
+  - Direct pairwise connections to other components eliminating the need for arbitration found in shared transmission systems
+- Layered protocol architecture
+  - These processor level interconnects use a layered protocol architecture rather than the simple use of control signals found in shared bus arrangements
+- Packetized data transfer
+  - Data are sent as a sequence of packets each of which includes control headers and errors control codes
+
+#### Multicore Configuration Using QPI
+
+![multicoreConfigUsingQPI](images/multicoreConfigUsingQPI.png)
+
+#### QPI Layers
+
+![qpiLayers](images/qpiLayers.png)
+
+#### Physical Interface of the Intel QPI Interconnect
+
+![physicalInterfaceIntelQpiInterconnect](images/physicalInterfaceIntelQpiInterconnect.png)
+
+#### QPI Multilane Distribution
+
+![qpiMultilaneDistribution](images/qpiMultilaneDistribution.png)
+
+#### QPI Link Layer
+
+- Performs two key functions: flow control and error control
+  - Operate on the level of the flit (flow control unit)
+  - Each flit consists of a 72-bit message payload and a 8-bit error control code called a cyclic redundancy check (CRC)
+- Flow control function
+  - Needed to ensure that a sending QPI entity does not overwhelm a receiving QPI entity by sending data faster than the receiver can process the data and clear buffers for more incoming data
+- Error control function
+  - Detects and recovers from bit errors, and so isolates higher layers from expericencing bit errors
+
+#### QPI Routing and Protocol Layers
+
+- Routing Layer
+  - Used to determine the course that a packet will traverse across the available system interconnects
+  - Defined by firmware and describe possible paths that a packet can follow
+- Protocol Layer
+  - Packet is defined as the unit of transfer
+  - One key function performed at this level is a cache coherency protocol which deals with making sure that main memory values held in multiple caches are consistent
+  - A typical data packet payload is a block of data being sent to or from a cache
+
+#### Peripheral Component Interconnect (PCI)
+
+- A popular high bandwith, processor independent bus that can function as a mezzanine or peripheral bus
+- Delivers better system performance for high speed I/O subsystems
+- PCI Special Interest Group (SIG)
+  - Created to delevop further and maintain the compatibility of the PCI specifications
+- PCI Express (PCIe)
+  - Point-to-point interconnect scheme intended to replace bus-based schemes such as PCI
+  - Key requirement is high capacity to support the needs of higher data rate I/O devices, such as Gigabit Ethernet
+  - Another requirement deals with the need to support time dependent data streams
+
+#### PCIe Configuration
+
+![pcieConfiguration](images/pcieConfiguration.png)
+
+#### PCIe Protocol Layers
+
+![pcieProtocolLayers](images/pcieProtocolLayers.png)
+
+#### PCIe Multilane Distribution
+
+![pcieMultilaneDistribution](images/pcieMultilaneDistribution.png)
+
+#### PCIe Transmit and Receive Block Diagrams
+
+![pcieTransmitAndReceiveBlockDiagrams](images/pcieTransmitAndReceiveBlockDiagrams.png)
+
+#### PCIe Transaction Layer (TL)
+
+- Receives read and write requests from the software above the TL and creates request packets for transmition to a destination via the link layer
+- Most transactions use a split transaction technique
+  - A request packet is sent out by a source PCIe device which then waits for a response called a completion packet
+- TL messages and some write transactions are posted transactions (meaning that no response is expected)
+- TL packet format supports 32-bit memory addressing and extended 64-bit memory addressing
+
+#### The TL supports four address spaces
+
+- Memory
+  - The memory space includes system main memory and PCIe I/O devices
+- Configuration
+  - This address space enables the TL to read/write configuration registers associated with I/O devices
+- I/O
+  - This address space is used for legacy PCI devices, with reserverd address ranges used to address legacy I/O devices
+- Message
+  - This address space is for control signals related to interrupts, error handling, and power management
+
+#### PCIe TLP Transaction Types
+
+![pcieTlpTransactionTypes](images/pcieTlpTransactionTypes.png)
+
+#### PCIe Protocol Data Unit Format
+
+![pcieProtocolDataUnit](images/pcieProtocolDataUnit.png)
+
+#### TLP Memory Request Format
+
+![tlpMemoryRequestFormat](images/tlpMemoryRequestFormat.png)
