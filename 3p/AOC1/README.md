@@ -1640,3 +1640,58 @@
 #### TLP Memory Request Format
 
 ![tlpMemoryRequestFormat](images/tlpMemoryRequestFormat.png)
+
+## Módulos de E/S
+
+### Visão Abrangente
+
+- Módulo de E/S (Input/Output) é o terceiro elemento crítico do sistema computador (os outros são, a CPU e a memória)
+- Todos os sistema computadores devem ter meios eficientes para receberem entradas e deliberarem saídas
+  - Falhas relacionadas ao endereçamento de E/S tem grandes impactos no desempenho de sistemas
+- Programa de estudo:
+  - Módulos de E/S e suas interfaces com o resto do sistema
+  - Mecanismos de E/S
+  - Programação de E/S
+
+### Modelo Genérico de um módulo de E/S
+
+![genericIOModelModule](images/genericIOModelModule.png)
+
+### Dificuldades da Operação de E/S
+
+- Dispositivos externos, geralmente, não estão conectados diretamente na estrutura de barramento do computador
+  - Uma ampla variedade de dispositivos requerem diferentes lógicas de operação
+  - Uma grande diversidade de interfaces
+    - É impraticável para a CPO "saber como" controlar cada dispositivo
+  - Disparidade entre as taxas de transferências de dados.
+  - Diferentes representações de dados.
+- Todos mais lentos do que CPU e RAM
+- Como consequência, surge a necessidade de módulos controladores de entrada/saída (I/O)
+  - Intermediários na comunicação entre a CPU, RAM e os periféricos
+
+### Categorias de Dispositivos Externos
+
+- Interpretação humana
+  - vídeo, impressora, teclado
+- Operação pela máquina
+  - Discos magnéticos e ópticos
+  - Monitoração e controle
+- Comunicação
+  - Modem
+  - Placa de rede ("Network Interface Card" - NIC)
+
+### Typical I/O Data Rates
+
+![ioDataRates](images/ioDataRates.png)
+
+### Módulo de Entrada/Saída
+
+- Provê uma interface padronizada para a CPU e o barramento
+- Moldada para um dispositivo de E/S específico e a seus requisitos de interface
+- Delega a CPU o gerenciamento dos dispositivos de E/S
+- A interface consiste em sinais de:
+  - Control
+  - Status
+  - Dados
+- Interface entre a CPU e a memória
+- Interface para um ou mais periféricos
