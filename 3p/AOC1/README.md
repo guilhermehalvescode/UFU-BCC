@@ -1695,3 +1695,452 @@
   - Dados
 - Interface entre a CPU e a memória
 - Interface para um ou mais periféricos
+
+### Funções do Módulo de E/S
+
+- Controle e temporização (Control & timming)
+  - Coordenação do fluxo de dados
+- Comunicação com a CPU
+  - Decodificar comandos
+  - Enviar e receber dados
+  - Informar o estado dos periféricos
+  - Reconhecimento de endereços
+- Comunicação com o dispositivo periférico
+  - Emitir comandos; Enviar e receber dados
+  - Receber informação do estado dos periféricos
+- Bufferização de dados (data buffering)
+  - Adequação a diferentes taxas de transferência
+- Deteção de erros
+  - Funcinamento incorreto dos periféricos
+  - Transmissão de dados (bit de paridade)
+
+### Etapas da operação de E/S
+
+- A CPU verifica o status do módulo de E/S
+- O módulo de E/S retorna o status
+- Se pronto (ready), a CPU requisita a transferência de dados
+- O módulo de E/S obtém os dados do dispositivo
+- O módulo de E/S transfere os dados para a CPU
+- Variações para a saída, DMA, etc.
+
+### Decisões de um módulo de E/S
+
+- Esconde e/ou revelar as propriedade do dispositivo para a CPU
+- Suportar simples/múltiplos dispositivos
+- Controlar as funções de um dispositivo ou delegar para a CPU
+- Também são decições do Sistema Operacional
+- Por exemplo, Unix trata tudo, se possível, como arquivo
+
+### I/O Modulo Diagram
+
+![ioModuleDiagram](images/ioModuleDiagram.png)
+
+### Entrada/Saída - perspectiva geral
+
+![ioGeneralPerspective](images/ioGeneralPerspective.png)
+
+### Técnicas para Operações e Entrada/Saída
+
+- Programmed I/O
+- Interrupt drive I/O
+- Direct Memory Access (DMA)
+
+### Programmed I/O - Detalhes
+
+- Operação de E/S onde a CPU envia um comando de E/S para o módulo de E/S
+- A CPU tem controle direto da operação
+  - Sending status
+  - Read/Write commands
+  - Transferring data
+- A CPU espera até que a operação de E/S seja finalizada, antes de realizar outras tarefas
+- A finalização é indicada pela mudança dos bits de status do módulo de E/S
+- A CPU deve, periodicamente, consultar (polling) o módulo para verificar seu status
+- Isto, consome tempo de CPU
+
+### I/O Commands
+
+- A CPU fornece os endereços
+  - Identifica o módulo (e dispositivo, se mais do que um ligado ao módulo)
+- A CPU emite os comandos
+  - Controle - indicar ao módulo o que fazer
+    - e.g. spin up disk
+  - Teste - verificar o status
+    - e.g. power? Error?
+  - Leitura/Escrita
+    - O módulo transfere, via buffer, dados de/para o dispositivo
+- Endereçamento de dispositivos de entrada/saída
+  - Em operações de entradas/saídas programadas a transferência de dados consiste, muito provavelmente, num acesso à memória (ponto de vista da CPU)
+  - Cada dispositivo possui um identificador único
+  - As instruções da CPU contêm um identificador (endereço)
+
+### I/O Operations
+
+![IOOps](images/IOOps.png)
+
+### Endereçando Dispositivos de E/S
+
+- O modo programado (programmed I/O) de transferência de dados é muito parecido com o acesso a memória (do ponto de vista da CPU)
+- A cada dispositivo é atribuito um identificador único
+- Os comandos da CPU carregam este identificador (endereços)
+
+### I/O Mapping
+
+- Memory mapped I/O
+  - Dispositivos e memória compartilham um espaço de endereçamento
+  - I/O parece como uma memória de leitura/escrita
+  - Nenhum comando especial para I/O
+    - Um grande conjunto de comandos de acesso a memória estão disponíveis
+- Isolated I/O
+  - Espaço de endereçamento separado
+  - Necessidade de linhas de seleção para I/O ou memória
+  - Comandos especiais para I/O
+    - Conjunto limitado
+
+![memMapIO%26IsolatedIO](images/memMapIO%26IsolatedIO.png)
+
+### Programmed I/O - Resumo
+
+- Devido a diferença de velocidade entre a CPU e os dispositivos periféricos (ordens de magnitude), programmed I/O consome uma enorme quantidade do pontencial de processamento da CPU
+  - Muito ineficiente
+  - A CPU trabalha na velocidade do periférico
+- Vantagens
+  - Implementação Simples
+  - Requer pouquíssimo software especial ou hardware
+
+### Interrupt Drive I/O
+
+- Técnica para reduzir o tempo gasto nas operações de E/S
+  - A CPU fornece comandos de E/S para o módulo
+  - A CPU continua com suas outras tarefas enquanto o módulo realiza a sua operação
+  - O módulo sinaliza à CPU quando a operação de E/S for finalizada (a interrupção)
+  - A CPU responde a interrupção, executando uma rotina de serviço de interrupção (isr), logo após, continua a tarefa que estava executando durante este evento
+- Contorna os problemas de espera da CPU
+  - A CPU não precisa realizar uma verificação repetitiva do status do dispositivo
+  - O próprio módulo de E/S anuncia quando rponto (via interrupção)
+
+### Interrupt Driven I/O - Basic Operation
+
+![isrIOBasic](images/isrIOBasic.png)
+
+### CPU Viewpoint
+
+1. Envia o comando de leitura
+   - Enquanto espera, realiza outro trabalho
+2. Verifica se há interrupção pendente a cada final de ciclo de execução de instrução
+3. Se houver interrupção:
+   - Salva o contexto (registradores)
+   - Processa a rotina de tratamento da interrupção
+     - Fetch data & store
+
+![cpuViewpoint](images/cpuViewpoint.png)
+![changesInMemRegsInterrupt](images/changesInMemRegsInterrupt.png)
+
+### Interrupt-driven: decisões de projeto
+
+- Com múltiplos módlos e, portanto, múltiplas interrupções
+  - Como identificar o módulo que gerou o sinal de interrupção?
+  - Como lidar com múltiplas interrupções?
+    - Por exemplo, a rotina que manipula a interrupção está sendo interrompida
+
+### Identificando o módulo que interrompe (1)
+
+- Cada módulo possui uma linha de interrupção diferente
+  - PC
+  - Limita o número de dispositivos
+- Software polling
+  - CPU consulta cada módulo em uma sequência circular
+  - Lento
+
+### Identificando o módulo que interrompe (2)
+
+- Daisy Chain ou Hardware poll
+  - O recebimento da interrupção (interrupt acknowledge) é enviado cadeia abaixo
+  - O módulo responsável coloca o vetor de identificação no barramento
+  - A CPU usa o vetor para identificar a rotina de tratamento
+- Bus Mastering
+  - O módulo deve requer o barramento antes que ele possa gerar a interrupção
+  - Por exemplo, PCI & SCSI
+
+### Multiplas Interrupções
+
+- Cada linha de interrupção tem uma prioridade
+- Linhas de prioridade mais alta podem interromper as linhas de prioridades mais baixas
+- Se o método empregado for bus mastering, somente o mestre atual pode interromper
+
+### Example - PC Bus
+
+- O 80x86 tem uma linha de interrupção
+- Sistemas baseados no 8086 utilizam um controlador de interrupção, o 8259A
+- O 8259A tem outo (8) linhas de interrupções
+
+### Sequência de Eventos
+
+- 8259A aceita instruções
+- 8259A determina prioridades
+- 8259A sinaliza o 8086 (eleva a linha INTR)
+- A CPU reconhece (acknowledges)
+- 8259A coloca o vetor correto no barramento de dados
+- A CPU processa a interrupção
+
+### Intel 82C59A Interrupt Controller
+
+![intel82c59aInterruptController](images/intel82c59aInterruptController.png)
+
+### ISA Bus Interrupt System
+
+- ISA bus encadeia dois controladores 8259A juntos
+- O Link é via interrupção 2
+- Temos um total de 15 linhas
+  - 16 linhas menos uma para o link
+- IRQ 9 é usada para redirecionar alguma coisa tentando usar a IRQ 2
+  - Backwards compatibility
+- Nas arquiteturas atuais, o 8259A foi incorporado no chipset
+
+### Intel 82C55A Programmable Peripheral Interface
+
+![intel82c55aPPInterface](images/intel82c55aPPInterface.png)
+
+### Direct Memory Access
+
+- Interrupt driven e programmed I/O requerem intervenção ativa da CPU
+  - A taxa de transferência é limitada
+  - A CPU fica aprisionada
+- Para contornar estes problemas a técnica de DMA surge como uma solução
+- DMA Function:
+  - Módulo adicional (hardware) no barramento
+  - O DMA controller liberta a CPU da lenta tarefa das operações de E/S
+
+### DMA - Diagrama de Block
+
+![dmaDiagramBlock](images/dmaDiagramBlock.png)
+
+### DMA Operation
+
+1. A CPU configura a controladora DMA:
+   - Read/Write
+   - Device address
+   - Endereço inicial do bloco de memória para os dados
+   - A quantidade de dados a ser transferida
+2. A CPU preocupa-se com outra tarefa
+3. A controladora DMA realiza as operações de transferência
+4. A controladora DMA envia um sinal de interrupção quando a transferência for finalizada
+
+### DMA Transfer - Cycle Stealing
+
+- "Roubo" de ciclo na transferência DMA
+  - Controlador DMA toma conta do barramento (bus) durante um ciclo (clock)
+  - Transfere uma palavra de dados
+  - Não é uma interrupção
+    - A CPU não salva/guarda o contexto
+  - CPU suspende o ciclo de instrução imediatamente antes de:
+    - um acesso ao barramento
+    - antes da busca de um operando ou de dados e
+    - da escrita de dados
+  - Provoca um atraso na CPU, mas não tanto como se a própria efetuasse a transferência
+
+### Pontos de suspensão de DMA
+
+![suspensionPointsDMA](images/suspensionPointsDMA.png)
+
+### Aside
+
+- Qual é o efeito que memória caching tem no DMA?
+- Dica: quantos são os barramentos de sistema disponíveis?
+
+### Configurações DMA
+
+- Bus único, controlador DMA separado
+  - Cada transferência usa o bus duas vezes
+    - Do dispositivo de E/S para controlador DMA e deste para a memória
+  - Operação da CPU é suspensa duas vezes
+- Bus único, controlador DMA integrado
+  - Controlador pode suportar mais do que um dispositivo de E/S
+  - Cada transferência usa o bus uma vez - do controlador DMA para a memória
+  - Transferência entre dispositivos também usam o bus
+  - Operação da CPU é suspensa uma vez
+- Bus separado, controlador DMA integrado
+  - suporta todos os dispositivos DMA
+  - Cada transferência usa o uma vez - do controlador DMA para a memória
+  - Operação da CPU é suspensa uma vez
+  - Transferência entre dispositivos não usam o bus
+
+### DMA configurations (1)
+
+![dmaConfig1](images/dmaConfig1.png)
+
+- Bus único, controlador DMA separado
+  - Cada transferência usa o bus duas vezes
+    - Dos dispositivo de E/S para controlador DMA e deste para a memória
+  - Operação da CPU é suspensa duas vezes
+
+### DMA configurations (2)
+
+![dmaConfig2](images/dmaConfig2.png)
+
+- Bus único, controlador DMA integrado
+  - Controlador pode suportar mais do que um dispositivo de E/S
+  - Cada transferência usa o bus uma vez - do controlador DMA para a memória
+  - Transferência entre dispositivos também usam o bus
+  - Operação da CPU é suspensa uma vez
+
+### DMA configurations (3)
+
+![dmaConfig3](images/dmaConfig3.png)
+
+- Bus separado, controlador DMA integrado
+  - suporta todos os dispositivos DMA
+  - Cada transferência usa o uma vez - do controlador DMA para a memória
+  - Operação da CPU é suspensa uma vez
+  - Transferência entre dispositivos não usam o bus
+
+### Evolução da E/S (1)
+
+- No início CPU controlava diretamente o dispositivo (microprocessor-controlled devices)
+- Módulo de E/S (ou controlador) foi acrescentado
+  - Assim CPU não precisa conhecer detalhes específicos dos dispositivos
+  - CPU usa E/S programada sem interrupção
+- Surge então, a interrupção
+  - CPU trabalha enquanto ocorre E/S
+- O módulo de E/S ganha poder para acessar memória diretamente (DMA)
+
+### Evolução da E/S (2)
+
+- O módulo de E/S torna-se um processador
+  - Conjunto próprio de instruções para E/S
+  - Módulo de E/S é capaz de executar um programa sem intervenção alguma da CPU
+  - Também conhecido por canal de E/S
+- Módulo de E/S ganha uma memória local própria
+  - Maior número de dispositivos podem ser controlados
+  - Tamanho de buffer maior para troca de dados
+  - Também conhecido como processador de E/S
+- Ocasionalmente os termos canais de E/S (I/O Channel) e processador de E/S (I/O Processor) são usados para designar os mesmos módulos de E/S
+
+### Interfaces Externas
+
+- A interface de um módulo de E/S com um periférico depende da natureza e da operação do periférico
+- Transmissão:
+  - Paralela
+    - Várias linhas de conexão entre o módulo de E/S e o periférico
+    - Diversos bits são transferidos ao mesmo tempo
+    - Utilizada em periféricos de alta velocidade
+  - Serial
+    - Apenas uma linha para transmissão dos dados
+    - Bits transmitidos um de cada vez
+    - Mais comum para impressoras e terminais
+- Transferência
+  - simplex, half ou full-duplex
+
+### Ligação entre módulo E/S e o periférico
+
+- Temporização (timming)
+  - síncrona
+  - assíncrona
+- Controle
+  - Strobing
+  - Handshaking
+- Taxas de transferência
+  - Grande diversidade
+- Multiplicidade
+  - Ponto a ponto
+    - Linha dedicada entre o módulo de E/S e o dispositivo
+    - Conecta, por exemplo, teclado, impressora e modem
+  - Multiponto
+    - Utilizada para conexão de dispositivos externos de armazenamento em massa (discos e fitas) e multimídia (vídeo, áudio)
+- Interfaces & Periféricos
+  - RS-232
+    - modems, faxs, placas áudio, placas de aúdio
+  - PS/2
+    - mouse
+  - Centronics
+    - impressoras, scanners
+  - AGP
+    - placas gráficas
+  - ATA/IDE
+    - discos magnéticos
+  - ATAPI
+    - disocs ópticos
+  - SCSI
+    - discos magnéticos, discos ópticos, scanners
+  - SATA
+    - discos magnéticos
+  - USB
+    - discos magnéticos, câmaras fotográficas, de vídeo
+  - PCMCIA
+    - discos, faxs, modems, placas de rede
+- Interface Externa SCSI
+  - Small Computer System Interface
+  - Popularizada no Machintosh 1984
+  - Utilizada nos sistema Windows / Intel
+  - Suporta comunicação síncrona e assíncrona
+  - Cada dispositivo SCSI tem dois conectores:
+    - Entrada
+    - Saída
+
+### Interface Externa SCSI
+
+- Todos os dispositivos são conectados a uma cadeia circular
+  - O último dispositivo desta cadeia é conectado ao computador
+- Dispositivos podem trocar dados:
+  - Diretamente entre si
+  - Com o computador
+  - Exemplo: Um HD pode comunicar-se com uma unidade de fita diretamente, sem passar por um sistema hospedeiro(processador)
+- Todas as trocas no barramento SCSI são feitas entre um mestre e um escravo
+  - Tipicamente o sistema hospedeiro é o mestre e o periférico é o escravo
+- Toda atividade no barramento ocorre em fases:
+  - Barramento livre: barramento disponível para uso
+  - Arbitração: permite a um dispositivo granhar o controle do barramento. O dispositivo pode iniciar ou retomar o processamento de uma E/S
+  - Seleção: permite um mestre a selecionar um escravo
+  - Restabelecimento de conexão: permite ao escravo restabelecer a conexão com um mestre para retomar uma operação iniciada anteriormente mas suspensa pelo escravo
+  - Comando: permite ao escravo requisitar informações dos comandos enviados pelo mestre
+  - Dados: permite ao escravo requisitar a transferência de dados para o mestre (Data In) ou do mestre para o escravo (Data Out)
+  - Estado: permite ao escravo enviar informações de estado ao mestre
+  - Mensagem: Permite ao escravo esquisitar a transferência de uma ou mais mensagens para o mestre (Message In) ou do mestre para o escravo (Message Out)
+  
+### SCSI Signaling (1)
+
+- Betwwen initiator and target
+  - Usually host & device
+- Bus free? (c.f. Ethernet)
+- Arbitration - take control of bus (c.f. PCI)
+- Select target
+- Reselection
+  - Allows reconnectoin after suspension
+  - e.g. if request takes time to execute, bus can be released
+
+### SCSI Signaling (2)
+
+- Command - target requesting from initiator
+- Data request
+- Status request
+- Message request (both ways)
+
+### SCSI Bus Phases
+
+![scsiBusPhases](images/scsiBusPhases.png)
+
+### SCSI Timing Diagram
+
+![scsiTimingDiagram](images/scsiTimingDiagram.png)
+
+### Configuring SCSI
+
+- Bus must be terminated at each end
+  - Usually one end is host adapter
+  - Plug in terminator or switch(es)
+- SCSI Id must be set
+  - Jumpers or switches
+  - Unique on chain
+  - 0 (zero) for boot device
+  - Higher number is higher priority in arbitration
+
+### Interface Externa SCSI 1
+
+- SCSI 1 - início de 1980s
+  - Barramento de dados de 8 bits
+  - Cabo com 18 linhas:
+    - 9 para controle
+    - 9 para controle (8 bits dados + 1 bit paridade)
+  - Velocidade de 5 MHz - Taxa de transferência de 5 MBytes/s
+  - Suporta até 7 dispositivos (comparado com 2 da tradicional IDE)
+  - Possui linhas de controle
+  - Mensagens são utilizadas para gerenciar o barramento
