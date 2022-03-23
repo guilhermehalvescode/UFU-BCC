@@ -2144,3 +2144,253 @@
   - Suporta até 7 dispositivos (comparado com 2 da tradicional IDE)
   - Possui linhas de controle
   - Mensagens são utilizadas para gerenciar o barramento
+
+## Memória Externa
+
+### Tipos de memória externa
+
+- Disco magnético:
+  - RAID
+  - Removível
+- Óptica:
+  - CD-ROM
+  - CD-Recordable (CD-R)
+  - CD-R/W
+  - DVD
+- Fita magnética
+
+### Disco magnético
+
+- Substrato de disco coberto com material magnetizável (óxido de ferro ... ferrugem)
+- Substrato era alumínio
+- Agora é vidro.
+  - Maior uniformidadde da superfício
+    - Aumenta confiabilidade
+  - Redução nos defeitos da superfície
+    - Erros reduzidos de leitura/gravação
+  - Alturas de voo mais baixas
+  - Melhor rigidez
+  - Maior resistência a choques e dados
+
+### Mecanismos de leitura e gravação
+
+- Gravação e leitura por bobina condutora, chamada cabeça
+- Pode ser única cabeça de leitura/gravação ou separadas
+- Durante leitura/gravação, cabeça fica parada, placas giram
+- Gravação:
+  - Corrente pela bobina produz campo magnético
+  - Pulsos enviados à cabeça
+  - Padrão magnético gravado na superfície abaixo dela
+- Leitura (tradicional):
+  - Campo magnético movendo-se em relação à bobina produz corrente
+  - Bobina é a mesma para leitura e gravação
+- Leitura (contemporânea):
+  - Cabeça de leitura separada e próxima da cabeça de gravação
+  - Sensor magnetorresistivo (MR) parcialmente blindado
+  - Resistência elética depende da direação do campo magnético
+  - Operação em alta frequência
+    - Densidade de armazenamento e velocidade mais altas
+
+### Cabeça de gravação indutora/leitura MR
+
+![headReaderWriterMR](images/headReaderWriterMR.png)
+
+### Organização e formatação de dados
+
+- Anéis ou trilhas concêntricas
+  - Milhares de trilhas por superfície
+  - Lacunas entre as trilhas
+  - Reduza a lacuna para aumentar a capacidade
+  - Mesmo número de bits por trilha (densidade de compactação variável)
+  - Velocidade angular constante (CAV)
+- Trilhas divididas em setores
+  - 512 bytes em geral
+- Tamanho de bloco mínimo é de um setor
+- Pode haver mais de um setor por bloco
+
+### Layout de dados de um disco
+
+![layoutDiskData](images/layoutDiskData.png)
+
+### Velocidade do disco
+
+- Bit próximo do centro do disco girando passa por ponto fixo mais lento que o bit na borda do disco
+- Aumente espaçamento entre bits de diferentes trilhas
+- Gire disco em velocidade angular constante (CAV)
+  - Setore em forma de fatia de torta e trilhas concêntricas
+  - Trilhas e setores individuais endereçáveis
+  - Mova cabeça para determinada trilha e espere por determinado setor
+  - Perda de espaço nas trilhas externas
+    - Menor densidade de dados
+  - Pode usar zonas para aumentar capacidade
+    - Cada zona tem número fixo debits por trilha
+    - Circuito mais complexo
+
+### Diagrama de métodos de layout de disco
+
+![diskLayoutMethods](images/diskLayoutMethods.png)
+
+### Localizando setores
+
+- Deve ser capaz de identificar início da trilha do setor
+- Formatar disco:
+  - Informação adicoinais não disponíveis ao usuário
+  - Marca trilhas e setores
+
+### Formato de disco Winchester (Seagate ST506)
+
+![winchesterDiskFormat](images/winchesterDiskFormat.png)
+
+### Características
+
+- Cabeça fixa (rara) ou móvel
+- Removível ou fixo
+- Única ou dupla (mais comum) face
+- Prato único ou múltiplos
+- Mecanismo da cabeça:
+  - Contato (disquete)
+  - Lacuna fixa
+  - Lacuna aerodinâmica (Winchester)
+
+### Disco de cabeça fixa/móvel
+
+- Cabeça fixa:
+  - Uma cabeça de leitura por trilha
+  - Cabeças montadas sobre braço rígido fixo
+- Cabeça móvel:
+  - Uma cabeça de leitura e escrita por lado
+  - Montada sobre um braço móvel
+
+### Removível ou não
+
+- Disco removível:
+  - Pode ser removido da unidade e substituído por outro disco
+  - Oferece capacidade de armazenamento ilimitada
+  - Transferência de dados fácil entre sistemas
+- Disco não removível:
+  - Montado permanentemente na unidade
+
+### Múltiplas placas
+
+- Uma cabeça por lado
+- Cabeças são unidas e alinhadas
+- Trilhas alinhadas em cada placa formam cilindros
+- Dados são espalhados pelo cilindro:
+  - Reduz movimento da cabeça
+  - Aumenta velocidade (taxa de transferência)
+
+![diskCilinder](images/diskCilinder.png)
+
+### Trilhas e cilindros
+
+![tracksCilinders](images/tracksCilinders.png)
+
+### Disquete
+
+- 8, 5.25, 3.5
+- Pequena capacidade
+  - Até 1.44 MB (2.88 MB nunca foi popular)
+- Lento
+- Universal
+- Barato
+- Obsoleto?
+
+### Disco rígido Winchester
+
+- Desenvolvido pela IBM em Winchester (USA)
+- Unidade selada
+- Uma ou mais placas (discos)
+- Cabeças voam na camada de limite de ar enquanto o disco gira
+- Cabeça muito pequena para lacuna do disco
+- Tornando-se mais robusto
+- Universal
+- Barato
+- Armazenamento externo mais rápido
+- Tornando-se maior o tempo todo
+  - 3000 GB agora facilmente disponível
+
+### Velocidade
+
+- Tempo de busca:
+  - Movendo cabeça para trilha correta
+- Latência (rotacional):
+  - Esperando dados passarem sob a cabeça
+- Tempo de acesso = Busca + Latência
+- Taxa de transferência
+
+### Especificações
+
+- MKxx65GSX Hard Disk Drive
+- 160 / 250 / 320 / 500 / 640GB*
+- 2.5-Inch / 5.400 RPM / SATA
+- Drive Capacity 320GB
+  - Drive Interface Serial-ATA Revision 2.6 / ATA-8
+  - Number of Platters (disks) 1
+  - Number of Data Heads 2
+  - Transfer Rate to Host 3 GB/sec
+- Performance
+  - Track-to-track seek 2ms
+  - Average Seek Time 12ms
+  - Rotational Speed 5.400 RPM
+  - Buffer Size 8MB
+- Power Requirements
+  - Voltage 5V (+/- 5%)
+  - Spin up (start) Power 4.5 watts
+  - Seek Power 1.85 watts
+  - Read/Write Power 1.5 watts
+  - Active Idle Power 0.75 watts
+  - Low Power Idle 0.55 watts
+  - Standby Power 0.18 watts
+  - Sleep Power 0.15 watts
+- Physical Size
+  - Dimensions (W)x(D)x(H) 69.45 mm (2.75") x 100 mm (3.94") x 9.5 mm (0.37")
+- Environmental
+  - Temp - Operating 5° to 55 (41° to 131°F)
+  - Temp - Non-Operating -40° to 60°C (-40° to 140°F)
+  - Vibration - Operating 9.8 m/s² (1.0G) 5 to 500 Hz
+  - Vibration - Operating 49 m/s² (5.0G) 15 to 500 Hz
+  - Shock - Operating 3.920 m/s² (400B) 2ms
+  - Shock - Non-Operating 8.820 m/s² (900G) 1ms
+- Acoustics
+  - Acoustics (idle) 19dba 19dba 19dba 25dba 25dba
+  - Acoustics (seek) 20dba 20dba 20dba 25dba 25dba
+
+### Temporização de transferência de E/S de disco
+
+![tempTransferIO](images/tempTransferIO.png)
+
+### Comparação entre tempos totais de transferência
+
+- Disco
+  - Seek time médio = 4ms
+  - Rotação = 15K RPM
+  - Tamanho Setor = 512 Bytes
+  - Setores por trilha = 500
+  - Tempo de uma volta = (60/15K) = 4ms
+  - Atraso Rotacional Médio = 1/2 * (60/15K) = 2ms
+  - Tempo de leitura de 1 setor (4/500) = 0.008ms
+- Ler arquivo de 2500 setores ou 1.28 M
+
+- Leitura sequencial (trilhas adjacentes)
+  - Número de trilhas = 2500 / 500 = 5
+  - Tempo para ler a primeira trilha =
+    - Seek time = 4ms
+    - Atraso Rotacional Médio = 2ms +
+    - Leitura 500 setores = 4ms +
+    - Resultado = 10ms
+  - Total
+    - Tempo para ler trilhas restantes =
+      - Atraso Rotacional Médio \* 4 trilhas = 2 \* 4 = 8
+      - Leitura 500 setores \* 4 trilhas = 4 \* 4 = 14 +
+      - Resultado = 24ms
+  - Total
+    - Tempo total para ler 2500 setores = 34 ms ou 0,034s
+
+- Leitura completamente aleatória
+  - tempo para ler a um setor =
+    - Seek time = 4ms
+    - Atraso Rotacional Médio = 2ms +
+    - Leitura de 1 setor = 0.008 ms +
+    - Total = 6.008 ms
+  - Tempo para ler 2500 setores = 2500 * 6.008 = 15.02s!!!
+  - Ou 442 vezes mais!!
