@@ -1,0 +1,86 @@
+.data
+
+numChars: .word	 10
+ten: .word 10
+
+input:	  .space 10
+
+prompt:   .asciiz "Inteiro: "
+
+# 444
+# i = 1
+# soma += 4 * 10 * (strlen - i)
+# 4 * 100 + 4 * 10 + 4 * 1 = 444
+
+.text
+main:
+	la $a0, prompt
+	li $v0, 4
+	syscall
+
+	la $a0, input
+
+	la $a1, numChars
+	lw $a1, 0($a1)
+
+	li $v0, 8
+	syscall
+	jal atoi
+	j exit
+atoi:
+	move $s1, $ra
+	# a0 is our input string
+	# v0 returns the pot10
+	jal pot10
+	move $t5, $v0
+calc:
+	li	$t0, 0
+	li	$t2, 0
+	li	$v0, 0
+calc_loop:
+	add	$t2, $a0, $t0
+	lb	$t1, 0($t2)
+	beq	$t1, 10, calc_exit
+	sub	$t1, $t1, 48	#convert char to int
+	mul	$t3, $t1, $t5	#char * base (4 * 100)
+	add	$v0, $v0, $t3	#accum char * base to number
+	divu	$t5, $t5, 10
+	addiu	$t0, $t0, 1
+	j	calc_loop
+calc_exit:
+	move $ra, $s1
+	jr $ra
+
+	
+pot10:
+	li	$t0, 0
+	li	$t2, 0
+	move 	$s0, $ra
+	li	$s7, 1
+pot10_loop:
+	add	$t2, $a0, $t0
+	lb	$t1, 0($t2)
+	beq	$t1, 10, pot10_exit
+	jal isDigit
+	beqz 	$t5, exit
+	mulu 	$s7, $s7, 10
+	addiu	$t0, $t0, 1
+	j	pot10_loop
+		
+pot10_exit:
+	divu	$v0, $s7, 10
+	move 	$ra, $s0
+	jr 	$ra
+	
+	
+isDigit:
+    sge $t3, $t1, 48
+    sle $t4, $t1, 57
+# $t5 armazena o retorno das funcoes: 0 ou 1
+    and $t5, $t3, $t4
+    jr $ra
+    
+exit:
+	# syscall não é chamada para finalizar programar
+	# para manter resultado de atoi em $v0
+	
