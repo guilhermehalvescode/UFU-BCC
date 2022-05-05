@@ -29,3 +29,11 @@
 - Provas e Projeto de algoritmo
 
 ![induction](images/induction.png)
+
+### Exercícios
+
+1. Prove por indução
+  ![inductionEx](images/inductionEx.jpg)
+2. Hanói
+  ![hanoiEx](images/hanoiEx.jpg)
+3. Momento Sendin Ivan
