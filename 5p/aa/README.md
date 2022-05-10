@@ -157,11 +157,11 @@
 ### Exercícios (Eficiência)
 
 - Exercício 1
-  - 1
-  - n /// lg (2^n)
-  - n + 5
-  - lg n
+  - 1 /// 1^n
+  - log10 n
   - lg lg n
+  - lg n
+  - n /// lg (2^n) /// n + 5
   - n lg n
   - n^2
   - 2^n
