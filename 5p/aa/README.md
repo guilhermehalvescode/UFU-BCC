@@ -166,5 +166,123 @@
   - n^2
   - 2^n
   - n!
+- Resolução prof
+  - Os constantes: 1, 1^n
+  - Os sublineares: lg lg n, (log10 n, lg n)
+  - Os lineares: lg(2^n), n, n + 5
+  - n lg n
+  - Quadrático: n^2
+  - Exponencial: 2^n
+  - n!
 
 - Exercício 2
+
+![prova%23](images/prova%23.png)
+
+---
+
+### O(n)
+
+``` c++
+for(int i = 0; i < n; i++) {
+  // ...
+}
+```
+
+- Cuidado com os "..."
+- Sem laço, sem repetição, sem chamada de função
+
+### O(n^2)
+
+``` c99
+for(int i = 0; i < n - 1; i++) {
+  for(int j = 0; i < n; j++) {
+    // ...
+  }
+} 
+```
+
+- Somatório de 1 até n - n(n + 1)/2
+
+### Exemplo indução
+
+![inductionEx1](images/inductionEx1.png)
+
+
+## Algoritmos de Ordenação
+
+### BubbleSort
+
+- Método intuitivo
+- (não sei se o nome é intuitívo)
+- Muito ruim!
+- Assintoticamente
+- (Constantes!)
+- "Improved"
+
+![bubbleSort](images/bubbleSort.png)
+
+---
+
+- O laço interno "empurra" o maior elemento do subproblema para a posição final: na iteração n o elemento n é colocado no seu lugar
+- O laço externo - decrescente - controla o tamanho do subproblema que será alterado, desta forma o elemento que foi colocado na última posição do subproblema não será mais alterado
+
+---
+
+- Complexidade: O(n^2)
+
+![bubbleSortPy](images/bubbleSortPy.png)
+
+- 4
+- [2, 3, 5, 4, 1]
+- [2, 3, 5, 4, 1]
+- [2, 3, 4, 5, 1]
+- [2, 3, 4, 1, 5]
+- 3
+- [2, 3, 4, 1, 5]
+- [2, 3, 4, 1, 5]
+- [2, 3, 1, 4, 5]
+- 2
+- [2, 3, 1, 4, 5]
+- [2, 1, 3, 4, 5]
+- 1
+- [1, 2, 3, 4, 5]
+
+### Insertion
+
+- Analogia com ordenação de cartas de um baralho
+- Inicia com um conjunto de cartas na mesa
+- Pegue um carta qualquer na mão, a mão está ordenada
+- Pegue a próxima carta e insira-a na posição correta, a mão está ordenada
+- ...
+
+![insertionSort](images/insertionSort.png)
+
+---
+
+- No início de cada iteração: V[1..j-1] esta ordenado
+  - Correto no início: vetor unitário
+- (V[(j+1)..n] aguardando a ordenação)
+- k = V[j] será colocado no lugar "correto" do vetor ordenado (linhas 4/7)
+- O tamanho do vetor ordenado cresce em uma unidade (laço for)
+- "Loop invariante" : propriedade de estar ordenado se mantem, mesmo o tamanho do vetor aumentando
+- O laço for j é executado n vezes
+- O laço while até j vezes
+- Complexidade: O(n^2)
+
+![insertionSortPy](images/insertionSortPy.png)
+
+### MergeSort
+
+- V1 e V2
+- Vf que é ordenado contem os elementos de V1 e V2
+- De novo, cartas de baralho
+
+---
+
+- Tava pensando...
+- Assintoticamente não vejo como melhorar...
+- Mas da pra fazer inplace??
+- (O google falou que sim!)
+
+
