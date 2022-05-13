@@ -285,4 +285,157 @@ for(int i = 0; i < n - 1; i++) {
 - Mas da pra fazer inplace??
 - (O google falou que sim!)
 
+---
+
+- Merge: tempo O(n)
+- Ele tá quase lá!
+
+---
+
+``` c
+int o[5], v[5], i;
+for(i = 0; i < 4; i++) {
+  o[i] = Merge(o, [v[i]])
+}
+// processo similar a uma insertion sort
+```
+
+---
+
+- Funciona??
+- O esta sempre ordenado, Vazio e Merge de Vetores ordenados
+- O contem os elementos de V
+
+---
+
+- Fizemos uma ordenação por inserção
+- O(n^2)
+
+---
+
+- Saída clássica da recursão
+  - "Eu não sei ordenar um vetor grande"
+- Se algum ordenar as metades eu me viro
+- *Divide and Conquer*
+
+---
+
+``` portugol
+if |v| == 1 then
+  return v
+end if
+M1 <- primeira metade de V
+M2 <- segudna metade de V
+M1O <- MergeSort(M1)
+M20 <- MergeSort(M2)
+return Merge(M1O, M2O)
+```
+
+#### Corretude
+
+- (considerando que o Merge está correto)
+- Para Vetor unitário, o algoritmo não faz nada
+- Caso contrário, o problema é dividio em dois subproblemas
+- Os subproblemas são resolvidos recursivamente
+- E são unidos com Merge
+
+---
+
+#### Complexidade
+
+- Cada chamada do MergeSort gasta o "seu" n (merge)
+- Divide o problema em duas metades e chama duas recursões
+- (O problema está sendo dividido mas não esta "diminuindo")
+- Cria uma árvore
+- Altura da árvore: lg n
+- Cada andar da árvore gasta n
+- O(n log n)
+
+### QuickSort
+
+- Pior caso O(n^2)
+- Caso médio esperado: O(n lg n)
+- Constantes pequenas
+- In place
+  - +fácil
+- *Divide and Conquer*
+
+---
+
+- Ponto central do algoritmo: Partição
+- Pivô (escolhido: último elemento)
+- Partição com os menores que o pivo
+- Partição com os maiores que o pivo
+- O pivo "vai" para o lugar certo
+- Exemplo, [5,3,7,2,1,6,9,8,4]
+- Pivo = 4
+- Produz = [3,2,1,4,5,7,6,9,8]
+- E pela recursão..
+
+---
+
+``` portugol
+//Ordenar A entre p e r:
+
+if(p < r) then
+  q = Partition(A, p, r)
+  Quicksort(A, p, q - 1)
+  Quicksort(A, q + 1, r)
+end if
+
+//Aplicar em [5,3,7,2,1,6,9,8,4]
+```
+
+---
+
+``` portugol
+// Particiona A entre p e r e retorna a posição do pivo:
+
+q = p
+for u = p ate r - 1 do
+  if A[u] <= A[r] then
+    troca(A, q, u)
+    q += 1
+  end if
+end for
+troca(A, q, r)
+return q
+
+//Vamos aplicar em [5,3,1,2,4]
+```
+
+---
+
+- Árvore para o pior caso
+  - Razoável ?? Possível ??
+- Árvore para o caso "médio"
+
+---
+
+``` portugol
+// Particiona A entre p e r e retorna a posição do pivo:
+
+q = p
+rn = randInt(p, r)
+troca(A, rn, r)
+...
+```
+
+---
+
+``` portugol
+//  Particiona A entre p e r e retorna a posição do pivo:
+q = p
+rn1 = randInt(p, r)
+rn2 = randInt(p, r)
+rn3 = randInt(p, r)
+rnX = mediano(rn1, rn2, rn3)
+troca(A, rnX, r)
+```
+
+- E agora ?? Qual a complexidade ??
+
+---
+
+- Implementar InsertiSort, MergeSort e QuickSort
 
