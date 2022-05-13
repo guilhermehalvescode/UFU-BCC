@@ -205,3 +205,86 @@
 - While use cases themselves document business processes, use case diagrams do not exhibit any sequential flow and don ot depict any dependency
   - Thus use case diagrams are not an ideal mechanism to show the flow between different entities within the system
 - Use cases descriptions and use case diagrams do not have a granularity standard
+
+## Processos
+
+### Melhores Práticas
+
+- Desenvolver software iterativamente
+- Gerenciar requisitos
+- Usar arquiteturas baseadas em componentes
+- Modelar o software visualmente
+- Verificar continuamente a qualidade do software
+- Controlar as alterações no software
+
+### RUP
+
+- Um processo de engenharia de software
+- Um framework para outros processos
+- Utiliza as melhores práticas de desenvolvimento de software
+
+### RUP x Casos de Uso
+
+- RUP é dirigido por caso de uso (use-case driven)
+- Casos de uso dirigem inumerosas atividades
+  - Criação e validação dos modelos de projeto
+  - Definição dos casos de teste no modelo de teste
+  - Planejamento de iterações
+  - Criação do manual do usuário
+
+### RUP x Arquitetura
+
+- RUP é centrado na arquitetura
+- A arquitetura é central em relação aos esforços
+  - Os requisitos são analisados para montar uma arquitetura
+  - A arquitetura orienta a implementação e mudanças
+
+![arcEx](images/arcEx.png)
+
+---
+
+![RUPVision](images/RUPVision.png)
+
+---
+
+![rupProc](images/rupProc.png)
+
+---
+
+![rupPhases](images/rupPhases.png)
+
+### Desenvolvimento Iterativo
+
+- Análise do Risco
+
+![iterativeWaterfallDevelop](images/iterativeWaterfallDevelop.png)
+
+---
+
+![rupCycleIterative](images/rupCycleIterative.png)
+
+---
+
+- Vantagens
+  - Os riscos
+
+### Gerência de Requisitos
+
+### Arquitetura Baseada em Componentes
+
+### Gerência de Mudanças
+
+### Conceitos Chave
+
+![keyConceptsRup](images/keyConceptsRup.png)
+
+### Elementos do RUP
+
+### Disciplinas
+
+- Workflow de atividades correlatas
+- Alguns elementos, como risco e testes, são introduzidos
+
+---
+
+![rupDiagram](images/rupDiagram.png)
