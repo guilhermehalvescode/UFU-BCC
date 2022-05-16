@@ -208,6 +208,19 @@
 
 ## Processos
 
+> Processo
+> Define quem irá fazer o que, quando, e como a fim de alcançar um objetivo
+
+![proc](images/proc.png)
+
+### Detalhamento de Processos
+
+- Objetivos
+  - Prover um guia para as atividades
+  - Especificar que artefatos e quando devem ser desenvolvidos
+  - Direcionar as tarefas dos grupos e indivíduos
+  - Oferecer um critério para monitorar e medir o processo
+
 ### Melhores Práticas
 
 - Desenvolver software iterativamente
@@ -266,13 +279,41 @@
 ---
 
 - Vantagens
-  - Os riscos
+  - Os riscos são atacados mais cedo
+  - Mudanças nos requisitos são absorvidas mais rapidamente
+  - Refinamento de arquitetura
+  - Aprendizado e apriomoramento
+  - Aumento do reuso
 
 ### Gerência de Requisitos
 
+- Dificuldades
+  - Requisitos não são óbvios
+  - Requisitos não são sempre facilmente expresso em palavras
+  - Existem vários tipos de requisitos em diferentes níveis de detalhes
+  - O número de requisitos pode explodir
+  - Requisitos estão interligados
+  - Existem várias pessoas interessadas nos requisitos
+  - Requisitos mudam
+- Atacando
+  - Analisando o problema
+  - Entendendo as necessidades dos "stakeholders"
+  - Definindo o sistema
+  - Gerenciando o escopo do projeto
+  - Refinando a definição do sistema
+  - Gerenciando mudança de requisitos
+
 ### Arquitetura Baseada em Componentes
 
+- Suporte ao Desenvolvimento Baseado em Componentes
+  - Com o processo iterativo
+  - Baseado na arquitetura
+  - Através da UML - com pacotes, camadas e subsistemas
+  - Testes graduais
+
 ### Gerência de Mudanças
+
+![changeManagement](images/changeManagement.png)
 
 ### Conceitos Chave
 
@@ -280,11 +321,184 @@
 
 ### Elementos do RUP
 
+- Workflow
+- Workers ou papel
+- Atividades
+- Artefatos
+
+---
+
+![rupElements](images/rupElements.png)
+
 ### Disciplinas
 
 - Workflow de atividades correlatas
-- Alguns elementos, como risco e testes, são introduzidos
+- Alguns elementos, como risco e testes, são introduzidos em diferentes disciplinas
+- Relação entre disciplina e modelos
 
 ---
 
 ![rupDiagram](images/rupDiagram.png)
+
+### Workflow
+
+- Sequência de atividades que produzem um resultado de valor observável
+- Geralmente expresso em um diagrama de atividade
+- Organização
+  - Cada disciplina tem seu Workflow
+
+### Detalhes de Workflow
+
+![workflowDetails](images/workflowDetails.png)
+
+---
+
+- As atividades não são feitas em sequência
+- Mostra os artefatos necessários e os gerados
+- Agrupa atividades relacionadas de outras disciplinas
+
+### Workers - Papel
+
+![workersPaper](images/workersPaper.png)
+
+### Workers - Aparecem em Detalhes de Workflow
+
+![workersWorkflowDetails](images/workersWorkflowDetails.png)
+
+### Atividade
+
+- Unidade de trabalho com um propósito claro
+- Associadas a atores
+- Utilizado para planejamento e verficação de progresso
+
+![activity](images/activity.png)
+
+---
+
+- A atividade 'Find use case and actors' se decompõe nos passos:
+  - Identificar os atores
+  - Identificar os casos de uso
+  - Descrever a interação entre os atores e uc
+  - Organizar em pacotes
+  - Apresentar o modelo em um diagrama de casos de uso
+  - Avaliar os resultados
+
+![activityUseCase](images/activityUseCase.png)
+
+### Artefatos
+
+- Unidade produzida por uma atividade
+- Pode assumir as formas
+  - Modelo (UML Model)
+  - Documento (Visão)
+  - Código (Componente)
+  - Templates (MSWord)
+  - Executáveis
+  - Guias e checkpoints
+- Mantidos por controle de versão
+
+![artifacts](images/artifacts.png)
+
+### Visão
+
+- Formular a expressão do problema
+  - O problema "descrição do problema"
+  - Afeta "os stakeholders afetados"
+  - O impacto deste é "qual é o impacto do problema"
+  - Uma solução adequada poderia "lista de benefícios"
+
+### Planejamento
+
+- Plano de desenvolvimentos de software
+  - Bom entendimento do que vai ser criado
+  - Plano de Fase: granularidade alta
+  - Plano de Itreação: granularidade baixa
+
+> The product is only as good as the plan for the product
+> Charles Fishman
+
+> The plan is nothing; the planning is everything
+> Dwight D. Eisenhowe
+
+### Riscos
+
+- Investigando e avaliando riscos
+  - Identificar os riscos
+  - Analisar e priorizar os riscos
+  - Definir estratégias de evasão
+  - Definir estratégias de ataque
+  - Definir estratégias de contingência
+    - Indicadores
+    - "Plano B"
+  - Rever os riscos durante a iteração
+  - Rever os riscos no final da iteração
+
+### Arquitetura
+
+- Artefato: Software Architecture Document
+- Quais são os componentes
+- Como os componentes se encaixam
+- Existe algum framework
+- Visões arquiteturais
+
+![RUPVision](images/RUPVision.png)
+
+### Mudanças
+
+- Artefato: Change Request
+  - Provê um histórico das mudanças e das decisões tomadas
+  - Gerenciar o escopo do projeto
+  - Avaliar o impacto das decisões
+  - Ferramentas comuns: Issue Trackers (Bug trackers)
+    - Bugzilla
+    - Jira
+    - GitHub
+
+### Conclusões
+
+- Sem visão?
+  - O projeto pode perder escopo ou desviar do propósito
+- Sem processo?
+  - A equipe pode perder a visão de quem está fazendo o que e quando
+- Sem planejamento?
+  - Você perde a capacidade de rastrear o progresso
+- Sem controle de riscos?
+  - Você pode focar no ponto errado e pisar em "minas"
+- Sem arquitetura?
+  - Podem ocorrer problemas com escalabilidade, falso reuso e performance
+- Sem avaliação?
+  - Tenha coragem e enfrente a verdade!
+- Sem Change Request?
+  - Como rastrear, priorizar os pedidos do cliente
+
+### Estrutura do processo: Duas Dimensões
+
+- A primeira dimensão representa o aspecto dinâmico do processo como é ordenado, e é expresso em termos de ciclo, fases, iterações e marcos
+- A segunda dimensão representa o aspecto estático do processo: sua descrição em termos de componentes de processo, atividades, fluxos, artefatos e trabalhadores
+
+### Fases e Iterações
+
+![phasesAndIterations](images/phasesAndIterations.png)
+
+### Estrutura dinâmica
+
+- Desenvolvimento Iterativo
+
+![iterativeDevelopment](images/iterativeDevelopment.png)
+
+### Milestone
+
+![milestone](images/milestone.png)
+
+- Cada fase deve ser concluída com um Milestone (Major Milestone)
+
+### Concepção
+
+![conception](images/conception.png)
+
+- Estabelecer o escopo e os limites, com critérios de aceitação bem definidos
+- Discriminar os casos de usos críticos
+- Exibir uma arquitetura candidata
+- "Adivinhar" o custo e os calendário
+- Preparar o ambiente do projeto
+- Estudo de viabilidade
