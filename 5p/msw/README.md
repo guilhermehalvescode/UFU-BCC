@@ -502,3 +502,227 @@
 - "Adivinhar" o custo e os calendário
 - Preparar o ambiente do projeto
 - Estudo de viabilidade
+
+### Elaboração
+
+- Assegurar que os requisitos e planos estão estáveis
+- Estabelecer uma arquitetura
+- Provar que a arquitetura funciona
+- Produzir um protótipo evolucionário
+- Estabelecer um ambiente
+- Deve terminar em torno de um quinto tempo do projeto
+- Desenvolvedores já sentem a vontade para dar estimativas de tempo
+- Todos os riscos significativos foram identificados
+
+### Construção
+
+- Atingir qualidade o mais breve possível
+- Desenvolver incrementalmente e lançar as versões de teste (alpha, beta)
+- Completar o desenvolvimento de todos os Casos de Uso
+- Estabelecer(detalhar) as iterações e definir que funcionalidades entregar em cada uma delas
+- Casos de Uso com maior prioridade e/ou risco de desenvolvimento primeiro
+- Cada iteração é um mini-projeto: Análise, projeto, codificação, teste e integração
+- As iterações são incrementais na função
+- Integração contínua
+
+### Transição
+
+- Teste de validação
+- Conversão do ambiente para produção
+- Treinamento de usuários e manutenção
+- Otimização
+- Alcançando auto-suporte do usuário
+
+### RUP - Detalhando os Workflows
+
+![rupWorkflow](images/rupWorkflow.png)
+
+#### O fluxo de Modelagem de Negócios
+
+Proposta
+
+- Entender a estrutura dinâmica da organização na qual um sistema será distribuído
+- Entender os problemas atuais na organização alvo e identificar potenciais melhorias
+- Derivar exigências de sistema necessárias para o suporte da organização alvo
+
+---
+
+Notação para a modelagem do negócio
+
+- Usuários empresariais
+- Os processos empresariais são representados pro casos de uso de negócio e realizações de caso de uso empresarial
+- O papel que as pessoas exercem numa organização é representado por trabalhadores empresariais
+- As "coisas" que uma organização administra ou produz são representadas através de entidades empresariais
+
+---
+
+##### Cenários de Modelagem de Negócios
+
+- Organograma
+- Modelagem de domínio
+- Um negócio, muitos sistemas
+- Modelo de negócio genérico
+- Negócio novo
+
+---
+
+##### Trabalhadores
+
+- Analista de Processo de Negócio
+- Projetista de negócio
+
+##### Artefatos (Negócios)
+
+- O documento de visão empresarial
+- Um modelo de casos de uso empresarial
+- Um modelo de objeto empresarial
+
+![businessModel](images/businessModel.png)
+
+#### O Fluxo de Requisitos
+
+Proposta
+
+- Estabelecer e manter acordo com os clientes e outros interessados no que o sistema deveria fazer
+- Definir os limites do sistema
+- Fornecer base para cálculo do custo e tempo para desenvolver o sistema
+
+---
+
+##### Requisitos
+
+- Funcionais
+
+- Não-funcionais
+  - Utilidade
+  - Robustez
+  - Desempenho
+  - Suporte
+
+![requisitesWorkflow](images/requisitesWorkflow.png)
+
+---
+
+##### Trabalhadores em Requisitos
+
+- Analista de Sistema
+- Especificador do Caso de Uso
+
+#### O Fluxo de Análise e Projeto
+
+##### Trabalhadores (análise e projeto)
+
+- Arquiteto
+- Projetista
+
+##### Artefatos (análise e projeto)
+
+- O modelo de Projeto
+
+![analysisWorkflow](images/analysisWorkflow.png)
+
+#### Fluxo de Implementação
+
+Proposta
+
+- Implementar classes e objetos em termos de componentes
+- Testar os componentes dsenvolvidos como unidades
+- Integrar em sistema executável os resultados produzidos por implementadores individuais ou equipes
+
+---
+
+- Tipos de protótipos:
+  - Comportamental
+  - Estrutural
+
+---
+
+- Trabalhadores
+  - Implementador
+  - Integrador do sistema
+  - Arquiteto
+  - Revisor de código
+
+---
+
+- Artefatos
+  - Subsistema de implementação
+  - Componente
+  - Plano de construção de integração
+
+![implementationWorkflow](images/implementationWorkflow.png)
+
+#### Fluxo de Teste
+
+Proposta
+
+- Verificar as interações de componentes
+- Verificar a própria integração de componentes
+- Verificar que todos os requisitos tenham sido implementados corretamente
+- Identificar e assegurar que todos os defeitos descobertos estejam descobertos estejam corrigidos antes do softare ser distribuído
+
+---
+
+- Tipos de testes
+  - Padrão
+  - Configurações
+  - Função
+  - Instalação
+  - Integridade
+  - Carregamento
+  - Desempenho
+  - Stress
+
+---
+
+- Trabalhadores
+  - Projetista de teste
+  - Testador
+
+---
+
+- Artefatos
+  - Plano de teste
+  - Resultado de testes
+
+![testWorkflow](images/testWorkflow.png)
+
+#### Fluxo de distribuição
+
+Proposta
+
+- Testar o software em seu ambiente operacional final
+- Empacotar os software para entrega
+- Distribuir o software
+- Instalar o software
+- Treinar os usuários finais
+
+---
+
+Modos de distribuição
+
+- Software em sistemas feitos sobre encomenda
+- Software pronto
+- Software descarregável pela internet
+
+---
+
+Trabalhadores
+
+- Gerente de distribuição
+- Gerente de projeto
+- Escritor técnico
+- Desenvolvedor de curso
+- Provador
+- Implementador
+
+---
+
+Artefatos fundamentais
+
+- Software executável
+- Artefatos de instalação
+- Material de suporte
+- Material de treinamento
+
+![distributionWorkflow](images/distributionWorkflow.png)
