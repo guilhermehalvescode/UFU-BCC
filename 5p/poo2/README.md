@@ -295,7 +295,7 @@ public static void main() {
 
 ---
 
-#### Exercídio Padrão Strategy
+#### Exercício Padrão Strategy
 
 - A seguir é apresentado um conjunto de classes e interfaces para um jogo de aventura
 - Existem classes que implementam comportamento das armas que podem ser utilizadas pro estes personagens
@@ -316,3 +316,30 @@ public static void main() {
   - Identifique os aspectos quer variam e separe-os do que permanece igual
   - Programe para um supertipo
   - Dar prioridade a composição
+
+### State
+
+- A intenção do padrão:
+  - "Permite a um objeto alterar seu comportamentoi quando seu estado interno muda. O objeto permanecerá ter mudado de classe"
+
+---
+
+- Atualização automática do estado de um projeto
+- Alteração de comportamento quando o estado interno muda
+- Torna o comportamento dependente do estado
+
+---
+
+- Especificar
+
+- Adição de novos estados e comportamentos, através da edição de novas classes
+- Cria-se uma objeto para cada estado possível
+
+---
+
+- O Objetivo do padrão:
+  - Permitir que um objeto tenha seu comportamento alterado durante execução
+
+---
+
+- 
