@@ -726,3 +726,32 @@ Artefatos fundamentais
 - Material de treinamento
 
 ![distributionWorkflow](images/distributionWorkflow.png)
+
+## Pratícas ágeis
+
+Metodologias de desenvolvimento ágeis priorizam os indivíduos envolvidos e suas interações sobre os processos e as ferramentas. Um software funcionando é mais importante do que uma documentação compreensiva, onde o cliente deve colaborar ativamente no desenvolvimento.
+
+- Em uma metodologia ágil assumimos que algumas premissas são irreais:
+
+
+### Extreme Programming (XP)
+
+Nesse método ágil, todo o time deve trabalhar junto o levamtamento de requisitos, é feito através do conceito de user stories, onde textos são montados simulando usuários desejando requisitos em determinadas situações
+
+Outro ponto importante é ter um ambiente de trabalho informativo, onde todas as tarefas em andamento podem ser feitas. Em geral, quadros *kanban* são muitos utilizados para traçar as implementação que devem ser feitas, em andamento e prontas.
+
+O trabalho deve possuir entregas contínuas, nesse contexto, é utilizado o conceito de *continous integration* para que a medida que pequenas features sejam feitas
+
+XP prog utiliza:
+
+- pair programming (programação em pares, permite trabalho em dupla e melhora qualidade de código, aprendizado em dupla é melhor)
+- incremental design
+- test first
+
+### SCRUM
+
+No SCRUM é utilizado o conceito de sprints, que são cliclos de desenvolvimento onde tasks provenientes de um backlog (lista de tasks) são implementadas. As tasks do backlog são definidas pelo PO (Product Owner). O time de desenvolvimento, ao receber uma task, deve implementá-la dentro de uma sprint.
+
+Normalmente, durante as reuniões são realizadas reuniões (dailys), para que cada membro do time de desenvolvimento mostre o status de seu desenvolvimento durante a semana e resolver eventuais problemas que ocorreram
+
+As sprints são um processo iterativo, onde no tempo determinado, mais requisitos são retirados do backlog durante a reunião de sprint (sprint planning) e entram no ciclo de desenvolvimento. Nesse contexto, o Scrum Master é responsávelpore gerenciar a sprint e garantir que tudo ocorrerá conforme o planejamento
