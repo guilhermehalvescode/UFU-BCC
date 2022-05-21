@@ -67,3 +67,87 @@
 3) ótima / paralelo ?
 
 - Salvo de forma ótima, porém com acesso paralelo
+
+## Armazenamento de Dados - Gerência de Bufferpool
+
+Motivação
+
+- O banco de dados não cabe na memória principal
+- Protocolos de Recuperação de Falhas e de Controle de Transação (Durabilidade)
+
+![bufferPool](images/bufferPool.png)
+
+![replacementPolicyBufferPool](images/replacementPolicyBufferPool.png)
+
+Conceitos
+
+- Frame ou Slot: área na memória RAM que será/está ocupada por uma página do disco
+  - pin_count: número de requisições no frame
+  - dirty_bit: indica se o frame foi modificado(1) ou se contem uma imagem que está no disco(0)
+
+### Processamento de requisição
+
+``` plsql
+SE (EXISTE slot com a página solicitada?)
+  INCREMENTA pin_count;
+  RETORNA endereço do slot;
+SENÃOSE (EXISTE slot com pin_count == 0?)
+  ESCOLHE um slot com pin_count == 0
+  (Usando uma política de substituição);
+SENÃO (WAIT e RETORNA EM (2)) ou (ABORTA);
+SE (dirty_bit do slot escolhido == 1?)
+  GRAVA slot na página correspondente no disco;
+LÊ página solicitada e GRAVA no slot escolhido
+INICIA pin_count do slot com 1
+RETORNA endereço do slot escolhido;
+```
+
+### Fim da tranção e Pre-fetching
+
+#### Fim da transação
+
+- Os pin_count de todos os slots em uso pela transação serão decrementados quando a transação termina
+- A transação pode liberar slots durante seu processamento
+
+#### Pré-fetching
+
+- Requisições de páginas podem ser previstos por meio de pre-fetching
+
+### Políticas de Substituição
+
+Como escolher slots com pin_count == 0 (?)
+
+- Fila circular ou aleatória: sem overhead de estrutura, pos basta um contador que é incrementado na fila circular ou é aleatório
+- Fifo: fila por tempo de entrada na memória
+- LRU (Least Recently Used): o slot entra em uma fila quando seu pin_count é decrementado para 0
+- MRU (Most Recently Used): o slot entra em uma pilha quando pin_count é decrementado para 0
+
+### Comparação MRU x LRU
+
+- Escolha depende do padrão de uso
+- Repetidas varreduras sequenciais favorecem MRU, exemplo
+
+``` plsql
+JUNÇÃOs.k=r.k (R, S) : Algoritmo de Laços Aninhados Paginado
+PARA CADA pr em R
+  PARA CADA ps em S
+    PARA CADA r em pr {
+      PARA CADA s em ps {
+        SE s.k = r.k imprima (r + s)
+      }
+    }
+    Liberre o slot de ps;
+  }
+  Libere o slot de pr;
+}
+Simular MRU e LRU e verificar a inundação sequencial ocorrida em LRU.
+```
+
+### SGBD x SO
+
+- SO usa políticas de paginação para memória virtual
+- Mas SGBD pode
+  - Prever padrões de uso
+  - Necessita de controle para recuperação de falhar
+  - Portabilidade
+- Gerência pode ser compartilhada
