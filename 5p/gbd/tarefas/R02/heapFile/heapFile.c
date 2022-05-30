@@ -2,40 +2,50 @@
 
 HEAP_FILE createHeapFile(lli numberOfRegisters)
 {
-  lli remainingRegisters = numberOfRegisters;
+  lli index;
   HEAP_FILE file;
-  Alunos alunos;
+  Aluno *aluno;
 
+  // if file exists, open it
+  if ((file = fopen("./heapFile.bin", "r+b")) != NULL)
+  {
+    return file;
+  }
+
+  // else create it
   if ((file = fopen("./heapFile.bin", "wb")) == NULL)
   {
     perror("Fopen as write binary heapFile error");
     return NULL;
   }
 
-  printf("Generating %lli students, %lli per page\n", numberOfRegisters, NUM_REGISTERS_PER_PAGE);
+  // printf("Generating %lli students\n", numberOfRegisters);
 
-  while (remainingRegisters > 0)
+  for (index = 0; index < numberOfRegisters; index++)
   {
-    lli pageIndex = (numberOfRegisters - remainingRegisters) / NUM_REGISTERS_PER_PAGE;
+    // printf("Generating student %lli student out of %lli students\n", index + 1, numberOfRegisters);
 
-    printf("Generating page %lli\n", pageIndex);
-    Alunos alunos = generateAlunos(NUM_REGISTERS_PER_PAGE, pageIndex * NUM_REGISTERS_PER_PAGE);
+    aluno = generateAluno(numberOfRegisters);
 
-    if (alunos == NULL)
+    if (aluno == NULL)
     {
       perror("Generate alunos error");
       return NULL;
     }
 
-    if (fwrite(alunos, sizeof(Aluno), NUM_REGISTERS_PER_PAGE, file) != NUM_REGISTERS_PER_PAGE)
+    if (fwrite(aluno, sizeof(Aluno), 1, file) != 1)
     {
-      perror("Fwrite alunos error");
+      perror("Fwrite aluno error");
       return NULL;
     }
 
-    free(alunos);
-    remainingRegisters -= remainingRegisters - NUM_REGISTERS_PER_PAGE < 0 ? 0 : NUM_REGISTERS_PER_PAGE;
-    pageIndex++;
+    // printf("Student %lli written in file\n", index + 1);
+
+    free(aluno);
   }
   return file;
+}
+
+void readRandom(HEAP_FILE file)
+{
 }

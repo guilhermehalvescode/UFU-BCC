@@ -4,6 +4,7 @@ int main()
 {
   HEAP_FILE file = createHeapFile(NUM_REGISTERS);
 
+  printf("cheguei\n");
   if (file == NULL)
   {
     return -1;

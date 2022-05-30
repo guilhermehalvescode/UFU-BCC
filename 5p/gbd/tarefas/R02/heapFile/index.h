@@ -7,9 +7,16 @@
 #include <string.h>
 #include <time.h>
 
-#define MEM_SIZE 8000000000 // 8GM mem size = 8*10^9 bytes
-#define NUM_REGISTERS (MEM_SIZE * 5 / sizeof(Aluno)) + 50
-#define NUM_REGISTERS_PER_PAGE 100000
+// linux
+// #include <linux/kernel.h>
+// #include <linux/sys.h>
+// #include <sys/sysinfo.h>
+
+// windows
+// #include <windows.h>
+
+#define MEM_SIZE 8000000000                               // 8GM mem size = 8*10^9 bytes
+#define NUM_REGISTERS (MEM_SIZE * 5 / sizeof(Aluno)) + 50 // use in case os is "windows"
 
 typedef struct Aluno
 {
@@ -18,11 +25,9 @@ typedef struct Aluno
   char nomeAluno[43];
 } Aluno;
 
-typedef Aluno *Alunos;
-
 typedef long long int lli;
 typedef FILE *HEAP_FILE;
 
-Alunos generateAlunos(lli quantidadeAlunos, lli startIndex);
+Aluno *generateAluno(lli quantidadeAlunos);
 
 HEAP_FILE createHeapFile(lli numberOfRegisters);
