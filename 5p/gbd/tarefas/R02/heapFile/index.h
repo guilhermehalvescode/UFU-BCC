@@ -15,19 +15,28 @@
 // windows
 // #include <windows.h>
 
-#define MEM_SIZE 8000000000                               // 8GM mem size = 8*10^9 bytes
+#define MEM_SIZE 8589934592                               // 8GM mem size = 8*10^9 bytes 8589934592
 #define NUM_REGISTERS (MEM_SIZE * 5 / sizeof(Aluno)) + 50 // use in case os is "windows"
 
-typedef struct Aluno
+typedef long int li;
+
+typedef struct
 {
-  int seqAluno;
+  li seqAluno; // http://linguagemc.com.br/tipos-de-dados-em-c/ li size is 4 bytes
   char codigoCurso[3];
   char nomeAluno[43];
 } Aluno;
 
-typedef long long int lli;
 typedef FILE *HEAP_FILE;
 
-Aluno *generateAluno(lli quantidadeAlunos);
+/* utils.c */
+Aluno *generateAluno(li id);
+li generateRandomNumber(li min, li max);
+void printAluno(Aluno *aluno);
 
-HEAP_FILE createHeapFile(lli numberOfRegisters);
+/* heapFile.c */
+HEAP_FILE createHeapFile(li numberOfRegisters);
+int readRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters);
+int insertAtEnd(HEAP_FILE file, li numberOfRegisters);
+Aluno *deleteRandom(HEAP_FILE file, li seqAluno);
+int updateRandom(HEAP_FILE file, li numberOfRegisters, li seqAluno);
