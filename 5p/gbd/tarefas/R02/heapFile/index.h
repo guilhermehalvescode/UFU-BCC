@@ -38,5 +38,5 @@ void printAluno(Aluno *aluno);
 HEAP_FILE createHeapFile(li numberOfRegisters);
 int readRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters);
 int insertAtEnd(HEAP_FILE file, li numberOfRegisters);
-Aluno *deleteRandom(HEAP_FILE file, li seqAluno);
-int updateRandom(HEAP_FILE file, li numberOfRegisters, li seqAluno);
+int updateRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters);
+Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters);

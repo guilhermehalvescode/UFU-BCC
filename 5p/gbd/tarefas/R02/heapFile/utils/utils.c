@@ -7,7 +7,7 @@ li generateRandomNumber(li min, li max)
 
 void printAluno(Aluno *aluno)
 {
-  printf("%d - %s - %s\n", aluno->seqAluno, aluno->codigoCurso, aluno->nomeAluno);
+  printf("-----------------------------\nSeqAluno: %li\nCurso: %s\nNome: %s\n-------------------\n", aluno->seqAluno, aluno->codigoCurso, aluno->nomeAluno);
 }
 
 Aluno *generateAluno(li id)
@@ -17,7 +17,7 @@ Aluno *generateAluno(li id)
 
   if (aluno == NULL)
   {
-    perror("generateAluno allocate Aluno error");
+    perror("[ERROR] generateAluno allocate Aluno");
     return NULL;
   }
 

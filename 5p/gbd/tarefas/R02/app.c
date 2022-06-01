@@ -4,8 +4,7 @@ int main()
 {
   srand(time(NULL));
 
-  li seqAluno;
-  li numRegisters = NUM_REGISTERS;
+  li seqAluno, numRegisters = NUM_REGISTERS;
   Aluno *aluno;
   HEAP_FILE file = createHeapFile(numRegisters);
 
@@ -18,7 +17,8 @@ int main()
 
   while (option != 0)
   {
-    printf("Number of registers: %li\n", numRegisters);
+    printf("Number of registers: %li\n\n", numRegisters);
+    printf("[0] Exit\n");
     printf("[1] Read Random\n");
     printf("[2] Insert At End\n");
     printf("[3] Update Random\n");
@@ -29,11 +29,13 @@ int main()
     switch (option)
     {
     case 1:
-
       printf("\nDigite a sequencia do aluno: ");
       scanf("%li", &seqAluno);
 
-      readRandom(file, seqAluno, numRegisters);
+      if (readRandom(file, seqAluno, numRegisters) != 1)
+      {
+        printf("[LOG] readRandom failed\n");
+      }
       break;
     case 2:
 
@@ -41,23 +43,36 @@ int main()
       {
         numRegisters++;
       }
+      else
+      {
+        printf("[LOG] insertAtEnd failed\n");
+      }
       break;
     case 3:
 
       printf("\nDigite a sequencia do aluno: ");
       scanf("%li", &seqAluno);
 
-      updateRandom(file, numRegisters, seqAluno);
+      if (updateRandom(file, seqAluno, numRegisters) != 1)
+      {
+        printf("[LOG] updateRandom failed\n");
+      }
       break;
     case 4:
       printf("\nDigite a sequencia do aluno: ");
       scanf("%li", &seqAluno);
 
-      aluno = deleteRandom(file, seqAluno);
-      numRegisters--;
-      printAluno(aluno);
+      aluno = deleteRandom(file, seqAluno, numRegisters);
+      if (deleteRandom != NULL)
+      {
+        printAluno(aluno);
+        numRegisters--;
+      }
+      else
+      {
+        printf("[LOG] deleteRandom failed\n");
+      }
       break;
-
     default:
       printf("Naoooooooooooooooooooooooo\n");
       break;
