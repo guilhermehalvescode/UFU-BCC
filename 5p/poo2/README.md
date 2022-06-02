@@ -331,6 +331,11 @@ public static void main() {
 ---
 
 - Especificar
+  - os diferentes estados que um objeto pode assumir
+  - transições de estado
+  - definição de uma máquina de estados orientada a objetos
+
+---
 
 - Adição de novos estados e comportamentos, através da edição de novas classes
 - Cria-se uma objeto para cada estado possível
@@ -338,8 +343,289 @@ public static void main() {
 ---
 
 - O Objetivo do padrão:
-  - Permitir que um objeto tenha seu comportamento alterado durante execução
+  - Permitir que um objeto tenha seu comportamento alterado de acordo com o estado interno que se encontra em um momento dado
 
 ---
 
-- 
+- Participantes:
+  - Context
+    - Define uma interface com o cliente
+    - Mantém uma instância de um ConcreteState que define o seu estado atual
+  - State
+    - Define uma interface para a criação de estados concretos
+  - Concrete State
+    - Implementa o comportamento associado a uma estado particular de Context
+
+---
+
+- Diagrama de classes
+
+![stateDiagram](images/stateDiagram.png)
+
+---
+
+- Exemplo
+
+![stateExPlayer](images/stateExPlayer.png)
+![stateExWarrior](images/stateExWarrior.png)
+![stateExVendingMachine](images/stateExVendingMachine.png)
+![stateExAcc](images/stateExAcc.png)
+
+---
+
+Exemplo de implementação:
+
+Controle de estado de contas bancárias:
+
+- Se a conta estiver com saldo entre 0 e 1000 = estado prata. Neste caso, o cliente deve pagar uma taxa por cada saque que realizar
+- Se a conta estiver com saldo maior que 1000 = estado ouro. Neste caso, o cliente não paga taxa de saque e ainda ganha um rendimento imediado em cada depósito que realizar
+- Se a conta estiver com saldo negativo = estado vermelho. Neste caso, não é permitido a realização de saques. Apenas depósitos.
+
+![stateAccDiag](images/stateAccDiag.png)
+
+---
+
+#### Implementação
+
+``` java
+// "context"
+class Conta {
+  private Estado estado;
+  private String numero;
+  private double saldo;
+
+  // Construtor
+  public Conta(String numero) {
+    // As novas contas são por default 'Prata'
+    this.numero = numero;
+    this.estado = new EstadoPrata(this);
+    this.saldo = 0.0;
+  }
+
+  // getters & setters
+  public void depositar(double quantia) {
+    estado.depositar(quantia);
+    System.out.println("Depósito---" + quantia);
+    System.out.println("Saldo = " + this.getSaldo());
+    System.out.println("Estado = " + this.estado.getClass().getName());
+  }
+
+  public void sacar(double quantia) {
+    estado.sacar(quantia);
+    System.out.println("Saque---" + quantia);
+    System.out.println("Saldo = " + this.getSaldo());
+    System.out.println("Estado = " + this.estado.getClass().getName());
+  }
+} // fim da classe conta
+```
+
+```java
+//state
+public abstract class Estado {
+  private Conta conta;
+  private double limiteInferior;
+  private double limiteSuperior;
+
+  public Estado(Conta conta) {
+    this.conta = conta;
+    setLimites();
+  }
+
+  protected abstract void setLimites();
+
+  //getters & setters
+  public void depositar(double quantia) {
+    this.conta.setSaldo(this.conta.getSaldo() + quantia);
+    this.verificarAlteracaoEstado();
+
+  }
+
+  public void sacar(double quantia) {
+    this.conta.setSaldo(this.conta.getSaldo() - quantia);
+    this.verificarAlteracaoEstado();
+  }
+
+  protected abstract void verificarAlteracaoEstado();
+} // fim da classe estado
+```
+
+```java
+// "ConcreteState"
+class EstadoPrata extends Estado {
+  public EstadoPrato(Conta conta) {
+    super(conta);
+  }
+
+  // comportamento particular deste estado
+  public void setLimites() {
+    this.setLimiteInferior(0.0);
+    this.setLimiteSuperior(1000.0);
+  }
+
+  // comportamento particular deste estado: cliente paga taxa a cada saque realizado
+
+  public void sacar(double quantia) {
+    this.getConta().setSaldo(this.getConta().getSaldo() - quantia - 5.00);
+    this.verificarAlteracaoEstado();
+  }
+
+  // comportamento particular deste estado: cliente paga taxa a cada saque realizado
+  public void verificarAlteracaoEstado() {
+    if(this.getConta().getSaldo() < this.getLimiteInferior())
+      this.getConta().setEstado(new EstadoVermelho(this.getConta()));
+    else if(this.getConta().getSaldo() > this.getLimiteSuperior()) 
+      this.getConta().setEstado(new EstadoOuro(this.getConta()));
+  }
+}
+```
+
+```java
+// "concrete state"
+class EstadoVermelho extends Estado {
+  public EstadoVermelho(Conta conta) {
+    super(conta);
+  }
+
+  //comportamento particular deste estado
+  public void setLimites() {
+    setLimiteInferior(-100.0);
+    setLimiteSuperior(0.0);
+  }
+
+  // comportamento particular deste estado: não permite saque.
+  public void sacar(double quantia) {
+    System.out.println("Não existem fundos disponíveis para saque!");
+  } 
+
+  public void verificarAlteracaoEstado() {
+    if(this.getConta().getSaldo() > this.getLimiteSuperior()) {
+      this.getConta().setEstado(new EstadoPrata(this.getConta()));
+      this.getConta().getEstado().verificarAlteracaoEstado();
+    }
+  }
+} // fim da classe Estado Vermelho
+```
+
+```java
+// "concrete state"
+class EstadoOuro extends Estado {
+  public EstadoVermelho(Conta conta) {
+    super(conta);
+  }
+
+  //comportamento particular deste estado
+  public void setLimites() {
+    setLimiteInferior(1000.0);
+    setLimiteSuperior(10000000.0);
+  }
+
+  // comportamento particular deste estado: não permite saque.
+  public void sacar(double quantia) {
+    System.out.println("Não existem fundos disponíveis para saque!");
+  } 
+
+  public void verificarAlteracaoEstado() {
+    if(this.getConta().getSaldo() > this.getLimiteSuperior()) {
+      this.getConta().setEstado(new EstadoPrata(this.getConta()));
+      this.getConta().getEstado().verificarAlteracaoEstado();
+    }
+  }
+} // fim da classe Estado Ouro
+```
+
+```java
+// aplicação cliente
+public class Client {
+  public static void main(String[] args) {
+    // abri nova conta
+    Conta conta = new Conta("2923903");
+
+    // Efetuar transações financeiras
+    conta.depositar(500.0);
+    conta.depositar(300.0);
+    conta.depositar(550.0);
+    conta.depositar(550.0);
+    conta.sacar(2000.00);
+    conta.sacar(1100.00);
+  }
+}
+```
+
+
+- [Exemplo mário](https://brizeno.wordpress.com/category/padroes-de-projeto/state/)
+  
+#### Observações
+
+- Isola o comportamento de um objeto, que depende de seu estado interno
+- A classe Context transfere aos estados uma responsabilidade
+- A lógica de transição de estados é implementada pelos próprios estados, desobrigando o contexto de conhecê-la
+- Esta lógica é dividida entre vários estados
+- Cada estado encapsula parte dessa lógica
+- Elimina código complicado e extenso de decisão
+- Com isto fica simples a inserção de novos estados e transições
+
+---
+
+- O padrão elimina a necessidade de condicionais complexos e que frequentemente serão repetidos.
+- Com o padrão cada "ramo" do condicional acaba se tornando um objeto
+- Trata-se cada estado como se fosse um objeto de verdade, distribuindo a complexidade dos condicionais
+- Desta forma, pode-se implementar facilmente qualquer tipo de máquina de estados, como os autômatos
+
+### Padrão Chain Responsability
+
+Objetivo: Evitar o acoplamento do remetente de uma solicitação ao receptor fornecendo uma cadeia de objetos para tratar uma solicitação
+
+- O objeto que fez a solicitação não tem conhecimento explícito de quem a tratará - essa solicitação é dita ter um receptor implícito
+- Representa um encadeamento de objetos receptores para o processamento de uma série de solicitações diferentes
+- Esses objetos receptores passam a solicitação ao longo da cadeia até que um ou vários objetos a traem
+
+---
+
+- Cada objeto receptor possui uma lógica descrevendo os tipos de solicitação que é capaz de processar e como passar adiante aquelas que requeiram processamento por outros receptores
+
+---
+
+- Dessa forma, fornece um aclopamento mais fraco por evitar a associação explícita  do remetente da um receptor concreto, permitindo a mais de um objeto a oportunidade de tratar a solicitação
+
+---
+
+- É montada uma lista simplesmente encadeada de objetos que podem servir um determinado pedido
+- Em vez de acoplar o cliente a um objeto específico para a execução de um de um determinado método, o pedido é enviado à cadeia.
+- O pedido vai passando pelos objetos até encontrar o mais adequado para satizfazê-lo
+- Cada objeto pode realizar uma parte do serviço e passar o pedido ao objeto seguinte na cadeia (soluções distribuídas)
+
+![chainResponsibility](images/chainResponsibility.png)
+
+---
+
+#### Quando usar estre padrão de projeto ??
+
+- quando mais de um objeto puder lidar com uma solicitação
+- quando o manipulador (handler) não é conhecido antecipamente
+- quando o grupo de objetos que podem lidar com a solicitação deve ser especificado e modificado de forma dinâmico, em tempo de execução
+- quando se deseja evitar o acoplamento do remetende de uma solicitação ao seu destinatário
+
+---
+
+#### Vantagens
+
+- Permite determinar quem será o objeto que irá tratar a requisição dinamicamente, durante a execução
+- A cadeia pode ser configurado em tempo de execução
+- Evita o uso de estruturas condicionais para decidir qual objeto deve tratar a requisição
+- O acoplamento é reduzido, dando ainda flexibilidade adicional na atribuição de responsabilidades a objetos
+
+#### Participantes
+
+As classes que participam do padrão são:
+
+Handler
+
+- Define uma interface para tratar os pedidos
+- Implementa a ligação ao sucessor
+
+ConcreteHandler
+
+- Trata os pedidos pelos quais é responsável
+- Se o ConcreteHandler pode tratar o pedido, trata-o; caso contrário envia-o ao seu sucessor
+
+### Padrão Decorator
