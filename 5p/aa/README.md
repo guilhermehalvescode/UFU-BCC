@@ -439,3 +439,73 @@ troca(A, rnX, r)
 
 - Implementar InsertiSort, MergeSort e QuickSort
 
+
+
+## Análise Recorrência
+
+### Recorrência Merge
+
+![recMerge](images/recMerge.png)
+
+- Ignorar os caso de piso e teto
+- Simplificar o Theta(n) por n
+- Casos pequenos
+
+Impacto nas constantes
+
+---
+
+- T(n) = 2T(n/2) + n
+
+---
+
+Vamos dar um chute (ou assumir por hipótese) que
+
+- T(n) = 2T(n/2) + n
+
+é
+
+- O(nlgn)
+
+e vamos usar o **Método da Substituição** para verificar se o chute está correto
+
+---
+
+![substitutionMerge](images/substitutionMerge.png)
+
+---
+
+- Esta é uma prova (parcial) por indução
+- Estou falando que se é verdade para n/2, é verdade para n...
+- ...se é verdade para n, é verdade para 2n...
+- Esta faltando a base
+
+---
+
+- Para n = 1, aplicando T(n) <= cn lg n, temos que
+
+T(1) <= c lg 1
+
+e
+
+T(1) <= 0
+
+- que não faz sentido ter custo menor ou igual a zero!
+
+---
+
+- Para n = 2, aplicando T(n) <= cn lg n, temos que
+
+T(2) <= c2 lg 2
+
+e
+
+T(2) <= 2c
+
+- Como temos c > 1 (durante a prova por indução) para qualquer valor de T(2) existe um c > 1 que a inequação irá se manter!
+
+(n0 = 2 e c esta indefinida, porém sabemos que existe!)
+
+---
+
+- TO-DO - Exercícios slide aula 10
