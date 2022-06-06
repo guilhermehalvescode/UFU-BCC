@@ -3,7 +3,6 @@
 int main()
 {
   srand(time(NULL));
-
   li seqAluno, numRegisters = NUM_REGISTERS;
   Aluno *aluno;
   HEAP_FILE file = createHeapFile(numRegisters);

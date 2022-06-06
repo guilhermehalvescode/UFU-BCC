@@ -22,7 +22,7 @@ typedef long int li;
 
 typedef struct
 {
-  li seqAluno; // http://linguagemc.com.br/tipos-de-dados-em-c/ li size is 4 bytes
+  li seqAluno;
   char codigoCurso[3];
   char nomeAluno[43];
 } Aluno;

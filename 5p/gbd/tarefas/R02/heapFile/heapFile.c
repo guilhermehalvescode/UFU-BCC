@@ -10,15 +10,15 @@ HEAP_FILE createHeapFile(li numberOfRegisters)
   Aluno *aluno;
 
   // if file exists, open it
-  if ((file = fopen("./heapFile.bin", "r+b")) != NULL)
+  if ((file = fopen64("./heapFile.bin", "r+b")) != NULL)
   {
     return file;
   }
 
   // else create it
-  if ((file = fopen("./heapFile.bin", "w+b")) == NULL)
+  if ((file = fopen64("./heapFile.bin", "w+b")) == NULL)
   {
-    perror("[ERROR] createHeapFile fopen as write binary heapFile");
+    perror("[ERROR] createHeapFile fopen64 as write binary heapFile");
     return NULL;
   }
 
@@ -54,9 +54,9 @@ int readRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
     return -1;
 
-  if (fseek(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
+  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
   {
-    perror("[ERROR] readRandom fseek");
+    perror("[ERROR] readRandom fseeko64");
     return -1;
   }
 
@@ -85,9 +85,9 @@ int insertAtEnd(HEAP_FILE file, li numberOfRegisters)
   if (file == NULL || numberOfRegisters < 0)
     return -1;
 
-  if (fseek(file, 0, SEEK_END) != 0)
+  if (fseeko64(file, 0, SEEK_END) != 0)
   {
-    perror("[ERROR] insertAtEnd fseek");
+    perror("[ERROR] insertAtEnd fseeko64");
     return -1;
   }
 
@@ -115,7 +115,7 @@ int updateRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
 
   li regIndex = seqAluno;
 
-  if (fseek(file, regIndex * sizeof(Aluno), SEEK_SET) != 0)
+  if (fseeko64(file, regIndex * sizeof(Aluno), SEEK_SET) != 0)
   {
     perror("[ERROR] updateRandom lseek");
     return -1;
@@ -146,7 +146,7 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
 
   printf("[LOG] Deletando pageBuffer com a sequencia = %li\n", seqAluno);
 
-  if (fseek(file, registerOffset, SEEK_SET) != 0)
+  if (fseeko64(file, registerOffset, SEEK_SET) != 0)
   {
     perror("[ERROR] deleteRandom first lseek");
     return NULL;
@@ -175,7 +175,7 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   aluno->seqAluno = abs(aluno->seqAluno) * -1;
 
   // return after reading
-  if (fseek(file, -sizeof(Aluno), SEEK_CUR) != 0)
+  if (fseeko64(file, -sizeof(Aluno), SEEK_CUR) != 0)
   {
     perror("[ERROR] deleteRandom second lseek");
     return NULL;
@@ -191,7 +191,7 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
 }
 
 // dúvidas ilmério
-// não conseguimos acessar o final do arquivo usando fopen (biblioteca dele)
+// não conseguimos acessar o final do arquivo usando fopen64 (biblioteca dele)
 //
 int readPage(HEAP_FILE file, int registersPerPage, int *numberOfValidBlock, int *numberOfReadBlocks, double *timeInMs)
 {
@@ -209,7 +209,7 @@ int readPage(HEAP_FILE file, int registersPerPage, int *numberOfValidBlock, int 
       return -1;
     }
 
-    if (fseek(file, page * pageSize, SEEK_SET) != 0)
+    if (fseeko64(file, page * pageSize, SEEK_SET) != 0)
     {
       perror("[ERROR][readPage] alunos malloc error");
       return -1;
