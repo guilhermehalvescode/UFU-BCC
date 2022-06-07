@@ -184,37 +184,45 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   return aluno;
 }
 
-int readSinglePage(HEAP_FILE file, li page, li registersPerPage, li *numberOfValidBlock, li *numberOfReadBlocks)
+int readSinglePage(HEAP_FILE file, li page, li qntPages, li registersPerPage, _off64_t numOfBytes, li *numberOfValidRegs)
 {
 
-  Aluno *pageBuffer = (Aluno *)malloc(registersPerPage * sizeof(Aluno));
+  size_t PAGE_SIZE = registersPerPage * sizeof(Aluno);
 
+  Aluno *pageBuffer = (Aluno *)malloc(PAGE_SIZE);
   if (pageBuffer == NULL)
   {
     perror("[ERROR][readPage] alunos malloc error");
     return -1;
   }
 
-  if (fseeko64(file, page * registersPerPage * sizeof(Aluno), SEEK_SET) != 0)
+  size_t pageOffset = page * PAGE_SIZE;
+  if (fseeko64(file, pageOffset, SEEK_SET) != 0)
   {
     perror("[ERROR][readPage] alunos malloc error");
     return -1;
   }
 
-  // fseeko64(file, 0, SEEK_END);
-  // _off64_t numOfBytes = ftello64(file);
-  // li diffFinalPage = registersPerPage * sizeof(Aluno);
-  // calcula tempo de leitura
-  // TO-DO read incomplete page
-  *numberOfReadBlocks = fread(pageBuffer, sizeof(Aluno), registersPerPage, file);
-  // sizeLastPage = tamanho em bytes da última página
-  // fread(pageBuffer, sizeLastPage (incomplete), 1, file);
+  if (page == qntPages - 1)
+  {
+    li remainingRegs = (numOfBytes / sizeof(Aluno)) % registersPerPage;
 
-  *numberOfValidBlock = 0;
+    if (remainingRegs)
+      registersPerPage = remainingRegs;
+
+    printf("Total regs: %li, RemainingRegs: %li\n", numOfBytes / sizeof(Aluno), registersPerPage);
+    fread(pageBuffer, sizeof(Aluno), registersPerPage, file);
+  }
+  else
+  {
+    fread(pageBuffer, sizeof(Aluno), registersPerPage, file);
+  }
+
+  *numberOfValidRegs = 0;
   for (li i = 0; i < registersPerPage; i++)
   {
     if (pageBuffer[i].seqAluno >= 0)
-      (*numberOfValidBlock)++;
+      (*numberOfValidRegs)++;
   }
 
   free(pageBuffer);
@@ -227,24 +235,22 @@ int readPages(HEAP_FILE file, li registersPerPage)
   _off64_t numOfBytes = ftello64(file);
   li qntRegisters = numOfBytes / sizeof(Aluno);
 
-  li qntPages = ceil(qntRegisters / registersPerPage);
-  li numberOfValidBlock = 0, numberOfReadBlocks = 0;
-  li temp_nrb, temp_nvb;
+  li qntPages = ceil(qntRegisters / (double)registersPerPage);
+  li numberOfValidRegs = 0, numberOfReadBlocks = 0;
+  li temp_nvr;
   double timeInS = 0;
 
   clock_t startTime = clock();
-  for (li i = 0; i < qntPages; i++)
+  for (li pageIndex = 0; pageIndex < qntPages; pageIndex++)
   {
-    if (readSinglePage(file, i, registersPerPage, &temp_nvb, &temp_nrb) == 1)
+    if (readSinglePage(file, pageIndex, qntPages, registersPerPage, numOfBytes, &temp_nvr) == 1)
     {
-      numberOfReadBlocks += temp_nrb;
-      numberOfValidBlock += temp_nvb;
+      numberOfValidRegs += temp_nvr;
+      numberOfReadBlocks++;
     }
-    else
-      return -1;
   }
 
   timeInS = (clock() - startTime) / CLOCKS_PER_SEC;
-  printf("Time: %.2lfs\nRead Blocks: %li\nValid Blocks: %li\n", timeInS, numberOfReadBlocks, numberOfValidBlock);
+  printf("Time: %.2lfs\nRead Pages: %li\nValid Registers: %li\n", timeInS, numberOfReadBlocks, numberOfValidRegs);
   return 1;
 }
