@@ -113,9 +113,7 @@ int updateRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
     return -1;
 
-  li regIndex = seqAluno;
-
-  if (fseeko64(file, regIndex * sizeof(Aluno), SEEK_SET) != 0)
+  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
   {
     perror("[ERROR] updateRandom lseek");
     return -1;
@@ -142,11 +140,7 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
     return NULL;
 
-  li registerOffset = seqAluno * sizeof(Aluno);
-
-  printf("[LOG] Deletando pageBuffer com a sequencia = %li\n", seqAluno);
-
-  if (fseeko64(file, registerOffset, SEEK_SET) != 0)
+  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
   {
     perror("[ERROR] deleteRandom first lseek");
     return NULL;
@@ -190,43 +184,65 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   return aluno;
 }
 
-// dúvidas ilmério
-// não conseguimos acessar o final do arquivo usando fopen64 (biblioteca dele)
-//
-int readPage(HEAP_FILE file, int registersPerPage, int *numberOfValidBlock, int *numberOfReadBlocks, double *timeInMs)
+int readSinglePage(HEAP_FILE file, li page, li registersPerPage, li *numberOfValidBlock, li *numberOfReadBlocks)
 {
-  clock_t startTime = clock();
-  long int page = 0;
 
-  while (1)
+  Aluno *pageBuffer = (Aluno *)malloc(registersPerPage * sizeof(Aluno));
+
+  if (pageBuffer == NULL)
   {
-    li pageSize = sizeof(Aluno) * registersPerPage;
-    Aluno *pageBuffer = (Aluno *)malloc(pageSize);
-
-    if (pageBuffer == NULL)
-    {
-      perror("[ERROR][readPage] alunos malloc error");
-      return -1;
-    }
-
-    if (fseeko64(file, page * pageSize, SEEK_SET) != 0)
-    {
-      perror("[ERROR][readPage] alunos malloc error");
-      return -1;
-    }
-
-    int registersReaded = fread(pageBuffer, sizeof(Aluno), registersPerPage, file) != registersPerPage;
-
-    if (registersReaded == 0)
-    {
-      perror("[ERROR][readPage] fread");
-
-      return -1;
-    }
-
-    page++;
+    perror("[ERROR][readPage] alunos malloc error");
+    return -1;
   }
 
-  clock_t endTime = clock();
-  *timeInMs = (startTime - endTime) * 1000 / CLOCKS_PER_SEC;
+  if (fseeko64(file, page * registersPerPage * sizeof(Aluno), SEEK_SET) != 0)
+  {
+    perror("[ERROR][readPage] alunos malloc error");
+    return -1;
+  }
+
+  // fseeko64(file, 0, SEEK_END);
+  // _off64_t numOfBytes = ftello64(file);
+  // li diffFinalPage = registersPerPage * sizeof(Aluno);
+  // calcula tempo de leitura
+  // TO-DO read incomplete page
+  *numberOfReadBlocks = fread(pageBuffer, sizeof(Aluno), registersPerPage, file);
+
+  *numberOfValidBlock = 0;
+  for (li i = 0; i < registersPerPage; i++)
+  {
+    if (pageBuffer[i].seqAluno >= 0)
+      (*numberOfValidBlock)++;
+  }
+
+  free(pageBuffer);
+  return 1;
+}
+
+int readPages(HEAP_FILE file, li registersPerPage)
+{
+  fseeko64(file, 0, SEEK_END);
+  _off64_t numOfBytes = ftello64(file);
+  li qntRegisters = numOfBytes / sizeof(Aluno);
+
+  li qntPages = ceil(qntRegisters / registersPerPage);
+  li numberOfValidBlock = 0, numberOfReadBlocks = 0;
+  li temp_nrb, temp_nvb;
+  double timeInS = 0;
+
+  clock_t startTime = clock();
+  for (li i = 0; i < qntPages; i++)
+  {
+    if (readSinglePage(file, i, registersPerPage, &temp_nvb, &temp_nrb) == 1)
+    {
+      numberOfReadBlocks += temp_nrb;
+      numberOfValidBlock += temp_nvb;
+    }
+    else
+      return -1;
+  }
+
+  timeInS = (clock() - startTime) / CLOCKS_PER_SEC;
+  printf("Time: %.2lfs\nRead Blocks: %li\nValid Blocks: %li\n", timeInS, numberOfReadBlocks, numberOfValidBlock);
+  return 1;
 }

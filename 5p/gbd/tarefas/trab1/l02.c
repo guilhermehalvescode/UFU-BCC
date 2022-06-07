@@ -12,6 +12,10 @@ int main()
     return -1;
   }
 
+  fseeko64(file, 0, SEEK_END);
+  _off64_t numOfBytes = ftello64(file);
+  numRegisters = numOfBytes / sizeof(Aluno);
+
   int option = 1;
 
   while (option != 0)
@@ -65,7 +69,6 @@ int main()
       if (deleteRandom != NULL)
       {
         printAluno(aluno);
-        numRegisters--;
       }
       else
       {
