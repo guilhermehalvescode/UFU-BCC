@@ -43,3 +43,4 @@ int insertAtEnd(HEAP_FILE file, li numberOfRegisters);
 int updateRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters);
 int readPages(HEAP_FILE file, li registersPerPage);
 Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters);
+int readRandomOnePercent(HEAP_FILE file);

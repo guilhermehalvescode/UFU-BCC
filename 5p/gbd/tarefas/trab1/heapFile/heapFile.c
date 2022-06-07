@@ -80,6 +80,33 @@ int readRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   return 1;
 }
 
+Aluno *readRandomAndGetAluno(HEAP_FILE file, li seqAluno, li numberOfRegisters)
+{
+  if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
+    return NULL;
+
+  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
+  {
+    perror("[ERROR] readRandomAndGetAluno fseeko64");
+    return NULL;
+  }
+
+  Aluno *aluno = (Aluno *)malloc(sizeof(Aluno));
+  if (aluno == NULL)
+  {
+    perror("[ERROR] readRandomAndGetAluno malloc");
+    return NULL;
+  }
+
+  if (fread(aluno, sizeof(Aluno), 1, file) != 1)
+  {
+    perror("[ERROR] readRandomAndGetAluno fread");
+    return NULL;
+  }
+
+  return aluno;
+}
+
 int insertAtEnd(HEAP_FILE file, li numberOfRegisters)
 {
   if (file == NULL || numberOfRegisters < 0)
@@ -210,7 +237,6 @@ int readSinglePage(HEAP_FILE file, li page, li qntPages, li registersPerPage, _o
     if (remainingRegs)
       registersPerPage = remainingRegs;
 
-    printf("Total regs: %li, RemainingRegs: %li\n", numOfBytes / sizeof(Aluno), registersPerPage);
     fread(pageBuffer, sizeof(Aluno), registersPerPage, file);
   }
   else
@@ -252,5 +278,36 @@ int readPages(HEAP_FILE file, li registersPerPage)
 
   timeInS = (clock() - startTime) / CLOCKS_PER_SEC;
   printf("Time: %.2lfs\nRead Pages: %li\nValid Registers: %li\n", timeInS, numberOfReadBlocks, numberOfValidRegs);
+  return 1;
+}
+
+int readRandomOnePercent(HEAP_FILE file)
+{
+  fseeko64(file, 0, SEEK_END);
+  _off64_t numOfBytes = ftello64(file);
+  li qntRegisters = numOfBytes / sizeof(Aluno);
+  li numberOfValidRegs = 0, numberOfInvalidRegs = 0;
+
+  double timeInS = 0;
+  clock_t startTime = clock();
+  li numberOfRegistersToRead = 0.1 * qntRegisters;
+
+  while (numberOfRegistersToRead > 0)
+  {
+    li seqAluno = generateRandomNumber(0, qntRegisters - 1);
+    Aluno *aluno = readRandomAndGetAluno(file, seqAluno, qntRegisters);
+    if (!aluno)
+      return -1;
+
+    if (aluno->seqAluno >= 0)
+      numberOfValidRegs++;
+    else
+      numberOfInvalidRegs++;
+    numberOfRegistersToRead--;
+  }
+
+  timeInS = (clock() - startTime) / CLOCKS_PER_SEC;
+  printf("Time: %.2lfs\nValid Registers: %li\nInvalid Registers: %li\n", timeInS, numberOfValidRegs, numberOfInvalidRegs);
+
   return 1;
 }
