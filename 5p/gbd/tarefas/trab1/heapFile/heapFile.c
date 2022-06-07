@@ -207,6 +207,8 @@ int readSinglePage(HEAP_FILE file, li page, li registersPerPage, li *numberOfVal
   // calcula tempo de leitura
   // TO-DO read incomplete page
   *numberOfReadBlocks = fread(pageBuffer, sizeof(Aluno), registersPerPage, file);
+  // sizeLastPage = tamanho em bytes da última página
+  // fread(pageBuffer, sizeLastPage (incomplete), 1, file);
 
   *numberOfValidBlock = 0;
   for (li i = 0; i < registersPerPage; i++)
