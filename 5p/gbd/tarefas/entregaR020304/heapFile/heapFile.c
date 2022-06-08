@@ -10,13 +10,13 @@ HEAP_FILE createHeapFile(li numberOfRegisters)
   Aluno *aluno;
 
   // if file exists, open it
-  if ((file = fopen("/media/valtim/Dados (HDD)/Guilherme/Documents/heapFile.bin", "r+b")) != NULL)
+  if ((file = fopen("./heapFile.bin", "r+b")) != NULL)
   {
     return file;
   }
 
   // else create it
-  if ((file = fopen("/media/valtim/Dados (HDD)/Guilherme/Documents/heapFile.bin", "w+b")) == NULL)
+  if ((file = fopen("./heapFile.bin", "w+b")) == NULL)
   {
     perror("[ERROR] createHeapFile fopen as write binary heapFile");
     return NULL;
