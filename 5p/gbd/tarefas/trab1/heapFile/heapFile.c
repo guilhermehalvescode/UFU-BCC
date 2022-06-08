@@ -10,15 +10,15 @@ HEAP_FILE createHeapFile(li numberOfRegisters)
   Aluno *aluno;
 
   // if file exists, open it
-  if ((file = fopen64("./heapFile.bin", "r+b")) != NULL)
+  if ((file = fopen("/media/valtim/Dados (HDD)/Guilherme/Documents/heapFile.bin", "r+b")) != NULL)
   {
     return file;
   }
 
   // else create it
-  if ((file = fopen64("./heapFile.bin", "w+b")) == NULL)
+  if ((file = fopen("/media/valtim/Dados (HDD)/Guilherme/Documents/heapFile.bin", "w+b")) == NULL)
   {
-    perror("[ERROR] createHeapFile fopen64 as write binary heapFile");
+    perror("[ERROR] createHeapFile fopen as write binary heapFile");
     return NULL;
   }
 
@@ -54,9 +54,9 @@ int readRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
     return -1;
 
-  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
+  if (fseeko(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
   {
-    perror("[ERROR] readRandom fseeko64");
+    perror("[ERROR] readRandom fseeko");
     return -1;
   }
 
@@ -85,9 +85,9 @@ Aluno *readRandomAndGetAluno(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
     return NULL;
 
-  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
+  if (fseeko(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
   {
-    perror("[ERROR] readRandomAndGetAluno fseeko64");
+    perror("[ERROR] readRandomAndGetAluno fseeko");
     return NULL;
   }
 
@@ -112,9 +112,9 @@ int insertAtEnd(HEAP_FILE file, li numberOfRegisters)
   if (file == NULL || numberOfRegisters < 0)
     return -1;
 
-  if (fseeko64(file, 0, SEEK_END) != 0)
+  if (fseeko(file, 0, SEEK_END) != 0)
   {
-    perror("[ERROR] insertAtEnd fseeko64");
+    perror("[ERROR] insertAtEnd fseeko");
     return -1;
   }
 
@@ -140,7 +140,7 @@ int updateRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
     return -1;
 
-  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
+  if (fseeko(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
   {
     perror("[ERROR] updateRandom lseek");
     return -1;
@@ -167,7 +167,7 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   if (file == NULL || seqAluno < 0 || numberOfRegisters < 0 || seqAluno >= numberOfRegisters)
     return NULL;
 
-  if (fseeko64(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
+  if (fseeko(file, seqAluno * sizeof(Aluno), SEEK_SET) != 0)
   {
     perror("[ERROR] deleteRandom first lseek");
     return NULL;
@@ -196,7 +196,7 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   aluno->seqAluno = abs(aluno->seqAluno) * -1;
 
   // return after reading
-  if (fseeko64(file, -sizeof(Aluno), SEEK_CUR) != 0)
+  if (fseeko(file, -sizeof(Aluno), SEEK_CUR) != 0)
   {
     perror("[ERROR] deleteRandom second lseek");
     return NULL;
@@ -211,7 +211,7 @@ Aluno *deleteRandom(HEAP_FILE file, li seqAluno, li numberOfRegisters)
   return aluno;
 }
 
-int readSinglePage(HEAP_FILE file, li page, li qntPages, li registersPerPage, _off64_t numOfBytes, li *numberOfValidRegs)
+int readSinglePage(HEAP_FILE file, li page, li qntPages, li registersPerPage, __off64_t numOfBytes, li *numberOfValidRegs)
 {
 
   size_t PAGE_SIZE = registersPerPage * sizeof(Aluno);
@@ -224,7 +224,7 @@ int readSinglePage(HEAP_FILE file, li page, li qntPages, li registersPerPage, _o
   }
 
   size_t pageOffset = page * PAGE_SIZE;
-  if (fseeko64(file, pageOffset, SEEK_SET) != 0)
+  if (fseeko(file, pageOffset, SEEK_SET) != 0)
   {
     perror("[ERROR][readPage] alunos malloc error");
     return -1;
@@ -257,8 +257,8 @@ int readSinglePage(HEAP_FILE file, li page, li qntPages, li registersPerPage, _o
 
 int readPages(HEAP_FILE file, li registersPerPage)
 {
-  fseeko64(file, 0, SEEK_END);
-  _off64_t numOfBytes = ftello64(file);
+  fseeko(file, 0, SEEK_END);
+  __off64_t numOfBytes = ftello(file);
   li qntRegisters = numOfBytes / sizeof(Aluno);
 
   li qntPages = ceil(qntRegisters / (double)registersPerPage);
@@ -283,14 +283,14 @@ int readPages(HEAP_FILE file, li registersPerPage)
 
 int readRandomOnePercent(HEAP_FILE file)
 {
-  fseeko64(file, 0, SEEK_END);
-  _off64_t numOfBytes = ftello64(file);
+  fseeko(file, 0, SEEK_END);
+  __off64_t numOfBytes = ftello(file);
   li qntRegisters = numOfBytes / sizeof(Aluno);
   li numberOfValidRegs = 0, numberOfInvalidRegs = 0;
 
   double timeInS = 0;
   clock_t startTime = clock();
-  li numberOfRegistersToRead = 0.1 * qntRegisters;
+  li numberOfRegistersToRead = 0.01 * qntRegisters;
 
   while (numberOfRegistersToRead > 0)
   {
@@ -304,6 +304,7 @@ int readRandomOnePercent(HEAP_FILE file)
     else
       numberOfInvalidRegs++;
     numberOfRegistersToRead--;
+    free(aluno);
   }
 
   timeInS = (clock() - startTime) / CLOCKS_PER_SEC;
