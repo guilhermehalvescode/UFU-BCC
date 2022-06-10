@@ -755,3 +755,19 @@ No SCRUM é utilizado o conceito de sprints, que são cliclos de desenvolvimento
 Normalmente, durante as reuniões são realizadas reuniões (dailys), para que cada membro do time de desenvolvimento mostre o status de seu desenvolvimento durante a semana e resolver eventuais problemas que ocorreram
 
 As sprints são um processo iterativo, onde no tempo determinado, mais requisitos são retirados do backlog durante a reunião de sprint (sprint planning) e entram no ciclo de desenvolvimento. Nesse contexto, o Scrum Master é responsávelpore gerenciar a sprint e garantir que tudo ocorrerá conforme o planejamento
+
+## Diagramas UML
+
+- Use case
+- Activity
+- Class
+- Sequence
+- Interaction overview
+- Communication
+- Object
+- State mahcine
+- Composite structure
+- Component
+- Deployment
+- Package
+- Timing
