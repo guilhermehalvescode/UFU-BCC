@@ -290,7 +290,7 @@ int readRandomOnePercent(HEAP_FILE file)
 
   double timeInS = 0;
   clock_t startTime = clock();
-  li numberOfRegistersToRead = 0.1 * qntRegisters;
+  li numberOfRegistersToRead = 0.01 * qntRegisters;
 
   while (numberOfRegistersToRead > 0)
   {
@@ -298,7 +298,6 @@ int readRandomOnePercent(HEAP_FILE file)
     Aluno *aluno = readRandomAndGetAluno(file, seqAluno, qntRegisters);
     if (!aluno)
       return -1;
-
     if (aluno->seqAluno >= 0)
       numberOfValidRegs++;
     else
