@@ -9,3 +9,7 @@
 ## Compile l03
 
 - `gcc ./heapFile/*.c ./heapFile/utils/*.c l03.c -o l03.exe`
+
+## Compile l04
+
+- `gcc ./heapFile/*.c ./heapFile/utils/*.c l04.c -o l04.exe`

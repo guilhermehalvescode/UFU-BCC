@@ -12,12 +12,13 @@
 // #include <linux/sys.h>
 // #include <sys/sysinfo.h>
 
+#define _LARGEFILE64_SOURCE
+
 // windows
 // #include <windows.h>
 
-#define MEM_SIZE 1073741824
 // Fonte: https://www.convertunits.com/from/GB/to/byte
-// #define MEM_SIZE 8589934592                               // 8GM mem size = 8*10^9 bytes 8589934592
+#define MEM_SIZE 8589934592                               // 8GM mem size = 8*10^9 bytes 8589934592
 #define NUM_REGISTERS (MEM_SIZE * 5 / sizeof(Aluno)) + 50 // use in case os is "windows"
 
 typedef long int li;
