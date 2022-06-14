@@ -628,4 +628,166 @@ ConcreteHandler
 - Trata os pedidos pelos quais é responsável
 - Se o ConcreteHandler pode tratar o pedido, trata-o; caso contrário envia-o ao seu sucessor
 
+Client
+
+- Inicia o pedido a um objeto ConcreteHandler na cadeia
+
+#### Diagram de classes
+
+![chainResponsibilityDiagram](images/chainResponsibilityDiagram.png)
+
+---
+
+#### Exemplo Chain
+
+Utilizando este padrão de projeto, crie um caixa eletrônico capaz manipular requisições de saque corretamente, sempre considerando o menor número de notas possível.
+
+- Por exemplo, em uma solicitação de saque no valor de R$475, o caixa deve entregar:
+- 4 notas de R$100
+- 1 nota de R$50
+- 1 nota de R$20
+- 1 nota de R$5
+
+Para isto, crie manipuladores para contar a quantidade de cada tipo de nota. Ao terminar sua contagem, cada manipulador deve passar ao próximo o cálculo da quantidade de notas relativas ao montante restante. Cada manipulador deve exibir a sua contagem.
+
+``` java
+// handler
+public abstract class Saque {
+  private Saque sucessor;
+
+  public void setSucessor(Saque sucessor) {
+    this.sucessor = sucessor;
+  }
+
+  public Saque getSucessor() {
+    return this.sucessor;
+  }
+
+  public abstract void processaSaque(int valor);
+}
+```
+
+``` java
+//ConcreteHandler
+public class Saque100 extends Saque {
+  public void processaSaque(int valor) {
+    int notas = valor / 100;
+    int resto = valor % 100;
+
+    if(notas != 0)
+      System.out.println("Quantidade de notas de 100: " + notas);
+    if(resto !=0 && getSucessor() != null) {
+      getSucessor().processaSaque(resto);
+    }
+  }
+}
+
+```
+
+``` java
+//ConcreteHandler
+public class Saque50 extends Saque {
+  public void processaSaque(int valor) {
+    int notas = valor / 50;
+    int resto = valor % 50;
+
+    if(notas != 0) {
+      System.out.println("Quantidade de notas de 50: " + notas);
+    }
+
+    if(resto != 0 && this.getSucessor() != null) 
+      getSucessor().processaSaque(resto);
+  }
+}
+```
+
+``` java
+//ConcreteHandler
+public class Saque20 extends Saque {
+  public void processaSaque(int valor) {
+    int notas = valor / 20;
+    int resto = valor % 20;
+
+    if(notas != 0) {
+      System.out.println("Quantidade de notas de 20: " + notas);
+    }
+
+    if(resto != 0 && this.getSucessor() != null) 
+      getSucessor().processaSaque(resto);
+  }
+}
+```
+
+``` java
+//ConcreteHandler
+public class Saque10 extends Saque {
+  public void processaSaque(int valor) {
+    int notas = valor / 10;
+    int resto = valor % 10;
+
+    if(notas != 0) {
+      System.out.println("Quantidade de notas de 10: " + notas);
+    }
+
+    if(resto != 0 && this.getSucessor() != null) 
+      getSucessor().processaSaque(resto);
+  }
+}
+```
+
+``` java
+//ConcreteHandler
+public class Saque05 extends Saque {
+  public void processaSaque(int valor) {
+    int notas = valor / 5;
+    int resto = valor % 5;
+
+    if(notas != 0) {
+      System.out.println("Quantidade de notas de 5: " + notas);
+    }
+
+    if(resto != 0 && this.getSucessor() != null) 
+      System.out.println("Não existem notas de " + resto);
+  }
+}
+```
+
+``` java
+// aplicação cliente
+public class CaixaEletronico {
+  public static void main(String args[]) {
+    // instanciar objetos da cadeia
+    Saque saque100 = new Saque100();
+    Saque saque50 = new Saque50();
+    Saque saque20 = new Saque20();
+    Saque saque10 = new Saque10();
+    Saque saque5 = new Saque05(); // final da cadeia
+
+    // criar cadeia - encadear os objetos
+    saque100.setSucessor(saque50);
+    saque50.setSucessor(saque20);
+    saque20.setSucessor(saque10);
+    saque10.setSucessor(saque5);
+    saque5.setSucessor(null);
+
+    //processar saques
+    saque100.processaSaque(575);
+    saque100.processaSaque(175);
+    saque100.processaSaque(120);
+    saque100.processaSaque(155);
+    saque100.processaSaque(960);
+  }
+}
+```
+
+#### Vantagens Chain
+
+- Acoplamento reduzido: Não se sabe a classe ou estrutura interna dos participantes
+- Delegação de responsabilidade: Flexível, em tempo de execução
+
+---
+
+Observação: Com o encadeamento dos handlers desta forma (ordenado, do maior para o menor) garantimos que a menor quantidade de notas possível seja fornecida
+
+
 ### Padrão Decorator
