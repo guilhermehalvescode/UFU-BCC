@@ -791,3 +791,180 @@ Observação: Com o encadeamento dos handlers desta forma (ordenado, do maior pa
 
 
 ### Padrão Decorator
+
+Problema:
+
+- Em algumas situações é necessário adicionar responsabilidades à objetos específicos, e não a toda a classe
+- O padrão de projeto Decorator resolve o problema, permitindo que tais responsabilidades sejam adicionadas individualmente, em tempo de execução
+- Ao contrário da herança que aplica funcionalidades a todos os objetos da classe, o padrão decorador permite aplicar funcionalidades apenas a um objeto específico
+
+---
+
+- O padrão Decorator permite estender as funcionalidades de um objeto em tempo de execução usando uma forma de composição de objetos
+- A ideia central é modificar o comportamento de um método em um objeto, adicionando-lhe processamento adicional
+
+---
+
+- Adiciona responsabilidades de forma dinâmica a um objeto
+- Os Decoradores fornecem uma alternativa flexível à herança para estender funcionalidades
+
+---
+
+> [GAMMA]
+
+- Evita classes sobrecarregadas de características na parte superior da hierarquia
+- Oferece uma abordagem do tipo 'use quando for necessário'
+- Pode-se definir uma classe simples e acrescentar funcionalidade de modo incremental
+
+---
+
+- A funcionalidade necessária pode ser composta a partir de peças simples
+- É fácil definir novas espécies de decorators idependente das classes de objetos que eles estendem
+- Desta forma uma aplicação não precisa incorrer no custo de características e recursos que usa
+
+![decoratorDiagram](images/decoratorDiagram.png)
+
+#### Participantes Decorator
+
+As classes e/ou objetos que participam do padrão são:
+
+Component
+
+- Define a interface dos objetos que podem ter responsabilidades adicionadas de forma dinâmica
+
+ConcreteComponent
+
+- Define um objeto ao qual mais responsabilidades podem ser adicionadas
+
+Decorator
+
+- Armazena a referência para um objeto Component, cujo comportamento será modificado
+
+ConcreteDecorator
+
+- Adicionar responsabilidades ao componente
+
+---
+
+É importante notar que:
+
+- Os decoradores têm o mesmo super-tipo que os objetos que eles decoram, de modo que sua presença é transparente para os clientes do componentes que eles decoram
+
+- Uma vez que o decorador tem o mesmo super-tipo que o objeto decorado, pode-se passar um objeto decorado no lugar do objeto original (englobado)
+
+- Pode-se usar um ou mais decoradores para englobar um objeto
+
+---
+
+- O decorador adicionar seu próprio comportamento antes e/ou depois de delegar ao objeto que ele decora o resto do trabalho;
+- Os objetos podem ser decorados a qualquer momento
+- Então pode-ser decorar os objetos de maneira dinâmica no tempo de execução com quantos decoradores desejarmos
+
+![decoratorEffect](images/decoratorEffect.png)
+
+#### Exemplo Decorator
+
+Um website que auxilia a montagem de veículos pelo cliente, podendo então adicionar novos acessórios aos veículos, como ar condicionado, vidro elétrico, travas elétricas e direção hidráulica, alterando assim as características finais do produto.
+
+![decoratorDiagramEx](images/decoratorDiagramEx.png)
+
+``` java
+// Component
+
+public abstract class Carro {
+  private double custo;
+  private String descricao;
+
+  public double getCusto() {
+    return this.custo;
+  }
+
+  public String getDescricao() {
+    return this.descricao;
+  }
+
+  public void setCusto(double custo) {
+    this.custo = custo;
+  }
+
+  public void setDescricao(String descricao) {
+    this.descricao = descricao;
+  }
+}
+```
+
+``` java
+//ConcreteComponent
+public class Voyage extends Carro {
+  Voyage() {
+    this.setCusto(60.000);
+    this.setDescricao("Voyage");
+  }
+}
+```
+
+``` java
+// Decorador
+public abstract class CarroDecorador extends Carro {
+  private Carro carroDecorado;
+
+  public CarroDecorador(Carro carroDecorado) {
+    this.carroDecorado = carroDecorado;
+  }
+
+  public double getCusto() {
+    return carroDecorado.getCusto() + super.getCusto()
+  }
+
+  public String getDescricao() {
+    return carroDecorado.getDescricao() + ", " + super.getDescricao();
+  }
+```
+
+``` java
+//ConcreteDecorator
+public class VidroEletrico extends CarroDecorador {
+  public VidroEletrico(Carro carroDecorado) {
+    super(carroDecorado);
+    setCusto(600.00);
+    setDescricao("Vidro Eletrico");
+  }
+}
+
+//ConcreteDecorator
+public class RodaLigaLeve extends CarroDecorador {
+  public RodaLigaLeve(Carro carroDecorado) {
+    super(carroDecorado);
+    setCusto(200.00);
+    setDescricao("Roda Liga Leve");
+  }
+}
+
+//ConcreteDecorator
+public class ArCondicionado extends CarroDecorador {
+  public ArCondicionado(Carro carroDecorado) {
+    super(carroDecorado);
+    setCusto(900.00);
+    setDescricao("Ar Condicionado");
+  }
+}
+```
+
+``` java
+public class Principal {
+  public static void main() {
+    Carro carro = new Voyage();
+    carro = new ArCondicionado(carro);
+    carro = new VidroEletrico(carro);
+    carro = new RodaLigaLeve(carro);
+
+    //--cliente------------
+    System.out.println(carro.getDescricao());
+    System.out.println(carro.getCusto());
+  }
+}
+```
+
+---
+
+- Os decoradores estendem a funcionalidade do componente através da montagem de uma lista encadeada de decoradores e componente (Swing utiliza esse padrão de projeto)
