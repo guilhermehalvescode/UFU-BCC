@@ -102,7 +102,7 @@ INICIA pin_count do slot com 1
 RETORNA endereço do slot escolhido;
 ```
 
-### Fim da tranção e Pre-fetching
+### Fim da transação e Pre-fetching
 
 #### Fim da transação
 
@@ -151,3 +151,18 @@ Simular MRU e LRU e verificar a inundação sequencial ocorrida em LRU.
   - Necessita de controle para recuperação de falhar
   - Portabilidade
 - Gerência pode ser compartilhada
+
+## Formatação de registros e páginas
+
+- Posição são calculados usando um endereço base e deslocando com base no tamanho dos tipos
+  - B + L1(campo 1) + L2(campo 2)
+
+- Página com registro de tamanho fixo, pode ser:
+  - PACKED: área contígua de slots de dados e área contígua de slots vazios, com um contador de quantidades de slots de dados
+    - Vantagem: mais fácil uso, melhor para leitura em maior quantidade
+    - Desvantagem: shift necessário caso altere, alterando vários rid de registros
+  - UNPACKED: área não contígua, com um mapeamento de slots utilizando bitmap
+    - Vantagem: não realiza shift
+    - Desvantagem: gera espaços pequenos vazios
+- Páginas com registros de tamanho variável
+  - a alternativa é utilizar delimitadores, ponteiros, ou um par com (tamanho, conteúdo) dentro de cada registro
