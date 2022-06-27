@@ -771,3 +771,15 @@ As sprints são um processo iterativo, onde no tempo determinado, mais requisito
 - Deployment
 - Package
 - Timing
+
+### Diagrama de objetos
+
+- Mostra estruturas
+- Segue o diagrama de classes
+- Demonstra a relação dos objetos (análogo aos objetos instanciados das classes em tempo de execução)
+  
+### Diagrama de atividades
+
+- casos de uso mostram o que seu sistema deve fazer
+- diagramas de atividades especificam como seu sistema vai alcançar objetivos
+- mostram em alto nível ações conectadas juntas para representar um processo que ocorre no seu sistema
