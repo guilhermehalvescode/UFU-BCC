@@ -1,0 +1,51 @@
+#include "index.h"
+
+void *allocatePage(size_t pageSize)
+{
+  void *page = malloc(pageSize);
+  if (!page)
+    perror("allocatePage: Nao foi possivel alocar");
+
+  return page;
+}
+
+void *getPage(FILE *file, off_t pageIndex, size_t pageSize)
+{
+  if (fseeko(file, pageIndex * pageSize, SEEK_SET) == -1)
+  {
+    perror("getPage: Nao foi possivel ir ate a pagina");
+    return NULL;
+  }
+
+  void *page = allocatePage(pageSize);
+  if (!page)
+  {
+    perror("getPage: Nao foi possivel alocar");
+    return NULL;
+  }
+
+  if (fread(page, pageSize, 1, file) != 1)
+  {
+    perror("getPage: Nao foi possivel ler a pagina");
+    return NULL;
+  }
+
+  return page;
+}
+
+void *setPage(FILE *file, void *page, off_t pageIndex, off_t pageSize)
+{
+  if (fseeko(file, pageIndex * pageSize, SEEK_SET) == -1)
+  {
+    perror("setPage: Nao foi ir ate a pagina");
+    return NULL;
+  }
+
+  if (fwrite(page, pageSize, 1, file) != 1)
+  {
+    perror("setPage: Nao foi possivel escrever a pagina");
+    return NULL;
+  }
+
+  return page;
+}
