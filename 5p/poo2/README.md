@@ -968,3 +968,39 @@ public class Principal {
 ---
 
 - Os decoradores estendem a funcionalidade do componente através da montagem de uma lista encadeada de decoradores e componente (Swing utiliza esse padrão de projeto)
+
+### Padrão Fábrica (Simple factory - factory method)
+
+- Tenta resolver o problema do aclopamento gerado com a instanciação de objetos.
+
+- Padrão Simple Factory: fornece interfaces para criar objetos sem expor a lógica de criação para o cliente
+- Padrão Factory Method: fornece interfaces para criar objetos, mas permite que subclasses determinem qual classe instanciar
+- Padrão Abstract Factory
+
+#### Simple Factory
+
+- Visa encapsular a criação de objetos em um método
+- Isto permite manter em um único local comandos
+  - "new ClasseConcreta()"
+- Desacopla o cliente dos objetos que deseja criar
+- Permite ao cliente transferir a responsabilidade de instanciação de objetos complexos a uma fábrica
+
+---
+
+- Evita modificação do código quando novas classes são criadas
+- Evita modificação de código quando a forma de instanciar objetos é modificada
+  - Exemplo: novos decoradores são criados, afetando vários pontos do códigos
+  - Facilita manutenção de código já que a replicação de código de instanciação a serem instanciados
+
+---
+
+![simpleFactoryDiagram](images/simpleFactoryDiagram.png)
+
+---
+
+![simpleFactoryDiagramEx1](images/simpleFactoryDiagramEx1.png)
+
+### Factory Method
+
+- Define uma interface para instanciação de objetos
+- Utilizado na construção de um framework
