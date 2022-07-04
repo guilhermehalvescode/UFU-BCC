@@ -1,20 +1,21 @@
 #include "../defs.h"
 #include "../alt1/index.h"
 
-#define NO_INTERNO_OVERHEAD sizeof(off_t)
+#define NO_INTERNO_OVERHEAD sizeof(unsigned int) + sizeof(int)
 #define QNT_ENTRADAS (TAM_UNION - NO_INTERNO_OVERHEAD) / sizeof(Entrada)
-#define NO_INTERNO_TAM sizeof(Entrada) * QNT_ENTRADAS + NO_INTERNO_OVERHEAD
+#define NO_INTERNO_TAM (sizeof(Entrada) * QNT_ENTRADAS) + NO_INTERNO_OVERHEAD
 
 typedef struct Entrada
 {
   int chave;
-  off_t proximo;
+  unsigned int proximo;
 } Entrada;
 
 typedef struct NoInterno
 {
-  off_t anterior;
+  unsigned int anterior;
   Entrada entrada[QNT_ENTRADAS];
+  int quantidadeEntradas;
 } NoInterno;
 
 typedef struct Pagina

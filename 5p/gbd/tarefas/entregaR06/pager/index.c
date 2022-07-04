@@ -9,7 +9,7 @@ void *allocatePage(size_t pageSize)
   return page;
 }
 
-void *getPage(FILE *file, off_t pageIndex, size_t pageSize)
+void *getPage(FILE *file, unsigned int pageIndex, unsigned int pageSize)
 {
   if (fseeko(file, pageIndex * pageSize, SEEK_SET) == -1)
   {
@@ -33,19 +33,19 @@ void *getPage(FILE *file, off_t pageIndex, size_t pageSize)
   return page;
 }
 
-void *setPage(FILE *file, void *page, off_t pageIndex, off_t pageSize)
+int setPage(FILE *file, void *page, unsigned int pageIndex, unsigned int pageSize)
 {
   if (fseeko(file, pageIndex * pageSize, SEEK_SET) == -1)
   {
     perror("setPage: Nao foi ir ate a pagina");
-    return NULL;
+    return 0;
   }
 
   if (fwrite(page, pageSize, 1, file) != 1)
   {
     perror("setPage: Nao foi possivel escrever a pagina");
-    return NULL;
+    return 0;
   }
 
-  return page;
+  return 1;
 }
