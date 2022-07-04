@@ -1,5 +1,9 @@
-#include <stdlib.h>
-#define PAGE_SIZE 2048
+#include "../defs.h"
+#include "../alt1/index.h"
+
+#define NO_INTERNO_OVERHEAD sizeof(off_t)
+#define QNT_ENTRADAS (TAM_UNION - NO_INTERNO_OVERHEAD) / sizeof(Entrada)
+#define NO_INTERNO_TAM sizeof(Entrada) * QNT_ENTRADAS + NO_INTERNO_OVERHEAD
 
 typedef struct Entrada
 {
@@ -10,24 +14,15 @@ typedef struct Entrada
 typedef struct NoInterno
 {
   off_t anterior;
-  Entrada entrada[127];
+  Entrada entrada[QNT_ENTRADAS];
 } NoInterno;
 
-typedef struct Register
-{
-  int seqAluno;
-  char matriculaAluno[12];
-  char nomeAluno[36];
-} Register;
-
-typedef struct page
+typedef struct Pagina
 {
   int ehFolha;
   union conteudo
   {
-    Register registro[39];
     NoInterno noInterno;
+    Alternativa1 folha;
   } conteudo;
-} page;
-
-// 4 + 16*n <= 2048
+} Pagina;
