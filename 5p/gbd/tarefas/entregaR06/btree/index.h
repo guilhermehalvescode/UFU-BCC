@@ -10,6 +10,7 @@ typedef struct Entrada
   int chave;
   unsigned int proximo;
 } Entrada;
+// Entrada tem 6 ou 8 bytes(depende se e x32 ou x64)
 
 typedef struct NoInterno
 {
@@ -27,3 +28,15 @@ typedef struct Pagina
     Alternativa1 folha;
   } conteudo;
 } Pagina;
+
+FILE *openPageFile(long int pageSize);
+
+void *getFolha(FILE *file, int chave);
+
+void printRegistro(Registro *registro);
+
+void *getIntervalo(FILE *file, int chave1, int chave2);
+
+unsigned int treeSearch(FILE *file, unsigned int pageIndex, int chave);
+
+int startTree(FILE *file);

@@ -29,6 +29,14 @@ void *getFolha(FILE *file, int chave)
   return getPage(file, pageIndex, TAM_PAGINA);
 }
 
+void printRegistro(Registro *registro)
+{
+  printf("Aluno\n");
+  printf("seqAluno: %d\n", registro->seqAluno);
+  printf("Matricula: %s\n", registro->matriculaAluno);
+  printf("nomeAluno: %s\n", registro->nomeAluno);
+}
+
 void *getIntervalo(FILE *file, int chave1, int chave2)
 {
   if (chave1 > chave2)
@@ -39,7 +47,27 @@ void *getIntervalo(FILE *file, int chave1, int chave2)
   }
 
   Alternativa1 *folhaMenor = getFolha(file, chave1);
-  Alternativa1 *folhaMaior = getFolha(file, chave2);
+  while (folhaMenor != NULL)
+  {
+    int quantidadeRegistrosMenoresQueChave2 = 0;
+    for (int i = 0; i < folhaMenor->quantidadeRegistros; i++)
+    {
+      Registro registro = folhaMenor->registro[i];
+      if (registro.seqAluno >= chave1 || registro.seqAluno <= chave2)
+      {
+        quantidadeRegistrosMenoresQueChave2++;
+        printRegistro(&registro);
+      }
+    }
+
+    if (quantidadeRegistrosMenoresQueChave2 == 0)
+    {
+      // estamos em uma folha que só tem chaves maiores que chave2
+      break;
+    }
+    free(folhaMenor);
+    folhaMenor = getPage(file, folhaMenor->proximo, TAM_PAGINA);
+  }
 }
 
 unsigned int treeSearch(FILE *file, unsigned int pageIndex, int chave)
@@ -77,20 +105,41 @@ unsigned int treeSearch(FILE *file, unsigned int pageIndex, int chave)
   free(pagina);
   return noInterno.entrada[i - 1].proximo;
 }
-
+// arvore
+//
 int startTree(FILE *file)
 {
   NoInterno *noInterno = allocatePage(TAM_PAGINA);
   if (noInterno == NULL)
     return 0;
-  pagina->raiz = -1;
 
-  if (!setPage(file, pagina, 0, TAM_PAGINA))
+  noInterno->anterior = -1;
+  for (int i = 0; i < QNT_ENTRADAS; i++)
   {
-    free(pagina);
+    noInterno->entrada[i].chave = -1;
+    noInterno->entrada[i].proximo = -1;
+  }
+  noInterno->quantidadeEntradas = 0;
+
+  unsigned int raiz = 0;
+  FILE *fileRaiz = fopen("./raiz.dat", "w+");
+  if (!fileRaiz)
+  {
+    free(noInterno);
     return 0;
   }
-  free(pagina);
+  if (fwrite(&raiz, sizeof(unsigned int), 1, fileRaiz) != 1)
+  {
+    free(noInterno);
+    return 0;
+  }
+
+  if (!setPage(file, noInterno, raiz, TAM_PAGINA))
+  {
+    free(noInterno);
+    return 0;
+  }
+  free(noInterno);
 
   return 1;
 }

@@ -2,7 +2,7 @@
 #ifndef DEFS_FILE
 #define DEFS_FILE
 
-#define TAM_PAGINA 2048
+#define TAM_PAGINA 512
 #define TAM_UNION TAM_PAGINA - sizeof(int)
 
 typedef struct Registro
