@@ -37,7 +37,7 @@ int setPage(FILE *file, void *page, unsigned int pageIndex, unsigned int pageSiz
 {
   if (fseeko(file, pageIndex * pageSize, SEEK_SET) == -1)
   {
-    perror("setPage: Nao foi ir ate a pagina");
+    perror("setPage: Nao foi possivel ir ate a pagina");
     return 0;
   }
 

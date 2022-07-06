@@ -7,15 +7,15 @@ FILE *openPageFile(long int pageSize)
 {
   FILE *file;
   // if file exists, open it
-  if ((file = fopen("./heapFile.bin", "r+b")) != NULL)
+  if ((file = fopen("./treeFile.bin", "r+b")) != NULL)
   {
     return file;
   }
 
   // else create it
-  if ((file = fopen("./heapFile.bin", "w+b")) == NULL)
+  if ((file = fopen("./treeFile.bin", "w+b")) == NULL)
   {
-    perror("[ERROR] createHeapFile fopen as write binary heapFile");
+    perror("[ERROR] createTreeFile fopen as write binary heapFile");
     return NULL;
   }
 
@@ -105,8 +105,7 @@ unsigned int treeSearch(FILE *file, unsigned int pageIndex, int chave)
   free(pagina);
   return noInterno.entrada[i - 1].proximo;
 }
-// arvore
-//
+
 int startTree(FILE *file)
 {
   NoInterno *noInterno = allocatePage(TAM_PAGINA);
