@@ -509,3 +509,6 @@ T(2) <= 2c
 ---
 
 - TO-DO - Exercícios slide aula 10
+
+---
+
