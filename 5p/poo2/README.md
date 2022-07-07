@@ -1210,6 +1210,79 @@ public class AdvancedGame extends Game {
 
 > O Padrão Factory Method define uma interface para criar um objeto, mas permite as classes decidir qual classe instanciar. O Factory Method permite a uma classe definir a instanciação para subclasses
 
+### Padrão Abstract Factory
+
+- Fornece uma interface para criar familias de objetos relacionados sem especificar as suas classes concretas
+- Existe uma classe conhecida pelo cliente que e a "Fabrica Abstrata"
+- Esta fabrica pode possuir diversas implementações concretas, cada uma capaz de fabricar instâncias de diferentes familias de produtos concretos
+
+---
+
+- Desta forma, o cliente estara apto a trabalhar com diversos tipos de fabricas concretas,
+- consequentemente, com as diversas familias de produtos concretos instanciados por elas
+- Podemos entender este padrão como sendo o resultado da junção dos padroes Strategy e Factory Method
+
+---
+
+Participantes:
+
+- AbstractFactory: Declara uma interface para operações de criação de produtos abstratos.
+- ConcreteFactory: Implementa as operações de criação de objetos de produtos concretos
+- AbstractProduct: Declara uma interface para um objeto do tipo produto
+- Product: Define um objeto do tipo produto a ser criado pela correppondnete fabrica concreta. Implementa a interface AbstractProduct
+
+---
+
+![abstractFactoryDiagram](images/abstractFactoryDiagra.png)
+
+---
+
+- O padrão Abstract Factory esta a uma nivel de abstração maior do que o padrão Factory Method
+- Em outrs palavras, o padrão Abstract Factory e uma fabrica de objetos que retorna uma das varias fabricas concretas
+- Para usa a fabrica, e necessario criar uma instância e passa-la para um codigo/metodo cliente para o tipo abstrato
+
+---
+
+- Uma aplicação classica do Abstract Factory e o caso em que o sistema operacional fornece suporte a multiplos tipos de interfaces graficas
+- Desta forma, você diz ao factory que quer que seu sistema operacional se pareça com o Windows e ele retorna a fabrica GUI que retorna os objetos relativos ao Windows
+- Então, quano você requisita um objeto especifico como um botao, check-boxes e janelas, a fabrica de GUI retorna as instâncias desses componentes para o sistema operacional
+
+---
+
+Exemplo:
+
+- Implementação de um software que trabalhe com diversos toolits graficos,
+  - tais como Motif
+  - GTK+ (GIMP toolkit) usado em um grande numero de aplicaçẽos e no ambiente de desktop GNOME
+  - Qt (cute) largamente no ambiente desktop KDE
+- O cliente (aplicação), interage com o toolkit atraves de uma fabrica abstrata sem ter conhecimento da implementação das classes concretas (botões, janelas, etc...)
+
+---
+
+- Atraves do padrão abstract factory podemos implementar fabricas de widgets
+- Um widget e um componente de uma interface grafica do usuario (GUI), o que inclui janelas, botões, menus, icones, barras de rolagem, etc...
+
+---
+
+- Use o padrão Abstract factory quando:
+  - Um sistema deve ser independente de como seus produtos são criados
+  - Um sistema deve ser configurado com uma familia de produtos
+  - Uma familia de produtos for projetada para ser usada em conjunto e se necessita garantir essa restrição
+
+---
+
+Conclusão
+
+- As fabricas de objetos abstratas permitem alto nivel de descoplamento do cliente em relação a familias de objetos, possibilitando felixibilidade na aplicação
+  - Torna facil a troca de familias de produtos
+
+---
+
+Relação entre Factory Method e Abstract Factory
+
+- Os metodos e uma abstract factory são implementados como factory methods
+
+
 ### Padrão Singleton
 
 - Problema:
