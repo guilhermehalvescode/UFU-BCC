@@ -994,13 +994,253 @@ public class Principal {
 
 ---
 
+- Participantes:
+  - Client: requisita objetos a fabrica
+  - SimpleFactory: recebe requisições do cliente e devolve objetos instanciados
+  - Product Interface: interface que representa os produtos a serem criados pela fabrica
+  - Concrete Product: classes concretas representando os produtos a serem instanciados pela fabrica
+
+---
+
 ![simpleFactoryDiagram](images/simpleFactoryDiagram.png)
 
 ---
 
 ![simpleFactoryDiagramEx1](images/simpleFactoryDiagramEx1.png)
 
-### Factory Method
+---
 
-- Define uma interface para instanciação de objetos
-- Utilizado na construção de um framework
+##### Exemplo: Uma fabrica de personagens
+
+``` java
+public class SimplePersonagemFactory {
+  public static Personagem createPersonagem(int tipo) {
+    Personagem p = null;
+    if (tipo == 1)
+      p = new Mago();
+    else if (tipo == 2)
+      p = new Feiticeiro();
+    else if (tipo == 3)
+      p = new Campones();
+    else
+      p = new Lanceiro();
+    return p;
+  }
+}
+```
+
+---
+
+##### Exemplo: Uma fabrica de personagem com ataques decorados com armas especificas
+
+``` java
+public class SimplePersonagemFactory {
+  public static Personagem createPersonagem(int tipo) {
+    Personage p = new Personagem();
+    if (tipo == 1) //mago
+      p.setAtaque(new Magia(new Ataque(1)));
+    else if (tipo == 2) // feiticeiro
+      p.setAtaque(new Feitico(new Ataque2()));
+    else if (tipo == 3) // campones
+      p.setAtaque(new Facao(new Ataque3()));
+    else
+      p = new Lanceiro();
+    return p;
+  }
+}
+```
+
+---
+
+##### Exemplo: Uma fabrica de personagens coms estrategias
+
+``` java
+public class SimplePersonagemFactory {
+  public static Personagem createPersonagem(int tipo) {
+    Personage p = new Personagem();
+    if (tipo == 1) //mago
+      p.setAtaque(new AtaqueFraco());
+      p.setCorrida(new CorridaRapida());
+    else if (tipo == 2) // feiticeiro
+      p.setAtaque(new AtaqueForte());
+      p.setCorrida(new CorridaLenta());
+    //...
+    return p;
+  }
+}
+```
+
+---
+
+- Algumas possibilidades incluem:
+  - a geração automatica randomica dos personagens
+  - a modificação da forma de instanciação de um objeto sem alteração do restante do codigo
+
+---
+
+- Conclusões
+  - Alem de evitar problemas de manuntenção futuros, o padrão simple factory abre novas possibilidades relacionadas a instanciação de objetos
+  - Facilita a implementação quando a classe concreta ser instanciada e definida em tempo de execução
+  - Evita problemas quando o codigo que instancia objetos e uma area de mudanças frequentes
+  - Evita duplicação de codigo de instanciação e fornece um local unico para fazer a manutenção
+  - Encapsula a instanciaçã ode objetos complexos, como cadeias, decorators, composites, etc
+
+#### Factory Method
+
+- Define uma interface para instanciação de objetos, mas deixa as subclasses decidirem que classes instanciar
+- Permite a uma classe postergar a instanciação as subclasses
+- Regra: "Criar objetos numa operação separada de modo que subclasses possam redefinir como eles são criados."
+- Essa regra permite que projetistas de subclasses possam mudar a classe de objetos que a classe ancestral instancia
+
+---
+
+- Aplicabilidade
+- Use o padrão factory method quando:
+  - Um classa não pode antecipar a classe de objetos que deve criar
+  - Uma classe quer que suas subclasses especifiquem os objetos que criam
+
+---
+
+- Participantes
+  - As classes e/ou objetos que participam do padrão são:
+  - Product: Define uma interface de objetos que o metodo-fabrica cria
+  - ConcreteProduct: Implementa interface Product, criando um produto concreto
+  - Creator: Declara o metodo-fabrica, que retorna um objeto do tipo Product
+  - ConcreteCreator: Sobrescreve o metodo-fabrica para retornar uma instancia de ConcreteProduct
+
+---
+
+![factoryMethodDiagram](images/factoryMethodDiagram.png)
+
+---
+
+- Na construção de frameworks...
+  - Os factory methods eliminam a necessdade de anexar classes especificas das aplicações cliente no codigo do framework
+  - O codigo lida somente com interface Product
+  - Portanto ele pode trabalhar com quaisquer classes ConcreteProduct definidar pelo usuario
+
+---
+
+- Principio da inversão da dependência
+  - Componentes de alto nivel não dependam de componentes de nivel inferior, os dois devem depender de abstrações
+  - Considerando que PizzaStore e o nosso componente de alto nivel, e as implementações de pizzas são componentes de baixo nivel, então PizzaStore e dependente das classes concretas de pizza
+
+---
+
+- Esse principio nos diz que devemos escrever nosso codigo para que dependamos de abstrações, e não de classes concretas
+- Isso serve tanto para nossos modulos de alto nivel quanto para os de baixo nivel
+
+---
+
+![inversionPrinciple](images/inversionPrinciple.png)
+
+---
+
+- Aplicando o principio, notamos que nosso componente de alto nivel (PizzaStore) e nossos componentes de baixo nivel (as pizzas) dependem da abstração Pizza
+- O Factory Method e uma das tecnica mais eficazes para aplicar o principio da inversão de dependência
+
+---
+
+- Consequências importantes:
+  - Fornece ganchos para subclasses.
+    - Criar objetos dentro de uma classe com um metodo fabrica e sempre mais flexivel do que criar um objeto diretamente
+    - Factory method da as classes um gancho para que se possa implementar diferentes versões de fabrica
+
+---
+
+- Implementação:
+- Três variações principais:
+  - (1) o caso em que a classe Creator e uma classe abstrata e não fornece uma implementação para o metodo fabrica que ele declara
+  - (2) o caso em que o Creator e uma classe concreta e que fornece uma implementação default para o metodo fabrica
+  - (3) o caso em que o Creator e uma classe abstrata que define uma implementação default para o metodo fabrica
+
+---
+
+- Exemplo:
+
+``` java
+public abstract class Game {
+  public abstract Personagem createPersonagem(int tipo);
+  public void Jogar() {
+    //logica de execução (controller)
+    Personagem p1 = createPersonagem(1);
+    Personagem p2 = createPersonsage(2);
+    p1.atacar(p2);
+    p1.correr();
+    p2.atacar(p1);
+  }
+}
+```
+
+``` java
+public class TraditionalGame extends Game {
+    public Personagem createPersonagem(int tipo) {
+      Personagem p = new Personagem();
+      if(tipo == 1) {
+        p.setAtaque(new AtaqueFraco());
+        p.setCorrida(new CorridaRapida());
+
+      } else if(tipo == 2) {
+        p.setAtaque(new AtaqueForte());
+        p.setCorrida(new CorridaLenta());
+      }
+      // .....
+      return p;
+    }
+}
+```
+
+``` java
+public class AdvancedGame extends Game {
+    public Personagem createPersonagem(int tipo) {
+      Personagem p = new Personagem();
+      if(tipo == 1) {
+        p.setAtaque(new PoderFogo(new AtaqueFraco()));
+        p.setCorrida(new CorridaRapida());
+
+      } else if(tipo == 2) {
+        p.setAtaque(new PoderVento(new AtaqueForte()));
+        p.setCorrida(new CorridaLenta());
+      }
+      // .....
+      return p;
+    }
+}
+```
+
+> O Padrão Factory Method define uma interface para criar um objeto, mas permite as classes decidir qual classe instanciar. O Factory Method permite a uma classe definir a instanciação para subclasses
+
+### Padrão Singleton
+
+- Problema:
+  - Ha objetos dos quais precisamos apenas de um
+  - Garantir que determinadas classes sejam instanciadas uma unica vez
+    - Solução: o padrão Singleton e uma convenção para garantir que um e apenas um objetos seja instanciado para uma dada classe
+
+``` java
+// lazy instanciation
+private class Singleton {
+  private static Singleton instancia = null;
+
+  private Singleton() { super(); }
+
+  public static synchronized Singleton getInstancia() {
+    if(instancia == null)
+      instancia = new Singleton();
+    return instancia;
+  }
+}
+```
+
+``` java
+// early instanciation
+private class Singleton {
+  private static Singleton instancia = new Singleton();
+
+  private Singleton() { super(); }
+
+  public static synchronized Singleton getInstancia() {
+    return instancia;
+  }
+}
+```
