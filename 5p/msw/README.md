@@ -783,3 +783,29 @@ As sprints são um processo iterativo, onde no tempo determinado, mais requisito
 - casos de uso mostram o que seu sistema deve fazer
 - diagramas de atividades especificam como seu sistema vai alcançar objetivos
 - mostram em alto nível ações conectadas juntas para representar um processo que ocorre no seu sistema
+
+### Diagrama de implantação (deployment)
+
+- Especifica as configurações de hardware que serão utilizadas para o software
+- Mostra a visão fisica de implantação
+
+> Sistema = Software + (Hardware que executa + Software de apoio)
+
+#### Elementos
+
+- Nos, Artefators, artefatos implantados em nos
+- O que e um no?
+  - Servidores
+  - PC Desktop
+  - Disco rigido
+- O que são os artefatos?
+  - arquivos fisicos que executam ou são usdaos por se software
+
+#### Possiveis usos
+
+- Se sua aplicação inclui um servidor ou um banco de dados
+
+### Diagrama de temporização
+
+- Motivação
+  - modelar restrições de tempo dos diagramas de sequência
