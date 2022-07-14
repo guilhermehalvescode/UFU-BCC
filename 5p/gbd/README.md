@@ -166,3 +166,32 @@ Simular MRU e LRU e verificar a inundação sequencial ocorrida em LRU.
     - Desvantagem: gera espaços pequenos vazios
 - Páginas com registros de tamanho variável
   - a alternativa é utilizar delimitadores, ponteiros, ou um par com (tamanho, conteúdo) dentro de cada registro
+
+## Abordagem comparativa
+
+### Comparação e Desempenho de Arquivos
+
+- Tipos de arquivos e indices
+- Operações
+- Modelo de Custo
+- Custos de cada operação/alternativ
+- Tabela comparativa
+
+### Tipos de organização de Arquivo
+
+- Arquivo não ordenado (heap file)
+- Arquivo ordenado (sorted file)
+- Arquivo indexado por Hash
+- Arquivo indexado por Arvore B+
+- Heap File + Indice não agrupado por Arvore B+
+  - Alternativa 2 (k+rid)
+- Heap File + Indice baseado em Hash Alternativa 2
+
+### Comparação de Desempenho - Operações
+
+> Operações em Arquivos e Indices
+
+- Scan (varredura): ler todos os registros de um arquivo
+  - Carregar paginas de arquivo no Buffer Pool
+  - Bucar registros em cada pagina
+- Busca Igual
