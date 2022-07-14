@@ -439,8 +439,6 @@ troca(A, rnX, r)
 
 - Implementar InsertiSort, MergeSort e QuickSort
 
-
-
 ## Análise Recorrência
 
 ### Recorrência Merge
@@ -512,3 +510,8 @@ T(2) <= 2c
 
 ---
 
+
+
+## Problema da Mochila
+
+- Fazer uma combinação de itens com peso e tamanho dentro uma mochila para caber de forma otima
