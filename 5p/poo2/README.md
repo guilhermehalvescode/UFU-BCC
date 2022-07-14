@@ -1282,7 +1282,6 @@ Relação entre Factory Method e Abstract Factory
 
 - Os metodos e uma abstract factory são implementados como factory methods
 
-
 ### Padrão Singleton
 
 - Problema:
@@ -1317,3 +1316,68 @@ private class Singleton {
   }
 }
 ```
+
+### Padrão Template Method
+
+- Problema: Reuso eficiente de algoritmos (processos, fluxos)
+- Objetivo: Encapsular algoritmos para que as subclasses utilizam
+
+---
+
+- Padrão consiste na criação de um template ou gabarito
+- Um template ou gabarito e um metodo que define um algoritmo
+
+---
+
+Implementação
+
+``` java
+public abstract class AbstractClass {
+  public void templateMethod() {
+    System.out.println("AbstractClass.templateMethod()");
+    primitiveOperation();
+    primitiveOperation2();
+  }
+
+  public abstract void primitiveOperation1();
+  public abstract void primitiveOperation2();
+}
+```
+
+``` java
+public class Concrete1 extends AbstractClass {
+  public void primitiveOperation1() {
+    System.out.println("AbstractClass.primitiveOperation1()");
+  }
+
+  public void primitiveOperation2() {
+    System.out.println("AbstractClass.primitiveOperation2()");
+  }
+}
+```
+
+``` java
+public class Concrete2 extends AbstractClass {
+  public void primitiveOperation1() {
+    System.out.println("AbstractClass.primitiveOperation1()");
+  }
+
+  public void primitiveOperation2() {
+    System.out.println("AbstractClass.primitiveOperation2()");
+  }
+}
+```
+
+---
+
+Gancho
+
+- possibilidade da classe concreta de implementar ou não uma rotina da classe pai
+  - na classe pai tem uma implementação vazia
+
+### Padrão Composite
+
+Objetivos
+
+- Compor objetos em estruturas de arvore para representar hierarquia partes-todo
+- Permitir aos clientes tratarem de maneira uniforme objetos individuais e composições de objetos
