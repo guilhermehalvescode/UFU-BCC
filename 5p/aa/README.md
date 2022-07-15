@@ -208,7 +208,6 @@ for(int i = 0; i < n - 1; i++) {
 
 ![inductionEx1](images/inductionEx1.png)
 
-
 ## Algoritmos de Ordenação
 
 ### BubbleSort
@@ -511,7 +510,24 @@ T(2) <= 2c
 ---
 
 
-
 ## Problema da Mochila
 
 - Fazer uma combinação de itens com peso e tamanho dentro uma mochila para caber de forma otima
+
+## Cadeia de Multiplicação de Matrizes
+
+- Algoritmo recursivo para determinar a melhor ordem de multiplicação
+- Complexidade
+- Encontrar a recomputação
+- Algoritmo PD
+
+import math
+def cmm(l):
+  if len(l)<3:
+    return 0
+  mn = math.inf
+  for i in range(1,len(l)-1):
+    mn = min(cmm(l[i-1:i]+l[i+1:])+l[i]*l[i-1]*l[i+1],mn)
+  return mn
+l = [1,2,3,4]
+print(cmm(l))
