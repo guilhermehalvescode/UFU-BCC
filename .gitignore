@@ -1,4 +1,5 @@
 .vscode
+node_modules
 .idea
 *.exe
 main
@@ -8,3 +9,4 @@ main
 *.R*
 x20v_1991.pdf
 *.bin
+*.lock

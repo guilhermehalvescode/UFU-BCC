@@ -1381,3 +1381,163 @@ Objetivos
 
 - Compor objetos em estruturas de arvore para representar hierarquia partes-todo
 - Permitir aos clientes tratarem de maneira uniforme objetos individuais e composições de objetos
+
+---
+
+- Permite construir estruturas de objetos na forma de arvores, contendo tanto composições de ojetos como objetos individuais atuando como nos.
+- Usando uma estrutura composta, podemos aplicar as mesmas operações tanto a composião como a objetos individuais
+
+---
+
+- Utilizado para representar um objeto que e constituido pela composição de outros objetos
+- O objeto composto possui um conjunto de outros objetos que estão na mesma hierarquia de classes a que ele pertence
+
+---
+
+- Permite que os elementos contidos em um ojeto composto sejam tratados como se fossem um unico objeto
+- Desta forma, todos os metodos comuns as classes que processam objetos atômicos da hierarquia poderão ser aplicaveis tambem ao conjunto de objetos agrupados no objeto composto
+
+---
+
+#### Aplicação
+
+- Utilizado sempre que e necessario representar elementos que são compostos por elementos similares
+
+---
+
+#### Observações (Composite)
+
+- E responsabilidade do objeto composto, para cada metodo a ser aplicavel aos objetos que o compoem, repassar chamada de operação
+- Desta maneira sera possivel interagir com uma composição de objetos da mesma forma que se interage com objetos individuais
+
+![compositeDiagram](images/compositeDiagram.png)
+
+---
+
+#### Participantes (Composite)
+
+- Componente:
+  - Declara a interface para objetos na composição
+  - Implementa comportamento default para interface comum a todas as classes
+  - Declara uma interface para acessar ou gerenciar seus Componentes filhos
+- Folha:
+  - Representa objetos folhas na composição. Uma folha não tem filhos;
+  - Define comportamento para objetos primitivos na composição
+- Composição:
+  - Define comportamento para Componentes que têm filhos
+  - Armazena Componentes filhos
+  - Implementa operações relacionadas com filhos na interface do Componente
+- Cliente:
+  - Manipula objetos na composição atraves da interface Componente
+
+---
+
+Exemplo:
+
+![compositeExample](images/compositeExample.png)
+![compositeExample1](images/compositeExample1.png)
+
+---
+
+```java
+//Component
+public interface ExpressaoAritmentica {
+  public int operacao();
+}
+```
+
+```java
+//Leaf
+public class Operando implements ExpressaoAritmetica {
+  private int conteudo;
+
+  public Operando(int conteudo) {
+    this.conteudo = conteudo;
+  }
+
+  public int operacao() {
+    return this.conteudo;
+  }
+}
+```
+
+```java
+//Leaf
+public abstract class Operador implements ExpressaoAritmetica {
+  private ExpressaoAritmetica op1;
+  private ExpressaoAritmetica op2;
+
+  public Operador(ExpressaoAritmetica op1, ExpressaoAritmetica op2) {
+    this.op1 = op1;
+    this.op2 = op2;
+  }
+
+  public ExpressaoAritmetica getOp1() {
+    return this.op1;
+  }
+
+  public ExpressaoAritmetica getOp2() {
+    return this.op2;
+  }
+}
+```
+
+```java
+public class Soma extends Operador {
+  public Soma(ExpressaoAritmetica op1, ExpressaoAritmetica op2) {
+    super(op1, op2);
+  }
+
+  public int operacao() {
+    retur getOp1().operacao() + getOp2().operacao();
+  }
+}
+```
+
+```java
+public class Subtracao extends Operador {
+  public Subtracao(ExpressaoAritmetica op1, ExpressaoAritmetica op2) {
+    super(op1, op2);
+  }
+
+  public int operacao() {
+    retur getOp1().operacao() - getOp2().operacao();
+  }
+}
+```
+
+```java
+public class Teste {
+  public static void main(String args[]) {
+    e = new Subtracao(new Soma(new Operando(2), new Soma(new Operando(2), new Operando(1))), new Operando(5));
+  }
+
+  System.out.println(e.operacao());
+}
+```
+
+---
+
+#### Aplicação em compiladores
+
+- Analise sintatica
+  - tambem conhecida pelo termo em inglês parsing
+  - processo de analisar uam sequência de entrada
+  - para determinar sua estrutura gramatical segundo uma determinal gramatica formal
+  - essa anlise faz parte de um compilador, junto com a analise lexica e analise semântica
+
+---
+
+- A analise sintatica
+  - transforma um texto na entrada em uma estrutura de dados, em geral uma arvore, o que e conveniente para processamento posterior
+  - captura a hierarquia implicita na entrada
+- Atraves da analise lexica e obtido uma grupo de tokens, para que o analisador sintatico use um conjunto de regras para construir uma arvore sintatica da estrutura
+
+---
+
+#### Consequências do padrão
+
+- Define uma hierarquia de classes que consistem de objetos primitivos e objetos compostos
+- Os objetos primitivos podem compor mais complexos, os quais, por sua vez, tambem podem compor outros objetos
+- Sempre que o codigo do cliente esperar um objeto primitivo, ele tambem podera aceitar um objeto composto
+- Torna facil acrescentar novas especies de componentes
