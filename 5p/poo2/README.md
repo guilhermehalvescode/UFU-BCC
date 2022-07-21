@@ -1541,3 +1541,56 @@ public class Teste {
 - Os objetos primitivos podem compor mais complexos, os quais, por sua vez, tambem podem compor outros objetos
 - Sempre que o codigo do cliente esperar um objeto primitivo, ele tambem podera aceitar um objeto composto
 - Torna facil acrescentar novas especies de componentes
+
+### Padrão Observer
+
+Problema:
+
+- Definir uma dependência um-para-muitos entre objetos, de forma quando de um objeto em particular (observado) se altera, seus dependentes (observadores) são notificados
+- Os objetos observadores podem, assim, desencadear as ações necessarias
+
+---
+
+Vantagem:
+
+- Evita que um ou mais objeto precise monitorar constantemente o estado de outro(s) objeto(s).
+
+---
+
+Funcionamento:
+
+- Quando e criado, cada observador registra-se junto do observado, que mantem uma lista de observadores na sua estrutura interna
+- Assim, quando o estado do observado e alterado, este envia uma mensagem para cada observador, informando-o do ocorrido. Este então pode reagir com conformidade
+
+---
+
+Participante
+
+- As classes e/ou objetos que participam do padrão são:
+
+---
+
+Subject
+
+- Representa uma abstração do sujeito a ser observado
+- Fornece uma interface para adicionar e remover objetos Observer.
+- Conhece os observadores. Qualquer numero de objetos Observer pode observar um Subject
+
+---
+
+ConcreteSubject
+
+- Implementa uma classe de sujeitos concretos
+- Armazena os estados que interessam ao ConcreteObserver
+- Envia uma notificaçao aos Observers, quando o seu estado se altera
+
+---
+
+Observer
+
+- Define uma interface para os objetos observadores, que devem ser notificados de alterações no Subject
+
+Concrete Observer
+
+- Mantem uma referência para o objeto ConcreteSubject
+- Implementa a interface de atualização definida em Observer, de forma a executar ações necessaria quando notificado
