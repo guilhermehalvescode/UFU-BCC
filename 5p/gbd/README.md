@@ -195,3 +195,63 @@ Simular MRU e LRU e verificar a inundação sequencial ocorrida em LRU.
   - Carregar paginas de arquivo no Buffer Pool
   - Bucar registros em cada pagina
 - Busca Igual
+
+## External Sort
+
+- Operação realizada pelo processador de consultas
+
+### Aplicações do Operador SORT
+
+- Uso explicito
+
+```sql
+SELECT a,b,c
+  FROM  r
+  ORDER BY a,b
+```
+
+- Bulk-loading (construção bottom-up de Arvore B+)
+- Eliminação de duplicatas
+
+```sql
+SELECT DISTINCT a,b,c FROM r
+```
+
+- Melhorias no desempenho de alguns operadores, por exemplo, junção
+
+---
+
+- O problema: o arquivo não cabe na memoria
+- Abordagem
+  - Ordenar um arquivo de tamanho arbitrario considerando três paginas disponiveis no buffer (Two-way Merge Sort)
+  - Refinar o algoritmo com um uso mais efetivo do buffer (External Merge Sort)
+  - Melhorias (Replacement Sort)
+
+### Two-Way Merge Sort (CUSTO - 2N.(1+log2(N)))
+
+- Duas paginas de Input
+- Uma Pagina de Output
+
+#### Etapa 0 - Ordena registros em cada pagina
+
+- Produz 7 subarquivos ordenados
+- Custo de IO de 2N, onde N = quantidade de paginas
+
+
+#### Etapa 1 - Merge de pares de paginas
+
+- Custo de 2N
+
+#### Etapa 2 - Ordena pares de subarquivos ordenados
+
+- Custo de 2N
+
+### External Merge Sort
+
+- Buffer com B paginas
+- Etapa 0
+  - B paginas são carregadas no buffer, ao inves de uma a uma
+  - B paginas são ordenadas e são criados N/B arquivos ordenados
+- Etapas i = 1,2,...
+  - B-1 paginas são usadas no buffer para entrada
+  - 1 pagina usada para saida
