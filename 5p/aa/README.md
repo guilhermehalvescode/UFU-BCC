@@ -521,13 +521,15 @@ T(2) <= 2c
 - Encontrar a recomputação
 - Algoritmo PD
 
+```python
 import math
 def cmm(l):
   if len(l)<3:
     return 0
   mn = math.inf
   for i in range(1,len(l)-1):
-    mn = min(cmm(l[i-1:i]+l[i+1:])+l[i]*l[i-1]*l[i+1],mn)
+    mn = min(cmm(l[:i]+l[i+1:])+l[i]*l[i-1]*l[i+1],mn)
   return mn
 l = [1,2,3,4]
 print(cmm(l))
+```
