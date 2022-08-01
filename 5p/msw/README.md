@@ -754,7 +754,7 @@ No SCRUM é utilizado o conceito de sprints, que são cliclos de desenvolvimento
 
 Normalmente, durante as reuniões são realizadas reuniões (dailys), para que cada membro do time de desenvolvimento mostre o status de seu desenvolvimento durante a semana e resolver eventuais problemas que ocorreram
 
-As sprints são um processo iterativo, onde no tempo determinado, mais requisitos são retirados do backlog durante a reunião de sprint (sprint planning) e entram no ciclo de desenvolvimento. Nesse contexto, o Scrum Master é responsávelpore gerenciar a sprint e garantir que tudo ocorrerá conforme o planejamento
+As sprints são um processo iterativo, onde no tempo determinado, mais requisitos são retirados do backlog durante a reunião de sprint (sprint planning) e entram no ciclo de desenvolvimento. Nesse contexto, o Scrum Master é responsável por gerenciar a sprint e garantir que tudo ocorrerá conforme o planejamento
 
 ## Diagramas UML
 
@@ -809,3 +809,85 @@ As sprints são um processo iterativo, onde no tempo determinado, mais requisito
 
 - Motivação
   - modelar restrições de tempo dos diagramas de sequência
+
+### OCL - Object Constraint Language
+
+- Responsavel por modelar restrições, agregando ao diagrama de classes
+- Não consegue especificar a execução, uma diagrama de atividades não pode ser transformado em OCL
+
+#### Valores inicias para atricutos - pontas de Associação
+
+- Contexto: elemento especificado no modelo UML para o qual a expressão OCL e definidas
+
+- Customer::value
+  - init: 0
+
+#### Atriutos derivados
+
+- context CustomerCard::printedName
+  - derive: owner.title.concat(' ').concat(owner.name);
+
+#### Operação de consulta (body expression)
+
+- context LoyaltyProgram::getServices():Set(Service)
+  - body: partners.deliveredServices->asSet()
+
+- Para todas instâncas de ProgramPartner
+  - associadas com a instância de LoyaltyProgram
+    - para a qual a operação getServices e chamada para
+
+#### Uma variaçao (parâmetros)
+
+- context LoyaltyProgram::getServices(pp: ProgramPartner) : Set(Service)
+  - body: if partners->includes(pp) then
+    - pp.deliveredServices->asSet()
+  - else Set
+  - endif
+
+#### Definindo novos atributos ou novas operações
+
+- context LoyaltyAccount
+  - def: turnover : Real = transactions.amount->sum()
+
+#### Nova operação
+
+- context LoyaltyProgram
+  - def:
+    - getServicesByLevel(levelName:string):Set(Services) = levels->select(name = levelName).availableServices->asSet()
+
+#### Invariantes
+
+- context Customer
+  - inv ofAge: age >= 18
+- context CustomerCard
+  - inv checkDates: validFrom.isBefore(goodThru)
+- context CustomerCard
+  - inv ofAge: onwer.age >= 18
+
+#### Usando classes de associação
+
+- context LoyaltyProgram
+  - inv knownServiceLevel:
+    - levels->includeAll(Membership.currentLevel)
+
+- context Membership
+  - inv correctCart:
+    - participants.cards->includes(self.card)
+
+- context Membership
+  - inv levelAndColor:
+    - currentLevel.name = 'Silver' implies card.color = Color::Silver
+  - and
+    - currentLevel.name='Gold' implies card.color = Color::gold
+
+#### Operadores e coleção *size*
+
+- context LoyaltyProgram
+  - inv minServices:
+    - partners.deliveredServices->size() >= 18
+
+#### Operadores de coleção *select*
+
+- context Customer
+  - inv sizesAgree:
+    - programs->size() == cards.select(valid = true).size()
