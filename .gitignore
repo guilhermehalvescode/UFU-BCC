@@ -8,6 +8,7 @@ main
 *.R*
 x20v_1991.pdf
 *.bin
+*.pdf
 
 # ts / node
 node_modules
