@@ -1,6 +1,6 @@
 # Inteligência Artificial
 
-## Agentes Inteligentes
+## Introdução
 
 ### Definindo uma IA
 
@@ -50,3 +50,51 @@
 - O agente racional
   - Faz a coisa certa
   - Procurar maximizar a tarefa de atingir seus objetivos
+- Nem sempre e possivel executar a melhor ação a existência de determinadas limitações
+  - Tempo
+  - Processamento computacional
+  - Memoria
+  - Presença de incertezas
+
+### Abordagem Racional
+
+- Mais generica que a bordagem da leis do pensamento
+
+### Sub-areas de IA
+
+- Raciocinio logico
+- Aquisição e Representação de Conhecimento
+- Planejamento
+- Visão
+- Aprendizagem
+- Algoritmos geneticos
+- Redes neuronais
+
+### Aplicações de IA
+
+- Matematica
+  - Prova de teoremas, resolução simbolica de equações, etc;
+- Pesquisa Operacional
+  - Otimização de busca heuristica
+- Jogos
+  - Xadrez, dama, etc
+- Processamento de Linguagem Natural
+  - Tradução automatica, verificadores ortograficos
+- Robotica
+  - Navegação, manipulação, monitoramento
+
+## Agentes Inteligentes
+
+- Um agente e algo que percebe seu ambiente atraves de sensores e age atraves de atuadores
+- Agente humano:
+  - Sensores: olhos, ouvido, nariz, ...
+  - Atuadores: mãos, pes, boca, ...
+- Agente robotico:
+  - Sensores: visão, proximidade, contato, ...
+  - Atuadores: garra, motores, ...
+
+- Exemplo - Descrever a medida de desempenho, ambiente, sensores e atuadores de um agente que realiza o diagnostico medico de um paciente em um hospital  ch
+  - ambiente: consultorio, clinica, hospital
+  - medida de desempenho: quantidade de diagnosticos corretos do exame
+  - sensores: imagem, 
+  - atuadores: gerar documentos (atestado, prescrições), caixas de som
