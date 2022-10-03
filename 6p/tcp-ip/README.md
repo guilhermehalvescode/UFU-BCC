@@ -3,7 +3,7 @@
 - Objetivo: mostrar a "atmosfera" e a terminologia das redes TCP/IP:
   - usar a internet como exemplo
 
-## Introdução
+## Introdução (Parte 1)
 
 ### O que é a internet? (visão basica)
 
@@ -186,12 +186,253 @@
 
 - Taxa de L/R segundos para transmitir (push out) o pacote de L bits no enlace em R bps
 - Store-and-forward: pacote inteiro deve chegar ao roteador antes que possa ser transmitido no proximo enlace
-- Atraso "fim-a-fim"
+- Atraso "fim-a-fim" = tempo 2L/R o hospedeiro tera recebido o 1º
 
 #### Comutação de pacotes: Atraso de fila e perda
 
-- Enfileramento e perde: se a taxa de chegada (em bits) para o enlace excede a taxa de transmissão do enlace durante um periodo de tempo
+- Enfileramento e perde: se a taxa de chegada (em bits) para o enlace excede a taxa de transmissão do enlace durante um periodo de tempo:
   - os pacotes irão criar uma fila e irão aguentar para serem transmitidos no enlace
-  - os pacotes podem ser "dropped" (perdidos) se a memoria (buffer) for excedida
+  - os pacotes podem ser "dropped" (perdidos) se a memoria (buffer) for preenchida
 
 #### Comutação de pacotes: Funções
+
+- Roteamento: determina a rota de origem e destino tomada por pacotes
+- Encaminhamento: mover os pacotes da entrada do roteador para a saida do roteador apropriado
+
+#### Comutação de pacotes versus Comutação de Circuitos
+
+- Coputação de pacote permite mais usuarios usar a rede de computadores
+
+- Exemplo:
+  - Link (enlace): 1Mbps
+  - Cada usuario:
+    - 100Kbps quando ativo
+    - Ativo 10% do tempo
+  - Comutação circuito:
+    - 10 usuarios
+  - Comutação pacote:
+    - Quando ha 35 usuarios, probabilidade > 10 ativo
+
+#### A comutação de pacotes e a "grande vencedora"?
+
+- otima para dados em rajadas
+- compartilhamento de recursos
+- mais simples, sem configuração de chamada
+- congestionamento excessivo: atraso e perda de pacotes:
+  - Demanda protocolos para transferência de dados confiavel e controle de congestionamento
+- Como fornecer comportamento do tipo circuito?
+  - Ter largura de banda garantida necessaria para aplicações e audio/video
+  
+> ainda um problema não resolvido
+
+- Exemplo: Analogia humana - recursos reservados (comutação de circuitos) versus alocação por demanda (comutação de pacotes)?
+
+#### Estrutura da Internet: rede de redes
+
+> Tendo dados gerado em milhões de ISPs de acesso, como conecta-los entre si?
+
+- Solução: Aproximadamente hierarquica
+- No centro tem os ISPs de "nivel 1" (exemplo: Verizon, Spring, AT&T, etc)
+- Tratam os ISPs em niveis iguais
+<!-- TODO: Niveis -->
+
+## Introdução (Parte 2)
+
+Objetivo
+
+- Mostrar a "atmosfera" e a terminologia das redes TCP/IP
+
+### Desempenho
+
+#### Como ocorre a perda e o atraso?
+
+- Pacotes se enfileiram nos buffers dos roteadores:
+  - Devido a taxa de chegada dos pacotes ao enlace ultrapassarem a capacidade de saida do enlace
+- Pacotes se enfileiram e esperam por sua vez
+
+#### Quatro fontes de atraso do pacote
+
+- Dnodal = Dproc + Dqueue + Dtrans + Dprop
+  
+1. (Dproc) processamento nodal:
+   1. verificação de erros de bits
+   2. Determinar o enlace de saida
+   3. Normalmente em microssegundos
+2. (Dqueue) enfileiramento
+   1. tempo esperando para transmissão do enlace de saida
+   2. depende do nivel de congestionamento do roteador
+3. (Dtrans) atraso de transmissão:
+   1. R = largura de banda do enlace (bps)
+   2. L = tamanho do pacote(bits)
+   3. Tempo para enviar bits no enlace por L/R
+4. (Dprop) atraso de propagação:
+   1. d = tamanho do enlace fisico
+   2. s = velocidade de propagação no meio (~2x10⁸)
+   3. atraso de propagação = d/s
+
+> Nota: s e R são quantidade muito diferentes!
+
+#### Comparação entre atraso de transmissão e propagação: analogia da caravana
+
+- Carros se propagam a 100 km/h
+- Cabines de pedagio levam 12 segundos para atender um carro (tempo de transmissão)
+- Analogia: Carro ~ bit e caravana ~ pacote
+- Quanto tempo leva para a caravana formar fila antes da 2º cabine?
+  - O tempo para "empurrar" a caravana inteira pela cabine para proxima estrada:
+    - 10 carros / (5 carros / minuto) = 2 minutos
+  - Tempo para o ultimo carro se propagar da 1º a 2º cabine de pedagio:
+    - 100 km com 100 km/h = 1h
+  - Resposta: 62 minutos
+- Se os carros se "propagam" a uma velocidade de 1000 km/h
+- Cabine leva 1 minuto para atender um carro
+- Os carros chegarão a 2º cabine antes que todos os carros sejam atendidos na 1º cabine?
+  - O 1º carro (bit) da caravana (pacote) pode chegar a 2º cabine (roteador) antes que a caravana seja totalmente transmitida na 1º cabine (roteador)?
+  - Se 1000 km/h -> temos 6 minutos para 100km
+  - Tambem devemos considerador 1 minuto pela cabine
+
+#### Atraso de enfileiramento
+
+- R = largura de banda do enlace (bps)
+- L = tamanho do pacote (bits)
+- a = taxa media de chegada de pacote
+  
+> Intensidade e trafego -> La/R
+
+- La/R ~ 0 : pequeno atraso de enfileiramento medio
+- La/R <= 1 : atrasos tornam-se grandes (rajadas)
+- La/R >= 1 : mais "trabalho" chegando do que se pode ser atendido, atraso medio infinito
+
+#### Atrasos e rotas "reais" da Internet
+
+Como são os atrasos e perdas "reais" da Internet?
+
+- Programa Traceroute: fornece medida do atraso da origem ao roteador ao longo do caminho de fim a fim da Internet para o destino
+- Para todo i:
+  - envia três pacotes que alcançarão o roteador i no caminho para o destino
+  - roteador i retornara os pacotes ao emissor
+  - emissor temporiza o intervalo entre a transmissão e a resposta
+
+#### Perda de pacote
+
+- Fila (ou buffer) antes do enlace tem capacidade finita
+- Pacote chegando a fila cheia e descartado (ou perdido)
+- Ultimo pacote pode ser retransmitido pelo no anterior, pela origem ou de forma nenhuma
+
+#### Vazão (Throughput)
+
+- Vazão: taxa (bits/unidade de tempo) em que os bits são transferidos entre emissor/receptor
+  - instântanea: taxa em determinado ponto no tempo
+  - media: taxa por periodo de tempo maior
+
+#### Vazão
+
+- Rs < Rc Qual e a vazão media de fim a fim? Rs
+- Rs > Rc Qual e a vazão de fima a fim? Rc
+  
+> enlace de gargalo: enlace no caminho de fim a fim que restringe a vazão de fim a fim
+
+#### Vazão: cenario da Internet
+
+- Pratica: Rc ou Rs normalmente e um gargalo
+- A vazão de fim a fim por conexão = min(Rc, Rs, R/10)
+
+### Camadas de protocolo, modelos de serviço
+
+#### "Camadas" de protocolo: Revisão
+
+Redes são complexas!
+
+- muitas "partes":
+  - hospedeiros
+  - roteadores
+  - enlaces de varios meios fisicos
+  - aplicações
+  - protocolos
+  - hardware
+
+- Camadas: cada etapa implementa um serviço
+  - por meio de suas proprias ações internas na camada
+  - contando com serviços fornecidos pela camada abaixo
+
+#### Por que usar camadas?
+
+- E um sistema complexo:
+  - estrutura explicita permite identificação e relação entre partes complexas do sistema
+  - modelo de referência em camadas
+- Modularização facilita manutenção e atualização do sistema:
+  - mudança de implementação do serviço da camada transparente ao restante do sistema
+  - Ex. mudanças no procedimento de porta não afeta o restante do sistema
+- O uso da camada e considerado prejudicial
+  - Ex. pode ocorrer a duplicação do serviço
+
+#### Pilha de protocolos da Internet
+
+- aplicação: suporte a aplicações de rede
+  - FTP, SMTP e HTTP
+- transporte: transferência de dados processo-processo
+  - TCP e UDP
+- rede: roteamento de datagramas da origem ao destino
+  - IP e protocolos de roteamento
+- enlace: transferência de dados entre elementos vizinhos da rede
+  - PPP e Ethernet
+- fisica: bits "nos fios"
+
+#### Modelo de referência ISO/OSI
+
+- apresentação: permite que as aplicações interpretem o significado dos dados
+  - Ex. criptografia, compactação, conveções especificas da maquina
+- session: sincronização, verificação, recuperação de troca de dados
+- Pilha da Internet "faltando" essas camadas
+  - Estes serviços, se necessarios, devem ser implementados na aplicação
+  - Se necessario a aplicação
+
+### Segurança
+
+#### Segurança de rede
+
+- o campo da segurança de rede trata de:
+  - como defender as redes contra ataques
+  - como maus sujeitos atacam as redes de computadores
+  - como projetar arquiteturas imunes a ataques
+- Internet não foi criada originalmente com (muita) segurança em "mente"
+  - visão original: "um grupo de usuarios mutuamente confiaveis conectados a uam rede transparente"
+  - projetistas de protocolos da Internet brincando de "contar novidades"
+  - considerações de segurança em todas as camadas!
+
+#### Maus sujeitos podem colocar malware em hospedeiros via Internet
+
+- Malware (programas maliciosos) pode entrar em um hospedeiro por virus, worm ou cavalo de troia
+- O malware do tipo spyware pode registrar toques de teclas, sites visitados na Web, enviar informações para sites de coleta
+- Um hospedeiro infectado pode ser "alistado" em um botnet, usado para spam e ataques de DoS (negação de serviços)
+- O malware normalmente e auto replicavel: de um hospedeiro infectado, busca entrada em outros hospedeiros
+
+- cavalo de Troia
+  - parte oculta de algum software util
+  - hoje, normalmente em uma pagina Web (Active-X, plug-in)
+- virus
+  - infecção ao receber objeto (p.e., anexo de um e-mail), executando ativamente
+  - autorreplicavel: propaga-se para outros hospedeiros e usuarios
+- worm:
+  - infecção recebendo passivamente objeto a ser executdo
+  - Auto replicavel: propaga-se para outros hospedeiros, usuarios
+
+#### Maus sujeitos podem atacar servidores e infraestrutura de rede
+
+- Denial of Service (DoS): atacantes deixam recursos (servidor, largura de banda) indisponiveis ao trafego legitimo, sobrecarregando recurso com trafego
+
+1. selecionar o alvo
+2. invadir os hospedeiros na rede (ver botnet)
+3. enviar pacotes para o alvo a partir dos hospedeiros compremetidos
+
+#### Maus sujeitos podem farejar pacotes
+
+- Farejamento de pacotes:
+  - meio de broadcast (Ethernet compartilhada, sem fio)
+  - interface de rede analisa (le/registra) todos os pacotes (p.e., incluindo senhas!) passando por
+- Software Wireshark usado para laboratorio do farejador de pacotes (gratuito)
+
+#### Maus sujeitos podem usar endereços de origem falso
+
+- IP spoofing: enviar pacote com endereço de origem falso
+
+### Historia
