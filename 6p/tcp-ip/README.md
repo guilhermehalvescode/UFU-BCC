@@ -234,7 +234,21 @@
 - Solução: Aproximadamente hierarquica
 - No centro tem os ISPs de "nivel 1" (exemplo: Verizon, Spring, AT&T, etc)
 - Tratam os ISPs em niveis iguais
-<!-- TODO: Niveis -->
+
+#### ISPs de nível 1
+
+- Sprint
+
+#### ISPs de nível 2
+
+- conectam a um ou mais ISPs de nível 1, possivelmente também a outros ISPs de nível 2
+- ISP de nível 2 paga ao ISP nível 1 por conectividade com restante da internet
+- ISPs de nível 2 também olham de forma privada uns para os outros
+
+#### ISPs de nível 3 e ISPs locais
+
+- rede do último salto ("acesso"), mais próxima dos sistemas finais
+- ISPs locais e de nível 3 são clientes de ISPs de camada mais alta conectando-os ao restante da Internet
 
 ## Introdução (Parte 2)
 
