@@ -251,3 +251,160 @@ asp-reativo-estado([status]) retorna Ação persistente local
 - Codificar comportamento racional para todas as situações do mundo e muito "trabalhoso"
 - Agentes inteligentes devem ser capazes de aprender. O comportamento do agente deve ser modificado em função de um feedback recebido pelo ambiente
 - Aprendizado permite que agentes operando em ambientes desconhecidos possam se tornar mais competentes que seu conhecimento inical permitia
+
+## Resolvendo Problemas por meio de Tecnicas de Busca
+
+### Revisitando o Agente Reativo
+
+- O agente reativo:
+  - E tambem chamado de agente situado ou agente de estimulo-resposta
+  - Reage a estimulo do ambiente
+  - Não e capaz de planejar com antecedencia
+  - Não possui capacidade para tomada de decisões
+  - Desconhece as consequências de suas ações
+
+### Resolvendo Problemas
+
+- Um agente que resolve problemas:
+  - Decide o que fazer(formula o seu objetivo)
+  - Conhece o efeito de suas ações
+  - Encontra uma sequência de ações que se executdas satisfaz os seus objetivos
+
+### Resolvendo Problemas: o agente deliberativo
+
+- O agente "deliberativo":
+  - Formulação do objetivo e do problema: processo de determinação do objetivo e da escolha relevante de um conjunto de ações e estados
+  - Busca: obtem a(s) sequência(s) de ações que satisfaz(em) o objetivo
+  - Solução: uma sequência de ações que satisfaz o objetivo
+  - Execução: realização das ações da solução
+
+### Descrição do Problema
+
+- Formulação do problema:
+  - Envolve o conheciento que o agente deve usar para resolver o problema:
+    - Estado inicial (o que o proprio agente sabe)
+    - Conjunto de operadores (ações genericas). A execução de uma ação muda o estado do mundo
+    - Teste de objetivo: verifica se um certo estado satisfaz um objetivo formulado (um estado ou uma propriedade de um estado)
+    - Função custo do caminho(g): soma dos custos das ações em um caminho
+
+### Definindo o Problema atraves de um tipo de dado
+
+- Tipo de dado: Problema
+  - Componentes:
+    - Estado inicial
+    - Operadores
+    - Teste de objetivo
+    - Função custo
+
+### Busca
+
+- Proposito de uma busca: encontrar uma sequência de ações que transformem o estado inicial do mundo em um estado final (que satisfaça um objetivo)
+- Possibilidades:
+  - Encontrar uma solução
+  - Encontrar a solução otima
+- Custo do Caminho X Custo da busca
+  - Compromisso entre encontrar a melhor solução e o tempo gasto para obtê-la
+
+### Formulação do Problema: Exemplo
+
+- Exemplo: Ferias na Romênia. No momento em Arad. Desejo estar em Bucharest amanhã.
+  - Formulação do objetivo: estar em Bucharest
+  - Formulação do problema:
+    - Estados: as varias cidades
+    - Operadores(Ações): dirigir entre as cidades
+    - Função custo: Quilometragem total ou tempo de viagem
+    - Teste de objetivo: estou em Bucharest?
+  - Encontrar solução: sequência de cidades atingidas saindo de Arad e chegando em Bucharest
+
+> Mapa de estradas
+
+- Quebra-cabeça de 8 ou 15
+
+- Problema das 8 rainhas
+  - Teste de objetivo: As oito rainhas estão posicionadas no tabuleiro, De tal forma que nenhuma ataque outra?
+
+### Problemas do Mundo Real
+
+- Navegação de robôs
+- Sequenciamento de montagens
+- etc
+
+### Busca (continuação)
+
+- O que um algoritmo de busca faz?
+  - Gera sequência de ações
+  - Multiplas escolhas de caminho
+  - Essencialmente faz-se uma escolha e deixa as outras para serem analisadas posteriormente
+  - A decisão de quem escolher primeiro define uma estrategia de busca
+  - O processo de busca pode ser comparado ao processo de construir uma arvore
+  - A raiz da arvore de busca corresponde ao estado inicial
+  - Os nos folhas correspondem a estados que não possuem sucessores devido ao fato de não terem sido expandidos ainda ou porque foram expandidos e geraram o conjunto vazio
+  - Em cada passo, o algoritmo busca um no folha para expandir
+
+### O Algoritmo de Busca
+
+```portugol
+Algoritmo geral de busca:
+  Função buscaGeral(problema,estratégia) devolve fracasso ou solução
+  Inicio_de buscaGeral
+    inicializa a árvore de busca com o estado inicial do problema
+    repete
+    inicio
+      se não existem mais candidatos a serem
+      expandidos devolva fracasso
+      escolha um nó folha para expandir de acordo
+      com a estratégia
+      Se o nó contém o estado que satisfaz o objetivo
+      então **devolva** a solução
+      senão expanda o nó e adicione na árvore de busca
+    fim
+  Fim-de buscaGeral
+```
+
+- Estruturas de Dados para Arvores de Busca:
+  - Tipo de dado: no
+    - componentes:
+      - estado
+      - no_pai
+      - operador (que foi aplicado para gerar o no)
+      - profundidade
+      - custo_do_caminho
+
+- E preciso representar a coleção dos nos que necessitam ser expandidos (chamada fronteira)
+- A representação mais simples poderia ser um conjunto de nos. A estrategia de busca seria então uma função que seleciona o proximo no a ser expandido do conjunto
+- Vamos assumir que esta coleção e representada como uma fila
+
+- Operações associadas a fila:
+  - criaFila(elementos): cria uma fila com os elementos dados
+  - estaVazia(fila): retorna verdade se não existem mais elementos na fila
+  - removeDaFrente(fila): remove o elemento da frente da fila e o devolve
+  - enfileira(elementos, fila): insere um conjunto de elementos na fila
+
+- Busca
+
+  ```portugol
+  Função buscaGeral(problema, enfileiraF) devolve uma solução ou fracasso
+  inicio
+    nós <- criaFila(criaNó(estadoInicial(problema)));
+    repita
+    inicio
+      se a fila nós é vazia retorne fracasso
+      nó <- removedaFrente(nós);
+      se testeDeMeta(problema) aplicada a estado(nó)
+        obtém sucesso retorne nó;
+        nós <- enfileiraF(nós,expande(nó, operadores(problema))
+  fim
+  ```
+
+  - Critérios para avaliação de uma estratégia de busca:
+    - Completude: se existe uma solução a estratégia será capaz de encontrá-la?
+    - Complexidade no tempo: quanto tempo ela demora para obter uma solução?
+    - Complexidade de espaço: de quanto memória ela necessita para realizar a busca?
+    - Qualidade da solução: a solução encontrada é a solução ótima?
+  - Estratégias de Busca não Informadas (Busca Cega) - estas não possuem informação sobre o número de passos ou o custo do caminho entre um nó e nó meta
+    - Busca em largura
+    - Busca em profundidade
+    - Busca de custo uniforme
+    - Busca em profundidade limitada
+    - Busca em profundidade iterativa
+    - Busca bidirecional
