@@ -1,8 +1,10 @@
 #include <bits/stdc++.h>
-#include "../utils/aux.h"
+
+#include "../utils/Polinomio.h"
+#include "../utils/Aux.h"
 using namespace std;
 
-RespostaMetodoNumerico calculaPorMetodoSecante(double *polinomio, int grau, double aInical, double bInicial, double err);
+RespostaMetodoNumerico calculaPorMetodoSecante(Polinomio polinomio, double x0, double x1, double err);
 
 int main()
 {
@@ -11,12 +13,16 @@ int main()
   cout << "Informe o grau do polinomio: ";
   cin >> n;
 
-  double polinomio[n + 1], x0, x1, err;
+  Polinomio polinomio(n);
+  double x0, x1, err, coef;
 
-  for (int i = 0; i <= n; i++)
+  for (unsigned int i = 0; i <= n; i++)
   {
     cout << "Informe o termo no grau " << i << ": ";
-    cin >> polinomio[i];
+
+    cin >> coef;
+
+    polinomio.defineCoeficiente(coef, i);
   }
 
   cout << "Informe o intervalo [x0, x1]: ";
@@ -25,7 +31,7 @@ int main()
   cout << "Informe a tolerancia: ";
   cin >> err;
 
-  RespostaMetodoNumerico resposta = calculaPorMetodoSecante(polinomio, n, x0, x1, err);
+  RespostaMetodoNumerico resposta = calculaPorMetodoSecante(polinomio, x0, x1, err);
   if (resposta.x == DBL_MAX)
   {
     cout << "Raiz não encontrada no intervalo!" << endl;
@@ -38,41 +44,32 @@ int main()
   return 1;
 }
 
-RespostaMetodoNumerico calculaPorMetodoSecante(double *polinomio, int grau, double aInical, double bInicial, double err)
+RespostaMetodoNumerico calculaPorMetodoSecante(Polinomio polinomio, double x1, double x2, double err)
 {
-  double a = aInical, b = bInicial, x = DBL_MAX, xAnterior = DBL_MIN, fa, fb;
-  unsigned int iteracoes = 1;
-  RespostaMetodoNumerico resposta = {DBL_MAX, 0, 0};
+  double x = DBL_MAX, xAnterior = DBL_MIN, fx1, fx2;
+  RespostaMetodoNumerico resposta = {x, 0, 1};
 
-  if (!existeRaizNoIntervalo(polinomio, grau, a, b))
-    return resposta;
+  fx1 = polinomio.calcula(x1);
+  fx2 = polinomio.calcula(x2);
 
-  fa = calculaPolinomio(polinomio, grau, a);
-  fb = calculaPolinomio(polinomio, grau, b);
+  x = Aux::calculaXPF(x1, x2, fx1, fx2);
 
-  x = calculaXPF(a, b, fa, fb);
-
-  while (testeParada(polinomio, grau, x, err, xAnterior))
+  while (Aux::testeParada(polinomio, x, err, xAnterior))
   {
-    if (existeRaizNoIntervalo(polinomio, grau, a, x))
-    {
-      b = x;
-      fa = calculaPolinomio(polinomio, grau, a) / 2.0;
-      fb = calculaPolinomio(polinomio, grau, b);
-    }
-    else
-    {
-      a = x;
-      fa = calculaPolinomio(polinomio, grau, a);
-      fb = calculaPolinomio(polinomio, grau, b) / 2.0;
-    }
 
+    x1 = x2;
+    x2 = x;
     xAnterior = x;
-    x = calculaXPF(a, b, fa, fb);
-    iteracoes++;
+
+    fx1 = polinomio.calcula(x1);
+    fx2 = polinomio.calcula(x2);
+
+    x = Aux::calculaXPF(x1, x2, fx1, fx2);
+    resposta.iteracoes++;
   }
 
-  resposta = {x, abs(calculaPolinomio(polinomio, grau, x)), iteracoes};
+  resposta.x = x;
+  resposta.err = abs(polinomio.calcula(x));
 
   return resposta;
 }
