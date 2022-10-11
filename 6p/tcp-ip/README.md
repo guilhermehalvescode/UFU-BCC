@@ -64,7 +64,7 @@
   - redes de acesso institucional (escola, empresa);
   - redes de acesso movel (WiFi, 4g e 5g)
 
-#### Digital Subscriber Line (DSL) 
+#### Digital Subscriber Line (DSL)
 
 - Usa infraestrutura de telefone para central DSLAM (digital subscriber line access multiplexer)
 - Taxas de transmissão:
