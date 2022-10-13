@@ -449,4 +449,132 @@ Redes são complexas!
 
 - IP spoofing: enviar pacote com endereço de origem falso
 
-### Historia
+## Camada de Enlace
+
+### Introdução e serviços
+
+- Algumas terminologias:
+  - hospedeiros e roteadores são nós
+  - canais de comunicação que se conectam a nós adjacentes pelo caminho de comunicação são enlaces
+    - enlaces com fio
+    - enlaces sem fio
+    - LANs
+  - Os dados na camada 2 é denominado um quadro, que irá encapsular os datagrama
+
+> Camada de enlace de dados: responsabilidade de transferir um datagrama de um nó ao nó adjacente por um enlace
+
+- Datagrama é transferido por diferentes protocolos de enlace sobre diferentes enlaces (links):
+  - Ex. Ethernet no primeiro link, frame relay no link intermediário e 802.11 no último link
+- Cada protocolo de enlace fornece diferentes serviços:
+  - Ex: Ter ou não verificação de erro na camada de enlace
+
+---
+
+- Dois equipamentos fisicamente conectados:
+  - host-roteador, roteador-roteador, host-host
+- A unidade de dados: quadro (frame)
+
+---
+
+#### Serviços da camada de enlace
+
+- Enquadramento, acesso ao enlace:
+  - encapsula datagrama no quadro, incluindo cabeçalho, trailer;
+  - acesso ao canal de meio compartilhado
+  - endereços "MAC" usados nos cabeçalhos de quadro para identificar origem e destino:
+    - diferente do endereço IP;
+- Entrega confiável entre nós adjacentes:
+  - raramento usado em enlace com pouco erro de bit (fibra, alguns pares trançados)
+  - enlaces sem fio: altas taxas de erro
+- controle de fluxo: controle entre nós de emissão e recepção adjacentes
+- detecção de erro:
+  - erros causados por atenuação de sinal e ruído
+  - receptor detecta presença de erros
+    - pede ao remetente para retransmitir ou descarta quadro
+- corrção derro: receptor identifica e corrige erro(s) de bits sem lançar mão da retransmissão
+- half-duplex e full-duplex: com half-duplex, os nós nas duas extremidades do enlace podem transmitir, mas não ao mesmo tempo
+
+#### Onde é implementada a camada de enlace?
+
+- em todo e qualquer hospedeiro
+- A camada de enlace implementada no "adaptador" (ou placa de interface de rede, NIC)
+  - placa Ethernet, placa 802.1
+  - implementa camada de enlace e física
+- Conectada aos barramentos do sistema do hospedeiro
+- Combinação de hardware, software e firmware
+
+#### Comunicação entre adaptadores
+
+- lado emissor:
+  - encapsula datagrama no quadro
+  - inclui bits de verificação de rro, entrega confiável, controle de fluxo etc
+- lado receptor:
+  - procura erros, controle de fluxo etc;
+  - extrai datagrama, passa para camada superior no lado receptor
+
+### Detecção e correção de erros
+
+#### Técnicas de detecção e correção de erros
+
+- Os bits de detecção e correção de erros (error-detection and correction - EDC) são inseridos de forma redundantes
+  - D = Dados protegidos por verificação de erro, podem incluir campos de cabeçalho;
+- Detecção de erro não é 100% confiável:
+  - protocolo tenta descobrir, mas nem sempre consegue;
+  - quanto maior campo EDC gerado melhor a detecção e correção
+
+#### Verificações de paridade
+
+- Paridade de único bit:
+  - Detecta erro de um único bit
+  - d + 1 bits
+- Paridade bidimensional:
+  - Detecta e corrige erro de único bit
+
+#### Soma de verificação da Internet [RFC 1071]
+
+- detectar "erros" (ex. bits invertidos) no pacote transmitido (nota: usada normalmente na camada de transporte)
+- Emissor
+  - trata o conteúdo do segmento como sequência de inteiros de 16 bits
+  - soma de verificação: adição (soma no complemento de 1) do conteúdo do segmento
+  - emissor coloca o valor da soma da verificação no campo de soma de verificação
+  - Ex. na camada de transporte no protocolo User Datagram Protocol (UDP)
+- Receptor:
+  - calcula a soma de verificação do segmento recebido
+  - verifica se soma é igual ao valor do campo de "soma de verificação"
+    - NÃO - erro detectado
+    - SIM - nenhum erro detectado
+
+---
+
+- O método baseia-se em redundância
+- Ex. Suponha que necessite transmitir uma lista de 5 número no intervalo de 4 bits para representação (2⁴) desses valores
+- Serão enviados os número e a soma:
+  - Dado o conjunto de números: 7, 11, 12, 0, 6
+  - Devemos considerar: 7, 11, 12, 0, 36
+  - Se os dados devem ser escritos como 4 bits (2⁴), o checksum representa um valor menor que 15
+  - Solução para o valor é usar o complemento de um
+- Receptor soma e compara com o último valor (checksum)
+
+---
+
+- Complemento de Um:
+  - Se o número (36) tiver mais de n bits (2⁴), os bits extras mais à esquerda precisa ser adicionado aos n bits mais à direita (wrapping)
+  - O emissor então comlementa o resultado para obter o valor de checksum = 9, o qual é 15 - 6
+  - Note que 6 = (0110)² e 9 = (1001)²
+
+---
+
+- Na aritmética de um complemento, temos dois 0s: um positivo e um negativo, que são complementos um do outro. O número decimal 6 = 0110 (inverte todos os bits)
+- Receptor soma todos os dados, inclusive o checksum (7, 11, 12, 0, 6, 9) soma = 45 (bin 101101) -> 1110 (dec. 15) e invert 0 (checksum esta ok)
+
+#### Verificação de redundância cíclica (cyclic redundancy check - CRC)
+
+- Seja os bits de dados, D, como um número binário a ser enviado
+- Escolha o padrão de bits r (bits adicionais) + 1 (gerador) -> G de r+1 bits
+- Objetivo: escolher r bits de CRC, R, tal que:
+  - <D, R> exatamente divisível por G (módulo 2)
+  - receptor sabe G, divide <D, R> por G. Se o resto difere de "0": erro detectado!
+  - pode detectar todos os erros em rajada menores que r + 1 bits
+- muito usada na prática (Ethernet e 802.11 WiFi)
+
+### Protocolos de acesso múltiplo
