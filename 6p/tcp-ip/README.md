@@ -578,3 +578,192 @@ Redes são complexas!
 - muito usada na prática (Ethernet e 802.11 WiFi)
 
 ### Protocolos de acesso múltiplo
+
+#### Enlaces e protocolos de acesso múltiplo
+
+- Dois tipos de "enlaces":
+  - ponto a ponto
+    - PPP para acesso discado
+    - enlace ponto a ponto entre comutador Ethernet e hospedeiro
+  - broadcast (fio ou meio compartilhado)
+    - Ethernet à moda antiga
+    - HFC (Hybrid fiber-coaxial) em redes de acesso baseada em cabos
+    - LAN sem fio 802.11
+
+---
+
+- único canal de broadcast compartilhado
+- duas ou mais transmissões simultâneas por nós: interferência
+- colisão se o nó recebe dois ou mais sinais ao mesmo tempo
+- protocolo de acesso múltiplo
+  - algoritmo distribuído que determina como os nós compartilham canal, ou seja, determinam quando o nó pode transmitir
+  - comunicação sobre compartilhamento de canal deve usar o próprio canal
+  - não há canal fora-de-banda para coordenação
+
+#### Protocolos de acesso múltiplo ideal
+
+- Canal de broadcast de velocidade R bps
+
+1. quando um nó quer transmitir, ele pode enviar na velocidade R
+2. quando M nós querem transmitir, cada um pode enviar na velocidade média de transmissão R/M
+3. totalmente descentralizado:
+   - Nenhum nó especial para coordenar transmissões
+   - Nenhuma sincronização de clocks, intervalos
+4. simples
+
+#### Protocolos MAC: uma taxonomia
+
+- Três classes gerais:
+  - Particionamento de canal
+    - divide o canal em "pedaços menores" (intervalos de tempo, frequência, código)
+    - aloca pedaço ao nó para uso exclusivo
+  - Acesso aleatório
+    - canal não dividido, permite colisões, "recuperação" de colisões
+  - "Revezando"
+    - os nós se revezam, mas os nós com mais a enviar podem receber mais tempo
+
+![multipleAccessProtocols](images/multipleAccessProtocols.png)
+
+#### Protocolos MAC de particionamento de canal: TDMA
+
+TDMA: Time Division Multiple Access
+
+- acesso ao canal em "rodadas"
+- cada estação recebe intervalo de tamanho fixo (tamanho = tempo transm. pacote) a cada rodada
+- intervalos não usados ficam ociosos
+- Ex: LAN de 6 estações, 1, 3, 4 têm pacote, intervalos 2, 5, 6 ociosos
+
+#### Protocolos MAC de particionamento de canal: FDMA
+
+FDMA: Frequency Division Multiple Access
+
+- espectro do canal divido em bandas de frequência
+- cada estação recebe uma banda de frequência fixa
+- tempo de transmissão não usado nas bandas de frequência fica ocioso
+- Ex: LAN de 6 estações, 1, 3, 4 têm pacote, bandas de frequência 2, 5, 6 ociosas
+
+#### Protocolos de acesso aleatório
+
+- Quando o nó tem um pacote a enviar
+  - transmite na velocidade de dados R total do canal
+  - sem coordenação a priori entre os nós dois ou mais transmitem -> "colisão"
+- Protocolo MAC de acesso aleatório especifica:
+  - como detectar colisões
+  - como recuperar-se de colisões (ex. via retransmissões adiadas)
+- Exemplos de protocolos MAC de acesso aleatório:
+  - Slotted ALOHA
+  - ALOHa
+  - CSMA, CSMA/CD, CSMA/CA
+
+#### Slotted ALOHA
+
+- Suposições:
+  - todos os quadros do mesmo tamanho
+  - tempo dividio em intervalos de mesmo tamanho (tempo para transmitir 1 quadro)
+  - nós começam a transmitir somente no início dos intervalos
+  - nós são sincronizados
+  - se 2 ou mais nós transmitem no intervalo, todos os nós detectam colisão
+- Operação:
+  - quando nó obtém quadro novo, transmitir no próximo intervalo
+    - se não há colisão: nó pode enviar novo quadro no próximo intervalo
+    - se há colisão: nó retransmite quadro em cada intervalo subsequente com probabilidade p (randômica) até que haja sucesso
+- Pros:
+  - único nó ativo pode transmitir continuamente na velocidade plena do canal
+  - altamente descentralizado: somente intervalos nos nós precisam estar em sincronismo
+  - simples
+- Contras:
+  - colisões, intervalos desperdiçados
+  - intervalos ociosos
+  - nós podem ser capazes de detectar colisão em menos tempo do que para transmitir pacote
+  - sincronismo de clock
+
+#### Eficiência do Slotted Aloha
+
+- Eficiência: fração durante longo tempo de intervalos bem sucedidos (muitos nós, todos com muitos quadros para serem enviados)
+- Suponha: N nós com muitos quadros a enviar, cada um transmitindo no intervalo com prababilidade p
+- Prob de um nó ter sucesso em um intervalo = $p(1-p)^{N-1}$
+- Prob de qualquer nó ter sucesso = $Np(1-p)^{N-1}$
+- eficiência máxima: ache p * que maximiza $Np(1-p)^{N-1}$
+- Na melhor das hipóteses: canal usado para transmissões úteis 37% do tempo!
+
+#### ALOHA puro (não slotted)
+
+- Aloha não slotted: mais simples, sem sincronismo
+- quando quadro chega primeiro transmite imediatamente
+- probabilidade colisão aumenta:
+  - audro enviado em $t_{0}$ colide com outros quadros enviados em $[t_{0-1}, t_{0+1}]$
+- Eficiência Aloha puro: 18%!
+
+#### CSMA (Carrier Sense Multiple Access)
+
+- CSMA (Acesso múltiplo com sensioramento da portadora):
+  - Ouça o meio antes de enviar, se perceber canal ocioso, transmite quadro inteiro
+  - Se perceber canal ocupado, adia transmissão
+  - Reduz a possibilidade de colisão, mas não pode eliminar
+  - Analogia humana: não interrompa os outros
+- Civilidade:
+  - Ouça antes de falar
+  - Se alguém começa a falar ao mesmo tempo que você, pare de falar
+
+#### Colisões CSMA
+
+- Colisões ainda podem ocorrer: atraso de propagação significa que dois nós podem não ouvir a transmissão um do outro
+- Colisão: tempo de transmissão de pacote inteiro desperdiçado
+- nota: Distância e atraso de propagação determinal a probabilidade de colisão
+
+#### CSMA/CD (Collision Detection)
+
+- CSMA/CD: detecção de portadora e processo de interrupção como no CSMA:
+  - colisões detectadas dentro de pouco tempo
+  - as transmissões que colidem são abortadas, reduzindo desperdício do canal
+  - detecção de colisão:
+    - Fácil em LANs com fio (meio guiado): mede a intensidade do sinal, compara sinais transmitidos e recebidos
+    - Difícil em LANs sem fio (meio não guiado): intensidade do sinal recebido abafada pela intensidade da transmissão local
+
+![flowchartCSMACD](images/flowchartCSMACD.png)
+
+> O que uma estação deve fazer se estiver o canal ocioso?
+
+- Aplicar um método: 1-persistente (ouve e envia imediatamente), não persistente (se ocupado, espera a mesma quantidade de tempo para enviar) e p-persistente (slots de tempo p para enviar)
+
+#### "Revezando" protocolos MAC
+
+- Protocolos MAC de particionamento de canal:
+  - compartilham canal de modo eficaz e justo com alta carga
+  - ineficaz com baixa carga: atraso no acesso ao canal, 1/n largura de banda alocada mesmo que apenas 1 nó ativo!
+- Protocolos MAC de acesso aleatório
+  - eficaz com baixa carga: único nó pode utilizar o canal totalmente
+  - alta carga: sobrecarga de colisão
+- "revezando" protocolos
+  - procure o melhor dos dois mundos
+
+#### Polling (seleção)
+
+- nó mestre "convida" nós escravos a alterarem a transmissão
+- normalmente usado com dispositivos escravos "burros"
+- preocupações:
+  - sobrecarga de seleção
+  - latência
+  - único ponto de falha (mestre)
+
+#### Passagem de permissão
+
+- Permissão de controle passada de um nó para o próximo sequencialmente
+- mensagem de permissão
+- preocupações
+  - sobrecarga de permissão
+  - latência
+  - único ponto de falha (permissão)
+
+#### Resumo de protocolos MAC
+
+- particionamento de canal, por tempo e frequência
+  - Time Division e Frequency Division
+- acesso aleatório (dinâmico)
+  - ALOHA, S-ALOHA, CSMA, CSMA/CD
+  - percepção de portadora: fácil em algumas tecnologias (com fio), difícil em outras (sem fio)
+  - CSMA/CD usado na Ethernet
+  - CSMA/CA usado na 802.11
+- revezamento
+  - polling central e passagem de permissão
+  - Bluetooth e token ring
