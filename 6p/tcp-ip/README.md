@@ -449,7 +449,7 @@ Redes são complexas!
 
 - IP spoofing: enviar pacote com endereço de origem falso
 
-## Camada de Enlace
+## Camada de Enlace (Parte 1)
 
 ### Introdução e serviços
 
@@ -767,3 +767,177 @@ FDMA: Frequency Division Multiple Access
 - revezamento
   - polling central e passagem de permissão
   - Bluetooth e token ring
+
+## Camada de Enlace (Parte 2)
+
+### Endereçamento MAC
+
+- Endereço IP (Internet Protocol)
+  - Endereço para interface usado na camada de rede (Internet)
+- Endereço Media Access Control (MAC) (ou LAN ou físico ou Ethernet)
+  - Função: levar um quadro de uma interface para outra interface conectada fisicamente (na mesma rede)
+  - Endereço MAC tem 48 bits - 6 bytes - cada byte representando 2 algarismos hexadecimal
+    - ROM da placa NIC, às vezes também configurável por software
+    - Ex: 1A-2F-BB-76-09-AD
+
+---
+
+- Cada adaptador na LAN tem endereço de LAN exclusivo
+- Endereço de broadcast = FF-FF-FF-FF-FF-FF
+
+---
+
+- Alocação do endereço MAC administrada pelo IEEE (Institute of Eletrical and Eletronics Engineers)
+- Fabricante compra parte do espaço de endereços MAC (para garantir exclusividade)
+- Analogia:
+  - (a) Endereço MAC: documento
+  - (b) Endereço IP: como o endereço postal
+- Endereço MAC -> portabilidade:
+  - pode mover placa de LAN de uma LAN para outra
+- Endereço IP hierárquico NÃO portável: endereço depende da sub-rede IP à qual o nó está conectado
+
+### Address Resolution Protocol (ARP)
+
+- Pergunta: Como determinar endereço MAC de B sabendo apenas o endereço IP de B?
+- Caa nó IP (hosp, roteado) na LAN tem a tabela ARP
+- Tabela ARP: mapeamentos de endereço IP/MAP para alguns nós da LAN
+  - <endereço IP; endereço MAC; TTL>
+- TTL (Time To Live): tempo após o qual o mapeamento de endereço será esqueceido (normalmente, 20 minutos)
+
+---
+
+- Ao enviar o datagrama para B, o endereço MAC de B não está na tabela ARP de A
+- O host A envia por broadcast (envia para todo mundo) um pacote de consulta ARP, contendo endereço IP de B:
+  - Endereço MAC de destino = FF-FF-FF-FF-FF-FF
+  - Todas as máquinas na LAN recebem a consulta ARP
+- O host B recebe o pacote ARP, responde para o host A com seu endereço MAC:
+  - Quadro enviado ao endereço MAC do host A (envio unicast)
+- O host A salva em chace o par de endereços "IP-para-MAC" (host B), em sua tabela ARP, até a informação expirar:
+  - Estado soft: informação que expira (desaparece) senão for renovada de tempos em tempos
+- O ARP é um "plub-and-play":
+  - nós criam suas tabelas ARP sem intervenção do administrador de rede
+
+---
+
+- Acompanhamento: enviar datagrama de host A para host B via roteador R
+- Suponha que A saiba o endereço IP de B
+
+![ARPExample](images/ARPExample.png)
+
+- Temos duas tabelas ARP no roteador R, uma para cada rede IP (LAN) - cada interface
+
+#### ARP: Endereçamento: roteando para outra LAN
+
+- Caminho: enviar datagrama A para B via R
+  - Host A cria um quadro (frame) com o MAC do roteador como endereço de destino - quadro contém endereço IP de A e B
+
+![ARPExample1](images/ARPExample1.png)
+
+### Ethernet
+
+#### Padrão: IEEE 802.3
+
+Tecnologia de LAN com fio "dominante" devido:
+
+- Primeira tecnologia de LAN utilizada em larga escala
+- Tecnologia barata: R\$80 para uma placa NIC(Network Interface Card)
+- Mais simples que as LANs de permissão, múltiplas velocidades
+- Avanço na corrida da velocidade: 10 Mbps - 10 Gbps
+- Bob Metcalfe e David Boggs inventaram a Ethernet
+
+#### Ethernet: topologia física
+
+- Topologia física de barramento até os anos 90:
+  - todos os nós no mesmo domínio de colisão (colidiam uns com os outros)
+- Hoje: topologia física em estrela prevalece o comutador ativo no centro:
+  - cada "ponta" roda um protocolo Ethernet (separado) - nós não colidem uns com os outros
+
+#### Estrutura do Quadro Ethernet
+
+- Adaptador encapsula datagrama IP (ou outro pacote de protocolo da camada de rede) no quadro Ethernet
+
+![EthernetFrameStructure](images/EthernetFrameStructure.png)
+
+- Preâmbulo:
+  - São 8 bytes sendo os 7 bytes com o padrão 10101010 e o último byte com padrão 10101011
+  - Usado para sincronizar taxas de clock do receptor e emissor
+
+- Endereços tem 6 bytes:
+  - se o adaptador recebe quadro com endereço de destino combinando, ou com endereço de broadcast (p.e., pacote ARP), passa os dados do quadro ao protocolo da camada de rede
+  - caso contrário, adaptador descarta quadro
+- Tipo: indica o protocolo da camada superior (IP mas pode ser outros protocolos: Ex. Novell IPX)
+- CRC: será verificado no receptor; se detectar erro, quadro é descartado (4 bytes)
+- Tamanaho máximo de 1518 bytes
+
+#### Ethernet: não confiável, sem conexão
+
+- sem conexão: sem apresentação entre NICs de origem e destino
+- não confiável: NIC de destino não envia confirmações à NIC de origem (enlace):
+  - fluxo de datagramas passados à camada de rede pode ter lacunas (datagrama faltando)
+  - lacunas serão preenchidas se aplicação estiver usnado TCP
+  - caso contrário, aplicação verá laculas
+- Protocolo MAC da Ethernet: CSMA/CD não slotted
+
+#### Algoritmo CSMA/CD - Ethernet (802.3)
+
+1. NIC recebe datagrama da camada de rede e cria quadro
+2. Se NIC sentir canal ocioso, inicia transmissão do quadro; Se o canal ocupado, espera até estar ocioso, depois transmite
+3. Se NIC transmitir quadro inteiro sem detectar outra transmissão, NIC terminou como quadro
+4. Se NIC detectar outra transmissão enquanto transmite, aborta e envia sinal de congestionamento
+5. Depois de abortar, NIC entra em backoff exponencial: após m colisões, NIC escolhe K aleatoriamente dentre {0, 1, 2, ..., 2$^{m-1}$}
+   - NIC espera
+   - K tempos, retorna à etapa 2
+
+#### Detecção de colisão com CSMA/CD
+
+![flowchartCSMACD](images/flowchartCSMACD.png)
+
+#### Ethernet 802.3: camadas de enlace e física
+
+- muitos padrões Ethernet diferentes
+  - protocolo MAC e formato de quadro diferentes comuns diferentes velocidades:
+    - 2 Mbps, 10 Mbps, 100 Mbps, 1 Gbps e 10 Gbps
+  - diferentes meios na camada física: fibra, cabo, etc.
+
+![physicalLayerDiffFromLinkLayer](images/physicalLayerDiffFromLinkLayer.png)
+
+### Comutador para Ethernet (Switch)
+
+- Dispositivo da camada de enlace: tem papel "ativo" (repasse e filtragem):
+  - armazena e repassa os quadros Ethernet
+  - examina o endereço MAC do quadro que chega, repassa seletivamente o quadro para um ou mais enlaces de saída quando o quadro deve ser repassado no segmento
+  - Uso o algoritmo CSMA/CD para acessar o segmento
+- Transparente
+  - hospedeiros não sabem da presença do comutador
+- Plug-and-play e autodidata
+  - comutadores não precisam ser configurados
+
+#### Comutador: múltiplas transmissões simultâneas
+
+- hospedeiro tem conexão dedicada e direta com comutador
+- comutadores mantêm (buffer) pacotes
+- protocolo Ethernet usado em cada enlace:
+  - sem colisões (full duplex)
+  - cada enlace é o seu próprio domínio de colisão
+- comutação: A-para-A' e B-para-B' podem transmitir simultaneamente, sem colisões:
+  - não é possível com um hub
+  - bridge funciona apenas para uma conexão
+
+![switch](images/switch.png)
+
+#### Tabela de comutação
+
+- P: Como o comutador sabe que A' se encontra na interface 4, B' se encontra na interface 5?
+- R: Cada comutador tem uma tabela de comutação em cada entrada:
+  - endereço MAC do nó,
+  - interface para alcançar nó,
+  - horário.
+- P: como as entradas são criadas e mantidas na tabela de comutação
+
+#### Comutador: autodidata
+
+- O comutador descobre quais nós podem ser alcançados por quais interfaces. Como?
+- Quando quadro recebido, o comutador "aprende" local do emissor (segmento de LAN)
+- Registra o par emissor/local na tabela de comutação
+
+![switchTable](images/switchTable.png)
