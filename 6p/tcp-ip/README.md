@@ -941,3 +941,98 @@ Tecnologia de LAN com fio "dominante" devido:
 - Registra o par emissor/local na tabela de comutação
 
 ![switchTable](images/switchTable.png)
+
+#### Comutador: filtragem/repasse de quadros
+
+Quando quadro é recebido no comutador:
+
+```portugol
+1. Registra o endereço do enlace associado ao **host emissor**
+2. Indexa a tabela de comutação usando o endereço MAC de destino
+3. if entrada é encontrada na tabela
+  then {
+    if destino no segmento do qual o quadro chegou
+      then remove o quadro (mesmo segmento)
+    else repassa o quadro na interface indicada
+  }
+  else inunca (broadcast)
+```
+
+#### Autoaprendizagem, repasse: exemplo
+
+- Se o destino do quadro é desconhecido (A'): inunda
+- Se o local de destino A é conhecido: envio seletivo apenas um enlace
+
+#### Interconectando comutadores
+
+- Comutadores podem ser conectados juntos,
+
+![switchesExample](images/switchesExample.png)
+
+- Enviando do host A para o host G -> Como comutador S1 sabe repassar o quadro destina a G por S4 e S3?
+- R: Autoaprendizagem! (funciona da mesma forma que no caso do único comutador!)
+
+#### Comutadores versus roteadores
+
+- Ambos dispositivos de armazenamento e repasse
+- Comutadores são dispositivos da camada de enlace
+- Comutadores mantêm tabelas de comutação, implementam filtragem e algoritmos de aprendizagem
+- Roteadores: dispositivos da camada de rede (examinam cabeçalhos da camada de rede)
+- Roteadores mantêm tabelas de roteamento e implementam algoritmos de roteamento
+
+![routerVsSwitch](images/routerVsSwitch.png)
+
+#### Rede institucional
+
+![institutionalNet](images/institutionalNet.png)
+
+### VLANs
+
+#### Motivação
+
+- O que acontece se:
+  - Usuário da CC muda para EE, mas quer se conectar ao comutador CC?
+  - Único domínio de broadcast (camada 3):
+    - todo tráfego da camada 2 (ARP) cruza a LAN inteira (questões de eficiência, segurança/privacidade)
+  - Cada comutador de nível mais baixo tem apenas algumas portas em uso
+  - Necessário segurança, eficiência
+
+![VLANsMotivation](images/VLANsMotivation.png)
+
+---
+
+- VLAN (Virtual Local Area Network) baseada em porta: portas de comutador agrupadas (por software de gerenciamento de comutador) para um único comutador físico
+- Comutadores admitindo capacidades de VLANs podem ser configurados para definir múltiplas LANs virtuais por uma única infraestrutura de LAN física
+
+---
+
+- isolamento de tráfego:
+  - quadros de/para as portas 1-8 só podem alcançar as portas 1-8
+  - também pode definir VLAN com base em endereço MAC das extermidades, em vez de porta do comutador
+- inclusão dinâmica:
+  - portas podem ser atribuídas dinamicamente entre VLANs
+- repasse entre VLANs:
+  - feito por roteamento (assim como em comutadores separados)
+  - na prática, fornececores vendem uma combinação de comutador e roteador
+
+#### VLANs e spanning multiple switches
+
+- porta de tronco: carrega quadros entre VLANs definidas sobre vários comutadore físicos:
+  - quadros repassados dentro da VLAN entre comutadores não podem ser quadros 802.1 comuns (devem ter informação de ID da VLAN)
+  - protocolo 802.1q inclui campos de cabeçalho adicionais para quadros repassados entre portas de tronco
+
+#### Formato de quadro 802.1Q na VLAN
+
+![frameFormatVLAN](images/frameFormatVLAN.png)
+
+### Virtualização de enlace: MPLS
+
+#### Virtualização de redes
+
+- Virtualização de recursos: abstração poderosa na engenharia de sistemas:
+  - Exemplos: memória virtual, dispositivos virtuais
+- Máquinas virtuais:
+  - Exemplo: Java
+- Sistemas Operacionais IBM VM dos anos 1960 e 70
+
+> Camadas de abstrações: não se preocupe com os detalhes da camada inferior, apenas trate das camadas inferiores de forma abstrata
