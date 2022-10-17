@@ -1036,3 +1036,197 @@ Quando quadro é recebido no comutador:
 - Sistemas Operacionais IBM VM dos anos 1960 e 70
 
 > Camadas de abstrações: não se preocupe com os detalhes da camada inferior, apenas trate das camadas inferiores de forma abstrata
+
+---
+
+- camada de inter-rede(IP):
+  - Endereçamento: inter-ree aparece como unica entridade uniforme, apesar da heterogeneidade da rede local sujacente
+  - Rede de redes
+- Gateway:
+  - Embute pacote inter-rede no formato de pacote local
+  - Rota (no nivel de inter-rede) para proximo gateway
+
+![gateway](images/gateway.png)
+
+#### Arquitetura de inter-rede
+
+- O que e virtualizado?
+  - Duas camadas de endereçamento: inter-rede e rede local
+  - Nova camada (IP) torna tudo homogêneo na camada da inter-rede
+  - Tecnologia da rede local subjacente:
+    - Cabo
+    - Modem telefônico 56K
+    - hoje: MLPS
+    - "invisivel" na camada de inter-rede
+
+#### Multiprotocol Label Switching (MPLS)
+
+- MultiProtocol Label Switching (MLPS) separa redes por contra propria:
+  - modelos de serviço
+  - endereçamento
+  - roteamento diferentes da Internet
+- Uma tecnologia de chaveamento de pacotes que possibilita o encaminhamento e a comutação eficientes de fluxos de trafego atraves da rede
+- Visto na Internet como enlace logico contectando roteadores IP:
+  - Semelhante ao enlace discado que realmente faz parte de rede separada (rede telefônica)
+
+---
+
+- Objetivo: agilizar o repasse de IP usando um rotulo de tamanho fixo (em vez de endereço IP) para fazer o repasse dos dados:
+  - ideias retiradas da Tecnica e Circuito Virtual (VC):
+    - Lembre-se: datagrama IP ainda mantem endereço IP
+      - O campo Label (rotulo) contem o valor
+      - O campo Exp define a classe de serviço
+      - O campo S (stack) suporta o enfileiramento de labels
+      - O campo TTL (Time to Live) tem o mesmo papel que no IP
+
+![mplsDatagram](images/mplsDatagram.png)
+
+#### Roteadores capazes de usar MPLS
+
+- Tambem conhecido como roteadores comutado por rotulo
+- Encaminha pacote a interface de saida com base apenas no valor do rotulo (não inspeciona o endereço IP):
+  - tabela de repasse MPLS distintas das tabelas de repasse do IP
+- Protocolo e sinalização necessario para configurar repasse
+  - repasse possivel ao longo de caminhos em que o IP sozinho não permitiria (roteamento especifico da origem)
+  - Uso do MPLS para engenharia de trafego
+- Deve coexistir com os roteadores baseados em IP
+
+#### MPLS versus IP
+
+![mplsVersusIp](images/mplsVersusIp.png)
+
+- Roteamento IP: caminho para o destino determinado pelo endereço de destino sozinho
+- Roteamento MPLS: caminho para destino pode ser baseado no endereço da fonte ou destino
+
+#### Tabelas de Repasse MPLS
+
+![tabelasMpls](images/tabelasMpls.png)
+
+#### Resumo: Camada de Enlace do Meio Guiado
+
+- Principios por tras dos serviços da camada de enlace de dados (parte 1):
+  - Serviços
+  - detecção e correção de erro
+  - compartilhamento de canal de broadcast: acesso multiplo
+- Instanciação e implementação de varias tecnologias da camada de enlace (parte 2):
+  - endereçamento da camada de enlace
+  - Ethernet
+  - LANs, VLANs, comutadores
+  - redes virtualizadas como camadas de enlace: MPLS
+
+## Camada de Enlace: redes sem fio e mobilidade
+
+### Redes sem fio
+
+- Fundamentos:
+  - Redes de computadores com meio não guiado:
+    - Laptops, palmtops, PDAs e smartphones
+    - Prometem acesso livre a Internet a qualquer hora
+  - Ha dois desafios importantes (mas diferentes):
+    - Sem fio: comunicação pelos enlaces sem fio
+    - Mobilidade: tratar o usuario movel, que muda o ponto de conexão em uma rede de computadores
+
+---
+
+- Sem fio
+  - Introdução as redes sem fio
+    - Elementos
+  - Caracteristicas de enlaces e redes sem fio
+  - LANs sem fio 802.11 ("wi-fi")
+- Mobilidade
+  - Gerenciamento da mobilidade: principio
+  - IP movel
+
+### Elementos de uma rede sem fio
+
+- Hospedeiros sem fio
+  - laptop, PDA, telef IP
+  - executam aplicações
+  - podem ser estaticos ou moveis
+  - sem fio nem sempre significa mobilidade
+- Estação-base
+  - normalmente conectada a rede com fio
+  - Relay - responsavel por enviar pacotes entre rede com fio e hospedeiros sem fio em sua "area"
+  - Exemplo: torres de celulas e pontos de acesso 802.11
+- enlace sem fio
+  - normalmente usado para conectar disp. moveis a estação base
+  - tambem usado como enlace de backbone
+  - protocolo de acesso multiplo coordena acesso ao enlace
+  - diversas taxas de dados, distância de transmissão
+- modo de infraestrutura
+  - estação-base conectada hosp. moveis a rede com fio
+  - transferência: hosp. movel muda de estação-base fornecendo conexão a rede com fio
+- modo ad hoc
+  - sem estações-base
+  - nos so podem transmitir a outros nos dentro da cobertura do enlace
+  - nos se organizam em uma rede: roteiam entre si mesmos
+
+#### Caracteristicas de padrões de enlace sem fio
+
+![caracEnlaceSemFio](images/caracEnlaceSemFio.png)
+
+#### Taxonomia da rede sem fio
+
+|                          | unico salto                                                                               | multiplos saltos                                                                                                  |     |     |
+| ------------------------ | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | --- | --- |
+| infraestrutura (p.e. APs | hospedeiro conecta-se à estação-base (WiFi) que se conecta à Internet maior (meio guiado) | hosp. pode ter de retransmitir por vários nós sem fio para se conectar à Internet maior: rede em malha            |     |     |
+| sem infraestrutura       | sem estação-base, sem conexão com Internet maior (Bluetooth, redes ad-hoc)                | sem estação-base, sem conexão com Internet maior. Pode ter de retransmitir para alcançar outro nó sem fio - VANET |     |     |
+
+### Caracteriticas de enlaces e redes sem fio
+
+#### Caracteristicas do enlace sem fio
+
+- Diferenças do enlace com fio:
+  - redução fora do sinal: sinal de radio se atenua enquanto se propaga pela materia (perda de caminho)
+  - interferências de outras fontes: frequência padrão de rede sem fio (ex. 2,4GHz - 802.11b) pode ser compartilhada por outros dispositivos (ex. telefone); dispositivos como motores tambem interferem
+  - propagação multivias: sinal de radio reflete em objetos e no solo, chegando ao destino em momentos ligeramente diferentes
+- O hospedeiro recebe um sinal eletromagnetico que e uma combinação da forma degradada do sinal enviado
+
+---
+
+- Isso pode tornar a comunicação por enlace sem fio muito mais "dificil" (ate mesmo ponto a ponto)
+  - Ha sempre comunicação uam signal-to-noise ratio (SRN) (mediada em dB)
+  - Maior SNR e mais facil extrair sinal do ruido (uma "coisa boa")
+  - Para uma esquema de modulação entre a SNR versus BER (bit error rate)
+
+![berPerSnr](images/berPerSnr.png)
+
+---
+
+- A SNR versus BER (bit error rate) e um compromisso:
+  - camada fisica: aumenta a potência do sinal, aumenta SNR, e diminui o BER
+  - SNR: escolha a camada fisica que atende ao requisito BER dando vazão mais alto
+- A SNR pode mudar com a mobilidade: A seleção dinâmica da tecnica de modulação da camada fisica pode ser usada para adaptar a tecnica e modulaçao as condições de canal
+- Tecnica de modulação - Quadrature Amplitude Modulation (QAM) e Binary Phase Shift Keying (BPSK)
+
+![berPerSnr](images/berPerSnr.png)
+
+> Aumenta a potência: Aumenteo o gasto de enertia e interferência
+
+---
+
+- Multiplos remetentes e receptores sem fio criam problemas adicionais (alem do acesso multiplo)
+- Problema do terminal oculto
+  - B e A escutam um ao outro
+  - B e C escutam um ao outro
+  - A e C não podem ouvir uma ao outro
+  - Significa que A e C não sabem de sua interferencia em B
+- Atenuação do sinal
+  - B e A escutam um ao outro
+  - B e C escutam um ao outro
+  - A e C não podem escutar um ao outro interferindo em B
+
+#### Code Division Multiple Access (CDMA)
+
+- Acesso multiplo por divisão de codigo (CDMA): pertence a familia de protocolos de particionamento de canais
+- Unico codigo (code) atribuido para cada usuario, isto e, particionamento por conjunto de codigo (teoria de codigo - Shannon)
+  - Todos os usuarios compartilham a mesma frequência, mas cada usuario tem a propria sequência "chipping" (codigo) para codificar os ados
+  - Permite multiplos usuarios coexistir e transmite de forma simultânea com minima interferência (se os codigos são ortagonais)
+
+---
+
+- Cada bit que e enviado e codificado pela multiplicação do bit por sinal que muda em uma taxa
+- Encoding: produto interno: (dados originais) X (sequência de chipping)
+  - Exemplo: M = 8 - (1, 1, 1, -1, 1, -1, -1, -1)
+    - Zim = di * cm
+- Decoding: produto interno somado: (dados codificados) x (sequência de chipping)
