@@ -408,3 +408,77 @@ Algoritmo geral de busca:
     - Busca em profundidade limitada
     - Busca em profundidade iterativa
     - Busca bidirecional
+
+## Busca Informada (ou Busca Heuristica)
+
+### Busca do Melhor Primeiro (Best_first Search)
+
+- Procedimento: a escolha do no a ser expandido deve ser aquele que "promete" dirigir a busca mais rapidamente em direção a solução
+- Usa informação especifica do dominio do problema para a escolha do no a ser expandido
+- Buscas anteriores somente usavam conhecimento de dominio na especificação do modelo de ações
+
+### Busca do Melhor Primeiro (BMP)
+
+- O conhecimento especifico do dominio e representado por uma função de avaliação f(n)
+  - Recebe descrições de estados e devolve um valor real
+  - Deve incorporar alguma estimativa de custo do estado corrente ao estado meta
+  - Por convenção, os valores menores de f(n) indicam os melhores nos
+
+### BPM
+
+- BPM
+  - Introduz conhecimento da estrategia final de busca (funão enfileiraFn)
+  - Expande o no que tem a melhor avaliação
+  - Termina quando o no a ser expandido e o no meta
+
+![bmpAlgo](images/bmpAlgo.png)
+
+- Alguns algoritmos de BMP
+  - Busca Gulosa (Greedy Search)
+  - A*
+
+### Diferenciando Busca Uniforme da BMP
+
+- A busca em largura pode incorporar conhecimento sobre o custo da solução
+- A busca uniforme:
+  - f(n) = g(n) : custo do caminho
+  - Não dirige a busca para a solução
+
+### Função Heuristica - h(n)
+
+- f(n) = h(n)
+  - Estimativa do custo do caminho que leva a solução
+  - h(n) = 0 se n e a meta
+  - Constroi-se uma h(n) especifica para o problema
+
+### Busca Gulosa
+
+- Algoritmo BMP que usa uma função heuristica h para obter o proximo a ser expandido
+- Minimiza o custo estimado para atingir o estado meta
+- Tenta encontrar uma solução rapida que nem sempre e a otima
+- Não e completo (exemplo: percurso de Iasi a Fagaras)
+- Guarda todos os nos gerados
+- Complexidade de tempo e espaço: O(b^m). Pode ser reduzida com a escolha de uma boa heuristica
+
+### Busca A*
+
+- Combina a busca o custo uniforme com a busca heuristica
+- f(n) = g(n) + h(n) onde:
+  - g(n): custo gasto ate n
+  - h(n): custo estimado para atingir o estado meta de n
+  - f(n): custo estimado total
+- A* usa uma heuristica admissivel: h não deve superestimar o custo real para se chegar ao estado meta
+  - h(n) <= h*(n) onde h* corresponde ao custo real para se chegar ao estado meta passando por n
+
+### Provando que A* encontra a Melhor Solução
+
+- Seja G1 o estado otimo e G2 o estado meta sub-otimo
+  - f(G1) = g(G1) + h(G1) = g(G1) + 0 = g(G1)
+  - f(G2) = g(G2) + h(G2) = g(G2) > f(G1) (1)
+- Hipotese: A* escolhe G2 antes de G1 e a busca termina..
+- Seja n um no folha no caminho de G1, logo sendo h admissivel: f(G1) >= f(n) (2)
+- Agora, se existem dois nos para expansão, n e G2, e n não e escolhido por A* tem-se que
+- f(n) >= f(G2) (3)
+  - de (2) e (3) tem-se que f(G1) >= f(G2)
+  - como f(G2) = g(G2) então
+- g(G2) < f(G1) -> Inconsistente com (1)
