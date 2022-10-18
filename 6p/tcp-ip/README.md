@@ -1230,3 +1230,15 @@ Quando quadro é recebido no comutador:
   - Exemplo: M = 8 - (1, 1, 1, -1, 1, -1, -1, -1)
     - Zim = di * cm
 - Decoding: produto interno somado: (dados codificados) x (sequência de chipping)
+
+#### CDMA encode/decode
+
+![cmdaEncodeDecode](images/cmdaEncodeDecode.png)
+
+
+- Como pode um receptor CDMA recuperar os dados de um remetente quando esses bits de dados são combinados com bits a serem transmitidos por outros remetentes
+- O CDMA funciona sob o princípio de que os sinais de bits transmitidos são aditivas
+
+#### CDMA: interferência entre dois emissores
+
+![cdmaInterference](images/cdmaInterference.png)
