@@ -482,3 +482,131 @@ Algoritmo geral de busca:
   - de (2) e (3) tem-se que f(G1) >= f(G2)
   - como f(G2) = g(G2) então
 - g(G2) < f(G1) -> Inconsistente com (1)
+
+## Algoritmos de Melhoramento Iterativo (ou de Busca Local)
+
+- Em muitos problemas de caminho para a solução e irrelevante. O estado meta e a propria solução
+  - Ou encontra-se a configuração otima
+  - Ou encontra-se a configuração que obedeça a certas restrições
+
+---
+
+- Nestas situações pode-se usar algoritmos de melhoramento iterativo
+- Guarda um unico estado corrente e tenta-se altera-lo para melhorar a sua qualidade
+- Vantagens:
+  - Usam pouca memoria (em geral uma quantidade constante)
+  - Frequentemente encontram soluções razoaveis em espaços de estados grandes para os quais algoritmos sistematizados não são adequados
+
+### Principio da Busca Local
+
+A ideia e simples:
+
+1. Selecione (aleatoriamente) um estado inicial ("chute" inicial)
+   - Exemplo: para o problema das N rainhas suponha uma colocação arbitraria das N rainhas no tabuleiro
+2. Faça uma modificação local para melhorar a avaliação do estado corrente
+   - Exemplo: para o problema das N rainhas mover a rainha sob ataque para uma posição em que sofra menos ataque de outras rainhas
+3. Repita o passo 2 ate que um estado satisfazendo o objetivo seja alcançado
+   - O ciclo de repetição pode ser realizado bilhões de vezes
+
+### Algoritmos de Melhoramento Iterativo
+
+- Exemplo: o problema do caxeiro viajante
+  - Iniciar com um percurso arbitrario
+  - Trocar pares de percursos
+
+---
+
+- Exemplo: o problema das N rainhas
+  - Inserir N rainhas num tabuleiro de formato NxN de tal forma que nenhuma ataque outra
+  - Deslocar uma rainha para reduzir o numero de conflitos
+
+---
+
+- A paisagem do espaço de estados:
+
+![espacosEstadoAlgoritmoMelhoramentoIterativo](images/espacosEstadoAlgoritmoMelhoramentoIterativo.png)
+
+- Podemos definir o problema como maximizando a função objetivo ou minimizando o custo
+
+### O Problema da 4 rainhas
+
+- Estados: 4 rainhas em 4 colunas (256 estados)
+- Operadores: mover a rainha em uma coluna
+- Função de avaliação: h(n) = numero de ataques("conflitos")
+- Teste de Meta: nenhum ataque, i.e, h(G) = 0
+
+### O Algoritmo Subida de Encosta (Hill Climbing)
+
+- E como escalar o Everest com Nevoeiro
+- A escolha e normalmente aleatoria entre os sucessores com o mesmo valor da função objetivo
+- Tambem conhecido como gradiente ascendente/descendente
+
+### Subida de Encosta - Descrição do Algoritmo
+
+```portugol
+função subida-de-encosta (problema) retorna uma solução
+    variáveis locais: corrente (o nó atual), próximo (o próximo nó)
+  corrente <  - Faz-NóFaz-Nó(Estado-InicialEstado-Inicial[problema])
+  loop do
+    próximo <- sucessor de corrente de maior valor (expande nó corrente e seleciona seu melhor filho)
+    se ValorValor[próximo] < ValorValor[corrente] (ou >, para minimizar)
+    então retorna corrente (o algoritmo pára)
+    corrente <- próximo
+  end
+```
+
+---
+
+- Problemas:
+  - Pode ficar preso em maximos locais
+  - Travessia dificil em cristas de maximos locais
+  - Planicie
+
+### Subida de Enconsta com Recomeço Aleatorio
+
+- Pode-se utilizar um numero limitado de movimentos laterais para se sair de um planalto, mas que não funciona para planaltos que correspondem a maximos locais
+  - Para o problema das 8 rainhas o uso dos movimentos laterais aumenta a probabilidade de sucesso de 14% para 94%
+
+---
+
+- Para evitar ficarmos presos em maximos locais tenta-se novamente com um novo estado incial gerado aleatoriamente e guarda-se o melhor deles ao fim de um numero determinado de iterações
+  - Permite o resolver o problema de 3000000 rainhas em menos de um minuto
+- O sucesso deste algoritmo depende muito da paisagem de estados
+
+### O Algoritmo de Recristalização Simulada (Simulated Annealing)
+
+- Este algoritmo e semelhante a Subida da Encosta, porem oferece meio para se escapar de maximos locais
+  - quando a busca fica "presa" em um maximo locao, o algoritmo não reinicia a busca aleatoriamente
+  - ele retrocede para escapar desse maximo local
+  - esses retrocessos são chamados de passos indiretos
+- Apesar de aumentar o tempo de busca, essa estrategia consegue escapar dos maximos locais
+- Analogia com cozimento de vidros ou metais:
+  - processo de resfriar um liquido gradualmente ate ele se solidificar
+
+### Recristalização Simulada
+
+- O algoritmo utiliza mapeamento de resfriamento de instantes de tempo (t) em temperaturas (T)
+- Nas iterações iniciais, não escolhe necessariamente o "melhor" passo, e sim um movimento aleatorio:
+  - se a situação melhorar, esse movimento sera sempre escolhido posteriormente
+  - caso contrario, assoa a esse movimento uma probabilidade de escolha menor do que 1
+- A probabilidade de mudar para um estado pior decresce exponencialmente com o valor da mudança, i.e, e^(delta E/T)
+  - Delta E = valor[proximo-no] - valor[no-atual]
+  - T = Temperatura
+
+### Recristalização Simulada: algoritmo
+
+```portugol
+função Recristalização-SimuladaRecristalização-Simulada (problema,mapeamento) retorna uma solução
+    variáveis locais: corrente, próximo, T (temperatura que controla a probabilidade de passos para trás)
+  corrente = Faz-Nó(Estado-Inicial[problema])
+  for t = 1 to Infinito do
+    T = mapeamento[t]
+    Se T = 0
+      então retorna corrente
+    próximo = um sucessor de corrente escolhido aleatoriamente
+    DeltaE = Valor[próximo] - Valor[corrente]
+    Se
+    DeltaE > 0
+      então corrente  próximo
+      senão corrente  próximo com probabilidade = e^(DeltaE/T)
+```
