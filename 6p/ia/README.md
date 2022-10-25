@@ -546,10 +546,10 @@ A ideia e simples:
 ```portugol
 função subida-de-encosta (problema) retorna uma solução
     variáveis locais: corrente (o nó atual), próximo (o próximo nó)
-  corrente <  - Faz-NóFaz-Nó(Estado-InicialEstado-Inicial[problema])
+  corrente < - Faz-Nó(Estado-Inicial[problema])
   loop do
     próximo <- sucessor de corrente de maior valor (expande nó corrente e seleciona seu melhor filho)
-    se ValorValor[próximo] < ValorValor[corrente] (ou >, para minimizar)
+    se Valor[próximo] < Valor[corrente] (ou >, para minimizar)
     então retorna corrente (o algoritmo pára)
     corrente <- próximo
   end
@@ -610,3 +610,111 @@ função Recristalização-SimuladaRecristalização-Simulada (problema,mapeamen
       então corrente  próximo
       senão corrente  próximo com probabilidade = e^(DeltaE/T)
 ```
+
+## Jogos
+
+### Os Jogos em IA
+
+- A forma de jogos mais estudada em IA e deterministica, com dois jogadores e alternância entre eles e com perfeita informação. Isto significa que:
+  - o ambiente e deterministico
+  - completamente observavel
+  - multiagente: existem dois agentes que se alternam na sequência de movimentos e os valores de utilidade no fim do jogo são sempre iguais e opostos
+
+### Jogos e Busca Competitiva
+
+- Arvore de jogo: arvore semântica na qual os nos representam configurações do tabuleiro (ou estados) e os movimentos (operadores) representam transições ntre elas. Desta froma pode ser possivel utilizar uma estrategia de busca que gere uma sequência de movimentos que permite ganhar a partida
+
+---
+
+- A maioria dos jogos com 2 jogadores requer jogadas sucessivas de cada jogador
+  - Cada transição e um movimento
+- A maioria dos jogos não-triviais não admite busca exaustiva: arvores muito grandes
+- Assim, faz-se necessario usar uma tecnica de busca associada a uma heuristica
+
+### Exemplo de uma Arvore de Jogo
+
+![gameTreeExample](images/gameTreeExample.png)
+
+### Jogos e Busca Competitiva: Definições
+
+- Estado inicial: configuração inical e indicação de quem deve iniciar o movimento
+- Operadores: definem os movimentos permitidos
+- Ply: numero de niveis na arvore, incluindo a raiz
+- Teste terminal: define quando o jogo termina
+- Função utilidade: fornece um valor numerico para o resultado do jogo
+
+---
+
+- Jogos envolvem competição:
+  - Dois jogadores estão trabalhando para atingir objetivos conflitantes
+  - Assim, a arvore de busca difere dos exemplos anteriores ja que as jogadas de cada jogador visam objetivos conflitantes: não existe uma busca para um simples objetivo!
+- Avaliação Estatica: valor numerico que representa a qualidade da configuração (tabuleiro)
+
+### Procedimento: Algoritmo Minimax
+
+- Tem-se a presença de dois jogadores: maximizador e minimizador
+  - Maximizador: prefere mover para estado maior valor de utilidade
+  - Minimizador: prefere mover para um estado de menor valor de utilidade
+- A arvore de jogo consiste em camadas sucessivas de maximização e minimização
+  - Presume-se que, em cada camada, o jogador deseja a avaliação mais vantajosa para ele
+
+![minimax](images/minimax.png)
+
+### O Algoritmo Minimax
+
+```portugol
+function MINIMAX-DECISION(state) returns an action
+  inputs: state, currente state in game
+  v = MAX-VALUE(state)
+  return the action in SUCCESSORS(state) with value v
+```
+
+```portugol
+function MAX-VALUE(state) returns a utility value
+  if TERMINAL-TEST(state) then return UTILITY(state)
+  v = -Infinite
+  for each s in SUCCESSORS(state) do
+    v = MAX(v, MIN-VALUE(s))
+  return v
+```
+
+```portugol
+function MIN-VALUE(state) returns a utility value
+  if TERMINAL-TEST(state) then return UTILITY(state)
+  V = +Infinite
+  for each s in SUCCESSORS(state) do
+    v = MIN(v, MAX-VALUE(s))
+  return v
+```
+
+### O Desempenho de Minimax
+
+- Assumindo uma busca em profundidade:
+  - Complexidade de tempo = O(b^m)
+  - Complexidade de espaço = O (bm)
+- Para jogos reais uma busca exaustiva e inviavel
+  - Por exemplo, a arvore e busca para xadrez tem cerca de 35¹⁰⁰ nos. Então como melhorar o processo? Duas possibilidades:
+    - Podemos avaliar nos que não são terminais usando uma função de avaliação heuristica
+    - E possivel podar partes do espaço de busca que não necessitam ser examinadas
+
+### Funções de Avaliação
+
+- Como uma função de avaliação estativa não e necessario expandir a arvore de busca completamente
+- Uma função de avaliação estatica estima o quão boa e a configuração do tabuleiro com respeito a uma jogador (tipicametne MAX)
+- A qualidade dos movimentos selecionados por minimax baseada em profundidade e uma função da qualidade do avaliador do tabuleiro estatico
+- Uma boa função de avaliação:
+  - corretamente reflete a probabilidade de vitoria para uma dado no na arvore de busca
+  - deve ser calculada de forma eficiente
+
+### Um Exemplo usando o Jogo a Velha
+
+- Um exemplo de função de avaliação para a posição do tabuleiro p:
+  - Eval(p) = (o numero de linhas completas, colunas, ou diagonais que estão ainda abertas para MAX) - (o numero de linhas completas, colunas, ou diagonais que estão ainda abertas para MIN)
+  - Eval(p) = Infinito se MAX ganha
+  - Eval(p) = - Infinito se MIN ganha
+
+### Reduzindo o Espaço de Busca
+
+- Poda alfa-beta: o valor de um no e relevante somente se existe uma possibilidade de nos depararmos com ele durante o processo de busca. Se pudermos provar que jogadores racionais jamais atingirão tal no, independente do seu valor, então não existe a possibilidade examina-lo ou mesmo gera-lo
+
+### Alfa-Beta: Motivação
