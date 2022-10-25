@@ -1235,10 +1235,124 @@ Quando quadro é recebido no comutador:
 
 ![cmdaEncodeDecode](images/cmdaEncodeDecode.png)
 
-
 - Como pode um receptor CDMA recuperar os dados de um remetente quando esses bits de dados são combinados com bits a serem transmitidos por outros remetentes
 - O CDMA funciona sob o princípio de que os sinais de bits transmitidos são aditivas
 
 #### CDMA: interferência entre dois emissores
 
 ![cdmaInterference](images/cdmaInterference.png)
+
+### LANs sem fio 802.11 ("Wi-Fi")
+
+- A subcamada MAC é dividia em:
+  - Distributed Coordination Function (DFC) - CSMA/CA
+  - Point Coordination Function (PCF) - Rede de infraestrutura
+
+    ![linkPhysicalLayer](images/linkPhysicalLayer.png)
+  - Direct Sequence Spread Spectrum (DSSS)
+  - Frequency-hopping spread spectrum (FHSS)
+  - Orthogonal frequency division multiplexing (OFDM)
+
+![IEEE802Evolution](images/IEEE802Evolution.png)
+
+---
+
+- Padrão 802.11b
+  - Espcetro do sinal não licenciado de 2,4 - 5GHz
+  - Vazão: até 11 Mbps
+  - Técnica Direct Sequence Spread Spectrum (DSSS): a camada física com a banda de 80 MHz dividida em 14 canais de 22MHz, com 3 dos 14 canais sendo totalmente não sobrepostos
+
+  ![DSSS](images/DSSS.png)
+  - Os dados são enviados por um destes canais de 22MHz sem saltos para outras frequências
+  - Todos os hospedeiros usam o mesmo código de chipping (DSSS)
+- 802.11a: intervalo 5 - 6 GHz (5.725-5.850 GHz) até 54 Mbps (OFDM)
+- 802.11g: intervalo 2.4 - 5 GHz até 54 Mbps (OFDM)
+- 802.11n: múltiplas antenas intervalo 2.4 - 5 GHz até 200 Mbps (OFDM)
+- 802.11ac: 5 GHz até 1300 Mbps (Multiple Input, Multiple Output (MIMO) - OFDM)
+
+- Todos usam o padrão CSMA/CA para acesso múltiplo
+- Todos têm versões de estação-base e modelo rede ad-hoc
+
+---
+
+#### Arquitetura de LAN 802.11
+
+- Hospedeiro sem fio se comunica com estação-base
+- Estação-base = ponto de acesso (AP)
+- Basic Service Set (BSS) (ou "célula"), no modo de infraestrutura, contém:
+  - hospedeiros sem fio
+  - ponto de acesso: estação-base
+  - modo ad hoc: apenas hosts
+
+#### 802.11: Canais e Associação
+
+- O 802.11b no espectro tem 14 canais em diferentes frequências (intervalo de 2,4 GHz - 2,4835 GHz)
+  - Administrador escolhe frequência para o AP
+  - Possível interferência: canal pode ser o mesmo daquele escolhido pelo AP vizinho
+- O hospedeiro: precisa associar-se a um AP:
+  - Há uma varredura de canais, escutando quadros de sinalização contendo o nome do AP (SSID - service set identifier) e o endereço MAC
+  - Seleciona AP para associar-se
+  - Pode realizar autenticação
+  - Normalmente executa um serviço de DHCP (Dynamic Host Configuration Protocol) para obter endereço IP na rede do AP
+
+#### 802.11: varredura passiva/ativa
+
+Varredura passiva:
+
+1. Quadros de sinalização enviados dos APs
+2. Quadro de solicitação de associação enviado: host H1 para AP selecionado
+3. Quadro de resposta de associação enviado: H1 para AP selecionado
+
+Varredura ativa:
+
+1. Broadcast de quadro de solicitação de investigação de host H1
+2. Quadro de resposta de investigações enviado de APs
+3. Quadro de resposta de associação enviado: H1 para AP selecionado
+4. Quadro de resposta de associação enviado: AP selecionado para H1
+
+#### IEEE 802.11: Acesso Múltiplo
+
+- Evitar colisões: dois ou mais hospedeiros transmitindo ao mesmo tempo
+- O 802.11 com a técnica CSMA - detecta antes de transmitir
+  - não colide com transmissão contínua de outro nó
+- O 802.11: "sem" detecção de colisão
+  - difícil de receber (sentir colisões) na transmissão devido a sinais recebido fracos (desvanecimento)
+  - não pode sentir todas as colisões em qualquer caso: terminal oculto, desvanecimento
+  - objetivo: "evitar colisões" com o CSMA/C(ollision)A(voidance)
+
+#### Protocolo IEEE 802.11: CSMA/CA
+
+Remetente
+
+1. Se sentir canal ocioso para o DIFS(Distributed Inter-frame Space) então:
+   - transmite quadro inteiro (sem uso do "CD")
+2. Se sentir canal ocupado então
+   1. inicia o tempo aleatório de backoff
+   2. temporizador conta de forma regressiva enquanto canal está ocioso
+   3. transmite quando temporizador expira
+   4. Se não há ACK, aumenta intervalo de backoff aleatório e repete passo (2)
+
+Receptor
+
+- Se quadro recebido OK: retorna ACK após SIFS (Short Inter-frame Spacing)
+- O ACK é necessário devido ao problema de terminal oculto
+
+#### Evitando colisões (mais)
+
+- ideia: permite que remetente "reserve" o canal em vez de acesso aleatório aos quadros de dados: evitar colisões de quadros de grande quantidade de dados
+
+```portugol
+1. Remetente primeiro transmite pequenos pacotes request-to-send (RTS) à base station (BS) usando CSMA
+2. Os RTSs ainda podem colidir uns com os outros (mas são curtos)
+3. Equipamento BS envia por broadcast o quadro clear-to-send (CTS) em resposta ao RTS
+4. O CTS é escutado por todos os nós
+5. Remetente transmite quadro de dados
+6. Outros estações adiam as transmissões
+```
+
+> Evite colisões de quadro de dados completamente usando pequenos pacotes de reserva!
+
+#### Prevenção de colisão: troca RTS-CTS
+
+![prevColisaoRTSCTS](images/prevColisaoRTSCTS.png)
+
