@@ -72,6 +72,21 @@ public:
     return resultado;
   }
 
+  Matriz subtrai(Matriz outra)
+  {
+    Matriz resultado(this->linhas, this->colunas);
+
+    for (int i = 0; i < this->linhas; i++)
+    {
+      for (int j = 0; j < outra.colunas; j++)
+      {
+        resultado.matriz[i][j] = this->matriz[i][j] - outra.matriz[i][j];
+      }
+    }
+
+    return resultado;
+  }
+
   double maximoAbsoluto()
   {
     double max = abs(this->matriz[0][0]);
@@ -86,6 +101,17 @@ public:
     }
 
     return max;
+  }
+
+  void copiar(Matriz outra)
+  {
+    for (int i = 0; i < this->linhas; i++)
+    {
+      for (int j = 0; j < this->colunas; j++)
+      {
+        this->matriz[i][j] = outra.matriz[i][j];
+      }
+    }
   }
 };
 

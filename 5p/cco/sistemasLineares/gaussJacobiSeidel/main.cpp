@@ -48,46 +48,85 @@ void normalizaMatrizesParaMetodo(Matriz coeficientes, Matriz termosIndependentes
   }
 }
 
-bool condicaoParada(Matriz tentativa, double err)
+bool condicaoParada(Matriz resultadoAnterior, Matriz resultado, double err)
 {
-  return tentativa.maximoAbsoluto() < err;
+  double distanciaEntreDuasIteracoes = resultado.subtrai(resultadoAnterior).maximoAbsoluto();
+  double maximoAbsolutoResultado = resultado.maximoAbsoluto();
+
+  if (distanciaEntreDuasIteracoes == 0 && maximoAbsolutoResultado == 0)
+    return true;
+
+  if (distanciaEntreDuasIteracoes != 0 && maximoAbsolutoResultado == 0)
+    return false;
+
+  return distanciaEntreDuasIteracoes / resultado.maximoAbsoluto() < err;
 }
 
-RetornoMetodo gaussJacobi(Matriz coeficientes, Matriz termosIndependentes, Matriz tentativaInicial, double err)
+RetornoMetodo gaussJacobi(Matriz coeficientes, Matriz termosIndependentes, Matriz resultado, double err)
 {
   unsigned int tentativas = 0;
+  Matriz resultadoAnterior(resultado.linhas, resultado.colunas);
+
   do
   {
-    tentativaInicial = coeficientes.multiplica(tentativaInicial).soma(termosIndependentes);
+    resultadoAnterior.copiar(resultado);
+    resultado = coeficientes.multiplica(resultado).soma(termosIndependentes);
     tentativas++;
-  } while (!condicaoParada(tentativaInicial, err));
+  } while (!condicaoParada(resultadoAnterior, resultado, err));
 
-  return {tentativaInicial, tentativas};
+  return {resultado, tentativas};
 }
 
-RetornoMetodo gaussSeidel(Matriz coeficientes, Matriz termosIndependentes, Matriz tentativaInicial, double err)
+RetornoMetodo gaussSeidel(Matriz coeficientes, Matriz termosIndependentes, Matriz resultado, double err)
 {
   unsigned int tentativas = 0;
+  Matriz resultadoAnterior(resultado.linhas, resultado.colunas);
+
   do
   {
+    resultadoAnterior.copiar(resultado);
     for (int i = 0; i < coeficientes.linhas; i++)
     {
-      for (int j = 0; j < tentativaInicial.colunas; j++)
+      for (int j = 0; j < resultado.colunas; j++)
       {
 
         double acum = 0;
-        for (int k = 0; k < tentativaInicial.linhas; k++)
+        for (int k = 0; k < resultado.linhas; k++)
         {
-          acum += coeficientes.matriz[i][k] * tentativaInicial.matriz[k][j];
+          acum += coeficientes.matriz[i][k] * resultado.matriz[k][j];
         }
-        tentativaInicial.matriz[i][0] = acum + termosIndependentes.matriz[i][0];
+        resultado.matriz[i][0] = acum + termosIndependentes.matriz[i][0];
       }
     }
 
     tentativas++;
-  } while (!condicaoParada(tentativaInicial, err));
+  } while (!condicaoParada(resultadoAnterior, resultado, err));
 
-  return {tentativaInicial, tentativas};
+  return {resultadoAnterior, tentativas};
+}
+
+bool convergePorSassenfeld(Matriz coeficientes)
+{
+  Matriz razoes(coeficientes.linhas, 1);
+
+  for (int i = 0; i < razoes.linhas; i++)
+  {
+    razoes.matriz[i][0] = 1;
+  }
+
+  for (int i = 0; i < coeficientes.linhas; i++)
+  {
+    double soma = 0;
+    for (int j = 0; j < coeficientes.colunas; j++)
+    {
+      if (i != j)
+        soma += abs(coeficientes.matriz[i][j]) * razoes.matriz[j][0];
+    }
+
+    razoes.matriz[i][0] = soma / abs(coeficientes.matriz[i][i]);
+  }
+
+  return razoes.maximoAbsoluto() < 1;
 }
 
 void mostraResposta(Matriz resposta)
@@ -116,10 +155,16 @@ int main()
   cout << "- Erro aceitavel: ";
   cin >> err;
 
+  if (!convergePorSassenfeld(coeficientes))
+  {
+    cout << "Não converge por Sassenfeld, logo nao pode usar Gauss-Seidel" << endl;
+    return 1;
+  }
+
   normalizaMatrizesParaMetodo(coeficientes, termosIndependentes);
   RetornoMetodo retorno = gaussSeidel(coeficientes, termosIndependentes, tentativaInicial, err);
 
-  cout << "- Resposta -" << endl;
+  cout << "- Resposta com " << retorno.tentativas << " iteracoes -" << endl;
   mostraResposta(retorno.resultado);
 
   return 0;
