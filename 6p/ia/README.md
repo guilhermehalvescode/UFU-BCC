@@ -717,4 +717,62 @@ function MIN-VALUE(state) returns a utility value
 
 - Poda alfa-beta: o valor de um no e relevante somente se existe uma possibilidade de nos depararmos com ele durante o processo de busca. Se pudermos provar que jogadores racionais jamais atingirão tal no, independente do seu valor, então não existe a possibilidade examina-lo ou mesmo gera-lo
 
+- A poda alfa-beta é uma técnica de poda que pode ser usada para reduzir o espaço de busca
+
 ### Alfa-Beta: Motivação
+
+![podaAlfaBeta](images/podaAlfaBeta.png)
+![podaAlfaBeta1](images/podaAlfaBeta1.png)
+![podaAlfaBeta2](images/podaAlfaBeta2.png)
+
+### Alfa e Beta
+
+- Alfa, ou a, e o valor da melhor escolha encontrada ate o momento para qualquer ponto de escolha ao longo do caminho para MAX
+- Beta, ou b, e valor da melhor escolha encontrada ate o momento para qualquer ponto de escolha ao longo do caminho para MIN
+- Os valores e alfa e beta são modificados durante a busca
+- Estes dois valores são comparados para fazer a redução
+
+### O Principio da Poda
+
+![podaAlfaBetaAlgo](images/podaAlfaBetaAlgo.png)
+
+- A busca pode ser descontinuada abaixo de um no MIN tendo beta' <= alfa de seu pai MAX. Ela pode ser descontinuada abaixo de um no MAX tendo alfa' >= beta de seu pai MIN.
+
+### O Algoritmo de Busca Alfa-Beta
+
+> Parecido com MINIMAX com alfa e beta adicinados
+
+```portugol
+function ALPHA-BETA-SEARCH(state) returns an action
+  inputs: state, current state in game
+  v = MAX-VALUE(state, -Infinite, +Infinite)
+  RETURN the action in SUCCESSORS(state) with value v
+```
+
+```portugol
+function MAX-VALUE(state, a, b) returns a utility value v
+  inputs: state, current state in game
+          a, the best alternative for MAX along path to state
+          b the best alternative for MIN along path to STATE
+  if TERMINAL-TEST(state) then return UTILITY(state)
+  v = -Infinite
+  for each s in SUCCESSORS(state) do
+    v = MAX(v, MIN-VALUE(s, a, b))
+    if v >= b then return v
+    a = MAX(a, v)
+  return v
+```
+  
+```portugol
+function MIN-VALUE(state, a, b) returns a utility value v
+  inputs: state, current state in game
+          a, the best alternative for MAX along path to state
+          b the best alternative for MIN along path to STATE
+  if TERMINAL-TEST(state) then return UTILITY(state)
+  v = +Infinite
+  for each s in SUCCESSORS(state) do
+    v = MIN(v, MAX-VALUE(s, a, b))
+    if v <= a then return v
+    b = MIN(b, v)
+  return v
+```
