@@ -1356,3 +1356,195 @@ Receptor
 
 ![prevColisaoRTSCTS](images/prevColisaoRTSCTS.png)
 
+#### LAN sem fio IEEE: 802.11
+
+- CSMA/CA:
+  - Distributed Inter-frame Space (DIFS)
+  - Request to Send (RTS)
+  - Short Inter-frame Space (SIFS)
+  - Clear to Send (CTS)
+
+![CSMA-CA](images/CSMA-CA.png)
+
+#### Quadro 802.11: Endereçamento
+
+![enderacamento802-11](images/enderacamento802-11.png)
+
+![enderacamento802-11Exemplo](images/enderacamento802-11Exemplo.png)
+
+![enderacamento802-11Quadro](images/enderacamento802-11Quadro.png)
+
+#### 802.11: mobilidade dentro da mesma sub-rede
+
+- A area H1 permanece na mesma sub-rede IP: endereço IP pode permanecer o mesmo
+- Comutador: qual AP esta associado a H1?
+  - autoaprendizagem: comutador vera quadro de H1 e "lembrara" qual porta do comutador pode ser usada para alcançar H1
+
+![mobilidadeMesmaSubRede](images/mobilidadeMesmaSubRede.png)
+
+#### 802.11: capacidades avançadas
+
+- Adaptação de taxa de comunicação:
+  - estação-base, dispositivo movel muda a taxa de transmissão dinamicamente (tenica de modulação da camada fisica) enquanto disp. movel se move, a SNR varia entre diferentes relações de SNR
+
+![berPerSnrDynamic](images/berPerSnrDynamic.png)
+
+- SNR diminui, BER aumenta quando no se afasta da estação base
+- Quando BER se torna muito alto, passa para taxa de transmissão inferior, mas com BER mais baixo
+
+---
+
+Gerenciamento de energia
+
+- Mensagem (host) no-para-AP: "Vou dormir ate o proximo quadro de sinalização"
+  - o AP sabe que não ira transmitir quadros para esse no
+  - O no acorda antes do proximo quadro de sinalização
+- Quadro de sinalização: contem lista de estações moveis com quadros AP-para-movel esperando para serem enviados:
+  - O no permanecera acordado se quadros AP-para forem enviados; caso contrario, dorme novamente ate o proximo quadro de sinalização
+
+#### 802.15: Rede de area pessoal (Bluetooth)
+
+- Menos de 10 m de diâmetro
+- Substitui cabos (mouse, teclado e fones)
+- Ad-hoc: sem infraestrutura
+- Mestre/Escravos:
+  - escravos solicitam permissão para enviar (ao mestre)
+  - mestre concede solicitações
+- 802.15: evolução da especificação
+  - banda de radio 2,4-2,5 GHz - ate 721 kbps
+  - 79 canais - espectro espalhado com salto de frequência (FHSS)
+
+### Mobilidade: Gerenciamento da mobilidade: principio
+
+> O que e mobilidade?
+
+- Espectro de mobilidade, do ponto de vista da rede:
+
+![mobilidadeConceito](images/mobilidadeConceito.png)
+
+#### Mobilidade: Vocabulario
+
+![mobilidadeVocabulario](images/mobilidadeVocabulario.png)
+
+#### Mobilidade: mais vocabulario
+
+![mobilidadeVocabulario1](images/mobilidadeVocabulario1.png)
+
+#### Mobilidade: tecnicas
+
+- Deixe que o roteamento cuide disso: roteadores anunciam endereço permanente de nos-moveis-em residência por meio de troca de tabela de roteamento
+  - tabelas de roteamento indicam onde cada no movel esta localizado
+  - não ha mudanças nos sistemas finais
+- Deixe que os sistemas finais cuidem disso:
+  - roteamento indireto: comunicaão do correspondente ao no move passa por agente nativo, depois encaminhada ao remoto
+  - roteamento direto: correspondente recebe endereço externo do no movel, envia diretamente a ele
+
+---
+
+- Deixe que os sistemas finais cuidem disso:
+  - roteamento indireto: comunicação do correspondente ao no movel passa por agente nativo, depois encaminhada ao remoto
+  - roteamento direto: correspondente recebe endereço externo do no movel, envia diretamente a ele
+
+#### Mobilidade: Fase de Registro
+
+![mobilidadeFaseDeRegistro](images/mobilidadeFaseDeRegistro.png)
+
+#### Mobilidade via roteamento indireto
+
+![mobilidadeRoteamentoIndireto](images/mobilidadeRoteamentoIndireto.png)
+
+#### Roteamento indireto: comentarios
+
+- O no movel usa dois endereços:
+  - endereço permanente: usado pelo correspondente (por isso o local do no movel ser transparente ao correspondente)
+  - endereço aos cuidados: usando pelo agente nativo para repassar datagramas ao no movel
+- Funções do agente externo podem ser feitas pelo proprio no movel
+- Roteamento triangular: correspondente-rede nativa e no movel:
+
+> ineficaz quando correspondente, no movel esta na mesma rede
+
+#### Roteamento indireto: movendo entre redes
+
+- Suponha que o usuario movel passa para outra rede:
+  - regista com novo agente externo
+  - novo agente externo registra com agente nativo
+  - agente nativo atualiza endereço aos cuidados para no movel
+  - pacotes continuam sendo encaminhados ao no movel (mas com nodo-endereço aos cuidados)
+- Mobilidade, mudança de redes externas transparente: conexões ativas podem ser mantidas
+
+#### Mobilidade via roteamento direto
+
+![mobilidadeRoteamentoDireto](images/mobilidadeRoteamentoDireto.png)
+
+#### Mobilidade via roteamento direto: comentarios
+
+- Contorna problema do roteamento triangular
+- Não transparente ao correspondente: correspondente deve obter endereço aos cuidados do agente nativo
+- Se o no movel mudar a rede visitada?
+
+#### Acomodando mobilidade com roteamento direto
+
+- Agente externo âncora: Agente externo na primeira rede visitada
+- Dados sempre o roteado primeiro para a AE âncora
+- Quando no movel se move: o novo AE repassa dados do AE antigo (encadeamento)
+
+![mobilidadeMaisRoteamentoDireto](images/mobilidadeMaisRoteamentoDireto.png)
+
+### IP movel
+
+- Definido pela RFC 3344
+- Ha muitos recursos ja descritos
+  - agentes nativos, agentes externos, registro de agente externo, endereço aos cuidados, encapsulamento (pacote dentro de pacote)
+- Existem três componentes do padrão:
+  - roteamento indireto de datagramas
+  - descoberta de agente
+  - registro com agente nativo
+
+#### IP movel: roteamento indireto
+
+![ipMovelRoteamentoIndireto](images/ipMovelRoteamentoIndireto.png)
+
+#### IP movel: descoberta de agente
+
+- anuncio de agente: agentes externo/domestico anunciam serviço por broadcasting de mensagens ICMP (campo de tipo = 9)
+
+![ipMovelDescobertaDeAgente](images/ipMovelDescobertaDeAgente.png)
+![ipMovelDescobertaDeAgente1](images/ipMovelDescobertaDeAgente1.png)
+
+#### IP movel: exemplo de registro
+
+![ipMovelExemplo](images/ipMovelExemplo.png)
+
+#### Sem fio, mobilidade: impacto sobre protocolos
+
+- Logicamente, impacto deveria ser minimo
+  - Modelo de serviço pelo melhor esforço permanece inalterado
+  - Protocolos de transporte podem rodar sem fio e movel
+- mas, do lado do desempenho:
+  - perda de pacote/atraso devido a erros de bit (pacotes descartados, atraso para retransmissões da camada de enlace) e transferência
+  - se usar TCP interpreta perda como congestionamento, diminuira janela de congestionamento sem necessidade
+  - prejuizos de atraso para trafego em tempo real
+  - Largura de banda limitada de enlaces sem fio
+
+## Camada de Rede: Parte 1
+
+- Objetivos da camada de rede:
+- Entender os principios por tras dos serviços da camada de rede:
+  - modelos de serviço da camada de rede
+  - repasse versus roteamento
+  - como funciona um roteador
+  - roteamento (seleção de caminho)
+  - lidando com escala
+  - topicos avançados: IPv6, mobilidade
+- Instanciação, implementação na Internet
+
+### Introdução
+
+- Segmento de transporte do hospedeiro emissor ao receptor
+- O lado emissor encapsula segmentos em datagramas
+- O lado receptor repassa segmentos a camada de transporte
+- Protocolo da camada de rede em cada hospedeiro envia para o roteador
+- Roteador examina os campos de cabeçalho em todos os datagramas IP que passam por ele
+
+#### Importantes funções da camada de rede
+
