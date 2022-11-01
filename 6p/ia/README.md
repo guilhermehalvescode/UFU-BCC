@@ -776,3 +776,39 @@ function MIN-VALUE(state, a, b) returns a utility value v
     b = MIN(b, v)
   return v
 ```
+
+## Logica Proposicional
+
+- Aspectos da logica proposional:
+  - Sintaxe
+  - Semântica
+  - Validade e inferência
+  - Modelos
+  - Regras de inferência
+  - Provadores de teoremas: metodo de prova de proposito geral
+
+---
+
+- Semântica: significado de uma sentença atraves de intrepretações:
+  - Atribuição dos valores verdades para os simbolos proposicionais
+  - Especificação dos significados dos conectivos logicos (uso de tabelas verdade)
+
+---
+
+- Metodo da Enumeração: seja S = A V B e KB = (A V C) ^ (B V ~C). KB deriva S?
+- Verificação de todos os modelos possiveis de S: deve ser verdade quando KB e verdade
+
+---
+
+- Regras de Inferência:
+  - Tabelas verdade podem ser estendidas para classes de inferências
+  - Existem certos padrões de inferência que ocorrem com bastente frequência: regras de inferência
+
+---
+
+- Notações usadas pada regras de inferência. Seja alpha e beta duas sentenças da logica proposicional
+  - alpha |- beta significa que beta pode ser derivada de alpha atraves de inferencias ou
+  - Para enfatizarmos que a construção não faz parte da linguagem
+    - alpha / beta
+
+---
