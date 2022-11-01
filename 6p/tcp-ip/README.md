@@ -1548,3 +1548,43 @@ Gerenciamento de energia
 
 #### Importantes funções da camada de rede
 
+Camada de rede
+
+- Repasse:
+  - mover pacotes da entada do roteador para a saida apropriada do roteador
+- Roteamento:
+  - determinar rota seguida pelos pacotes da origem ao destino
+    - algoritmos de roteamento
+
+Analogia
+
+- Repasse:
+  - processo de passar por um unico cruzamento
+- Roteamento:
+  - processo de planejamento da viagem da origem ao destino
+
+#### Interação entre roteamento e repasse
+
+![interacaoRoteamentoERepasse](images/interacaoRoteamentoERepasse.png)
+
+#### Estaelecimento de conexão
+
+- Terceira função importante em algumas arquiteturas de rede:
+  - ATM, frame relay, X.25
+- Antes que os datagramas fluam, dois hospedeiros finais e roteadores entre eles estabelecem conexão virtual
+  - roteadores são envolvidos
+- Serviço de conexão da camada de rede versus transporte:
+  - rede: entre dois hospedeiros (tambem pode envolver roteadores entre eles, no caso de VCs)
+  - transporte: entre dois processos
+
+#### Modelo de serviço de rede
+
+P: Que modelo de serviço e o melhor para o "canal" que transporta datagramas do remetente ao destinatario?
+
+- exemplo de serviços de datagramas individduais
+  - entrada garantida
+  - entrega garantida com atraso limitado
+- exemplo de seriços para fluxos de datagramas:
+  - entrega de datagrama na ordem
+  - largura de banda minima garantida
+  - restriçẽos sobre mudanças no espaçamento entre pacotes
