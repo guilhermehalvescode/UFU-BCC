@@ -1588,3 +1588,176 @@ P: Que modelo de serviço e o melhor para o "canal" que transporta datagramas do
   - entrega de datagrama na ordem
   - largura de banda minima garantida
   - restriçẽos sobre mudanças no espaçamento entre pacotes
+
+#### Modelos de serviço da camada de rede
+
+![modelosDeServicoDaCamadaDeRede](images/modelosDeServicoDaCamadaDeRede.png)
+
+### Redes de circuitos virtuais
+
+#### Serviço com e sem conexão
+
+- Rede de datagrama fornece serviço sem conexão da camada de rede
+- Rede de Circuito Virtual (VC) fornece serviço com conexão da camada de rede
+- Analogo aos serviços da camada de transporte, mas na camada de transporte tem-se
+  - serviço: hospedeiro a hospedeiro
+  - sem escolha: a rede oferece um ou outro
+  - implementação: no nucleo da rede
+
+#### Circuitos virtuais
+
+> "Caminho da origem ao destino comporta-se como um circuito telefônico" com respeito ao desempenho e ações da rede ao longo do caminho da origem ao destino
+
+- estabelecimento e termino para cada chamada antes que os dados possam fluir
+- cada pacote identificador VC (não endereço do hospedeiro de destino)
+- cada roteador no caminho origem-destino mantem "estado" para cada conexão que estiver passando
+- recursos do enlace e roteador (largura de banda, buffers) podem ser alocados ao VC (recursos dedicados = serviço previsivel)
+
+#### Implementação do VC
+
+- Um VC consite em:
+  - caminho da origem ao destino
+  - numeros de VC, um numero para cada enlace ao longo do caminho
+  - entradas em tabelas de repasse nos roteadores ao longo do caminho
+- Pacote pertence ao VC carrega numero do VC (em vez do endereço de destino)
+- Numero do VC pode ser alterado em cada enlace
+- Novo numero de VC vem da tabela de repasse
+
+#### Tabela de repasse
+
+![tabelaRepasse](images/tabelaRepasse.png)
+
+> Roteadores mantêm informação de estado da conexão
+
+#### Circuitos virtuais: protocolos de sinalização
+
+- Usados para estabelece, manter e terminar o VC;
+- Empregados em ATM, frame-relay e X.25;
+- Não usados na Internet
+
+![cvProtocolosDeSinalizacao](images/cvProtocolosDeSinalizacao.png)
+
+### Redes de datagrama
+
+- sem estabelecimento de chamada na camada de rede
+- roteadores: sem estado sobre conexões fim a fim
+- sem conceito em nivel de rede da "conexão"
+- pacotes repassados usando endereço do hospedeiro de destino
+- pacotes entre mesmo par origem-destino podem tomar diferentes caminhos
+
+![redesDeDatagrama](images/redesDeDatagrama.png)
+
+#### Tabela de repasse (redes de datagrama)
+
+![tabelaRepasseRedesDeDatagrama](images/tabelaRepasseRedesDeDatagrama.png)
+
+#### Concordância do prefixo mais longo
+
+![concordanciaDePrefixoMaisLongo](images/concordanciaDePrefixoMaisLongo.png)
+
+#### Rede de datagrama ou VC: por quê?
+
+Internet(datagrama)
+
+- Troca e dados entre computadores
+  - serviço "elastico", sem requisitos de temporização estritos
+- Sistema finais "inteligentes" (computadores)
+  - pode adaptar, realizar controle, recuperação de erros
+  - simples dentro da rede, complexidade na "borda"
+- Muitos tipos de enlace
+  - diferentes caracteristicas
+  - serviço uniforme dificil
+
+ATM(VC)
+
+- evoluida da telefonia
+- conversação humana:
+  - requisitos de temporização estritos, confiabilidade
+  - necessario para serviço garantido
+- sistemas finais "burros"
+  - telefones
+  - complexidade dentro da rede
+
+### O que ha dentro de um roteador?
+
+#### Visão geral da arquitetura do roteador
+
+- executar algoritmos/protocolo de roteamento (RIP, OSPF, BGP)
+- repassar datagramas do enlace de entrada para saida
+
+![roteadorVisaoGeral](images/roteadorVisaoGeral.png)
+
+#### Funções da porta de entrada
+
+![funcsPortaDeEntrada](images/funcsPortaDeEntrada.png)
+
+#### Comutação por memoria
+
+Roteadores de primeira geração:
+
+- Computadores tradicionais com a comutação via controle direto da CPU
+- Pacote copiado para a memoria do sistema
+- Velocidade limitada pela largura de banda da memoria (2 travessias de barramento por datagrama)
+
+![comutacaoPorMemoria](images/comutacaoPorMemoria.png)
+
+#### Comutação por um barramento
+
+- Datagrama da memoria da porta de entrada a memoria da porta de saida por um barramento compartilhado
+- Disputa pelo barramento: velocidade de comutação limitada pela largura de banda do barramento
+- Barramento do roteador Cisco 5600 e 32Gbps: velocidade suficiente para roteadores de acesso e corporativos
+
+#### Comutação por um rede de interconexão
+
+- Contorna limitações de largura de banda do barramento
+- Projeto avançado: fragmenta datagrama em celulas de tamanho fixo, comuta celulas atraves do elemento de comutação
+- Equipamento da Cisco 12000: comuta 60 Gbps atraves da rede de interconexão
+
+#### Comutação
+
+![comutacao](images/comutacao.png)
+
+#### Portas de saida
+
+![portaSaidaRoteador](images/portaSaidaRoteador.png)
+
+- Buffering exigido quando os datagramas chegam do elemento de comutação mais rapido que a taxa de transmissão
+- Disciplina de escalonamento escolhe entre os datagramas enfileirados para transmissão
+
+#### Enfileiramento na porta de saida
+
+![enfileiramentoNaPortaDeSaida](images/enfileiramentoNaPortaDeSaida.png)
+
+- Armazena em buffer quando a taxa de chegada via comutador excede a velocidade da linha de saida
+- Enfileiramento (atraso) e perda devidos a estouro de buffer na porta de saida
+
+#### Quanto armazenamento em buffer?
+
+- Regra pratica dadas pela RFC 3439:
+- Armazenamento medio em Buffer: "RTT (round trip time) tipica" (~250ms) * "a capacidade do enlace C"
+- Exemplo:
+  - C = enlace de 10 Gbps
+  - Buffer de 2,5 Gbits
+  - B = RTT * C
+- Recomendação recente: com N fluxox do segmento (TCP), o armazenamento deve ser:
+  - RTT*C/sqrt(N)
+
+#### Enfileiramento na porta de entrada
+
+- Elemento de comutação mais lento que portas de entrada: enfileiramento possivel nas filas de entrada
+- Bloqueio de Cabeça de Fila (HOL - head-of-the-line): datagrama enfileirado na frente da fila impede que outros na fila sigam adiante
+- Atraso de enfileiramento e perda devidos a estouro no buffer de entrada
+
+![enfileiramentoNaPortaDeEntrada](images/enfileiramentoNaPortaDeEntrada.png)
+
+#### Mecanismo de escalonamento
+
+- Escalonamento: escolha do proximo pacote a ser enviado no enlace
+- FIFO (first in first out): envia em ordem de chegada na fila
+  - Exemplo com o mundo-real?
+  - Politica de descarte: se pacote chega para uma fila cheia: quem sera descartado?
+    - Final: destroi pacote chegando
+    - Prioridade: destroi/remove em base de prioridade
+    - Randômico: destroi/remove dinamicamente
+
+    ![mecanismoEscalonamentoFifo](images/mecanismoEscalonamentoFifo.png)
