@@ -1880,9 +1880,108 @@ Roteadores
 
 ##### Endereçamento Loopback
 
-- O endereço 127 é reservado especialemnte para 'loopback'
+- O endereço 127 é reservado especialemente para 'loopback'
   - Refere-se ao próprio sistema remetente
   - Usado para testar software de comunicação ou para comunicar com outros programas na mesma máquina (encapsulamento)
   - Interface virtual sobre a qual o host pode enviar pacote apenas para ele
   - A rede 127.0.0.0 estpa reservada para o loopback;
   - Exemplo: 127.0.0.1
+
+#### SubRede
+
+- Subdividir uma rede é o processo de dividir um bloco de endereços IPs atribuídos como rede em intervalos, em vários blocos de endereços menores, para um uso mais eficiente
+- Benefícios da sub-rede
+  - Reduzir o congestionamento
+  - Dar suporte à diferentes tecnologias (Ethernet)
+  - Diminuir domínio de broadcast
+  - Segurança
+
+#### SubRede: Máscara
+
+Função da máscara:
+
+Serpara a parte "rede" da parte "máquina" do endereço IP
+
+- Máscara de Subrede Padrão
+
+![subRedeMascaraPadrao](images/subRedeMascaraPadrao.png)
+
+---
+
+É usada durante dois cálculos:
+
+1. Gera um resultado usando endereço IP do computadore de origem
+2. Gera um restultado usando endereço IP do computador de destino
+
+Depois os resultados são comparados
+
+1. Resultados idênticos => computadores na mesma rede (contato direto)
+2. Resultados diferentes => computadores em redes distintas (IP deve enviar pacote ao roteador)
+
+---
+
+- A máscara de subrede é criada com o uso de 1s binários nas posições dos bits relativos à rede
+- Os bits da subrede são determinados com a adição do valor às posições dos bits tomados por empréstimo
+- Exemplo:
+  - 3 bits emprestado: a máscara para um endereço de classe C será 255.255.255.224
+  - Cálculo: Número de sub-redes utilizáveis = 2^(número de bits de sub-rede atribuídos) - 2
+    - O menos dois é dos endereços de ID e de broadcast da rede
+
+#### SubRede: IP
+
+Exemplo de cálculo:
+
+- Dado o número IP 143.107.1.45 e a máscara 255.255.0.0
+  - Endereço de rede: 143.107.0.0
+  - Broadcast nesta rede: 143.107.255.255
+- Dado a máscara 255.255.255.192
+  - Endereço de rede: 143.107.1.0
+  - End. Broadcast na rede: 143.107.1.63
+
+---
+
+Exemplo: Como determinar o endereço.
+
+- Endereço de rede: 192.59.66.0 = binário
+  - 11000000 . 00111011 . 01000010 . 00000000
+  - Máscara de subrede: 255.255.255.240 =
+    - 11111111 (rede) . 11111111 (rede) . 11111111 (rede) . 1111 (subrede) 0000 (host)
+  - Cada roteador analisa a máscara da subrede, a fim de eliminar o número de hosts e pesquisa (endereço IP e máscara - emprega uma operação AND)
+
+---
+
+- Assumindo que os primeiros múltiplos de 16 são inválidos, pois indicam o primeiro endereço da sub-rede, tem-se as seguintes sub-redes:
+  - 192.59.66.16 = 11000000 . 00111011 . 01000010 . 00010000
+  - 192.59.66.32 = 11000000 . 00111011 . 01000010 . 00100000
+  - ...
+  - 192.59.66.32.208 = 11000000 . 00111011 . 01000010 . 11010000
+  - 192.59.66.32.224 = 11000000 . 00111011 . 01000010 . 11100000
+
+---
+
+- Os endereços "um a menos" que os múltiplos de 16 são inválidos, pois indicam o último endereço da sub-rede:
+  - 192.59.66.31 = 11000000 . 00111011 . 01000010 . 00011111
+  - 192.59.66.47 = 11000000 . 00111011 . 01000010 . 00101111
+  - ...
+  - 192.59.66.223 = 11000000 . 00111011 . 01000010 . 11011111
+  - 192.59.66.239 = 11000000 . 00111011 . 01000010 . 11101111
+
+---
+
+- Tabela completa
+
+![tabelaCompletaMascaraIp](images/tabelaCompletaMascaraIp.png)
+
+#### SubRede: CIDR
+
+Endereçamento "Classful"
+
+- Uso ineficiente do espaço de endereçamento, exaustão do espaço de endereços
+- Rede de Classe B aloca endereços para 65K hosts, mesmo se só existem 2000 hosts naquela rede
+
+Classless Inter-Domain Routing - CIDR (RFC 1517, 1518, 1519, 1520)
+
+- O endereço da subrede tem a forma decimal com pontos de serparação
+- Formato do endereço: A.B.C.D/x, onde x é o número de bits na parte de rede do endereço
+
+![enderecamentoClassfulEx](images/enderecamentoClassfulEx.png)
