@@ -1761,3 +1761,128 @@ Roteadores de primeira geração:
     - Randômico: destroi/remove dinamicamente
 
     ![mecanismoEscalonamentoFifo](images/mecanismoEscalonamentoFifo.png)
+
+#### Política de escalonamento: prioridade
+
+- Escalonamento de prioridade:
+  - Envia pacotes de mais alta prioridade na fila
+- Múltiplas classes com diferentes prioridade:
+  - Classe pode depender de marcação ou informações do cabeçalho
+- Ex. número de porta, IP fonte/destino
+
+![escalonamentoPrioridade](images/escalonamentoPrioridade.png)
+
+#### Política de escalonamento
+
+Escalonamento Round Robin (RR):
+
+- Múltiplas classes
+- Varre as filas de classes, de forma cíclica, enviando um pacote completo de cada classe, se disponível
+
+---
+
+Múltiplas Filas (Weighted fair queuing - WFQ)
+
+- Round Robin generalizado
+- Cada classe tem um peso entre os serviços em cada ciclo
+
+![multiplasFilasWFQ](images/multiplasFilasWFQ.png)
+
+### IP: Internet Protocol
+
+- formato do datagrama
+- endereçamento IPv4
+- ICMP
+- IPv6
+
+#### A camada de rede da Internet
+
+- Funções na camada de rede do hospedeiro e do roteador:
+
+![camadaDeRedeInternet](images/camadaDeRedeInternet.png)
+
+#### Formato do datagrama IP
+
+![IPDatagrama](images/IPDatagrama.png)
+
+Quanto overhead com TCP?
+
+- 20 bytes de TCP
+- 20 bytes de IP
+- Tem-se 40 bytes + overhead da camada de aplicação
+
+#### Fragmentação e reconstrução do IP
+
+- Enlaces de rede têm MTU (tamanho max. transferência) - maior quadro em nível de enlace possível
+  - diferentes tipos de enlace, diferentes MTUs
+- Grande datagrama IP dividido ("fragmentado") dentro da rede
+  - um datagrama torna-se vários datagramas
+  - "reconstruído" somente no destino final
+  - bits de cabeçalho IP usados para identificar, ordenar fragmentos relacionados
+
+---
+
+![exFragmentacaoReconstrucaoIp](images/exFragmentacaoReconstrucaoIp.png)
+
+#### Endereçamento IPv4
+
+##### Endereçamento com Classes
+
+![enderecamentoComClasses](images/enderecamentoComClasses.png)
+
+---
+
+O endereço IPv4, no início, foram criados classes de redes baseadas no tamanho da rede para o projeto da Internet (RFC 791)
+
+- Classe A
+  - rede: 7 bits do primeiro octeto
+  - host: 24 bits
+  - tipo 10 . X . X . X
+  - 00001010 . xxxxxxxx . xxxxxxxx . xxxxxxxx
+  - o campo de endereço de rede - intervalo 1 a 127
+  - total de 127 redes
+  - os campos host de 1 a 254 para cada octeto
+  - endereço de rede 0 e endereço de broadcast 255
+  - totalizando 254 x 254 x 254 = 16.772.216 hosts
+
+---
+
+- Classe B
+  - rede: 14 bits
+  - host: 16 bits
+  - do tipo 172 . 68 . X . X
+  - 10101100 . 01000100 . xxxxxxxx . xxxxxxxx
+  - o primeiro campo de rede pode variar de 128 a 191
+  - totaliza 64 x 255 = 16.320 redes classe B
+  - os campos de host podem variar de 1 a 254
+  - totaliza 254 x 254 = 64516 hosts
+
+---
+
+- Classe C
+  - rede: 21 bits
+  - host: 8 bits
+  - do tipo 192.168.15.X
+  - 11000000 . 10101000 . 00001111 . xxxxxxxx
+  - o primeiro campo de rede pode variar de 192 a 223
+  - totaliza 32 x 255 x 255 = 2.080.800 redes classe C
+  - o campo de host pode variar de 1 a 254
+  - totaliza 254 hosts
+
+---
+
+![enderecamentoComClassesIntervalo](images/enderecamentoComClassesIntervalo.png)
+
+Roteadores
+
+- Primeiro endereço: usado para identificar a própria rede (pode não ser utilizável por hospedeiro)
+- Último endereço: usado para identificar o broadcast (pode não ser utilizável por hospedeiro)
+
+##### Endereçamento Loopback
+
+- O endereço 127 é reservado especialemnte para 'loopback'
+  - Refere-se ao próprio sistema remetente
+  - Usado para testar software de comunicação ou para comunicar com outros programas na mesma máquina (encapsulamento)
+  - Interface virtual sobre a qual o host pode enviar pacote apenas para ele
+  - A rede 127.0.0.0 estpa reservada para o loopback;
+  - Exemplo: 127.0.0.1
