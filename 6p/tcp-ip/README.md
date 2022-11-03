@@ -1985,3 +1985,34 @@ Classless Inter-Domain Routing - CIDR (RFC 1517, 1518, 1519, 1520)
 - Formato do endereço: A.B.C.D/x, onde x é o número de bits na parte de rede do endereço
 
 ![enderecamentoClassfulEx](images/enderecamentoClassfulEx.png)
+
+---
+
+- Propõe fazer a (re) distribuição dos endereços IP por faixas de endereços e não usar classes
+- Inclui abandonar o uso das classes tradicionais A, B e C, utilizadas na atribuição de endereços IP comerciais
+- Exemplo:
+  - Uma classe inteira (A ou B) pode ser dividia entre diversas empresas, evitando o desperdicio de endereços
+  - As redes classe C podem ser agregadas entre si gerando uma superrede (supernet) => a mascara muda de /24 para /22
+
+---
+
+![CIDRMascara](images/CIDRMascara.png)
+
+> Exercicio
+
+Uma empresa precisa implementar uma rede com 1000 hospedeiros para atender a demanda de usuarios. Crie as subredes utilizando o endereço 172.1.8.0 e prefixo /22
+
+Determine:
+
+- Endereço de subrede
+  - Subrede 2
+- A mascara para a subrede
+  - 255.255.252.0
+- Numero maximo de hospedeiros na subrede
+  - 2^10 (8 bits ultimo octeto + 2 bits penultimo octeto) = 1022 hosts
+- Endereço de broadcast da subrede
+  - 172.1.11.255
+- Faixa de IPs que serão utilizados na subrede
+  - 172.1.8.1
+  - 172.1.11.254
+
