@@ -2016,3 +2016,60 @@ Determine:
   - 172.1.8.1
   - 172.1.11.254
 
+#### SubRede: VLSM
+
+- Na notação "Classless Inter-Domain Routing" (CIDR), a máscara de subrede são chamadas de prefixo
+- Os roteadores utilizam o prefixo de rede, ao contrario dos bits do endereço IP, para determinar o ponto de divisão entre o numero da rede e o numero de hospedeiros
+- Pode ocorrer um desperdicio de endereços IP para hosts dentro de um intervalo de sub-rede
+- Então, introduziu o conceito de mascara de sub-rede com comprimento variavel (Variable Length Subnet Mask - VLSM)
+
+#### VLSM (Mascara de subredes de tamanho variavel)
+
+- Tecnica permite que mais de uma mascara de sub-rede seja definida para um determinado endereço de rede IP
+- O campo "prefixo de rede estendito" passa a ter diferentes tamanhos de mascara de sub-redes
+- Vantagens:
+  - Uso mais eficiente do espaço de endereço atribuido para uma organização
+  - Permite agregação de rotas, o que pode reduzir de forma significativa a quantidade de dados de roteamento no nivel de backbone em redes
+
+---
+
+Endereço IP: 130.5.0.0/16 -> 130.5.0.0/22 (Mascara de sub-rede 255.255.252.0)
+
+![VLSMEx](images/VLSMEx.png)
+
+---
+
+![VLSMEx1](images/VLSMEx1.png)
+
+---
+
+- As sub-redes criadas são listadas:
+
+130.5.0.0 - sub-rede 0
+130.5.4.0 - sub-rede 1
+130.5.8.0 - sub-rede 2
+130.5.12.0 - sub-rede 3
+130.5.16.0 - sub-rede 4
+130.5.20.0 - sub-rede 5
+
+---
+
+- Endereço de rede "/16" com prefixo de rede estendido "/22" (6 bits para sub-redes)
+- São 64 (2^6 - 2) sub-redes, cada uma com um maximo de 1022 (2^10 - 2)
+- Para grandes sub-redes com muitos hospedeiros (20 ou 30 hosts) desperdicio de mais de 1000 lps
+- Eficiência de alocação pode aumentar de definir mais de uma mascara em um ambiente de sub-redes
+
+---
+
+Endereço IP: 130.5.0.0/26 (Mascara: 255.255.255.192)
+
+![VLSMEx2](images/VLSMEx2.png)
+
+---
+
+![VLSMEx3](images/VLSMEx3.png)
+
+---
+
+![VLSMEx4](images/VLSMEx4.png)
+
