@@ -812,3 +812,126 @@ function MIN-VALUE(state, a, b) returns a utility value v
     - alpha / beta
 
 ---
+
+## Logica de Primeira Ordem
+
+- Principal compromeitmento ontologico: o mundo consiste de objetos
+- Os objetos possuem identidade e propriedades que os distinguem de outros objetos
+- Existe relações entre objetos. Algumas destas relações são funçoes
+
+---
+
+- Exemplos:
+  - Objetos: pessoas, casas, numeros ...
+  - Relações: pai, irmão, parte de, tem cor, ...
+  - Propriedades: bom, verde, redondo, ...
+  - Funções: pai_de, seno, cosseno, ...
+
+---
+
+- Sintaxe da LPO:
+
+![lpoSintax](images/lpoSintax.png)
+
+---
+
+- Simbolos Constantes e Variaveis denotam objetos:
+  - Exemplo: X, Y, Z, Carlos, Sandra, ...
+  - Uma interpretação especifica que objeto do mundo esta associado com a constante ou com a variavel
+  - Cada constante nomeia um objeto
+  - Um objeto pode ter varios nomes
+
+---
+
+- Simbolos Predicados denotam Propriedades e Relações:
+  - uma interpretação especifica a que propriedade (predicados unarios) ou relação no mundo o predicado se refere:
+    - Exemplo de relação: Leciona. um professor leciona uma disciplina
+    - Exemplo de propriedade: bonita. todas mulheres são bonitas
+
+---
+
+- Simbolos Funcionais denotam relações funcionais
+  - Uma interpretação especifica uma relação funcional existente no mundo
+  - Exemplos: mãe. Todo filho possui uma unica mãe
+  - Simbolos funcionais são usados para referenciar objetos sem que seja necessario usar seus nomes
+
+---
+
+- Termo e uma expressão logica que denota um objeto
+  - Simbolos constantes e variaveis especificam termos
+  - Um simbolo funcional seguido de uma lista de termos colocados entre parênteses especifica um termo (termo complexo). Exemplo: Pai_de(carlos)
+
+### Linguagem de Primeira Ordem
+
+- Sentenças Atômicas: Associação de simbolos predicadas a termos que especifica um fato
+  - Exemplo: Irmã(ana, juliana)
+  - Uma sentença atômica e verdadeira se a relação associada ao simbolo predicado existe entre os objetos dados pelos argumentos
+- Sentenças Complexas: sentenças formadas pelo uso de conectivos logicos
+  - Exemplo: ¬Irmã(ana, giovana)
+
+### Logica de Primeira Ordem (continuação)
+
+- Quantificadores: permitem expressar propriedades de uma coleção inteira de objetos ao inves de enumerar os objetos pelos seus nomes
+  - LPO contem dois quantificadores: universal e existencial
+
+---
+
+- Quantificação Universal (para todo).
+  - A regra "todos os gatos são mamiferos" podem ser expressa por:
+    - para todo x, se gato(x) então mamifero(x)
+  - O simbolo para todo deve ser lido como "para todo ..."
+  - A sentença para todo x P e verdade se P e verdade para todos os objetos x no mundo
+
+---
+
+- Quantificação Existencial (existe):
+  - Descreve algum objeto do objeto do mundo sem dar um nome a ele. Exemplo: para expressar o fato de que Nina tem alguma irmâ que e um cachorro podemos usar
+    - existe x irmã(Nina, x) ^ cachorro(x)
+  - existe x P e verdade se P e verdade para algum objeto x no mundo
+
+---
+
+- Quantificadores Aninhados:
+
+![quantificadoresAninhados](images/quantificadoresAninhados.png)
+
+---
+
+- Leis de Morgan: Equivalência entre sentenças quantificadas e entre sentenças não quantificadas
+
+![morganLaws](images/morganLaws.png)
+
+---
+
+- Igualdade:
+  - Outra maneira de se construir sentenças atômicas em LPO
+  - Declara que dois termos se referem ao mesmo objeto
+  - Pode ser visto como a relação identidade
+  - Exemplo:
+    - existe x, y filho(pedro, x) ^ filho(pedro, y) ^ ¬(x = y)
+
+---
+
+- Dominio: parte do mundo do qual queremos representar o conhecimento
+- Exemplos de dominios:
+  - Dominio da familia
+  - Dominio dos conjuntos
+
+---
+
+- Uso de LPO em agentes baseados em conhecimento
+
+![agenteBc](images/agenteBc.png)
+
+---
+
+- Uso de LPO em Agentes Baseados em Conhecimento
+
+![lpoComAgentesBc](images/lpoComAgentesBc.png)
+
+---
+
+- Um agente Reativo para o mundo do Wumpus Baseado em LPO
+- Possui regras ligando as sequências de percepções as ações
+
+![wumpusLpo](images/wumpusLpo.png)
