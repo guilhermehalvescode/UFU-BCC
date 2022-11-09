@@ -27,7 +27,7 @@ public:
 
   ~Matriz()
   {
-    for (int i = 0; i < linhas; i++)
+    for (int i = 0; i < this->linhas; i++)
     {
       free(this->matriz[i]);
     }
