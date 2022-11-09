@@ -97,6 +97,75 @@ void metodoJordan(Matriz mat)
   }
 }
 
+int calcularLinhasNulasCoeficiente(Matriz mat)
+{
+  int linhasNulas = 0;
+  for (int i = 0; i < mat.linhas; i++)
+  {
+    int coeficiente = 0;
+    for (int j = 0; j < mat.colunas; j++)
+    {
+      if (mat.matriz[i][j] != 0)
+      {
+        coeficiente = 1;
+      }
+    }
+
+    if (coeficiente == 0)
+    {
+      linhasNulas++;
+    }
+  }
+  return linhasNulas;
+}
+
+int calcularLinhasNulasTermosIndependentes(Matriz mat)
+{
+  int linhasNulas = 0;
+  int colunaTermosIndependentes = mat.colunas - 1;
+
+  for (int i = 0; i < mat.linhas; i++)
+  {
+
+    if (mat.matriz[i][colunaTermosIndependentes] == 0)
+    {
+      linhasNulas++;
+    }
+  }
+
+  return linhasNulas;
+}
+
+Matriz montaCoeficientesMetodoJordan(Matriz mat)
+{
+  int numeroIncognitas = mat.linhas;
+  int numeroLinhasNaoNulasCoeficientes = mat.linhas - calcularLinhasNulasCoeficiente(mat);
+  int numeroLinhasNaoNulasTermosIndependentes = mat.linhas - calcularLinhasNulasTermosIndependentes(mat);
+
+  Matriz coeficientes = Matriz(mat.linhas, 1);
+
+  if (numeroLinhasNaoNulasCoeficientes == numeroLinhasNaoNulasTermosIndependentes)
+  {
+    if (numeroLinhasNaoNulasCoeficientes == numeroIncognitas)
+    {
+      for (int i = 0; i < mat.linhas; i++)
+      {
+        coeficientes.matriz[i][0] = mat.matriz[i][mat.colunas - 1] / mat.matriz[i][i];
+      }
+    }
+    else if (numeroLinhasNaoNulasTermosIndependentes < numeroIncognitas)
+    {
+      cout << "Sistema com soluções multiplas e grau de liberdade: " << numeroIncognitas - numeroLinhasNaoNulasCoeficientes << endl;
+    }
+  }
+  else
+  {
+    cout << "Sistema sem solução" << endl;
+  }
+
+  return coeficientes;
+}
+
 int main()
 {
   Pontos pontos = lerPontos();
@@ -105,7 +174,22 @@ int main()
 
   metodoJordan(matrizAmpliada);
 
-  matrizAmpliada.toString();
+  Matriz coeficientes = montaCoeficientesMetodoJordan(matrizAmpliada);
+
+  cout << "Polinomio que interpola esses pontos: " << endl;
+
+  for (int i = 0; i < coeficientes.linhas; i++)
+  {
+    if (i != 0)
+      printf(" + ");
+
+    printf("(%.6lf)", coeficientes.matriz[i][0]);
+
+    if (i != 0)
+      printf("x^%d", i);
+  }
+
+  printf("\n");
 
   return 0;
 }

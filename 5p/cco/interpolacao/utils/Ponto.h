@@ -19,11 +19,6 @@ public:
     this->lista = (Ponto *)malloc(sizeof(Ponto) * quantidade);
     this->quantidade = quantidade;
   }
-
-  ~Pontos()
-  {
-    free(this->lista);
-  }
 };
 
 #endif

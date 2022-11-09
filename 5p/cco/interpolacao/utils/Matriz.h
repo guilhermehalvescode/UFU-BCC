@@ -25,15 +25,6 @@ public:
     this->colunas = colunas;
   }
 
-  ~Matriz()
-  {
-    for (int i = 0; i < this->linhas; i++)
-    {
-      free(this->matriz[i]);
-    }
-    free(this->matriz);
-  }
-
   void toString()
   {
     for (int i = 0; i < this->linhas; i++)
