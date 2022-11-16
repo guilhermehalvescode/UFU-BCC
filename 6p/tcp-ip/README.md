@@ -2073,3 +2073,303 @@ Endereço IP: 130.5.0.0/26 (Mascara: 255.255.255.192)
 
 ![VLSMEx4](images/VLSMEx4.png)
 
+<!-- TODO: terminar copiar VLSM -->
+
+### Dynamic Host Configuration Protocol (DHCP)
+
+- Objetivo: permitir que o hospedeiro obtenha dinamicamente o endereço IP de um servidor quando se conectar à rede:
+  - pode renover o prazo com o endereço utilizado
+  - permite reutilização de endereços (mantém endereço enquanto estiver conectado e "ligado");
+  - aceita usuários móveis que queiram se juntar à rede
+
+- Etapas em DHCP:
+  - host broadcasts "DHCP discover" msg[optional]
+  - servidor DHCP responde com msg "DHCP offer"
+  - hospedeiro requer endereço IP: msg "DHCP request"
+  - servidor DHCP envia endereço: msg "DHCP ack"
+
+#### DHCP - cenário cliente/servidor
+
+![dhcpExemple](images/dhcpExemple.png)
+
+![dhcpExemple1](images/dhcpExemple1.png)
+
+#### DHCP: mais do que endereço IP
+
+- DHCP pode retornar mais do que apenas o endereço IP alocado na sub-rede:
+  - endereço do roteador do primeiro salto para o cliente (ex. Gateway)
+  - nome e endereço IP do servidor DNS
+  - máscara de rede (indicando parte de rede versus hospedeiro do endereço)
+
+#### DHCP: Exemplo
+
+- A conexão do laptop precisa do endereço IP, endereço do roteador de primeiro salto e endereço do servidor DNS: DHCP
+- A solicitação DHCP encapsulada no UDP, encapsulada no IP, encapsualdo no Ethernet 802.11
+- Um broadcast de quadro Ethernet (dest = FF:FF:FF:FF:FF:FF) na LAN, recebido no roteador rodando DHCP
+- A Ethernet demultiplexado para IP demultiplexado, UDP demultiplexado para DHCP
+
+![dhcpExample2](images/dhcpExample2.png)
+
+---
+
+O servidor DHCP formula um DHCP ACK contendo endereço IP do cliente, endereço IP do roteador de primeiro salto para cliente, nome e endereço IP do servidor DNS
+
+- encapsualemento do servidor DHCP, quadro repassado ao cleinte, demultiplexado para DHCP no cliente
+- cliente sabe seu endereço IP, nome e endereço IP do servidor DNS, endereço IP do seu roteador de primeiro salto
+
+![dhcpExample3](images/dhcpExample3.png)
+
+#### Endereços IP: como obter um?
+
+- Endereços IP são atribuidos por um provedor de serviços de Internet (ISP)
+
+![isp](images/isp.png)
+
+#### Endereço IP: a última palavra
+
+- P: Como um ISP recebe bloco de endereços?
+- ICANN: Internet Corporation for Assigned Names and Numbers (RFC 2050)
+  - aloca endereços
+  - administra o DNS
+  - atribui nomes de domínio e resolve disputas
+
+### NAT (Network Address Translation)
+
+![nat](images/nat.png)
+
+#### Motivação (NAT)
+
+Rede LAN usa apenas um endereço IP no que se refere ao mundo exterior:
+
+- intervalo de endereços não necessários pelo ISP: apenas um endereço IP para todos os dispositivos
+- pode mudar os endereços dos dispositivos na rede local sem notificar o mundo exterior
+- pode mudar de ISP sem alterar os endereços dos dispositivos na rede local
+- dispositivos dentro da rede local não precisam ser explicitamente endereçáveis ou visíveis pelo mundo exterior (uma questão de segurança)
+
+#### Implementação (NAT)
+
+Roteador NAT deve:
+
+- enviando datagramas: substituir (endereço IP de origem, # porta) de cada datagrama saindo por (endereço IP da NAT, novo # porta)
+- clientes/servidores remotos responderão usando (endereço IP da NAT, novo # porta) como endereço de destino
+- lembrar (na tabela de tradução NAT) de cada par de tradução (endereço IP de origem, # porta) para (endereço IP da NAT, novo # porta)
+- recebeendo datagramas: substituir (endereço IP da NAT, novo # porta) nos capos de destino de cada datagrama chegando por (endereço IP origem, # porta) correspondente, armazenado na tabela NAT
+
+#### NAT: Network Address Translation
+
+![natExample](images/natExample.png)
+
+---
+
+Campo de número de porta de 16 bits
+
+- 60.536 conexões simultâneas com um único endereço no lado de LAN!
+- NAT é controvertido:
+  - roteadores só devem processar até a camada 3
+  - viola argumento de fim a fim
+  - a possibilidade de NAT deve ser levada em conta pelos projetistas da aplicação, p. e., aplicações P2P
+  - a falta de endereço deve ser resolvida pelo Ipv6
+
+#### Problema da travessia da NAT
+
+Cliente quer se conectar ao servidor com endereço 10.0.0.1
+
+- endereço do serviro 10.0.0.1 local à LAN (cliente não pode usá-lo como endereço destino)
+- apenas um endereço NAT visível externamente 138.76.29.7
+
+Solução 1: configure a NAT estaticamente para repassar as solicitações de conexão que chegam a determinada porta do servidor
+
+- p.e.: (138.76.26.7, porta 2500) sempre repassado para 10.0.0.1 oirta 25000
+
+Solução 2: Universal Plug and Play (UPnP) Internet Gateway Device Protocol (IGDP). Permite que o hospedeiro com NAT
+
+Cria a abertura:
+
+- descobre o endereço IP público (138.76.29.7) e mapeia para 10.0.0.1 e anuncia ao roteador que esta disponível em 138.76.29.7
+- inclua/remova mapeamento de porta (com tempos de posse) e envia um SYN TCP para o endereço 138.76.29.7
+- quanto chega no NAT altera o endereço IP e porta, ou seja, automatizar a configuração estática do mapa de porta NAT
+
+Solução 3: repasse (usado no Skype)
+
+- cliente com NAT estabele conexão com repasse
+- cliente externo se conecta ao repasse
+- repasse liga pacotes entre duas conexões
+
+![natRepass](images/natRepass.png)
+
+### IP: Internet Protocol (Continuação)
+
+#### ICMP: Internet Control Message Protocol
+
+- Usado por hospedeiros e roteadores para comunicar informações em nível de rede
+- relato de erro: hospedeiro, rede, porta, protocolo inalcançável
+- eco solicitação/resposta (usado por ping)
+- camada de rede "acima" do IP:
+  - msgs ICMP transportadas em datagramas IP
+- mensagem ICMP: tipo, código mais primeiros 8 bytes do datagrama IP causando erro
+
+#### Traceroute e ICMP
+
+- origem envia série de segmento UDP ao destino
+  - primeiro tem TTL = 1
+  - segundo tem TTL = 2 etc.
+  - número de porta improvável
+- quando nº datragam chegar no nº roteador:
+  - roteador descarta datagrama
+  - e envia à origem uma msg ICMP (tipo 11, código 0)
+  - mensagem inclui nome do roteador & endereço IP
+- quando a mensagem ICMP chega, origem calcula RTT
+- traceroute faz isso 3 vezes
+
+Critério de término
+
+- segmento UDP por fim chega no hospedeiro de destino
+- destino retorna pacote ICMP "host inalcançável" (tipo3, código 3)
+- quando origem esse ICMP, termina
+
+#### IPV6
+
+- Motivação inicial: espaço de endereço de 32 bit (limitado)
+- Problemas com o Ipv4 relacionados:
+  - CIDR e NAT
+  - Explosão do interesse na Internet
+  - Hosts móveis
+- Motivação adicional:
+  - formato de cabeçalho ajuda a agilizar processamento e repasse
+  - mudanças para facilitar QoS
+- Formato de datagrama IPv6
+  - cabeçalho de 40 bytes de tamanho fixo
+  - fragmentação não permitida
+
+---
+
+- IPv6 é tratada pelas RFCs 2460 a 2466
+- São alocados 16 bytes para endereços (128 bits)
+- Cabeçalho simplificado (7 campos contra 13 do IPv4)
+  - Melhor suporte para opções
+  - Avanços em qualidade de serviço
+  - Não existem classes como A, B e C
+- O IPv6 utiliza o conceito de CIDR, onde um determinado número de bits corresponde ao prefixo da rede, e os bits restantes identificam o nó
+
+#### Cabeçalho IPv6: Mudanças
+
+- prioridade: identificar prioridade entre datagramas no fluxo
+- rótulo de fluxo: identificar datagramas no mesmo "fluxo"
+- Pode ser configurado pelo endereço de destino para separar os fluxos de cada uma das aplicações
+- próximo cabeçalho: identificar protocolo da camada supoerior para dados
+
+![IPv6Header](images/IPv6Header.png)
+
+#### Outras mudanças do IPv4
+
+- Soma de verificação: removida inteiramente para reduzir tempo de processamento em cada salto
+- Opções: permitida, mas fora do cabeçalho, indicada pelo campo de "Próximo Cabeçalho"
+- ICMPv6: nova versão do protolo ICMP
+  - tipos de mensagens adicionais
+  - exemplo: "Pacote muito Grande" - Erro
+  - funções de gerenciamento de grupo multicast
+
+#### Transição de IPv4 para IPv6
+
+- nem todos os roteadores podem ser atualizados simultaneamente
+  - sem "dia de conversão"
+  - Como a rede operará com roteadores IPv4 e IPv6 misturados?
+- implantação de túnel: IPv6 transportado como carga útil no datagrama IPv4 entre roteador IPv4
+
+![tunnelIpv6Ipv4](images/tunnelIpv6Ipv4.png)
+
+### Algoritmos de roteamento
+
+Interação entre roteamento e repasse
+
+![routerRepass](images/routerRepass.png)
+
+#### Abstração de Grafo
+
+![graphAbstraction](images/graphAbstraction.png)
+
+- Grafo: G = (N, E)
+- N = conjunto de roteadores
+  - {u, v, w, x, y, z}
+- E = conjunto de enlaces
+  - {(u, v), (u, x), (v, x), (v, w), (x, w), (x, y), (w, y), (w, z), (y, z)}
+
+> Abstração de grafo é útil em outros contextos de rede
+
+#### Abstração de grafo: custos
+
+![graphAbstraction](images/graphAbstraction.png)
+
+- c(x, x') = custo do enlace (x, x')
+  - p. e., c(w, z) = 5
+- custo poderia ser sempre 1, ou inversamente relacionado à largura ou inversamente relacionado ao congestionamento
+
+Custo do caminho (x1, x2, x3, ..., xp) = c(x1, x2) + c(x2, x3) + ... + c(xp-1, xp)
+
+> Qual é o caminho de menor custo entre u e z?
+
+- algoritmo de roteamento: algoritmo que encontra o caminho de menor custo
+
+#### Classificação do algoritmo de roteamento
+
+- informação global ou descentralizada:
+  - global:
+    - todos os roteadores têm topologia completa, informação de custo de enlace
+    - algoritmos de "estado de enlace"
+  - descentralizada:
+    - roteador conhece vizinhos conectados fisicamente, custos de enlace para vizinhos
+    - processo de computação iterativo, troca de informação com vizinhos
+    - algoritmos de "vetor de distância"
+- estático ou dinâmico:
+  - estático:
+    - rotas mudam lentamente com o tempo (ex. Intervenção humana)
+  - dinâmico:
+    - rotas mudam mais rapidamente
+      - atualização periódica
+      - em resposta a mudanças no custo de enlace
+
+#### Algoritmo de roteamento de estado de enlace
+
+- Algoritmo de Dijkstra
+  - nova topologia, custos de enlace conhecidos de todos os nós
+    - realizado por "broadcast de estado do enlace"
+    - todos os nós tẽm a mesma informação
+  - cálcula caminhos de menor custo de um nó ("origem") para todos os outros nós
+  - Cria a tabela de repasse para esse nó
+  - Iterativo: após k iterações, sabe caminho de menor custo para k destinos
+- Notação:
+  - c(x, y): custo do enlace do no x até y; representa por igual a infinito se não forem vizinhos diretos
+  - D(v): valor atual do custo do caminho da origem ao destino V
+  - p(v): nó predecessor (antecessor) ao longo do caminho de origem até v
+  - N': conjunto de nós cujo caminho de menor custo é definitivamente conhecido
+
+---
+
+![dijkstra](images/dijkstra.png)
+
+#### Algoritmo de Dijkstra: Exemplo de Tabela
+
+![dijkstraTable](images/dijkstraTable.png)
+
+#### Algoritmo de Dijkstra: Exemplo
+
+![dijkstraExample](images/dijkstraExample.png)
+
+#### Algoritmo de Dijsktra: Discussão
+
+Complexidade do algoritmo: n nós
+
+- cada iteração: precisa verificar todos os nós - comparações: O (n²)
+  - (primeira) m
+  - (segunda) n - 1
+  - (terceira) n - 2
+  - ...
+
+Das diversas implementações a mais eficientes possíveis: O(nlogn)
+
+---
+
+Problema:
+
+- Custos dos enlaces não são simétricos
+- Custo esta relacionado com a quantidade
