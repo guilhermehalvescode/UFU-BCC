@@ -112,3 +112,73 @@
 
 4. Quais os gargalos que tornam a arvore AVL mais lenta que a arvore rubro-negra quando tem muitos itens inseridos?
    - O processo de balanceamento por rotação da AVL se torna muito custoso quando temos muitos itens inseridos, pois a cada inserção ou remoção, a arvore precisa ser balanceada
+
+## Conectividade
+
+- Grafo orientado e um grafo em que as arestas possuem direção (digrafo)
+- Grafo não orientado e um grafo em que as arestas nao possuem direção (grafo)
+
+### Conexo para digrafo
+
+- Digrafo pode ser fortemente conexo ou fracamente conexo
+  - fortemente: existe um caminho entre cada par de vertices
+  - fracamente: se transformar em um grafo (não direcionado) e esse for conexo
+
+### Componentes conexos
+
+- subgrafo conexo máximo: subgrafo conexo que nao pode ser aumentado adicionando mais vertices ou arestas
+- tanto para digrafo quanto para grafo, o numero de componentes conexos e dado pelo numero de subgrafos conexos maximas
+
+### Ponte
+
+- Aresta que, se for removida, o grafo vira desconexo
+
+### Conjunto de separação u-v ou Conjunto de corte
+
+- conjunto de vertices que, se removidos, desconectam o grafo
+  - ao remover os vértices desse conjunto, o grafo se torna desconexo
+- conjunto de corte contendo apenas um vértice são chamados de "pontos de articulação"
+
+#### Conjunto separação de tamanho mínimo (k(G))
+
+- Menor conjunto que desconecta o grafo, denotado por k(G)
+- Para um grafo completo (todos os vértices estão conectados), k(Kn) = n - 1
+  - como todos os vértices estão conectados entre si, só podemos reduzir ao grafo trivial para tornar o grafo desconexo
+
+#### P-Conectividade
+
+- Grafo é p-conexo se p <= k(G) e p >= 1
+  - ou seja, p-conexo é um grafo que tem um conjunto de corte de tamanho no máximo p, não existe um conjunto de corte de tamanho menor que p
+
+#### Conjuntos de caminhos internamente disjuntos
+
+- Conjunto de caminhos que nao se cruzam (no exemplo abaixo, entre A e F)
+  - Caminho 1: A -> C -> E -> G -> F
+  - Caminho 2: A -> B -> H -> F
+  - Caminho 3: A -> J -> I -> F
+
+### Teorema de Menger
+
+- Dado vértices não adjacentes u e v, existe um conjunto de caminhos internamente disjuntos que conecta u e v, e o tamanho desse conjunto é de mesmo tamanho do conjunto de separação de tamanho mínimo.
+  - ou seja, para calcular o tamanho mínimo de um conjunto de separação, basta calcular o tamanho do conjunto de caminhos internamente disjuntos que conecta dois vértices não adjacentes
+
+### Teoremas
+
+- Se um grafo não orientado conexo tem n vértices e m arestas, então ele tem no mínimo n - 1 arestas (m >= n - 1)
+- Se a quantidade de arestas m de um grafo não direcionado é maior n-1 tomado 2 a 2 (m > $\binom{n-1}{2}$), então o grafo é conexo
+- Todo grafo completo tem $\binom{n}{2}$ arestas, sendo $K_{x}$ denominado como grafo completo com x vértices
+
+---
+
+1. Qual a diferença entre um grafo direcional fracamente conexo para um fortemente conexo
+   - Um grafo direcional fracamente conexo é um digrafo que se transformado em um grafo nao direcional, é conexo, já o fortemente conexo é um digrafo que já é conexo (sem necessidade de transformar em um grafo nao direcional)
+
+2. Dado um grafo com 'm' arestas e 'n' vertices, como saber se esse grafo é completo? Ou seja, quantas arestas ele deve possuir?
+    - Para saber se um grafo é completo, basta verificar se ele possui $\binom{n}{2}$ arestas, ou seja, se 'm' é igual a $\binom{n}{2}$
+
+3. O Tour do Cavalo Aberto (Open Knight’s Tour) de um tabuleiro n x n descreve um caminho tal que, dado um espaço inicial no tabuleiro, um cavalo do xadrez poderia navegar por todas os espaços, sem passar duas vezes pelo mesmo espaço. Pode-se montar um grafo G que represente o tour do cavalo, onde cada vértice é um espaço do tabuleiro, e cada aresta representa uma movimentação do cavalo de entre dois vértices
+   1. Pode-se afirmar que G é conexo. Por quê?
+     - O problema do cavalo aberto é um problema de caminho hamiltoniano, ou seja, um caminho que passa por todos os vertices do grafo apenas uma vez. Como na definição do problema, o tabuleiro tem caminhos hamiltonianos para qualquer posição inicial, o grafo G também tem caminhos hamiltonianos, logo, é conexo
+   2. Qual a conectividade de G(k(G))?
+      - (vou responder oq julgo ser) k(G) é o conjunto de separação de tamanho mínimo, ou seja, o conjunto de vertices que, se removidos, desconectam o grafo. Como o G é conexo, |k(G)| >= n - 1 (peidei aqui, mas acho que é isso)
+
