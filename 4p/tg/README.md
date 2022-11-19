@@ -197,6 +197,7 @@
 - Grafo não-euleriano semi-euleriano: grafo que possui um circuito euleriano aberto
   - circuito euleriano aberto ou caminho euleriano: passeio que passa por todas as arestas do grafo apenas uma vez, começando e terminando em vértices diferentes
 - Não euleriano: grafo que não possui um circuito euleriano aberto nem fechado
+- Passeio não euleriano: um passeio fechado que contém cada aresta de G visitada pelo menos uma vez
 
 ### Teorema de Euler
 
@@ -226,9 +227,43 @@
 
 - Um multigrafo é euleriano se e somente se é conexo e todos os vértices tem grau par
 
+---
+
+![dominoEx](images/dominoEx.png)
+
 1. É possível arranjar as peças de dominó em um percurso fechado?
+   - Não é possível pois a primeira peça não tem um correspondente para fechar o percurso
+
 2. Na Modelagem, o que significam os vértices, as arestas e qual problema esta associado?
+   - Vértice: peças do dominó
+   - Arestas: associação entre as peças q tem mesma cabeça ou cauda
+   - Problema: tour euleriano (deve ser possível voltar na mesma peça inicial e percorrer todas as arestas)
 3. Considere um grafo G com um trajeto euleriano. Se o grafo possui um vértice v com grau ímpar, então o trajeto euleriano começa e termina no mesmo vértice?
+   - Não, pois todos os vertices devem ter grau par para que o grafo seja tour euleriano (incia e termina no mesmo vertice)
 4. Dado o grafo G abaixo, ele possui um passeio euleriano?
 
     ![grafoG](images/grafoG.png)
+
+- Possui um tour euleriano, pois todos os vertices tem grau par e o grafo é conexo
+
+## Ciclos Hamiltonianos
+
+Definições
+
+- Grafo hamiltoniano: grafo que possui um circuito hamiltoniano fechado
+  - circuito hamiltoniano: passeio que passa por todos os vértices do grafo apenas uma vez, começando e terminando no mesmo vértice
+
+- Passeio hamiltoniano: um passeio fechado que contém cada vértice de G visitado pelo menos uma vez
+
+---
+
+Perguntas
+
+1. Qual a diferença entre um grafo hamiltoniano para um grafo euleriano?
+   - hamiltoniano: passeio que passa por todos os vértices do grafo apenas uma vez, começando e terminando no mesmo vértice
+   - euleriano: passeio que passa por todas as arestas do grafo apenas uma vez, começando e terminando no mesmo vértice
+
+2. Retirando os vértices 6, 12 e 7 da figura apresentada, é possível ter
+um ciclo hamiltoniano? Se sim, mostre o mesmo.
+
+    - ![hamiltonianoEx](images/hamiltonianoEx.png)
