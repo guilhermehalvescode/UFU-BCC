@@ -182,3 +182,53 @@
    2. Qual a conectividade de G(k(G))?
       - (vou responder oq julgo ser) k(G) é o conjunto de separação de tamanho mínimo, ou seja, o conjunto de vertices que, se removidos, desconectam o grafo. Como o G é conexo, |k(G)| >= n - 1 (peidei aqui, mas acho que é isso)
 
+## Passeios Eulerianos
+
+> Uma definição importante (não escrita antes)
+
+- Multigrafo: grafo que pode ter mais de uma aresta entre dois vértices
+
+---
+
+### Definições
+
+- Grafo euleriano: grafo que possui um circuito euleriano fechado
+  - circuito euleriano: passeio que passa por todas as arestas do grafo apenas uma vez, começando e terminando no mesmo vértice
+- Grafo não-euleriano semi-euleriano: grafo que possui um circuito euleriano aberto
+  - circuito euleriano aberto ou caminho euleriano: passeio que passa por todas as arestas do grafo apenas uma vez, começando e terminando em vértices diferentes
+- Não euleriano: grafo que não possui um circuito euleriano aberto nem fechado
+
+### Teorema de Euler
+
+- Um grafo G é dito euleriano se há um ciclo que passa por todas as arestas do grafo sem repeti-las
+  - esse ciclo é denominado de ciclo euleriano
+
+- Se tivermos um grafo não-euleriano, podemos transformá-lo em um grafo euleriano, adicionando arestas
+  - para isso, basta adicionar arestas entre vértices de grau ímpar, até que todos os vértices tenham grau par
+
+#### Teorema multigrafo
+
+- M multigrafo vai ser euleriano se:
+  - for conexo
+  - e cada vértice de M tem grau par
+
+#### Grafo Atravessável
+
+- Um grafo G é atravessável que tem:
+  - um caminho contendo todas as arestas de M (multigrafo anterior)
+    - esse caminho é euleriano
+
+#### Teorema (Hierholzer)
+
+- Um grafo conectado (conexo) tem um caminho euleriano se e somente se exatamente zero ou dois de seus vértices tem um grau ímpar
+
+#### Teorema de Euler-Hierholzer
+
+- Um multigrafo é euleriano se e somente se é conexo e todos os vértices tem grau par
+
+1. É possível arranjar as peças de dominó em um percurso fechado?
+2. Na Modelagem, o que significam os vértices, as arestas e qual problema esta associado?
+3. Considere um grafo G com um trajeto euleriano. Se o grafo possui um vértice v com grau ímpar, então o trajeto euleriano começa e termina no mesmo vértice?
+4. Dado o grafo G abaixo, ele possui um passeio euleriano?
+
+    ![grafoG](images/grafoG.png)
