@@ -444,6 +444,7 @@ cromático χ′(G) de tal grafo.
 - Coloração de vértices: atribuir cores a cada vértice de um grafo de modo que vértices adjacentes não tenham a mesma cor
 - Coloração própria: um grafo colorido de forma que vértices vizinhos possuem cores distintas
 - k-coloração: define a quantidade mínima de cores para colorir um grafo de maneira própria
+- Partição cromática: conjunto independente de vértices de um grafo que possuem cores distintas
 
 ---
 
@@ -454,3 +455,41 @@ cromático χ′(G) de tal grafo.
   - Cíclico com número par de vértices, χ(G) = 2
   - Cíclico com número ímpar de vértices, χ(G) = 3
   - Grafo completo, χ(G) = n
+
+---
+
+Teoremas
+
+- Dado um clique de tamanho w(G), o número cromático é no mínimo o tamanho do clique
+  - ou seja, o número cromático é maior ou igual ao tamanho do clique máximo (clique máximo é um subgrafo completo, e a coloração dele é a quantidade de vértices do clique)
+
+---
+
+- Grafo crítico
+  - Dado um subgrafo H de G, se χ(H) < χ(G) se G for crítico
+
+---
+
+Perguntas
+
+1. Descreva simplificadamente um algoritmo para coloração de vértices respeitando número cromático em grafos cíclicos
+   - Inicie em um vértice com uma cor e percorra o ciclo colorindo os vértices adjacentes com cores alternadas, se o ciclo tiver um número par de vértices, χ(G) = 2, se o ciclo tiver um número ímpar de vértices, χ(G) = 3
+2. No vértice a seguir, cada vértice representa uma torre de rádio. As arestas indicam que as torres estão a menos de 100 milhas de distância, então o uso de uma mesma frequência entre os vértices das extremidades incorre em interferência. Quantas frequências de rádio são necessárias? Explique como você alcançou este resultado.
+
+    ![torresRadioGrafo](images/torresRadioGrafo.png)
+
+    ![respostaTorresRadio](images/respostaTorresRadio.png)
+
+    - Serão necessárias 3 frequências de rádio, e cheguei nesse resultado colorindo inicialmente os vértices de maior grau, evitando vértices adjacentes com a mesma cor, e assim por diante.
+
+3. Observando o grafo ao lado, qual seria o seu número cromático e uma de suas partições cromáticas
+
+    ![grafoCromatico1](images/grafoCromatico1.png)
+
+    ![respostaGrafoCromatico1](images/respostaGrafoCromatico1.png)
+    - Número cromático = 4
+    - Uma partição cromática = {a, g}
+
+4. Encontre uma possível solução para colorir os estados do mapa do Brasil com apenas quatro cores, de modo que estados com fronteiras comuns tenham cores diferentes.
+
+    ![mapaBrasil](images/mapaBrasil.png)
