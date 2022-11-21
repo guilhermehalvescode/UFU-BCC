@@ -267,3 +267,45 @@ Perguntas
 um ciclo hamiltoniano? Se sim, mostre o mesmo.
 
     - ![hamiltonianoEx](images/hamiltonianoEx.png)
+
+## Emparelhamento ou Acoplamento
+
+Definições
+
+- Grafo bipartido: grafo que pode ser dividido em dois conjuntos disjuntos de vértices, de tal forma que cada aresta conecta um vértice de cada conjunto
+  - grafo bipartido completo: grafo bipartido em que cada vértice de um conjunto é conectado a todos os vértices do outro conjunto
+  - não possui um ciclo de tamanho impar
+- Emparelhamento maximal: emparelhamento que não pode ser aumentado (se aumentar, propriedade de adjacência sera desfeita)
+- Emparelhamento maximo:
+  - emparelhamento maximal que possui o maior número de arestas
+  - ou aqueles que não possuem caminho M-aumentante
+    - M-aumentante: caminho que começa e termina em vértices não emparelhados (vertices livres) e que possui arestas alternadas (um emparelhamento e uma não emparelhada)
+- Emparelhamento perfeito: emparelhamento maximo que possui todos os vertices do grafo
+  - Arestas no emparelhamento perfeito são chamadas de arestas cobertas/permitidas
+  - Arestas fora do emparelhamento são chamadas de arestas não cobertas ou proibidas
+  - So existe em grafo de ordem par e e um emparelhamento contendo contendo n/2 arestas
+- Emparelhamento completo: em um grafo bipartido, todas as arestas de um conjunto são conectadas a todas as arestas do outro conjunto
+  - emparelhamento completo é um emparelhamento perfeito
+
+---
+
+Teoremas
+
+- Se G bipartido, G tem emparelhamento perfeito se, |N(s) >= S|
+  - N(s): conjunto de vizinhos de s
+  - ou seja, grau de cada vértice de S deve ser maior ou igual ao tamanho de S
+
+---
+
+Execicios
+
+- Suponha que existam 4 pessoas, a1, a2, a3 e a4 disponíveis para preencher 6 funções vagas, p1,. . ., p6.
+- As pessoas a1, a2 e a4 são qualificadas para exercer a função p2 ou p5.
+- A pessoa a3 é qualificada para exercer a função p1, p2, p3, p4 ou p6.
+
+1. A questão é: Será possível empregar todas as pessoas de tal forma que cada pessoa desempenhe a função para a qual está qualificada?
+   - Não, o conjunto S = {a1, a2, a3}, tem se que N(S) < |S|, ou seja 2 < 3, o que não permite o emparelhamento completo, deixando um vertice livre
+2. Como representar este problema através de um
+grafo?
+
+  ![emparelhamentoEx2](images/emparelhamentoEx2.png)
