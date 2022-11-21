@@ -309,3 +309,63 @@ Execicios
 grafo?
 
   ![emparelhamentoEx2](images/emparelhamentoEx2.png)
+
+## Coloração de arestas
+
+- Colorir arestas de um grafo de tal forma que nenhuma aresta adjacente tenha a mesma cor
+- Indice cromatico: numero minimo de cores necessárias para colorir o grafo
+  - denotado por χ'(G)
+  - quando um grafo pode ser colorido com k cores, dizemos que o grafo é k-colorivel
+
+### Conceitos (Coloração de arestas)
+
+- delta(G): grau maximo de um vertice de G
+- coloração propria: coloração de arestas em que cada aresta adjacente tem uma cor diferente
+
+### Teoremas (Coloração de arestas)
+
+- Vizing (Dado o numero de vertices N)
+  - Grafos do tipo ciclo
+    - Se N é par, χ'(G) = 2
+    - Se N é impar, χ'(G) = 3
+  - Grafos do tipo Roda (Grafo completo com um vertice isolado)
+    - Se N >= 4, χ'(G) = N-1
+  - Grafos do tipo K-completos (grafo completo com K vertices)
+    - Se N impar, χ'(G) = N
+    - Se N par, χ'(G) = N-1
+- Konig (bipartidos)
+  - Se G bipartido, χ'(G) = grau do vertice de maior grau
+  - ou, se G bipartido, χ'(G) = numero de vertice da partição com maior quantidade de vertices 
+
+### Exercicios (Coloração de arestas)
+
+1. Considerando o grafo G do tipo ciclo abaixo, sabendo que tal grafo
+possui 14 vértices e utilizando o teorema de Vizing, determine o índice
+cromático χ′(G) de tal grafo.
+
+    ![grafoCiclo](images/grafoCiclo.png)
+   - χ'(G) = 2, pois a quantidade de vertices e par
+
+2. Considere agora que um vértice central e adjacente a todos os outros foi adicionado ao grafo ciclo G. Essa alteração fez com que o grafo se tornasse um grafo do tipo roda (Wheel), representado na imagem abaixo. Sabendo que tal grafo possui agora 15 vértices e utilizando o teorema de Vizing, determine o índice cromático χ′(G) deste novo grafo.
+
+    ![grafoRoda](images/grafoRoda.png)
+    - χ'(G) = 14, pois o grafo e de roda e possui 15 vertices
+
+3. Considere o grafo bipartido completo K (6,3) abaixo. Utilizando o teorema de König, determine seu índice cromático χ′(G).
+
+    ![grafoBipartido](images/grafoBipartido.png)
+    - χ'(G) = 6, pois o grafo e bipartido e possui 6 vertices na partição de maior quantidade de vertices
+
+4. Dado o grafo abaixo, responda as seguintes perguntas:
+   1. Este grafo e 2-colorivel proprio?
+      1. Nao, pois não podemos colorir as arestas de forma que cada aresta adjacente tenha uma cor diferente usando apenas duas cores. Pois 4 arestas estão adjacentes entre si, então no minimo precisamos de 4 cores
+   2. Qual seu respectivo indice cromatico?
+      1. X'(G) = 4
+
+    ![grafoKcolorivel](images/grafoKcolorivel.png)
+
+5. Apresentado os conceitos basicos de coloração de arests, assinale V ou F
+   - (f) Um grafo pode ter indice cromatico 4 e ser 3-colorivel proprio
+   - (f) Coloração propria diz a respeito da quantidade minima de cores para se colorir as arestas de um grafo, de modo que duas adjacentes adjacentes não tenham cores iguais
+   - (v) Um grafo pode utilizar mais cores que seu indice cromatico respeitando a coloração propria
+   - (f) Um grafo k-colorido e aquele que pode ser colorido com uma quantidade k + 1 de cores
