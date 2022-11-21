@@ -370,7 +370,7 @@ cromático χ′(G) de tal grafo.
    - (v) Um grafo pode utilizar mais cores que seu indice cromatico respeitando a coloração propria
    - (f) Um grafo k-colorido e aquele que pode ser colorido com uma quantidade k + 1 de cores
 
-## Conjunto independente
+## Conjuntos independentes
 
 - Conjunto de vertices de um grafo tal que nenhum vertice do conjunto é adjacente a outro vertice do conjunto
 - Conjunto independente maximo: conjunto independente de maior tamanho (denotado por carnalidade maxima do grafo as vezes)
@@ -378,7 +378,7 @@ cromático χ′(G) de tal grafo.
 
 ---
 
-### Exercicios (Conjunto independente)
+### Exercicios (Conjuntos independentes)
 
 1. Encontre o conjunto independe maximo do grafo a seguir
 
@@ -399,3 +399,42 @@ cromático χ′(G) de tal grafo.
     v. A cardinalidade maxima do grafo e 3 (v)
 
     - alternativa c
+
+## Cliques
+
+- Definição: subconjunto de vértices tais que cada dois vértices do subconjunto são conectados por uma aresta (subconjunto é um subgrafo completo)
+
+---
+
+### Clique maximal
+
+- clique que não pode ser aumentado com a adição de um outro vértice
+
+### Clique máximo
+
+- clique de maior tamanho (denotado por clique maximo do grafo que detem a maior quantidade de vertices)
+
+> O clique máximo é maximal
+
+### Exercicios (Cliques)
+
+1. Encontre os cliques maximais e o clique máximo da imagem
+    ![grafoClique](images/grafoClique.png)
+    - cliques maximais:
+      - {a, b, f}, {d, e, c}
+      - {b, c, e, f}
+    - clique máximo
+      - {b, c, e, f}
+
+2. Qual a diferença entre conjuntos independentes e cliques? No grafo abaixo cite 2 exemplos de conjuntos independentes e 2 exemplos de cliques
+
+    ![cliqueECi](images/cliqueECi.png)  
+
+   - Conjuntos independentes são subconjuntos de vértices que não adjacentes entre si
+   - Cliques são subconjuntos de vértices que todos são adjacentes entre si (um subgrafo completo)
+   - Exemplos de conjuntos independentes:
+     - {g, b, d}
+     - {a, c, e}
+   - Exemplos de cliques:
+     - {c, d}
+     - {a, b}
