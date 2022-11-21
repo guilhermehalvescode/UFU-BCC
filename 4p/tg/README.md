@@ -369,3 +369,33 @@ cromático χ′(G) de tal grafo.
    - (f) Coloração propria diz a respeito da quantidade minima de cores para se colorir as arestas de um grafo, de modo que duas adjacentes adjacentes não tenham cores iguais
    - (v) Um grafo pode utilizar mais cores que seu indice cromatico respeitando a coloração propria
    - (f) Um grafo k-colorido e aquele que pode ser colorido com uma quantidade k + 1 de cores
+
+## Conjunto independente
+
+- Conjunto de vertices de um grafo tal que nenhum vertice do conjunto é adjacente a outro vertice do conjunto
+- Conjunto independente maximo: conjunto independente de maior tamanho (denotado por carnalidade maxima do grafo as vezes)
+- Conjunto independnete maximal: conjunto independente que não pode ser aumentado com adição de um outro vertice, mas não e o cojnunto independente maximo
+
+---
+
+### Exercicios (Conjunto independente)
+
+1. Encontre o conjunto independe maximo do grafo a seguir
+
+    ![grafoConjuntoIndependente](images/grafoConjuntoIndependente.png)
+    - {5, 7, 6, 2}
+2. Marque a alternativa correta
+
+    ![grafoCI1](images/grafoCI1.png)
+
+    i. O conjunto {2, 4, 5} e o conjunto independente maximo do grafo (v)
+
+    ii. O grafo possui 3 conjuntos maximais (f)
+
+    iii. O conjunto {2, 4} e maximal (f)
+
+    iv. O conjunto {1, 3} e maximal (v)
+
+    v. A cardinalidade maxima do grafo e 3 (v)
+
+    - alternativa c
