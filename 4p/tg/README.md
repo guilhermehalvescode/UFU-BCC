@@ -180,7 +180,7 @@
    1. Pode-se afirmar que G é conexo. Por quê?
      - O problema do cavalo aberto é um problema de caminho hamiltoniano, ou seja, um caminho que passa por todos os vertices do grafo apenas uma vez. Como na definição do problema, o tabuleiro tem caminhos hamiltonianos para qualquer posição inicial, o grafo G também tem caminhos hamiltonianos, logo, é conexo
    2. Qual a conectividade de G(k(G))?
-      - (vou responder oq julgo ser) k(G) é o conjunto de separação de tamanho mínimo, ou seja, o conjunto de vertices que, se removidos, desconectam o grafo. Como o G é conexo, |k(G)| >= n - 1 (peidei aqui, mas acho que é isso)
+      - 2-conexo, pois o canto do tabuleiro tem apenas dois vizinhos
 
 ## Passeios Eulerianos
 
@@ -308,7 +308,7 @@ Execicios
 2. Como representar este problema através de um
 grafo?
 
-  ![emparelhamentoEx2](images/emparelhamentoEx2.png)
+    ![emparelhamentoEx2](images/emparelhamentoEx2.png)
 
 ## Coloração de arestas
 
@@ -438,3 +438,19 @@ cromático χ′(G) de tal grafo.
    - Exemplos de cliques:
      - {c, d}
      - {a, b}
+
+## Coloração de vértices
+
+- Coloração de vértices: atribuir cores a cada vértice de um grafo de modo que vértices adjacentes não tenham a mesma cor
+- Coloração própria: um grafo colorido de forma que vértices vizinhos possuem cores distintas
+- k-coloração: define a quantidade mínima de cores para colorir um grafo de maneira própria
+
+---
+
+- Número cromático: menor número de cores necessárias para colorir um grafo de maneira própria (denotado por χ(G))
+  - Grafo não possui arestas, χ(G) = 1
+  - Grafo bipartido, χ(G) = 2
+  - Árvores, χ(G) = 2
+  - Cíclico com número par de vértices, χ(G) = 2
+  - Cíclico com número ímpar de vértices, χ(G) = 3
+  - Grafo completo, χ(G) = n
