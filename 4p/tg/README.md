@@ -268,6 +268,13 @@ um ciclo hamiltoniano? Se sim, mostre o mesmo.
 
     - ![hamiltonianoEx](images/hamiltonianoEx.png)
 
+3. Qual a diferença entre o Ciclo Hamiltoniano e os Passeios Euleriano ?
+   - Ciclo Hamiltoniano define um ciclo no grafo que percorre todos os vertices do mesmo sem repetir os mesmos
+   - Passeio Euleriano define um caminho no grafo que percorre todas as arestas uma unica vez, não necessariamente terminando no mesmo vertice de partida
+
+4. Existe um algoritmo que consegue achar o ciclo hamiltoniano com menor peso eficientemente em tempo polinomial? Se sim, como ele funciona ? Se não, é possível achar um algoritmo que se aproxime do resultado por outros métodos?
+   - Não, o problema e considerado como NP dificil, e temos algoritmos que a partir de um ciclo hamiltoniano com peso alto encontra um peso menor
+
 ## Emparelhamento ou Acoplamento
 
 Definições
