@@ -2372,4 +2372,422 @@ Das diversas implementações a mais eficientes possíveis: O(nlogn)
 Problema:
 
 - Custos dos enlaces não são simétricos
-- Custo esta relacionado com a quantidade
+- Custo esta relacionado com a quantidade de tráfego transportado
+- Roda o algoritmo de estado do enlace
+  
+---
+
+Patologia: oscilações possíveis devido ao congestionamento
+
+Soluções:
+
+- os roteadores não executam o algoritmo de roteamento ao mesmo tmepo
+- cada roteador deve variar aleatoriamente o instante em que envia um anúncio do enlace
+
+#### Algoritmo de vetor de distância
+
+- Equação de Bellman-Ford (programação dinâmica) define:
+  - dx(y) := custo do caminho de menor custo de x para y
+  - depois:
+    - dx(y) = minv {c(x, v) + dv(y) | v é vizinho de x}
+    - onde minv assume todos os vizinhos de x
+
+---
+
+![graphAbstraction](images/graphAbstraction.png)
+
+- Nó de origem "u" tem 3 vizinhos: v, w e x
+- O custo do caminho de menor custo do nó v para z, claramente, dv(z) = 5, x = dx(z) = 3 e w = dw(z) = 3
+  - du(z) = min {c(u, v) + dv(z), c(u, w) + dw(z), c(u, x) + dx(z)}
+  - equação B-F diz: min{2 + 5, 1 + 3, 5 + 3} = 4
+
+> nó que alcança mínimo é o próximo salto no caminho mais curto -> tabela de repasse
+
+---
+
+Com o algoritmo cada nó x mantém seguintes dados:
+
+- Dx(y) = estimativa do menor custo de x para y
+- nó x sabe custo de cada vizinho v ligado diretamente: c(x, v)
+- nó x mantém vetor de distância Dx = [Dx(y): y e N] estimativa de x para todos seus custos até os destinos, y, em N
+- Vetor de distância de seus vizinhos para cada vizinho v, então, x mantém
+- Dy = [Dv(y): y e N]
+
+---
+
+ideia básica:
+
+- De tempos em tempos, cada nó envia sua própria estimativa de vetor de distância para seus vizinhos
+- assíncrono
+- quando um nó x recebe nova estimativa DV do vizinho, ele atualiza seu próprio DV usando a equação de B-F:
+  - Dx(y) = minv {c(x, v) + dv(y)} para cada nó y em N
+- Sob condições modestas, naturais, a estimativa Dx(y) converge para o menor custo real dx(y)
+
+---
+
+iterativo, assíncrono: cada iteração local causada por:
+
+- mudança de custo do enlace local
+- mensagem de atualização do DV do vizinho
+
+distribuído:
+
+- cada nó notifica os vizinhos (apenas quando seu DV muda)
+- vizinhos, então, notificam seus vizinhos, se necessário
+
+Cada nó:
+
+![fluxoAlgVetorDist](images/fluxoAlgVetorDist.png)
+
+---
+
+![algoVetorDistanciaExemplo](images/algoVetorDistanciaExemplo.png)
+
+---
+
+Mudança de custo do enlace: Menor valor
+
+> Boas notícias correm rápido
+
+- Nó detecta mudança no custo no enlace local
+- atualiza informação e recalcula Vetor de Distância (VD)
+- Se VD mudar, notifica vizinhos
+
+    ![exemploVetorDistanciaTopologia](images/exemploVetorDistanciaTopologia.png)
+  - no tempo t0, y deteca a mudança do custo do enlace, atualiza seu VD e informa seus vizinhos
+  - no tempo t1, z recebe a atualização de y e atualiza sua tabela (de 5 para 2). Calcula um novo custo mínimo para x e envia seu VD aos vizinhos
+  - no tempo t2, y recebe a atualização de z e atualiza sua tabela de distância
+
+> Menores custo de y não mudam, e daí y não envia qualquer mensagem a z no estado inativo pelo custo do enlace não mudar
+
+---
+
+- mudanças de custo do enlace: apenas Y e Z
+
+![exVetorDistancia1](images/exVetorDistancia1.png)
+
+---
+
+mudanças de custo do enlace:
+
+![exemploVetorDistanciaTopologia1](images/exemploVetorDistanciaTopologia1.png)
+
+- Agora más notícias correm lento - problema da "contagem até o infinito"!
+- Dy(x) = 4, Dy(z) = 1, Dz(y) = 1, Dz(x) = 5
+- Em t0, Y detecta mudança (4 para 60). Novo caminho: Dy(x) = min {60 + 0, 1 + 5} = 6
+- Então, Z dia Y que pode chegar com custo 5 em X - Custo de Z está errado com a atualização realizada
+- Em t1 -> loop de roteamento
+- Tão logo Y tenha calculado novo custo para X, ele informará a Z (Dy(x) = 6) e calcula-se novo custo Dy(x) = min {60 + 0, 1 + 6} = 7
+- Fica em loop desse procedimento até???
+
+---
+
+![exVetorDistancia2](images/exVetorDistancia2.png)
+
+---
+
+mudanças de custo do enlace:
+
+- Seráo necessários 44 iterações antes que o algoritmo estabilize
+- Só quando o caminho via y for maior do que 50, mudará para conexão direta e y fará o caminho via z para chegar em x
+- Se o link fosse de 10000 o que irá acontecer para mudança do enlace
+
+---
+
+Técnica reverso envenenado (poisoned reverse):
+
+- Como resolver o problema do loop?
+- Se Z passa por Y para chegar em X:
+  - Z pode dizer a Y que sua distância (de Z) até X é infinita (de modo que Y não irá construir uma rota para X passando por Z)
+- Em t0, Y atualiza para 60 para X e informa Z, então, Z atualiza como infinito e desloca para conexão direta com custo 50
+- Então, o nó Z diz ao nó Y que sua distância (de Z) até X é infinita
+
+#### Comparação dos algoritmos LS e DV
+
+complexidade da mensagem
+
+- LS: com n nós, E enlaces, O (nE) mensagens enviadas
+- DV: troca apenas entre vizinhos
+  - tempo de convergência varia
+
+velocidade de convergência
+
+- LS: algoritmo O(n²) requer O(nE) mensagem
+  - pode ter oscilações
+- DV: tempo de convergência varia
+  - podem ser loops de roteamento
+  - problema da contagem até o infinito
+
+robustez: o que acontece se roteador der defeito:
+
+- LS:
+  - nó pode anunciar custo do enlace incorreto
+  - cada nó calcula apenas sua própria tabela
+
+- DV:
+  - nó DV pode anunciar custo do caminho incorreto
+  - tabela de cada nó usada por outros
+    - erro se propaga pela rede
+
+#### Roteamento hierárquico
+
+nosso estudo de roteamento até aqui - o ideal:
+
+- todos os roteadores idênticos
+- rede "achatada"
+  - ... não acontece na prática
+
+- escala com 200 milhões de destinos
+- não pode armazenar todos os destinos nas tabelas de roteamento!
+- troca de tabela de roteamento atolaria os enlaces!
+- autonomia administrativa
+- Internet = rede de redes
+- cada administrador de rede pode querer controlar o roteamento em sua própria rede
+
+---
+
+- roteadores agregados em regiões denominadas, "sistemas autônomos" (autonomous systems - AS)
+- roteadores no mesmo AS rodam o mesmo protocolo de roteamento:
+  - protocolo de roteamento "intra-AS" (interno)
+  - roteadores em AS diferentes podem executar protocolo de roteamento intra domínio
+
+roteador de borda
+
+- enlace direto com roteador em outro AS
+
+---
+
+ASes interconectados
+
+![asesInterconectados](images/asesInterconectados.png)
+
+tabela de repasse configurada por algoritmo de roteamento intra e inter-AS
+
+- intra-AS define entradas para destinos internos
+- inter-AS e intra-AS define entradas para destinos externos
+
+---
+
+Tarefa inter-AS
+
+- suponha que roteador no AS1 recebe datagrama destinado para fora do AS1:
+  - roteador deve encaminhar pacote ao roteador de borda, mas qual?
+
+AS1 deve:
+
+1. descobrir quais destinos são alcançáveis por AS2 e quais por AS3
+2. propagar essa informação de acessibilidade a todos os roteadores no AS1
+
+> Tarefa de roteamento do protocolo inter-AS!
+
+---
+
+definindo tabela de repasse no roteador 1d
+
+- suponha que AS1 descubra (pelo protocolo inter-AS) que a sub-rede x é alcançável via AS3 (gateway 1c), mas não via AS2
+- protocolo inter-AS propaga informação de acessibilidade a todos os roteadores internos em seu AS
+- roteador 1d determina prlo roteamento intra-AS informação de que sua interface I está no caminho de menor custo para 1c
+  - instala entrada da tabela de repases com as informações (x, I)
+
+---
+
+Exemplo: escolhendo entre múltiplos ASs
+
+- Agora suponha que o AS1 descubra pelo protocolo inter-AS que a sub-rede x pode ser alcançada por AS3 e por AS2
+- Pode ser alcançado pelo AS2 com 1b ou AS3 com 1c? Essa informação é repassada para 1d. Como resolver isso?
+
+![multiplosASs](images/multiplosASs.png)
+
+---
+
+- Para configurar a tabela de repasse, o roteador 1d deve determinar para qual gateway deve repassar pacotes para destino x.
+- isso também é tarefa do protocolo de roteamento inter-AS
+- roteamento da batata quente (hot-potato routing): envia pacote para o mais próximo dos dois roteadores
+
+![hotPotatoRouting](images/hotPotatoRouting.png)
+
+### Roteamento na Internet
+
+#### Roteamento de Roteamento Intra-AS
+
+- Também conhecido como Interior Gateway Protocols (IGP)
+- Protocolos de roteamento intra-AS mais comuns:
+  - RIP: Routing Information Protocol
+  - OSPF: Open Shortest Path First
+  - IGRP: Interior Gateway Routing Protocol (proprietário da Cisco)
+
+#### RIP (Routing Information Protocol)
+
+Algoritmo de vetor de distância
+
+Incluído na distribuição BSD-UNIX em 1982
+
+Métrica de distância: # de saltos (máx. = 15 saltos)
+
+Do roteador A às sub-redes:
+
+![ripExemplo](images/ripExemplo.png)
+
+| destino | saltos |
+| ------- | ------ |
+| u       | 1      |
+| v       | 2      |
+| w       | 2      |
+| x       | 3      |
+| y       | 3      |
+| z       | 2      |
+
+#### Anúncios RIP
+
+vetores de distância: trocados entre vizinhos a cada 30 s por meio de mensgem de resposta (também conhecida como anúncio)
+
+cada anúncio: lista de até 26 sub-redes de destino dentro do AS (RIP versão 2)
+
+#### RIP: Exemplo
+
+![ripExemplo](images/ripExemplo.png)
+
+#### RIP: falha e recuperação do enlace
+
+- Se nenhum anúncio for ouvido após 180 segundos -> vizinho/enlace declarado "morto"
+  - rotas via vizinho invalidadas
+  - novos anúncios enviados aos vizinhos
+  - vizinhos por sua vez enviam novos anúncios (se não houver tabelas alteradas)
+  - informação de falha do enlace rapidamente se propaga para rede inteira (vizinhos?)
+  - reversão envenenada usada para impedir loops de pingue-pongue (distância infinita = 16 saltos)
+
+#### Processamento de tabela RIP
+
+- tabelas de roteamento RIP controladas por processo em nível de aplicação chamado routed (daemon)
+- anúncios enviados em paotes UDP, repetidos periodicamente
+
+![processamentoTabelaRip](images/processamentoTabelaRip.png)
+
+#### OSPF (Open Shortest Path First)
+
+- "open": publicamente disponível
+- usa algoritmo de Estado de Enlace (Link State- LS)
+  - disseminação de pacotes LS
+  - mapa de topologia em cada nó
+  - cálculo de rota usando algoritmo de Dijkstra
+- anúncio OSPF(HELLO) transporta uma entrada por roteador vizinho
+- anúncios disseminados ao AS inteiro (com inundação)
+  - transportados nas mensagens OSPF diretamente por IP (em vez de TCP ou UDP)
+
+#### Recursos "avançados" do OSPF
+
+- segurança: todas as mensgens OSPF autenticadas (para impedir intrusão maliciosa). Ex. senha
+- múltiplos cmainhos de mesmo custo são permitidos (apenas um caminho no RIP)
+- para cada enlace, múltiplas métricas de custo para diferentes Type of Service (por exemplo, custo de enlace de satélite definido "baixo" para melhor esforço; alto para tempo real)
+- suporte integrado para uni e multicast:
+  - Multicast OSPF (MOSPF) usa mesma base de dados de topologia que o OSPF
+- O protocolo OSPF pode ser hierárquico em grandes domínios
+
+---
+
+hierarquia em dois níveis: área local e backbone
+
+- anúncios de estado do enlace somente na área
+- cada nó tem topologia da área detalhada; somente direção conhecida (caminho mais curto) para as redes em outras áreas
+
+roteadores de borda: "resumem" distâncias às redes na própria área, anunciam para outros roteadores de borda
+
+roteadores de backbone: executam roteamento OSPF limitado ao backbone
+
+roteadores de fronteira: conectam-se a outros AS's
+
+#### BGP (Border Gateway Protocol)
+
+- O padrão de fato
+- O BGP oferece a cada AS um meio de:
+
+1. obter informação de acessibilidade da sub-rede a partir de ASs vizinhos
+2. propagar informação de acessibilidade a todos os roteadores internos ao AS
+3. determinar rotas "boas" para sub-redes com base na informação e política de acessibilidade
+
+- Permite que a sub-rede anuncie sua existência ao resto da Internet: "Estou aqui"
+
+#### Fundamentos do BGP
+
+- pares de roteadores (pares BGP) trocam informações de roteamento nas conexões TCP semipermanentes: sessões BGP (porta 179)
+- quando AS2 anuncia um prefixo para AS1
+  - AS2 promete que repassará datagramas para esse prefixo
+  - AS2 pode agregar prefixos em seu anúncio
+
+![fundamentosBgp](images/fundamentosBgp.png)
+
+#### Distribuindo informações de atingibilidade
+
+- Usando sessão eBGP entre 3a e 1c, AS3 envia informação de atingibilidade do prefixo a AS1
+  - O roteador 1c pode então usar iBGP para distribuir nova informação de prefixo a todos os roteadores em AS1
+  - O roteador 1b pode então reanunciar nova informação de atingibilidade para AS2 por sessão BGP 1b-para-2a
+- Se um roteador descobre novo prefixo, ele cria entrada para prefixo em sua tabela de repasse
+
+![fundamentosBgp](images/fundamentosBgp.png)
+
+#### Atributos de caminho & rotas BGP
+
+- prefixo anunciado inclui atributos BGP
+  - prefixo + atributos = "rota"
+- dois atributos importantes:
+  - AS-PATH: contém ASs através dos quais o anúncio do prefixo passou. Por exemplo: AS 67 e AS 17
+  - NEXT-HOP: indica o roteador específico do AS interno para AS do próximo salto (podem ser múltiplos enlaces para AS atual até AS do próximo salto)
+- Quanto o roteador de borda recebe anúncio de rota, usa política de importação para aceitar/declinar a divulgação de uma informação
+
+#### Seleção de rota BGP
+
+- roteador pode aprender sobre mais de 1 rota para algum prefixo
+- Então, roteador deve selecionar rota
+- Regras de eliminação:
+  1. atributo do valor preferência local: decisão política
+  2. AS-PATH mais curto
+  3. roteador NEXT-HOP mais próximo: roteamento batata quente
+  4. critérios adicionais
+
+#### Mensagens BGP
+
+- Mensagens BGP trocadas usando TCP
+- Mensagens BGP:
+  - OPEN: abre conexão TCP com par e autentica remetente
+  - UPDATE: anuncia novo caminho (ou retira antigo)
+  - KEEPALIVE: mantém conexão viva na ausência de UPDATES
+    - também envia ACK para solicitação OPEN
+  - NOTIFICATION: informa erros na msg anterior; também usada para fechar conexão
+
+#### Política de roteamento BGP
+
+![bgpRouting](images/bgpRouting.png)
+
+- A, B, C são redes de provedor
+- X, W, Y são clientes (de redes de provedor)
+- X é dual-homed: conectada a duas redes (controle de divulgação de rotas)
+  - O cliente X não quer rotear a partir de B por meio de X para C
+  - logo, X não anunciará a B uma rota para C
+
+---
+
+![bgpRouting](images/bgpRouting.png)
+
+- A anuncia caminho AW para B
+- B anunca caminho BAW para X
+- B deve anunciar caminho BAW para C?
+  - de forma alguma!
+  - B não recebe "retorno" para roteamento CBAW
+  - B quer forçar C a rotear para W por meio de A
+  - B deve rotear apenas para/de seus clientes
+
+#### Por que roteamento intra e inter-AS diferente?
+
+política:
+
+- inter-AS: admin deseja controle sobre como seu tráfego é roteado, quem roteia através de sua rede
+- intra-AS: único admin, de modo que nenhuma decisão política é necessária
+
+escala:
+
+- roteamento hierárquico salva tamanho de tabela, tráfego de atualização reduzido
+
+desempenho:
+
+- intra-AS: pode focalizar no desempenho
+- inter-AS: política pode dominar sobre desempenho
