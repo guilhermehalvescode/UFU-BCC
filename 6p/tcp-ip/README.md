@@ -1526,7 +1526,7 @@ Gerenciamento de energia
   - prejuizos de atraso para trafego em tempo real
   - Largura de banda limitada de enlaces sem fio
 
-## Camada de Rede: Parte 1
+## Camada de Rede
 
 - Objetivos da camada de rede:
 - Entender os principios por tras dos serviços da camada de rede:
@@ -2791,3 +2791,148 @@ desempenho:
 
 - intra-AS: pode focalizar no desempenho
 - inter-AS: política pode dominar sobre desempenho
+
+## Camada Transporte: Parte 1
+
+entender os princípios dos serviços da camada de transporte
+
+- multiplexação/demultiplexação
+- transferência de dados confiável
+- controle de fluxo
+- controle de congestionamento
+
+aprender sobre os protocolos da camada de transporte na Internet:
+
+- UDP: transporte sem conexão
+- TCP: transporte orientado a conexão
+- controle de congestionamento TCP
+
+---
+
+### Serviços e protocolos de transporte
+
+- Oferece a comunicação lógica entre processos de aplicação rodando em hosts diferentes
+- Protocolos de transporte rodam em sistemas finais:
+  - Remetente: divide as msgs da aplicação em segmentos, passa à camada de rede;
+  - Destinatário: remonta os segmentos em msgs, passa à camada de aplicação
+- Há mais de um protocol ode transporte disponível às aplicações
+  - Internet: UDP e TCP
+
+#### Camada de transporte versus rede
+
+- Camada de rede: comunicação lógica entre hospedeiros
+- Camada de transporte: comunicação lógica entre processos
+  - amplia os serviços da camada de rede
+
+#### Protocolos da camada de transporte da Internet
+
+- Remessa confiável e em ordem (TCP)
+  - controle de congestionamento
+  - controle de fluxo
+  - estabelecimento da conexão
+- Remessa não confiável e desordenada: UDP
+  - extensão sem luxo do IP pelo "melhor esforço"
+
+- serviços não disponíveis:
+  - garantias de atraso
+  - garantias de largura de banda
+
+### Multiplexação e demultiplexação
+
+- Demultiplexação no destinatário: entregando os segmentos recebidos ao socket correto
+- Multiplexação no remetente: Colhendo dados de múltiplos sockets, envelopando dados com cabeçalho (usados depois para multiplexação)
+
+![muxDemuxTransporte](images/muxDemuxTransporte.png)
+
+#### Como funciona a demultiplexação
+
+- hospedeiro recebe datagramas IP
+  - cada datagrama tem endereço IP de origem, endereço IP de destino
+  - cada datagrama carrega 1 segmento da camada de transporte
+  - cada segmento tem número de porta de origem, destino
+- hospedeiro usa endereços IP e números de porta para direcionar segmento ao socket apropriado
+
+![demuxDatagrama](images/demuxDatagrama.png)
+
+#### Demultiplexação não orientada para conexão
+
+- cria sockets com números de porta:
+  - DatragramSocket mySocket1 = new DatagramSocket(12534);
+  - DatragramSocket mySocket2 = new DatagramSocket(12535);
+- socket UDP identificado por tupla de dois elementos:
+  - (endereço IP destino, número porta destino)
+- quando hospedeiro recebe segmento UDP:
+  - verifica número de porta de destino no segmento
+  - direciona segmento UDP para socket com esse número de porta
+
+#### Exemplo de multi/demultiplexação
+
+![exemploMultiDemultiplexacao](images/exemploMultiDemultiplexacao.png)
+
+#### Demultiplexação orientada para conexão
+
+- socket TCP identificado por tupla de quatro elementos:
+  - (endereço IP origem, número porta origem, endereço IP destino, número porta destino)
+- hospeiro destinatário
+- usa todos os quatro valores para direcionar segmento ao socket apropriado
+- hospedeiro servidor
+- pode admitir muitos sockets TCP simultâneos:
+  - cada socket identificado usa a própria tupla de 4
+- servidores Web têm diferentes sockets para cada clientes conectando
+
+#### Demultiplexação: orientado a conexão
+
+![demultiplexacaoOrientadaAConexao](images/demultiplexacaoOrientadaAConexao.png)
+
+#### Serviços e Protocolos de Transporte
+
+![servicosEProtocolosDeTransporte](images/servicosEProtocolosDeTransporte.png)
+
+### Transporte não orientado para conexão: UDP
+
+- UDP: User Datagram Protocol
+- Protocolo de transporte da Internet "sem luxo" e básico
+- Serviço de "melhor esforço", segmentos UDP podem ser:
+  - Perdidos
+  - entregues à aplicação fora de ordem
+- Sem conexão:
+  - sem handshaking entre remetente e destinatário UDP
+  - cada segmento UDP tratado independente dos outros
+- Por que existe um UDP?
+  - sem estabelecimento de conexão (que pode gerar atraso)
+  - simples: sem estado de conexão no remetentes, destinatário
+  - cabeçalho de segmento pequeno
+  - sem controle de congestionamento: UDP pode transmitir o mais rápido possível
+
+#### UDP: mais
+
+- normalmente usado para streaming de aplicações de multimídia:
+  - tolerante a perdas
+  - sensível à taxa
+- outros usos do protocolo UDP
+  - Domain Name System - DNS
+  - Simples Network Management Protocol - SNMP
+  - RIP
+- Transferência confiável por UDP: aumenta confiabilidade na camada de aplicação
+  - recuperação de erro específica da aplicação
+
+![udpFormat](images/udpFormat.png)
+
+#### Soma de verificação UDP
+
+- objetivo: detectar "erros" (por exemplo: bits invertidos) no segmento transmitido
+- remetente:
+  - trata contéudo de segmento como sequência de 16 bits
+  - soma de verificação (checksum): adição (soma por complemento de 1) do conteúdo do segmento
+- remetente coloca valor da soma de verificação no campo de soma de verificação UDP
+- destinatário:
+  - calcula soma de verificação do segmento recebido
+  - verifica se a soma de verificação claculada igual ao valor do comapo de soma de verificação:
+    - Não - erro detectado
+    - Sim - nenhum erro detectado
+
+#### Internet checksum
+
+Ex. adicionar dois inteiros de 16 bits
+
+![internetChecksum](images/internetChecksum.png)
