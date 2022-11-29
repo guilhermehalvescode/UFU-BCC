@@ -78,7 +78,7 @@ Portanto todo nó em um grafo está em um único bloco, e este grafo é a união
 
 1. Qualquer ciclo é um subgrafo conexo sem um vertice de corte (dai vem sua maximidade), logo é um bloco.
    1. [DESENHAR UM CICLO E REMOVER UM VERTICE]
-2. Considerando um corte no grafo, com os vértices $xy \subset B$, sendo $B$ um bloco
+2. Considerando um corte no grafo, com a aresta $xy \subset B$, sendo $B$ um bloco
    1. pela maximidade do bloco, o grafo não possuí um $B$-caminho no grafo, logo todo caminho entre $x$ e $y$ passa por $B$, então se eu cortar um caminho em $B$ que separa $x$ e $y$, também corta o caminho no grafo em que esta contido
 
 > Logo blocos são para a 2-conectividade o que componentes conexas são para a conectividade.
