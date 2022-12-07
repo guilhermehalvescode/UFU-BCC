@@ -1,0 +1,8 @@
+/Função Objetivo/
+Digite a quantidade de variaveis da equacao: Digite o coeficiente na variavel (0): Digite o coeficiente na variavel (1): Digite a quantidade de restricoes: /Restricao 0/
+Digite a quantidade de variaveis da equacao: Digite o coeficiente na variavel (0): Digite o coeficiente na variavel (1): /Restricao 1/
+Digite a quantidade de variaveis da equacao: Digite o coeficiente na variavel (0): Digite o coeficiente na variavel (1): /Funcao Objetivo/
+2.000000x_0 + 3.000000x_1
+/2 Restricoes/
+(-2.000000x_0) + (-3.000000x_1)
+5.000000x_0 + (-6.000000x_1)

@@ -935,3 +935,6 @@ function MIN-VALUE(state, a, b) returns a utility value v
 - Possui regras ligando as sequências de percepções as ações
 
 ![wumpusLpo](images/wumpusLpo.png)
+
+## Probabilidade e Estatistica
+

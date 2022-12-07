@@ -1,70 +1,67 @@
 #include <bits/stdc++.h>
-#include "../utils/Polinomio.h"
+#include "../utils/Equacao.h"
 
 using namespace std;
 
-Polinomio lerPolinomio()
+Equacao lerEquacao()
 {
   int n, coef;
-  cout << "Digite o grau da função: ";
+  cout << "Digite a quantidade de variaveis da equacao: ";
   cin >> n;
 
-  Polinomio pol = Polinomio(n);
+  Equacao eq = Equacao(n);
 
-  for (int i = 0; i <= n; i++)
+  for (int i = 0; i < n; i++)
   {
-    cout << "Digite o coeficiente no grau (" << i << "): ";
+    cout << "Digite o coeficiente na variavel (" << i << "): ";
     cin >> coef;
-    pol.defineCoeficiente(coef, i);
+    eq.defineCoeficiente(coef, i);
   }
 
-  return pol;
+  return eq;
 }
 
-Polinomio lerFuncaoObjetivo()
+Equacao lerFuncaoObjetivo()
 {
   cout << "/Função Objetivo/" << endl;
-  return lerPolinomio();
+  return lerEquacao();
 }
 
-Polinomio *lerRestricoes()
+vector<Equacao> lerRestricoes()
 {
   int n, coef;
   cout << "Digite a quantidade de restricoes: ";
   cin >> n;
 
-  Polinomio *restricoes = (Polinomio *)malloc(sizeof(Polinomio) * n);
-
-  if (!restricoes)
-    return NULL;
+  vector<Equacao> restricoes;
 
   for (int i = 0; i < n; i++)
   {
-    cout << "/Restricao " << i << "/";
-    restricoes[i] = lerPolinomio();
+    cout << "/Restricao " << i << "/" << endl;
+    restricoes.push_back(lerEquacao());
   }
 
   return restricoes;
 }
 
-void mostrarNormalizacao(Polinomio funcObj, Polinomio *restricoes, int qntRestricoes)
+void mostrarNormalizacao(Equacao funcObj, vector<Equacao> restricoes)
 {
   cout << "/Funcao Objetivo/" << endl;
-  cout << funcObj.toString();
+  cout << funcObj.toString() << endl;
 
-  cout << "/" << qntRestricoes << " Restricoes/" << endl;
-  for (int i = 0; i < qntRestricoes; i++)
+  cout << "/" << restricoes.size() << " Restricoes/" << endl;
+  for (int i = 0; i < restricoes.size(); i++)
   {
-    cout << restricoes->toString();
+    cout << restricoes[i].toString() << endl;
   }
 }
+
 int main()
 {
+  Equacao funcObj = lerFuncaoObjetivo();
 
-  Polinomio funcObj = lerFuncaoObjetivo();
+  vector<Equacao> restricoes = lerRestricoes();
 
-  Polinomio *restricoes = lerRestricoes();
-
-  mostrarNormalizacao(funcObj, restricoes, qntRestricoes);
+  mostrarNormalizacao(funcObj, restricoes);
   return 0;
 }
