@@ -1,8 +1,22 @@
 /Função Objetivo/
-Digite a quantidade de variaveis da equacao: Digite o coeficiente na variavel (0): Digite o coeficiente na variavel (1): Digite a quantidade de restricoes: /Restricao 0/
-Digite a quantidade de variaveis da equacao: Digite o coeficiente na variavel (0): Digite o coeficiente na variavel (1): /Restricao 1/
-Digite a quantidade de variaveis da equacao: Digite o coeficiente na variavel (0): Digite o coeficiente na variavel (1): /Funcao Objetivo/
-2.000000x_0 + 3.000000x_1
+Digite a quantidade de variaveis da equacao: Digite o coeficiente na variavel (0): defini: 0 2
+Digite o coeficiente na variavel (1): defini: 1 3
+Digite a quantidade de restricoes: /Restricao 0/
+Digite a quantidade de variaveis da inequacao: Digite o tipo de inequacao (>, <, =): Digite o coeficiente na variavel (0): defini: 0 -2
+Digite o coeficiente na variavel (1): defini: 1 -3
+Digite o termo independente: /Restricao 1/
+Digite a quantidade de variaveis da inequacao: Digite o tipo de inequacao (>, <, =): Digite o coeficiente na variavel (0): defini: 0 5
+Digite o coeficiente na variavel (1): defini: 1 -6
+Digite o termo independente: defini: 2 1
+defini: 2 1.79769e+308
+defini: 3 -1
+defini: 3 0
+4
+1
+defini: 4 1
+defini: 4 1.79769e+308
+/Funcao Objetivo/
+2.000000x_0 + 3.000000x_1 + Mx_2 + 0.000000x_3 + Mx_4 = z
 /2 Restricoes/
-(-2.000000x_0) + (-3.000000x_1)
-5.000000x_0 + (-6.000000x_1)
+(-2.000000x_0) + (-3.000000x_1) + 1.000000x_2 + 0.000000x_3 + 0.000000x_4 = 3.000000
+5.000000x_0 + (-6.000000x_1) + 0.000000x_2 + (-1.000000x_3) + 1.000000x_4 = 19.000000
