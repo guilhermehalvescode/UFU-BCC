@@ -1,12 +1,13 @@
-#include <bits/stdc++.h>
 #include "../utils/Equacao.h"
 #include "../utils/Inequacao.h"
+#include "../utils/Simplex.h"
 
 using namespace std;
 
 Inequacao lerInequacaoSemTermoIndependente()
 {
-  int n, coef;
+  int n;
+  double coef;
   char tipoEntrada;
   SimbolosDesigualdade tipo;
   cout << "Digite a quantidade de variaveis da inequacao: ";
@@ -30,7 +31,8 @@ Inequacao lerInequacaoSemTermoIndependente()
 
 Equacao lerEquacaoSemTermoIndependente()
 {
-  int n, coef;
+  int n;
+  double coef;
   cout << "Digite a quantidade de variaveis da equacao: ";
   cin >> n;
 
@@ -93,10 +95,12 @@ vector<Inequacao> lerRestricoes()
   return restricoes;
 }
 
-void mostrarNormalizacao(Equacao funcaoObjetivo, vector<Inequacao> restricoes)
+void mostrarNormalizacao(Simplex sp)
 {
-  cout << "/Funcao Objetivo/" << endl;
-  cout << funcaoObjetivo.toString() << endl;
+  vector<Inequacao> restricoes = sp.inequacoes;
+
+  cout << "/Funcao Objetivo/" << (sp.tipo == TipoOtimizacao::MAX ? "MAX" : "MIN") << endl;
+  cout << (*sp.funcaoObjetivo).toString() << endl;
 
   cout << "/" << restricoes.size() << " Restricoes/" << endl;
   for (int i = 0; i < restricoes.size(); i++)
@@ -105,8 +109,11 @@ void mostrarNormalizacao(Equacao funcaoObjetivo, vector<Inequacao> restricoes)
   }
 }
 
-void normalizaParaSimplex(Equacao funcaoObjetivo, vector<Inequacao> restricoes, bool ehMaximizacao)
+Simplex normalizaParaSimplex(Simplex sp)
 {
+  vector<Inequacao> restricoes = sp.inequacoes;
+  TipoOtimizacao tipo = sp.tipo;
+
   unsigned int qntVariaveis = 0;
 
   for (int i = 0; i < restricoes.size(); i++)
@@ -118,13 +125,11 @@ void normalizaParaSimplex(Equacao funcaoObjetivo, vector<Inequacao> restricoes, 
 
       // variavel de excesso
       restricoes[i].defineCoeficiente(-1, indiceInicial);
-      funcaoObjetivo.adicionaCoeficiente(-0);
+      (*sp.funcaoObjetivo).adicionaCoeficiente(-0);
 
       // variavel artificial
-      cout << restricoes[i].coeficientes.size() << endl;
-      cout << qntVariaveis << endl;
       restricoes[i].defineCoeficiente(1, indiceInicial + 1);
-      funcaoObjetivo.adicionaCoeficiente(ehMaximizacao ? DBL_MIN : DBL_MAX);
+      (*sp.funcaoObjetivo).adicionaCoeficiente(tipo == TipoOtimizacao::MAX ? DBL_MIN : DBL_MAX);
 
       qntVariaveis += 2;
     }
@@ -132,14 +137,14 @@ void normalizaParaSimplex(Equacao funcaoObjetivo, vector<Inequacao> restricoes, 
     {
       // variavel de folga
       restricoes[i].defineCoeficiente(1, restricoes[i].coeficientes.size() + qntVariaveis);
-      funcaoObjetivo.adicionaCoeficiente(0);
+      (*sp.funcaoObjetivo).adicionaCoeficiente(0);
       qntVariaveis++;
     }
     else
     {
       // variavel artificial
       restricoes[i].defineCoeficiente(1, restricoes[i].coeficientes.size() + qntVariaveis);
-      funcaoObjetivo.adicionaCoeficiente(ehMaximizacao ? DBL_MIN : DBL_MAX);
+      (*sp.funcaoObjetivo).adicionaCoeficiente(tipo == TipoOtimizacao::MAX ? DBL_MIN : DBL_MAX);
       qntVariaveis++;
     }
 
@@ -149,10 +154,20 @@ void normalizaParaSimplex(Equacao funcaoObjetivo, vector<Inequacao> restricoes, 
 
   for (int i = 0; i < restricoes.size(); i++)
   {
-    restricoes[i].coeficientes.resize(funcaoObjetivo.coeficientes.size());
+    restricoes[i].coeficientes.resize((*sp.funcaoObjetivo).coeficientes.size());
   }
 
-  mostrarNormalizacao(funcaoObjetivo, restricoes);
+  return Simplex(sp.funcaoObjetivo, restricoes, tipo);
+}
+
+TipoOtimizacao lerTipoOtimizacao()
+{
+  TipoOtimizacao tipo;
+  int tipoLido;
+  cout << "Digite o tipo de otimizacao (MIN = 0, MAX = 1): ";
+  cin >> tipoLido;
+
+  return static_cast<TipoOtimizacao>(tipoLido);
 }
 
 int main()
@@ -161,7 +176,12 @@ int main()
 
   vector<Inequacao> restricoes = lerRestricoes();
 
-  normalizaParaSimplex(funcaoObjetivo, restricoes, false);
+  TipoOtimizacao tipo = lerTipoOtimizacao();
 
+  Simplex sp = Simplex(&funcaoObjetivo, restricoes, tipo);
+
+  sp = normalizaParaSimplex(sp);
+
+  mostrarNormalizacao(sp);
   return 0;
 }

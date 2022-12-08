@@ -1,3 +1,6 @@
+#ifndef Inequacao_H
+#define Inequacao_H
+
 #include "./Equacao.h"
 
 enum SimbolosDesigualdade
@@ -26,3 +29,5 @@ public:
     return simbolo;
   }
 };
+
+#endif

@@ -20,7 +20,6 @@ public:
   {
     if (indiceVariavel >= this->coeficientes.size())
       this->coeficientes.resize(indiceVariavel + 1, 0.0);
-    cout << "defini: " << indiceVariavel << " " << valor << endl;
     this->coeficientes[indiceVariavel] = valor;
   }
 
