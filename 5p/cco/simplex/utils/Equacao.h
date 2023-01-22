@@ -33,6 +33,30 @@ public:
     this->termoIndependente = termoIndependente;
   }
 
+  int achaColunaTermoMaisNegativo()
+  {
+    int indiceMaisNegativo = 0;
+    double maisNegativo = this->coeficientes[indiceMaisNegativo];
+
+    for (size_t i = 1; i < this->coeficientes.size(); i++)
+    {
+      if (this->coeficientes[i] < maisNegativo)
+      {
+        maisNegativo = this->coeficientes[i];
+        indiceMaisNegativo = i;
+      }
+    }
+
+    return indiceMaisNegativo;
+  }
+
+  void dividePor(double item)
+  {
+    for (size_t i = 0; i < this->coeficientes.size(); i++)
+      this->coeficientes[i] /= item;
+    this->termoIndependente /= item;
+  }
+
   string toString()
   {
     string to;

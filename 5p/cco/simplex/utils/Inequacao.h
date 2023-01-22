@@ -6,7 +6,6 @@
 enum SimbolosDesigualdade
 {
   Menor = '<',
-  Maior = '>',
   Nenhum = '='
 };
 

@@ -1,6 +1,7 @@
-#include "../utils/Equacao.h"
-#include "../utils/Inequacao.h"
-#include "../utils/Simplex.h"
+#include "./utils/Equacao.h"
+#include "./utils/Inequacao.h"
+#include "./utils/Simplex.h"
+#include "./utils/QuadroSimplex.h"
 
 using namespace std;
 
@@ -13,7 +14,7 @@ Inequacao lerInequacaoSemTermoIndependente()
   cout << "Digite a quantidade de variaveis da inequacao: ";
   cin >> n;
 
-  cout << "Digite o tipo de inequacao (>, <, =): ";
+  cout << "Digite o tipo de inequacao (<, =): ";
   cin >> tipoEntrada;
 
   tipo = static_cast<SimbolosDesigualdade>(tipoEntrada);
@@ -119,32 +120,11 @@ Simplex normalizaParaSimplex(Simplex sp)
   for (int i = 0; i < restricoes.size(); i++)
   {
 
-    if (restricoes[i].tipo == SimbolosDesigualdade::Maior)
-    {
-      unsigned int indiceInicial = restricoes[i].coeficientes.size() + qntVariaveis;
-
-      // variavel de excesso
-      restricoes[i].defineCoeficiente(-1, indiceInicial);
-      (*sp.funcaoObjetivo).adicionaCoeficiente(-0);
-
-      // variavel artificial
-      restricoes[i].defineCoeficiente(1, indiceInicial + 1);
-      (*sp.funcaoObjetivo).adicionaCoeficiente(tipo == TipoOtimizacao::MAX ? DBL_MIN : DBL_MAX);
-
-      qntVariaveis += 2;
-    }
-    else if (restricoes[i].tipo == SimbolosDesigualdade::Menor)
+    if (restricoes[i].tipo == SimbolosDesigualdade::Menor)
     {
       // variavel de folga
       restricoes[i].defineCoeficiente(1, restricoes[i].coeficientes.size() + qntVariaveis);
       (*sp.funcaoObjetivo).adicionaCoeficiente(0);
-      qntVariaveis++;
-    }
-    else
-    {
-      // variavel artificial
-      restricoes[i].defineCoeficiente(1, restricoes[i].coeficientes.size() + qntVariaveis);
-      (*sp.funcaoObjetivo).adicionaCoeficiente(tipo == TipoOtimizacao::MAX ? DBL_MIN : DBL_MAX);
       qntVariaveis++;
     }
 
@@ -183,5 +163,21 @@ int main()
   sp = normalizaParaSimplex(sp);
 
   mostrarNormalizacao(sp);
+
+  QuadroSimplex quadro(sp);
+
+  quadro.toString();
+
+  quadro.executa();
+
+  quadro.toString();
+
+  cout << "Solução: " << endl;
+
+  for (int i = 0; i < quadro.variaveisSolucao.size(); i++)
+  {
+    cout << quadro.variaveisSolucao[i] << " = " << quadro.coeficientesRestricoes[i].termoIndependente << endl;
+  }
+
   return 0;
 }
