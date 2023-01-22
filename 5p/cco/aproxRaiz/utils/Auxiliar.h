@@ -1,10 +1,10 @@
-#ifndef Aux_H
-#define Aux_H
+#ifndef Auxiliar_H
+#define Auxiliar_H
 
 #include "Polinomio.h"
 #include <math.h>
 
-class Aux
+class Auxiliar
 {
 public:
   static bool testeParada(Polinomio polinomio, double valor, double err, double valorAnterior)
@@ -18,7 +18,7 @@ public:
   }
 
 private:
-  Aux() {}
+  Auxiliar() {}
 };
 
 #endif

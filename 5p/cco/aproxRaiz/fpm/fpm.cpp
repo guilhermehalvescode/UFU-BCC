@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 #include "../utils/Polinomio.h"
-#include "../utils/Aux.h"
+#include "../utils/Auxiliar.h"
 
 using namespace std;
 
@@ -56,9 +56,9 @@ RespostaMetodoNumerico calculaPFM(Polinomio polinomio, double aInical, double bI
   fa = polinomio.calcula(a);
   fb = polinomio.calcula(b);
 
-  x = Aux::calculaXPF(a, b, fa, fb);
+  x = Auxiliar::calculaXPF(a, b, fa, fb);
 
-  while (Aux::testeParada(polinomio, x, err, xAnterior))
+  while (Auxiliar::testeParada(polinomio, x, err, xAnterior))
   {
     if (polinomio.existeRaizNoIntervalo(a, x))
     {
@@ -74,7 +74,7 @@ RespostaMetodoNumerico calculaPFM(Polinomio polinomio, double aInical, double bI
     }
 
     xAnterior = x;
-    x = Aux::calculaXPF(a, b, fa, fb);
+    x = Auxiliar::calculaXPF(a, b, fa, fb);
     iteracoes++;
   }
 

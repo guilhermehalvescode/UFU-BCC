@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 
 #include "../utils/Polinomio.h"
-#include "../utils/Aux.h"
+#include "../utils/Auxiliariliar.h"
 using namespace std;
 
 RespostaMetodoNumerico calculaPorMetodoSecante(Polinomio polinomio, double x0, double x1, double err);
@@ -52,9 +52,9 @@ RespostaMetodoNumerico calculaPorMetodoSecante(Polinomio polinomio, double x1, d
   fx1 = polinomio.calcula(x1);
   fx2 = polinomio.calcula(x2);
 
-  x = Aux::calculaXPF(x1, x2, fx1, fx2);
+  x = Auxiliar::calculaXPF(x1, x2, fx1, fx2);
 
-  while (Aux::testeParada(polinomio, x, err, xAnterior))
+  while (Auxiliar::testeParada(polinomio, x, err, xAnterior))
   {
 
     x1 = x2;
@@ -64,7 +64,7 @@ RespostaMetodoNumerico calculaPorMetodoSecante(Polinomio polinomio, double x1, d
     fx1 = polinomio.calcula(x1);
     fx2 = polinomio.calcula(x2);
 
-    x = Aux::calculaXPF(x1, x2, fx1, fx2);
+    x = Auxiliar::calculaXPF(x1, x2, fx1, fx2);
     resposta.iteracoes++;
   }
 
