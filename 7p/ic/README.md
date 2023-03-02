@@ -4,4 +4,4 @@
 2. Computação Evolutiva
 3. Sistemas Nebulosos
 
-## Introdução
+> Anotações no caderno, professor não permite usar notebook na aula (??????)
