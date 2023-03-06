@@ -149,3 +149,10 @@
   - sincronização de relógios
   - monitoração de falhas, tolerância a falhas e coleta de logs
   - roteamento eficiente
+
+## Socket
+
+- Conexão direta entre dois hosts
+- Definição do protocolo:
+  - Camada 3: AF_INET ou PF_INET - identifica unicamente o host a se conectar
+  - Camada 4: SOCK_STREAM - TCP
