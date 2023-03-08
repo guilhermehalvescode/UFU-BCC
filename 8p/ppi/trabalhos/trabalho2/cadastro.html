@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Site da ABC Health, trazendo + vida">
+    <title>Clinica ABC Health</title>
+</head>
+<body>
+    <header>
+        <h1>
+            Clínica ABC Health - Cadastro
+        </h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="galeria.html">Galeria</a></li>
+            <li><a href="cadastro.html">Cadastro</a></li>
+        </ul>
+    </nav>
+    <main>
+        <form action="cadastraCliente.php" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Dados Pessoais</legend>
+                <div>
+                    <label for="nome">Nome: </label>
+                    <input placeholder="João dos Santos" minlength="2" maxlength="50" autofocus id="nome" type="text" required>
+                </div>
+                <div>
+                    <label for="email">E-mail: </label>
+                    <input id="email" type="email" required>
+                </div>
+                <div>
+                    <label for="cpf">CPF: </label>
+                    <input pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" id="cpf" type="text" required>
+                </div>
+                <div>
+                    <label for="idade">Idade: </label>
+                    <input id="idade" type="number" required>
+                </div>
+                <div>
+                    <label for="tel">Telefone: </label>
+                    <input id="tel" type="tel" required>
+                </div>
+                <div>
+                    <label for="date">Data de nascimento: </label>
+                    <input id="date" type="date">
+                </div>
+                <fieldset>
+                    <legend>Sexo: </legend>
+                    <input id="masc" type="radio" value="m" name="sexo">
+                    <label for="masc">Masculino</label>
+                    <input id="fem" type="radio" value="f" name="sexo">
+                    <label for="fem">Feminino</label>
+                </fieldset>
+                <fieldset>
+                    <legend>Estado civil: </legend>
+                    <input id="solteiro" type="radio" value="s" name="ec">
+                    <label for="solteiro">Solteiro</label>
+                    <input id="casado" type="radio" value="c" name="ec">
+                    <label for="casado">Casado</label>
+                </fieldset>
+                <div>
+                    <label for="rdonly">Code: </label>
+                    <input id="rdonly" type="text" value="4549165" readonly>
+                </div>
+                <div>
+                    <input type="hidden" name="fonte" value="index.html">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Endereço de Entrega</legend>
+                <div>
+                    <label for="cep">CEP: </label>
+                    <input id="cep" type="text" required>
+                </div>
+                <div>
+                    <label for="tlogradouro">Tipo de logradouro: </label>
+                    <select required name="tlogradouro" id="tlogradouro">
+                        <option></option>
+                        <option value="rua">Rua</option>
+                        <option value="av">Avenida</option>
+                        <option value="praca">Praca</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="logra">Logradouro: </label>
+                    <input type="text" id="logra" name="logradouro" required>
+                </div>
+                <div>
+                    <label for="bairro">Bairro: </label>
+                    <input type="text" id="bairro" name="bairro" required>
+                </div>
+                <div>
+                    <label for="cidade">Cidade: </label>
+                    <input type="text" id="cidade" name="cidade" required>
+                </div>
+                <div>
+                    <label for="estado">Estado: </label>
+                    <input type="text" id="estado" name="estado" required>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Informações Adicionais</legend>
+                <fieldset>
+                    <legend>Interesses: </legend>
+                    <input id="filmes" type="checkbox" value="filmes" name="interesses">
+                    <label for="filmes">Filmes</label>
+                    <input id="informatica" type="checkbox" value="informatica" name="interesses">
+                    <label for="informatica">Informática</label>
+                    <input id="games" type="checkbox" value="games" name="interesses">
+                    <label for="games">Games</label>
+                    <input id="livros" type="checkbox" value="livros" name="interesses">
+                    <label for="livros">Livros</label>
+                    <input id="roupas" type="checkbox" value="roupas" name="interesses">
+                    <label for="roupas">Roupas</label>
+                </fieldset>
+                <div>
+                    <label for="compinfo">Informações complementares: </label>
+                    <textarea name="compinfo" id="compinfo" cols="30" rows="10"></textarea>
+                </div>
+                <div>
+                    <label for="imagem">Imagem adicional: </label>
+                    <input accept="image/*" type="file" name="imagem" id="imagem">
+                </div>
+            </fieldset>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </main>
+    <footer>
+        <address>Av. João Naves de Ávila Santa Mônica, Uberlândia</address>
+    </footer>
+</body>
+</html>
