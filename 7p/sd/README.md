@@ -1,6 +1,6 @@
 # Sistemas Distribuídos
 
-## Introdução
+## Revisão
 
 ### Definição
 
@@ -150,9 +150,109 @@
   - monitoração de falhas, tolerância a falhas e coleta de logs
   - roteamento eficiente
 
-## Socket
+### Socket
 
 - Conexão direta entre dois hosts
 - Definição do protocolo:
   - Camada 3: AF_INET ou PF_INET - identifica unicamente o host a se conectar
   - Camada 4: SOCK_STREAM - TCP
+
+### Arquiteturas baseadas em micro serviços
+
+- Partes do sistema são separados em servidores diferentes
+  - autenticação dos usuários
+  - catologo de produtos
+  - serviço de pedidos
+  - carrinho
+
+### Organização do Middleware
+
+- prove algum nível de transparência de distro
+- camada independente do sistema ou aplicação
+- 2 importantes padrões (design patterns)
+  - wrappers (enapsuladores)
+  - interceptors (interceptadores)
+
+#### Wrappers
+
+- interfaces oferecidas por aplicações legadas inadequadas para todas as aplicações
+- Bem mais do transformar interfaces
+  - Ex1: adaptadores de objeto: necessidade de invocar objetos remotos
+  - Ex2: Amazon S3: servidor web é um adaptador para o serviço real
+- sistema com diversos componentes em colaboração
+- o(n²) wrappers para N componentes
+
+---
+
+- Alternativa: Brokers
+  - componente centralizado que manipula acesso entre componentes o(N)
+
+#### Interceptors
+
+- Quebra o fluxo de controle
+- Permite execução de outro código (app specific)
+- melhora gerência do software
+  - transparência
+  - instrumentação
+- Ex
+  - invocação de objeto remoto
+
+---
+
+- software adaptativo - desafios
+  - wrappers e interceptors: adaptam-se a mudanças na mobilidade, QoS na rede, falhas, descarregamento de bateria, etc
+- modificar o sistema on-the-fly
+- abordagem possível: design baseado em componentes
+  - modificável via composição
+  - ex: módulos do sistema operacional
+
+### P2P estruturado
+
+- indexação de informação
+  - cada item é associado a uma chave
+  - chave é o índice para efeitos de localização
+  - geralmente utiliza-se uma função hash
+    - `key(data item) = hash(data item's value)`
+  - sistema P2P: responsável pelo armazenamento dos pares (chave, valor). Exemplo simples: hypercube
+
+#### Chord
+
+- nós estruturados em anel lógico
+- cada nó possui identificador (id) de m bits
+- hash de item gera chave k de tamanho m
+- item de dados com chave k é armazenado no nó com menor identificador id >= k
+  - nó é denominado sucessor da chave k
+- anel é estendido com links de atalho para outros nós
+
+### P2P não-estruturado
+
+- cada nó mantém uma lista ad hoc de vizinhos
+- rede overlay resultante semelhante a um grafo randômico:
+  - borda (u, v) existe com probabilidade P[(u, v)]
+- busca
+  - inundação (flooding)
+    - nó requisitante u envia requisição para d a cada vizinho v
+    - requisição recebida múltiplas vezes é ignorada
+    - nó v busca localmente por d (recursivamente)
+    - pode ser limitado por um ttl
+  - caminhada aleatória (random walk)
+    - nó requisitante u envia requisição para d a um vizinho v escolhido aleatoriamente
+    - se v não tem d, encaminha requisição ao outro v' escolhido aleatoriamente, e assim por diante
+
+### Redes de super peers
+
+- necessidade de quebrar simetria em redes p2p7
+
+> Skype realiza esse procedimento
+
+### Arquitetura Edge-server
+
+- Sistemas em que servidores são posicionados na borda da rede:
+  - fronteiras entre redes da empresa e a internet
+
+### Arquiteturas Híbridas
+
+- bittorrent: busca por arquivo F
+  - pesquisa em um diretório global => retorna arquivo Torrent
+  - arquivo torrent contém referência para tracker
+  - processo P pode ser juntar ao swarm, obter um pedaço (chunk) de graça e trocar o chunk por um outro com um par
