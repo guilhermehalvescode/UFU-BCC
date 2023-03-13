@@ -10,9 +10,6 @@
 
 - Há elementos que não possuem tag de fechamento (fechamento implícito)
   - tag `<img>`
-
-## Estrutura básica
-
 - Inicia com a tag `<!DOCTYPE html>`, que especifica o tipo de documento e sua versão (HTML5)
 - `<html>`: elemento raiz
 - `<head>`: cabeçalho do documento
@@ -177,7 +174,7 @@
 - `<aside>`: conteúdo secundário (barras laterais ao site)
 - `<footer>`: rodapé
 - `<section>`: seção de conteúdo, agrupa conteúdos relacionados
-- `<article>`: conteúdo independente (exibição de conteúdos diferentes entre si) 
+- `<article>`: conteúdo independente (exibição de conteúdos diferentes entre si)
 
 ### Descrição da Página com o Elemento `<meta>`
 
@@ -415,3 +412,227 @@
 - Validação de formulários é feita no lado do cliente
 - Nunca se deve confiar apenas na validação do lado do cliente
 - Servidor deve validar os dados enviados
+
+## CSS - Cascading Style Sheets
+
+- CSS é uma linguagem de estilo
+- preocupa-se com a aparência dos elementos
+
+### Formas de incluir CSS
+
+- Inline
+  - Atributo style de um elemento
+  - uso deve ser evitado
+- Interno
+  - Utiliza o elemento `<style></style>` dentro do `<head>`
+  - Estilos específicos da página, não compartilhados
+- Externo
+  - Utiliza o elemento `<link>` dentro do `<head>`, referenciando um arquivo externo
+  - Várias paginas podem utilizar o mesmo arquivo de estilo
+  - Melhor separação entre conteúdo e estilo (melhor prática)
+
+### Regra, Seletores e Propriedades
+
+- Regra: conjunto de propriedades
+- Seletores: define quais elementos serão afetados pela regra
+- Propriedades: define o estilo dos elementos selecionados
+
+---
+
+- Agrupando seletores
+  - `h1, h2, h3 { color: red; }`
+
+### Seletores
+
+#### ID (#idDoElemento)
+
+- Seleciona um elemento com base no seu ID
+- Exemplo: `#titulo { color: red; }`
+
+#### Filho (x > y)
+
+- Seleciona um elemento filho de outro elemento
+
+#### Descedente (x y)
+
+- Afeta os elementos `<y>` que estão dentro de `<x>`
+
+#### Irmão Adjacente (x + y)
+
+- Seleciona o elemento `<y>` que está imediatamente após o elemento `<x>`
+
+#### Irmão Geral (x ~ y)
+
+- Seleciona todos os elementos `<y>` que estão após o elemento `<x>`
+
+#### Atributo
+
+- Seleciona elementos com base em um atributo do html
+
+#### Classe (.classeDoElemento)
+
+- Seleciona elementos com base em uma classe
+- Exemplo: `.titulo { color: red; }`
+
+#### x.classeDoElemento
+
+- Seleciona elementos com base em uma classe e no nome do elemento
+- Exemplo: `h1.titulo { color: red; }`
+
+#### Múltiplas Classes
+
+- Seleciona elementos com base em múltiplas classes
+- Exemplo: `.titulo.vermelho { color: red; }`
+
+### Propriedades CSS
+
+#### Ajuste de fonte
+
+- font-family: define a fonte do texto
+  - exemplo: `font-family: Arial, Helvetica, sans-serif;`
+- font-style: define o estilo da fonte
+  - exemplo: `font-style: italic;`
+- font-size: define o tamanho da fonte
+  - exemplo: `font-size: 12px;`
+- font-weight: define a espessura da fonte
+  - exemplo: `font-weight: bold;`
+- font-variant: define a variação da fonte
+  - exemplo: `font-variant: small-caps;`
+- font-strecht: define a esticagem da fonte
+  - exemplo: `font-strecht: condensed;`
+- line-height: define a altura da linha
+  - exemplo: `line-height: 1.5;`
+
+#### Ajuste de texto
+
+- text-align: define o alinhamento do texto
+  - exemplo: `text-align: center;`
+- text-decoration: define a decoração do texto
+  - exemplo: `text-decoration: underline;`
+- text-indent: define a indentação do texto
+  - exemplo: `text-indent: 50px;`
+- text-transform: define a transformação do texto
+  - exemplo: `text-transform: uppercase;`
+- vertical-align: define a alinhamento vertical do texto
+  - exemplo: `vertical-align: middle;`
+- color: define a cor do texto
+  - exemplo: `color: #ff0000;`
+
+#### Ajuste de cor
+
+- Utiliza a notação RGB
+  - `rgb(red, green, blue)`
+  - `rgb(255, 0, 0)`
+- também pode utilizar a notação hexadecimal
+  - `#ff0000`
+- Cor HSL(Hue, Saturation, Lightness)
+  - hsl(120, 100%, 50%)
+
+#### Tamanho de Fonte
+
+- Valor absoluto
+  - Valor em pixel (px)
+  - Valor em pontos (pt)
+  - Valor em polegadas (in)
+  - Valor em centímetros (cm)
+  - Valor em milímetros (mm)
+  - Palavras chave: xx-small, x-small, small, medium, large, x-large, xx-large
+- Valor relativo
+  - pode depender do tamanho da fonte do elemento pai
+  - exemplos: em, rem, %, larger, smaller
+
+---
+
+- Tamanho relativo em
+  - relativo ao tamanho da fonte do elemento pai
+  - 2em = 2 vezes o tamanho da fonte do elemento pai
+- Tamanho relativo rem
+  - relativo ao tamanho da fonte do elemento raiz (html)
+- Outros relativos
+  - larger, smaller, %
+  - relativo ao tamanho da fonte do elemento pai
+
+#### Propriedade font
+
+- font: shorthand para as propriedades font-family, font-size, font-style, font-variant, font-weight e line-height
+  - exemplo: `font: italic small-caps bold 12px/30px Georgia, serif;`
+
+#### Ajuste de Fundo
+
+- background-color: define a cor de fundo
+  - exemplo: `background-color: #ff0000;`
+- background-image: define a imagem de fundo
+  - exemplo: `background-image: url("imagem.jpg");`
+- background-repeat: define a repetição da imagem de fundo
+  - exemplo: `background-repeat: no-repeat;`
+- background-size: define o tamanho da imagem de fundo
+  - exemplo: `background-size: cover;`
+- background-position: define a posição da imagem de fundo
+  - exemplo: `background-position: center;`
+- background-attachment: define o comportamento da imagem de fundo
+  - exemplo: `background-attachment: fixed;`
+
+#### Contéudo, Padding, Borda e Margem
+
+![boxProperties](images/boxProperties.png)
+
+#### Padding
+
+- Abreviado
+  - `padding: 20px 10px 20px 10px;` (top, right, bottom, left)
+  - `padding: 20px 10px 20px;` (top, right/left, bottom)
+  - `padding: 20px 10px;` (top/bottom, right/left)
+  - `padding: 20px;` (top, right, bottom, left)
+- Individuais
+  - `padding-top: 20px;`
+  - `padding-right: 10px;`
+  - `padding-bottom: 20px;`
+  - `padding-left: 10px;`
+
+#### Margin
+
+- Abreviado
+  - `margin: 20px 10px 20px 10px;` (top, right, bottom, left)
+  - `margin: 20px 10px 20px;` (top, right/left, bottom)
+  - `margin: 20px 10px;` (top/bottom, right/left)
+  - `margin: 20px;` (top, right, bottom, left)
+- Individuais
+  - `margin-top: 20px;`
+  - `margin-right: 10px;`
+  - `margin-bottom: 20px;`
+  - `margin-left: 10px;`
+
+##### Observação
+
+- Margens entre elementos vizinhos não se somam
+- Prevalece o máximo entre as margens
+- margin collapsing
+
+#### Borda
+
+- Abreviada
+  - `border: 1px solid #ff0000;` (width, style, color)
+  - a ordem dos valores não importa
+  - estilos: solid, dotted, dashed, double, groove, ridge, inset, outset, none, hidden
+- Individual
+  - `border-top: 1px solid #ff0000;`
+  - `border-right: 1px solid #ff0000;`
+  - `border-bottom: 1px solid #ff0000;`
+  - `border-left: 1px solid #ff0000;`
+
+---
+
+- Definindo aspectos específicos das bordas
+  - `border-color: #ff0000;`
+  - `border-style: solid;`
+  - `border-width: 1px;`
+
+#### Border Radius
+
+- `border-radius: 10px;` (top-left, top-right, bottom-right, bottom-left)
+- `border-radius: 10px 20px;` (top-left/bottom-right, top-right/bottom-left)
+- `border-radius: 10px 20px 30px 40px;` (top-left, top-right, bottom-right, bottom-left)
+
+#### Box Shadow
+
+- `box-shadow: 10px 10px 5px #ff0000;` (offset-x, offset-y, blur-radius, color)
