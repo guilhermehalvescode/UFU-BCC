@@ -25,3 +25,19 @@
 - A arquitetura é central em relação aos esforços
   - Os requisitos são analisado para montar uma arquitetura
   - A arquitetura orienta a implementação e mudanças
+
+## Prática Ágil
+
+> The only constant is change
+
+- Mudança é inevitável
+- Mudança é uma oportunidade
+
+### Manifesto Ágil
+
+- Indivíduos e interações mais que processos e ferramentas
+- Software funcionando mais que documentação abrangente
+- Colaboração com o cliente mais que negociação de contratos
+- Responder a mudanças mais que seguir um plano
+- Processos ágeis mais que processos tradicionais
+- Apenas o que é necessário mais que o que é suficiente
