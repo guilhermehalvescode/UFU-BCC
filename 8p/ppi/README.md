@@ -636,3 +636,146 @@
 #### Box Shadow
 
 - `box-shadow: 10px 10px 5px #ff0000;` (offset-x, offset-y, blur-radius, color)
+
+#### Display
+
+- `display: inline;`
+  - width e height não funcionam
+  - margins e paddings superiores e inferiores não funcionam
+- `display: block;`
+- `display: inline-block;`
+  - permite usar width e height
+  - margins e paddings superiores e inferiores funcionam
+- `display: none;`
+- `display: flex;`
+- `display: grid;`
+- `display: inline-flex;`
+- `display: inline-grid;`
+
+#### Visibility
+
+- `visibility: hidden;`
+  - oculta o elemento, mas mantém o espaço reservado
+- `visibility: collapse;`
+  - oculta o elemento e remove o espaço reservado sem alterar o layout (utilizado em tabelas)
+- `visibility: visible;`
+  - valor padrão
+
+#### Float
+
+- `float: left;`
+  - elemento flutua para a esquerda do elemento pai
+- `float: right;`
+  - elemento flutua para a direita do elemento pai
+- `float: none;`
+  - valor padrão
+  - elemento não flutua
+
+#### Overflow
+
+- `overflow: visible;`
+  - valor padrão
+  - conteúdo não é cortado
+- `overflow: hidden;`
+  - conteúdo é cortado
+- `overflow: scroll;`
+  - conteúdo é cortado e é exibido uma barra de rolagem
+- `overflow: auto;`
+  - conteúdo é cortado e é exibido uma barra de rolagem se necessário
+- variações
+  - `overflow-x`
+  - `overflow-y`
+
+#### Position
+
+- `position: static;`
+  - valor padrão
+  - posicionamento padrão
+- `position: relative;`
+  - posicionamento relativo
+  - o elemento é posicionado de acordo com o seu posicionamento padrão
+  - pode ser movido com as propriedades top, right, bottom e left
+- `position: absolute;`
+  - posicionamento absoluto
+  - o elemento é posicionado de acordo com o elemento pai mais próximo que tenha a propriedade position diferente de static
+  - pode ser movido com as propriedades top, right, bottom e left
+- `position: fixed;`
+  - posicionamento fixo
+  - o elemento é posicionado de acordo com a janela do navegador
+  - pode ser movido com as propriedades top, right, bottom e left
+- `position: sticky;`
+  - posicionamento fixo
+  - o elemento é posicionado de acordo com a janela do navegador
+  - pode ser movido com as propriedades top, right, bottom e let
+
+#### transform
+
+- `transform: translate(10px, 20px);`
+- `transform: translateX(10px);`
+- `transform: translateY(20px);`
+- `transform: rotate(45deg)`
+- `transform: scale(2)`
+
+### Centralizando elementos
+
+- Centralizando com transform e position
+  - `position: absolute;`
+  - `top: 50%;`
+  - `left: 50%;`
+  - `transform: translate(-50%, -50%);`
+
+- Centralizando com flexbox
+  - `display: flex;`
+  - `justify-content: center;`
+  - `align-items: center;`
+
+- Centralinzado na horizontal com width e margin
+  - `width: 200px;`
+  - `margin: 0 auto;`
+
+- Centralizando na vertical com height e margin
+  - `height: 200px;`
+  - `margin: auto 0;`
+
+### Pseudo-classes
+
+- define estilo para elementos quando eles estão em um estado particular
+- `:visited`
+  - para links já visitados
+- `:invalid`
+  - para campos inválidos
+- `:link`
+  - para links não visitados
+- `:hover`
+  - para elementos quando o mouse está sobre eles
+- `:active`
+  - para elementos quando estão sendo clicados
+- `:valid`
+  - para campos válidos
+- `:checked`
+  - para elementos que estão marcados
+- `:focus`
+  - para elementos que estão com o foco
+- `:first-child`
+  - para o primeiro elemento filho
+- `:last-child`
+  - para o último elemento filho
+- `:nth-child(n)`
+  - para o n'ésimo elemento filho
+
+### Pseudo-elementos
+
+- define estilo para partes específicas de um elemento
+- `::first-line`
+  - para a primeira linha de um elemento
+- `::selected`
+  - para elementos que estão selecionados (usuário selecionou o texto com o mouse)
+- `::after`
+  - para inserir conteúdo após o elemento
+  - não pode ser usado em elementos sem conteúdo
+- `::before`
+  - para inserir conteúdo antes do elemento
+  - não pode ser usado em elementos sem conteúdo
+- `::placeholder`
+  - para o placeholder de um elemento
+  
