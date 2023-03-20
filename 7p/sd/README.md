@@ -256,3 +256,100 @@
   - pesquisa em um diretório global => retorna arquivo Torrent
   - arquivo torrent contém referência para tracker
   - processo P pode ser juntar ao swarm, obter um pedaço (chunk) de graça e trocar o chunk por um outro com um par
+
+### Threads Servidor
+
+- Aumento no paralelismo de processamento de clientes
+- A estratégia mais simples é a single threaded
+
+#### Single Threaded Server
+
+- Apenas um cliente é atendido por vez
+- Servidor é bloqueado enquanto atende um cliente
+- É criado uma thread que atende um cliente de cada vez, dessa forma há uma fila de espera para os clientes
+- Problema: não explora o paralelismo de máquina e perde performance
+
+#### Multi Threaded Server
+
+- Cada cliente é atendido por uma thread
+- Quando um cliente estabeleçe conexão, é criada uma thread para atendê-lo
+- Problema: podem ser criadas milhares de threads, o que pode causar problemas de escalabilidade no SO. Isso ocorre pois pode haver uma quantidade muito grande de clientes e cada um deles pode abrir uma thread, o que pode causar um problema de escalabilidade no SO
+
+#### Thread Pool Server
+
+- Cria um pool de threads, do tamanho ideal para o servidor e o SO em que está sendo executado
+- O processo principal trata a conexão com o cliente e coloca o cliente na fila de espera
+- Se uma thread estiver livre, ela é acordada e atende o cliente que foi colocado na fila de espera
+- Dessa forma, o servidor não precisa criar uma thread para cada cliente, mas sim criar um pool de threads e utilizar as threads do pool para atender os clientes
+
+### Servidores e o estado
+
+- Sem estado
+  - Nunca mantêm informações sobre clientes
+  - Não grava se algum arquivo foi aberto/acessado (fecha após acesso)
+  - Não valida cache
+  - Não mantém sessão
+
+- Com estado
+  - Mantém informações sobre clientes
+  - Grava se algum arquivo foi aberto/acessado (mantém aberto), pre-fetching
+  - Valida cache
+  - Mantém sessão
+  - Obs: a performance é melhorada
+
+### MOM (Message Oriented Middleware)
+
+- Focados nas mensagens trocadas entre precessos em um nível mais alto do que sockets
+- Há variações
+  - Message Passing Interface (MPI): usada em aplicações HPC (High Performance Computing)
+  - MQ (Message Queue): usada em aplicações de negócios
+  - Publisher/Subscriber: usada em aplicações de streaming de dados
+
+#### MPI
+
+- Usada para coordenar a distribuição e agregação de dados em aplicações em HPC
+- Implementações se concentram em c++ e fortran
+
+---
+
+- Paradigma Single Program Multiple Data
+  - mesmo binário é executado em vários computadores diferentes, simultaneamente
+  - processos recebem parte do volume total de dados a serem processados
+    - paralelismo de dados
+    - paralelismo de tarefas
+  - Quatro das operações providas pelas implementações de MPI:
+    - Broadcast
+    - Scatter
+    - Gather
+    - Reduce
+
+#### MQ
+
+- Forma de encaminhar dados para nós específicos sem a necessidade de conexão direta
+- Uso de caixas de entrada: semelhante a serviço de e-mail/redes sociais para trocas de mensagens
+- Permitem enfrentar uma das dificuldades de se implementar sistemas distribuídos hojem em dia: a saída/entrada constante de componentes
+  - Desacoplamento temporal
+  - Brokers devem se manter online para permitir a comunicação
+- Notoriedade recente:
+  - Expanção de seu uso em sistema com arquiteturas microsserviços
+
+---
+
+- Problema
+  - Como fazer com que todos se conheçam e que cada um saiba exatamente qual informação deve disponibilizar para cada outro?
+    - Contactar individualmente cada um dos usuários da mesma rede para perguntar se está interessado?
+
+#### Publish/Subscribe
+
+- Modelo de comunicação assíncrona
+- Demais mecanismos exigem que os processos se identifiquem
+- Na comunicação publish/subscribe, os processos não se identificam
+- Processo que envia uma mensagem, publisher, não envia mensagens para um destinatário
+  - Em vez disso, publica mensagens com um tópico, aos quais os subscribers podem se inscrever
+- A comunicação não acontece diretamente, mas via brokers
+- Publishers e subscribers não precisam executar ao mesmo tempo ou sequer saber da existência um do outro
+- Exemplo: MQTT
+
+---
+
+- Desaclopamento em várias dimensões das partes envolvidas
