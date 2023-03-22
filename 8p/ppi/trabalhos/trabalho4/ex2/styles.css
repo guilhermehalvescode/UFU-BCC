@@ -1,0 +1,24 @@
+main {
+    max-width: 300px;
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: gray 1px solid;
+    padding: 1.5rem;
+    box-shadow: 5px 5px 5px gray;
+    color: gray;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+section > * {
+    margin-top: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+section > input:focus {
+    box-shadow: 7px 7px 5px gray;
+}
+
