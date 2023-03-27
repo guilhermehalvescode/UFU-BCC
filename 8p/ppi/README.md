@@ -787,3 +787,90 @@
 - `::placeholder`
   - para o placeholder de um elemento
   
+## JavaScript
+
+- Linguagem de programação dinâmica
+
+### JavaScript e ECMAScript
+
+- Ecma International - organização que desenvolve padrões
+- ECMAScript é uma linguagem padronizada, uma especificação
+  - ECMA-262 é o nome do padrão propriamente dito
+- Javascript é uma implementação da ECMAScript
+
+### Manipulação da Árvore DOM
+
+- Adicionar/modificar o conteúdo dos elementos HTML
+- Adicionar novos elementos
+- Modificar atributos de elementos
+- Modificar estilos CSS
+- Ocultar/mostrar elementos
+- Remover elementos
+
+### Javascript no HTML
+
+- em arquivo separado
+  - `<script src="script.js"></script>`
+  - permite reuso de código
+  - arquivos js podem ser mantidos em cache pelo navegador
+    - maior agilidade no carregamento
+- no html
+  - usar tag script no final do body ou dentro do header
+
+### Execução do Código Javascript no Navegador
+
+- Fase 1 - Execução durante carregamento - síncrona
+  - O código JS inserido com `<script>` é executado durante a fase de carregamento do HTML
+  - Operações comuns: resgistro de **event handlers** a serem executadas na 2º fase
+  - Em geral, vários script inseridos com `<script>` são executados na ordem em que aparecem no documento HTML*
+- Fase 2 - Execução em resposta a eventos - assíncrona
+  - Código executado na ocorrência de eventos como click de botão, rolagem de página, etc.
+  - As funções a serem executadas geralmente são registradas na Fase 1
+
+> Obs: esse comportamento pode ser alterado usando o atributo async ou defer
+
+### Javascript no navegador - Threading
+
+- Javascript no navegador executa em modo de thread-única (single-threaded)
+  - O navegador para de responder a interface do usuário enquanto o codigo js é executado
+  - pode causar uma experiência ruim para o usuário
+- É possível executar um código em outra thread (background) usando web workers , mas com acesso limitado ao contexto da thread principal  
+
+### Recursos da lingugagem
+
+- var:
+  - Pode ser declarada em qualquer lugar do código
+  - Pode ser redeclarada
+  - variáveis globais podem ser acessadas 
+- let:
+  - Pode ser declarada em qualquer lugar do código
+  - Não pode ser redeclarada
+  - variáveis globais não podem ser acessadas
+- const:
+  - Pode ser declarada em qualquer lugar do código
+  - Não pode ser redeclarada
+  - deve ser inicializada no momento da declaração
+
+### Manipulando a Árvore DOM
+
+- Tipo de elementos na árvore DOM
+  
+  ![DOMTypes](images/DOMTypes.png)
+
+- Hierarquia de Nós na estrutura DOM
+  - Nó Root: nó representando o elemento raiz `<html>`
+  - Nó Filho: nó representando um elemento diretamente dentro de outro
+  - Nó Pai: nó representando o elemento que contém o nó filho
+  - Nós Irmãos: nós representando elementos filhos do mesmo pai
+
+#### Busca na Árvore DOM
+
+- `document.querySelector()`
+  - retorna o primeiro elemento que corresponde ao seletor CSS
+  - retorna o primeiro nó na árvore DOM (do tipo Element) que atende à seleção
+  - Ou retorna null caso não haja correspondência
+  - Nenhum elemento é retornado caso o seletor incluia pseudo-elementos
+- `document.querySelectorAll()`
+  - aceita uma string contendo um seletor CSS
+  - retorna uma lista com todos os nós da árvore DOM que atendem a seleção
+  - ou retorna uma lista vazia caso não haja correspondência 
