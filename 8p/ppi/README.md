@@ -637,6 +637,14 @@
 
 - `box-shadow: 10px 10px 5px #ff0000;` (offset-x, offset-y, blur-radius, color)
 
+#### Box-sizing
+
+- `box-sizing: content-box;`
+  - valor padrão
+  - width e height definem o tamanho do conteúdo (width + padding + border + margins)
+- `box-sizing: border-box;`
+  - width e height definem o tamanho total da caixa (tamanho contando conteúdo, padding e borda)
+
 #### Display
 
 - `display: inline;`
@@ -664,9 +672,9 @@
 #### Float
 
 - `float: left;`
-  - elemento flutua para a esquerda do elemento pai
+  - elemento flutua para a esquerda do elemento pai, elementos inline se posicionam em volta
 - `float: right;`
-  - elemento flutua para a direita do elemento pai
+  - elemento flutua para a direita do elemento pai, elementos inline se posicionam em volta
 - `float: none;`
   - valor padrão
   - elemento não flutua

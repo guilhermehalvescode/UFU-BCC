@@ -353,3 +353,86 @@
 ---
 
 - Desaclopamento em várias dimensões das partes envolvidas
+
+### Coordenação
+
+- Coordenação é a habilidade de um sistema de computador de sincronizar a execução de processos
+
+#### Exclusão mútua
+
+- Exclusão mútua é a habilidade de um sistema de computador de garantir que apenas um processo tenha acesso a uma seção crítica por vez
+- Em um sistema monolítico:
+  - uma variável global, um lock, ou outra primitiva de sincronização podem ser usadas na sincronização
+- Em um sistema distribuído:
+  - a sincronização é feita por meio de mensagens
+  - não se torna trivial a sincronização de processos em diferentes máquinas
+
+---
+
+- Propriedades:
+  1. Mutual exclusion
+  2. Ausência de deadlock
+  3. Não há starvation
+  4. Espera limitada
+
+---
+
+Soluções para exclusão mútua:
+
+- Servidor centralizado (coordenador)
+  - centralizado é um único ponto de falha
+  - centralizado pode ser um gargalo
+  - centralizado pode ser um ponto de ataque
+  - utiliza uma fila de espera
+
+##### Anel
+
+- Cada processo envia uma mensagem para o próximo processo no anel
+- na mensagem, o processo envia o token, o qual permite que o processo receba a mensagem e uso um recurso crítico
+
+##### Lidando com falhas
+
+- Em ambos algoritmos, centralizado e do anel, se um processo falha, o algoritmo falha
+  - No algoritmo centralizado, se o coordenador falha antes de liberar o acesso para algum processo, ele leva consigo a permissão
+  - Em ambos os algoritmos, se o processo acessando o recurso falha, a permissão é perdida e os demais processos sofrerão inanição
+  - No algoritmo do anel, se qualquer outro processo falha, o anel é interrompido o anel não conseguirá circular
+
+---
+
+- Timeout
+  - qual deve ser um timeout razoável?
+    - depende de quanto tempo o processo demora para executar
+    - depende de quanto tempo o processo demora para enviar uma mensagem
+    - depende de quanto tempo o processo demora para receber uma mensagem
+  - O custo esperado por causa dos erros, isto é, a esperança matemática da variável aleatória que representa o tempo de espera, deve ser menor que o tempo de espera máximo
+    - C * p < T
+
+---
+
+- Quóruns
+  - Número de pessoas imprescindíveis para que uma decisão seja tomada
+  - decisão = liberação de acesso ao recurso crítico
+- Abordagem semelhante à coordenada:
+  - Papel do coordenador é distribuído entre os processos
+  - No entanto
+    - Participante precisa obter m autorizações antes de acessar o recurso
+    - m é o quórum do sistema
+- Quórum
+  - n coordenadores
+  - Participante precisa da autorização de pelo menos m coordenadores
+  - Qual o valor adequado para m?
+    - m = n/2 + 1
+    - m = n - f
+      - f é o número máximo de falhas toleradas
+      - n é o número de processos
+- Algoritmo: Coordenador
+  - inicializa o recurso como livre
+  - ao receber uma requisição, a enfileira
+  - ao receber uma liberação
+    - se do processo a quem autorizou, marca o recurso como livre
+    - senão e se de um processo na fila, remove o processo da fila
+    - senão, ignore mensagem
+  - sempre que recurso estiver marcado como livre E a fila não estiver vazia
+    - remove o processo da fila
+    - envia liberação para o processo removido
+    - marca o recurso como ocupado
