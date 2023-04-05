@@ -206,7 +206,7 @@
   - modificável via composição
   - ex: módulos do sistema operacional
 
-### P2P estruturado
+## P2P estruturado
 
 - indexação de informação
   - cada item é associado a uma chave
@@ -215,7 +215,7 @@
     - `key(data item) = hash(data item's value)`
   - sistema P2P: responsável pelo armazenamento dos pares (chave, valor). Exemplo simples: hypercube
 
-#### Chord
+### Chord
 
 - nós estruturados em anel lógico
 - cada nó possui identificador (id) de m bits
@@ -224,7 +224,7 @@
   - nó é denominado sucessor da chave k
 - anel é estendido com links de atalho para outros nós
 
-### P2P não-estruturado
+## P2P não-estruturado
 
 - cada nó mantém uma lista ad hoc de vizinhos
 - rede overlay resultante semelhante a um grafo randômico:
@@ -239,50 +239,50 @@
     - nó requisitante u envia requisição para d a um vizinho v escolhido aleatoriamente
     - se v não tem d, encaminha requisição ao outro v' escolhido aleatoriamente, e assim por diante
 
-### Redes de super peers
+## Redes de super peers
 
 - necessidade de quebrar simetria em redes p2p7
 
 > Skype realiza esse procedimento
 
-### Arquitetura Edge-server
+## Arquitetura Edge-server
 
 - Sistemas em que servidores são posicionados na borda da rede:
   - fronteiras entre redes da empresa e a internet
 
-### Arquiteturas Híbridas
+## Arquiteturas Híbridas
 
 - bittorrent: busca por arquivo F
   - pesquisa em um diretório global => retorna arquivo Torrent
   - arquivo torrent contém referência para tracker
   - processo P pode ser juntar ao swarm, obter um pedaço (chunk) de graça e trocar o chunk por um outro com um par
 
-### Threads Servidor
+## Threads Servidor
 
 - Aumento no paralelismo de processamento de clientes
 - A estratégia mais simples é a single threaded
 
-#### Single Threaded Server
+### Single Threaded Server
 
 - Apenas um cliente é atendido por vez
 - Servidor é bloqueado enquanto atende um cliente
 - É criado uma thread que atende um cliente de cada vez, dessa forma há uma fila de espera para os clientes
 - Problema: não explora o paralelismo de máquina e perde performance
 
-#### Multi Threaded Server
+### Multi Threaded Server
 
 - Cada cliente é atendido por uma thread
 - Quando um cliente estabeleçe conexão, é criada uma thread para atendê-lo
 - Problema: podem ser criadas milhares de threads, o que pode causar problemas de escalabilidade no SO. Isso ocorre pois pode haver uma quantidade muito grande de clientes e cada um deles pode abrir uma thread, o que pode causar um problema de escalabilidade no SO
 
-#### Thread Pool Server
+### Thread Pool Server
 
 - Cria um pool de threads, do tamanho ideal para o servidor e o SO em que está sendo executado
 - O processo principal trata a conexão com o cliente e coloca o cliente na fila de espera
 - Se uma thread estiver livre, ela é acordada e atende o cliente que foi colocado na fila de espera
 - Dessa forma, o servidor não precisa criar uma thread para cada cliente, mas sim criar um pool de threads e utilizar as threads do pool para atender os clientes
 
-### Servidores e o estado
+## Servidores e o estado
 
 - Sem estado
   - Nunca mantêm informações sobre clientes
@@ -297,7 +297,7 @@
   - Mantém sessão
   - Obs: a performance é melhorada
 
-### MOM (Message Oriented Middleware)
+## MOM (Message Oriented Middleware)
 
 - Focados nas mensagens trocadas entre precessos em um nível mais alto do que sockets
 - Há variações
@@ -305,7 +305,7 @@
   - MQ (Message Queue): usada em aplicações de negócios
   - Publisher/Subscriber: usada em aplicações de streaming de dados
 
-#### MPI
+### MPI
 
 - Usada para coordenar a distribuição e agregação de dados em aplicações em HPC
 - Implementações se concentram em c++ e fortran
@@ -323,7 +323,7 @@
     - Gather
     - Reduce
 
-#### MQ
+### MQ
 
 - Forma de encaminhar dados para nós específicos sem a necessidade de conexão direta
 - Uso de caixas de entrada: semelhante a serviço de e-mail/redes sociais para trocas de mensagens
@@ -339,7 +339,7 @@
   - Como fazer com que todos se conheçam e que cada um saiba exatamente qual informação deve disponibilizar para cada outro?
     - Contactar individualmente cada um dos usuários da mesma rede para perguntar se está interessado?
 
-#### Publish/Subscribe
+### Publish/Subscribe
 
 - Modelo de comunicação assíncrona
 - Demais mecanismos exigem que os processos se identifiquem
@@ -354,11 +354,11 @@
 
 - Desaclopamento em várias dimensões das partes envolvidas
 
-### Coordenação
+## Coordenação
 
 - Coordenação é a habilidade de um sistema de computador de sincronizar a execução de processos
 
-#### Exclusão mútua
+### Exclusão mútua
 
 - Exclusão mútua é a habilidade de um sistema de computador de garantir que apenas um processo tenha acesso a uma seção crítica por vez
 - Em um sistema monolítico:
@@ -385,12 +385,12 @@ Soluções para exclusão mútua:
   - centralizado pode ser um ponto de ataque
   - utiliza uma fila de espera
 
-##### Anel
+#### Anel
 
 - Cada processo envia uma mensagem para o próximo processo no anel
 - na mensagem, o processo envia o token, o qual permite que o processo receba a mensagem e uso um recurso crítico
 
-##### Lidando com falhas
+#### Lidando com falhas
 
 - Em ambos algoritmos, centralizado e do anel, se um processo falha, o algoritmo falha
   - No algoritmo centralizado, se o coordenador falha antes de liberar o acesso para algum processo, ele leva consigo a permissão
