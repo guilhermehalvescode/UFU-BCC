@@ -436,3 +436,44 @@ Soluções para exclusão mútua:
     - remove o processo da fila
     - envia liberação para o processo removido
     - marca o recurso como ocupado
+
+## Uso de relógios sincronizados
+
+- Necessidade de sincronização do tempo entre máquinas, pois as mesmas possuem um atraso relativo ao seu relógio de quartzo
+- São atualizados em relação aos relógios atômicos
+- ntp é principal protocolo de atualização de tempo físico em máquinas
+- Servidores mantêm e distribuem um tempo físico, sendo que, quanto mais próximos estão dos servidores dos relógios atômicos, mais precisam são seu tempo
+- Calculo, ro = 0,1 s/s (atraso de uma máquina por segundos)
+  - se quero manter no máximo um erro delta = 1 s
+  - devemos atualizar o relógio de delta/ro = 1/0,1 = 10 segundos em 10 segundos
+
+### Ordenação de mensagens por timestamp
+
+- Apenas a ordenação de mensagens não é suficiente se tivermos servidores replicados com distâncias significativas entre si
+- É necessário que servidor espere um tempo conhecido (descoberto durante a excução da aplicação) de tempo máximo de latência entre um servidor e outro cliente
+- Toda mensagem que é recebida, é colocada em uma fila e é esperado um tempo para que se possa executar os elementos dessa fila
+
+### Tempo Lógico
+
+- Não há necessidade de se utilizar um tempo físico, se eventos possuem entre si uma causalidade
+- Causalidade:
+  - processos na mesma máquina são eventos que precedem entre si
+  - envio e recebimento são eventos que precedem entre si
+  - transitividade permite que eventos precedam também
+- Dessa forma, é possível apenas utilizar números inteiros representando a causalidade entre eventos, permitindo uma ordenação nas mensagens
+  - Relógio lógico de Lamport
+
+### Relógio vetorial
+
+## Comunicação em Grupo
+
+- Um processo envia mensagens para um conjunto de processos
+- Difusão totalmente ordenada
+  - mesagens são enviadas de 1 para n
+  - todos os processos entregam as mensagens na mesma ordem
+- Difusão casualmente ordenada
+  - uma mensagems só é entregue se todas as que casualmente precedem já foram entregues
+
+> como resolver o problema do cloud-drive com estas abstrações
+
+### Replicação de máquinas de estado
