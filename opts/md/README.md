@@ -183,3 +183,220 @@ Outros problemas que podem comprometer a qualidade dos dados são:
 - Dados inconsistentes
   - Dados que estão errados, P.ex: Valor do atributo peso negativo, ou valor do campo CEP com 2 dígitos
   - Dados duplicados, P.ex: email duplicado
+
+### Pré-processamento dos dados (Métodos)
+
+#### Agregação
+
+> consiste na combinação de dois ou mais objetos em um único objeto
+
+- Segue o princípio de "menos é mais"
+- Atributos quantitativos podem ser agregados através de uma soma ou média
+- Atributos qualitativos, como um produto p. ex, podem ser omitidos ou sumarizados como o conjunto de todos os produtos vendidos
+- Ex: ao invés de usar registros de 365 dias, agrega-se esses registros para 12 meses
+- Motivações para agregação
+  - menores bases de dados
+  - mudança de escala
+  - comportamento mais estável dos objetos dos dados e atributos
+- Desvantagem: potencial perda de detalhes interessantes
+
+#### Amostragem
+
+> Seleção de um subconjunto dos objetos de dados para ser analisada
+
+- Na estatística, amostragem é utilizada porque trabalhar para obter todo o conjunto de dados inteiro é muito caro ou consome muito tempo
+- Na mineração de dados, amostragem é utilizada porque é muito caro ou consome muito tempo para processar todos os dados
+- Princípio da amostragem: usar uma amostra funcionará quase tão bem quanto usando um conjunto de dados inteiro se a amostra é representativa
+
+- amostragem aleatória simples?
+  - selecionar uma amostra de forma aleatória com probabilidade uniforme
+- com recolocação?
+- estratificada?
+
+#### Redução de dimensionalidade
+
+> Técnicas que reduzem a dimensionalidade de uma base de dados por criar novos atributos que são uma combinação dos velhos atributos
+
+#### Seleção de subconjunto de features
+
+> Seleção de novos atributos que são um subconjunto dos velhos atributos
+
+- Exemplos: Filtros, wrapper, entre outros
+
+#### Criação de características
+
+- Extração de características
+  - Criação de um novo conjunto a partir dos dados originais crús
+- Mapeamento dos dados para um novo espaço
+  - aplicação de transformada de Fourier em séries temporais com ruídos
+- Construção de características
+  - base de dados massa e volume
+
+#### Discretização de Binarização
+
+- Discretização
+  - processo de transformar atributos contínuos em categóricos
+- Binarização
+  - processo de transformar atributos contínuos e discretos em atributos binários
+
+#### Transformação de variáveis
+
+> Refere-se a transformação que é aplicada a todos os valores de um atributo
+
+- Transformações funcionais simples
+  - uma função matemática simples é aplicada para cada valor individualmente
+  - devem ser aplicadas com cautela, pois mudam a natureza dos dados
+- Normalização
+  - o objetivo dessa transformação é fazer um conjunto inteiro de valores ter uma propriedade particular
+
+## Similaridade
+
+### Para atributos simples
+
+- proximidade entre objetos com apenas um atributo
+- atributo nominal
+- atributo ordinal
+  - ruim, regular, OK, bom, maravilhoso
+- atributo intervalar ou de razão
+
+### Dissimilaridade entre objetos de dados
+
+- Normalmente, medidas que calcular a distância entre objetos costumam ser denominadas medidas de dissimilaridade
+- Exemplos:
+  - Distância Euclidiana
+  - Distância de Manhatan
+  - Distância de Minkowski
+
+#### Euclideana
+
+- positividade
+- simetria
+- desigualdade triangular
+
+#### Minkowski
+
+- positividade
+- generalização da euclidiana e de manhatan
+
+### Similaridade entre objetos de dados
+
+- Similaridade é o oposto de dissimilaridade
+
+#### Coeficiente de igualdade simples
+
+- Denominado também de SMC
+- Similaridade para Dados binários
+- SMC = $\frac{f_{11}+f_{00}}{f_{01}+f_{10}f_{11}+f_{00}}$
+
+#### Coeficiente de Jaccard
+
+- Similaridade para Dados binários*
+- J = $\frac{f_{11}}{f_{01}+f_{10} + f_{11}}$
+
+#### Similaridade do Cosseno
+
+- Muito usado para calcular similaridade entre documentos
+- $\cos(x,y) = \frac{x . y}{||x|| ||y||}$
+- ||x|| = $\sqrt{x_1^2 + x_2^2 + ... + x_n^2}$
+
+## Exploração dos Dados
+
+- Aprender a importancia de uma investigação preliminar dos dados a fima de melhor entender algumas características específicas
+- Entender que tal investigação pode auxiliar na seleção do pré-processamento e de algorimos de análise mais apropriados
+
+### Estatísticas resumidas
+
+- números que resumem propriedados dos dados
+- capturam várias características de um grande conjunto de valores através de um único número ou um pequeno conjunto deles
+  
+#### Frequência e Moda
+
+- A frequência de um valor de atributo é o percentual de vezes que o valor ocorre na base de dados
+- A moda é o valor mais frequente de um atributo
+
+#### Porcentagem
+
+- Para dados contínuos, a noção de porcentagem é mais útil
+- Dado um atributo x ordinal ou contínuo e um número p entre 0 e 100, a porcentagem p de x é o valor de x que divide a base de dados em duas partes, uma contendo p% dos objetos de dados e a outra contendo 100-p% dos objetos de dados
+
+#### Medidas de localização: média a mediana
+
+- A média é a medida mais comum de localização de um conjunto de pontos
+- Contudo, ela é muito sensível a outliers
+- Logo, a mediana é uma medida de localização mais robusta
+
+#### Medidas de localização: variação e variância
+
+- Variação
+  - é a diferença entre o maior e o menor valor de um conjunto de pontos
+- Variância
+  - é uma medida de dispersão que indica o quão distantes os pontos estão da média
+  - $\sigma^2 = \frac{\sum_{i=1}^n (x_i - \mu)^2}{n}$
+  - $\sigma = \sqrt{\sigma^2}$
+  - é a medida mais comum
+
+### Visualização
+
+- Conversão dos dados em um formato visual ou tabular que caracterize os dados
+- É uma das técnicas mais salientes e eficazes para a exploração de dados
+  - habilidade natural dos seres humanos para entender grandes volumes de dados apresentados visualmente
+  - pode detectar tendências
+  - pode detectar outliers e padrões incomuns
+
+#### Representação
+
+- Geralmente objetos são representados como pontos
+  - os atributos podem ser representados como coordenadas, cores, tamanhos, etc
+
+#### Arranjo
+
+- Arranjo dos pontos em um espaço bidimensional ou tridimensional
+- Auxilia no entendimento dos dados
+
+#### Seleção
+
+- Seleção de um subconjunto de atributos de dados para serem visualizados
+  - redução de dimensionalidade é comumente utilizado para selecionar os atributos a serem visualizados
+- Da enfase a objetos de dados que são mais interessantes
+- Seleção de um subconjunto de objetos de dados para serem visualizados
+  - pode ser feito de forma aleatória ou de forma estratificada
+
+#### Técnicas
+
+- Histogramas
+  - mostra a distribuição de valores de uma única variável
+  - mostra a frequência dos objetos em uma faixa de valores
+  - pode ser usado para dados contínuos ou discretos
+  - ajuda a identificar outliers, valores atípicos, valores faltantes e identificar agrupamentos
+
+- Histogramas bidimensionais
+  - mostra a distribuição de valores de duas variáveis
+  - mostra a frequência dos objetos em uma faixa de valores
+  - pode ser usado para dados contínuos ou discretos
+  - ajuda a identificar outliers, valores atípicos, valores faltantes e identificar agrupamentos
+
+- Box Plots
+  - mostra distribuição de dados de uma variável
+  - ajuda identificar outliers e comparar atributos
+
+- Scatter plots
+  - determina a posição através dos valores dos atributos
+  - podem ser tridimensionais
+  - podem ser usados para dados contínuos ou discretos
+  - útil para conjuntos de gráficos que mostram a relação entre pares de atributos
+
+- Countour Plots
+  - particiona em regiões o espaço de atributos, utilizando linhas
+
+- Matrix Plots
+  - útil quando objetos estão ordenados de acordo com a classe
+  - agrupa de forma ordenada os objetos de dados de acordo com a classe
+  - pode ser feito no formato de matriz de correlação, mostrando similaridade entre as amostras
+
+### Processamento analítico online - OLAP
+
+- OLAP é um conjunto de técnicas que permitem a análise de dados multidimensionais
+- Muitas operações de exploração dos dados são mais fáceis a partir de tal representação
+- Há dois passos chaves para converter dados tabulares (relacionais) em multidimensionais
+  - Definição de dimensões
+  - Definição de medidas
