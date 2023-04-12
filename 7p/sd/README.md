@@ -465,6 +465,11 @@ Soluções para exclusão mútua:
 
 ### Relógio vetorial
 
+- São relógios lógicos que possuem um vetor de relógios lógicos de cada processo envolvido na comunicação
+- Seguem a seguinte especificação:
+
+![vetorialClock](images/vetorialClock.png)
+
 ## Comunicação em Grupo
 
 - Um processo envia mensagens para um conjunto de processos
@@ -472,8 +477,43 @@ Soluções para exclusão mútua:
   - mesagens são enviadas de 1 para n
   - todos os processos entregam as mensagens na mesma ordem
 - Difusão casualmente ordenada
-  - uma mensagems só é entregue se todas as que casualmente precedem já foram entregues
+  - uma mensagem só é entregue se todas as que casualmente precedem já foram entregues
 
 > como resolver o problema do cloud-drive com estas abstrações
 
 ### Replicação de máquinas de estado
+
+- Programa se comporta de forma determinística
+- O que acontece se tivermos várias cópias deste programa, executando em locais distintos, mas garantirmos que cada cópia veja exatamente a mesma entrada de dados
+- Ao utilizar D.T.O (Difusão totalmente ordenada), garantimos a igualdade entre as cópias, pois os comandos foram entregues para todas as cópias na mesma ordem
+
+### Difusão totalmente ordenada
+
+- Canais devem ser FIFO e entrega garantida
+
+![dto](images/dto.png)
+
+### Difusão casualmente ordenada
+
+![dco](images/dco.png)
+
+### Comunicação em grupo - Middleware
+
+- Implementação de forma transparente para a aplicação
+- Clientes enviam requisições como faziam antes do serviço ser replicado
+- Como então as mensagens tem seus relógios lógicos atualizados e usados para a geração de timestamps?
+  - Interceptadores em uma camada de middleware
+
+![comunicacaoEmGpMiddleware](images/comunicacaoEmGpMiddleware.png)
+
+## Falhas
+
+- Classificação de problemas:
+  - Falta(defect, fault, falha):
+    - Erro no desenvolvimento do Sistema: bug, defeito de fabricação
+    - Existem mesmo se for raramente ativada e mesmo se seus efeitos nunca forem percebidos
+  - Erro
+    - manifestação da falha
+  - Falha
+    - erro percebido pelo usuário
+    - pode afetar componentes
