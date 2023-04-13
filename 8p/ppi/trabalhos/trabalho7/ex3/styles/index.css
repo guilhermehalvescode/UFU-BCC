@@ -1,0 +1,59 @@
+body {
+  background-color: #ddd;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+header {
+  background-color: #555;
+  color: white;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+nav li a[data-tabref] {
+  cursor: pointer;
+}
+
+footer {
+  border-radius: 10px;
+  text-align: center;
+  margin: 5px 0 0 0;
+  padding: 2%;
+}
+
+
+main {
+  background-color: #fff;
+  margin: 5px 0;
+  border: lightgray 1px solid;
+  width: 60%;
+  margin: 0 auto;
+  padding: 2% 4%;
+}
+
+main > div {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  main {
+    width: 95%;
+  }
+}
+
+h2 {
+  color: #555;
+}
+
+
+.activeDiv {
+  display: block;
+}
+
+table img {
+  width: 200px;
+  height: 100px;
+}
