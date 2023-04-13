@@ -1,0 +1,28 @@
+body {
+  background-color: #ddd;
+  color: #444;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+
+  width: 60%;
+  margin: 0 auto;
+  padding: 2% 0;
+}
+
+main {
+  background-color: #fff;
+  padding: 2% 30px;
+  margin: 2%;
+  border-radius: 10px;
+}
+
+section {
+  border-top: 1px solid gray;
+
+}
+
+h1, h2 {
+  margin-top: 0.2rem;
+  color: rgb(140, 76, 8);
+  user-select: none;
+}

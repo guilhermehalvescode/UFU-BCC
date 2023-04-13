@@ -1,0 +1,46 @@
+div[data-tab="cadastro"] input:invalid + span::after{
+    content: 'X';
+    color: red;
+}
+
+div[data-tab="cadastro"] input:valid + span::after{
+    content: '✓';
+    color: green;
+}
+
+div[data-tab="cadastro"] fieldset, textarea {
+    margin: 1rem 0;
+}
+
+div[data-tab="cadastro"] fieldset > div {
+    margin: 1rem 0;
+}
+
+
+div[data-tab="cadastro"] textarea {
+    resize: vertical;
+    display: block;
+}
+
+
+div[data-tab="cadastro"] input, textarea {
+    box-sizing: border-box;
+    border: lightgray 1px solid;
+}
+
+div[data-tab="cadastro"] input:focus, textarea:focus, :checked {
+    box-shadow: 0 0 5px gray;
+}
+
+div[data-tab="cadastro"] button {
+    color: white;
+    margin: 0 auto;
+    border-radius: 10px;
+    border: none;
+    display: block;
+    width: 30%;
+    cursor: pointer;
+    padding: 1rem;
+    background-color: #49bf49;
+    box-shadow: 0 0 5px lightgray;
+}

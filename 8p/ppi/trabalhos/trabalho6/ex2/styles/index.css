@@ -1,0 +1,53 @@
+html {
+
+    color: black;
+    font-family: Helvetica, Arial , sans-serif;
+}
+
+#messageBox {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    background-color: rgba(0, 0, 0, 0.308);
+
+    z-index: 1;
+
+
+    width: 100%;
+    height: 100%;
+
+    visibility: hidden;
+}
+
+#messageBox > div {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    background-color: white;
+    transform: translate(-50%, -50%);
+    
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px black;
+
+    transition: box-shadow 0.5s ease-in-out;
+    display: block;
+}
+
+
+#messageBox > div:hover {
+    box-shadow: 2px 2px 5px rgb(170, 165, 165);
+}
+
+#messageBox button {
+    display: block;
+    margin: 0 auto;
+    border: none;
+    color: black;
+    background-color: rgb(170, 165, 165);
+    padding: 0.1rem 0.5em;
+    border-radius: 5px;
+}
