@@ -1,3 +1,5 @@
+Aluno: Guilherme Alves Carvalho, Matrícula: 11921BCC016
+
 1. Para os seguintes objetos x e y, calcule a medida de proximidade indicada.
 
 a) x=(1,1,1,1), y=(2,2,2,2): Euclidiana, cosseno.
