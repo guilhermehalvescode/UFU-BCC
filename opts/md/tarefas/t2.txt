@@ -1,0 +1,58 @@
+Aluno: Guilherme Alves Carvalho, Matrícula: 11921BCC016
+
+1. Classifique os atributos a seguir como binário, discreto ou contínuo.
+Classifique-os também como qualitativo (nominal ou ordinal) ou quantitativo (intervalo ou proporção). Se algum caso parece ambíguo, explique as interpretações possíveis.
+
+Exemplo: Idade em anos. Resposta: Discreto, Quantitativo, Proporção
+
+(a) Tempo em termos de AM ou PM.
+
+- Discreto, Quantitativo, Proporção
+
+(b) Claridade como uma medida da intensidade da luz.
+
+- Claridade pode ser Discreto, Qualitativo, Ordinal (claro, médio, escuro) ou Contínuo, Quantitativo, Intervalo (0 a 100).
+
+(c) Claridade como uma medida para julgamento das pessoas.
+
+- 
+
+(d) Ângulos como uma medida em graus entre 0o e 360o.
+
+- Discreto, Quantitativo, Proporção
+
+(e) Medalhas de bronze, prata e ouro como premiação nas Olimpíadas.
+
+- Discreto, Qualitativo, Ordinal
+
+(f) Altura acima do nível do mar.
+
+- Contínuo, Quantitativo, Proporção
+
+(g) Número de pacientes em um hospital.
+
+- Discreto, Quantitativo, Proporção
+
+(h) Número de ISBN de livros.
+
+- Discreto, Qualitativo, Nominal
+
+(i) Relação com a passagem da luz em termo dos seguintes valores: opaco, translúcido, transparente.
+
+- Discreto, Qualitativo, Ordinal
+
+(j) Rank militar.
+
+- Discreto, Qualitativo, Ordinal
+
+(k) Distância do centro do Campus.
+
+- Contínuo, Quantitativo, Proporção
+
+(l) Densidade de uma substância em gramas por centímetro cúbico.
+
+- Contínuo, Quantitativo, Proporção
+
+(m) Senha para retirar produto.
+
+- Discreto, Qualitativo, Nominal
