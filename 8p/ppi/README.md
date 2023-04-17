@@ -873,4 +873,17 @@
 - `document.querySelectorAll()`
   - aceita uma string contendo um seletor CSS
   - retorna uma lista com todos os nós da árvore DOM que atendem a seleção
-  - ou retorna uma lista vazia caso não haja correspondência 
+  - ou retorna uma lista vazia caso não haja correspondência
+
+## PHP (PHP: Hypertext Processor)
+
+- Gratuito e Open Source
+- Pode ser executado em várias plataformas
+  - windows, linux, mac, etc
+- Compatível com vários servidores HTTP
+  - Apache, NGINX, IIS, etc
+- Suporta vários bancos de dados
+- Há vários frameworks para desenvolvimento web
+  - Laravel, Symfony, Zend, etc
+- Serviços gratuitos de hospedagem com suporte a php
+- Muito popular e de fácil aprendizado
