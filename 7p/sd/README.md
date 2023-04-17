@@ -508,12 +508,182 @@ Soluções para exclusão mútua:
 
 ## Falhas
 
-- Classificação de problemas:
-  - Falta(defect, fault, falha):
-    - Erro no desenvolvimento do Sistema: bug, defeito de fabricação
-    - Existem mesmo se for raramente ativada e mesmo se seus efeitos nunca forem percebidos
-  - Erro
-    - manifestação da falha
-  - Falha
-    - erro percebido pelo usuário
-    - pode afetar componentes
+### Classificação de problemas
+
+- Falta(defect, fault, falha):
+  - Erro no desenvolvimento do Sistema: bug, defeito de fabricação
+  - Existem mesmo se for raramente ativada e mesmo se seus efeitos nunca forem percebidos
+- Erro
+  - manifestação da falha
+- Falha
+  - erro percebido pelo usuário
+  - pode afetar componentes
+
+### Classificação de faltas
+
+- quebra
+  - componente para de funcionar
+  - comunicação é interrompida
+- sistemas fail-stop
+  - parada forçada quando percebem uma falha
+  - outros componentes sabem (são informados) da falha
+- sistemas fail-recover
+  - processo falho pode ser forçado a recuperar o estado em que estava logo antes do problema se manifestar
+  - necessidade de capacidade de armazenar estado
+- omissão (omission failure)
+  - componente deixa de executar alguma ação
+  - exemplo
+    - requisição recebida por um servidor não é processada
+    - disco não armazena os dados no meio magnético
+    - mensagem não é transmitida
+  - difícil de ser identificado
+  - quebra é uma omissão contínua (na quebra o servidor não responde para sempre)
+- temporização
+  - violação de limites de tempo
+  - exemplo
+    - se o meio de comunicação se recusou a entregar uma mensagem que deveria ser entregue dentro de 3ms, houve falha de omissão
+  - omissão é uma temporização contínua (na omissão o servidor não respondeu, tempo infinito de demora de entrega)
+- arbitrário (bizantino)
+  - qualquer comportamento pode acontecer
+  - exemplos
+    - mensagem modificada
+    - servidor pode reiniciar-se constantemente
+    - dados podem ser apagados
+    - acesso pode ser dado a quem não é devido
+  - causadas por faltas no software/hardware, hackers e vírus
+- hierarquia de falhas
+  - fail stop C quebra C omissão C temporização C arbitrária
+
+### Lidando com falhas (failures)
+
+- prevenção
+  - por meio de técnicas bem estabelecidas de engenharia
+  - uso de linguagens de programação fortemente tipadas
+  - análise estática, especificação formal, teste e prova
+    - TLA+, Promela
+- remoção
+  - tradução de especificações formais para código é um passo complexo
+  - testes e manutenção do sistema permitem a remoçao de faltas
+- tolerância
+  - mesmo se faltas ainda estiverem presentes, seus efeitos não devem ser percebidos como falhas
+  - necessário detectar e se recuperar de erros
+  - exemplo
+    - sistema de arquivos que mantenha um journal, como o ext3
+
+---
+
+- redundância como ferramenta de melhoria
+  - para previnir faltas, redundância de tempo para refinar projetos
+  - para remover faltas, redundância de tempo para testar e manter o sistema
+    - remover os pontos únicos de falha (SPOF, Single Point of Failure)
+- no caso de um sistema distribuído
+  - redundância = cópias ou réplicas
+  - quando um apresenta erro, outros processos podem continuar a operar
+
+### Replicação
+
+- ideia simples
+  - criar cópias de um componente (serviço) para garantir disponibilidade
+- implementação complexa
+  - diversas possibilidades
+  - diferentes níveis de "consistência" e corretude
+    - cada um com prós e contras
+
+### Replicação - Multi-escritores
+
+- clientes enviam modificações (escritas) e recuperações (leituras) para qualquer réplica
+- encaminhamento de mensagens
+  - udp
+  - tcp
+  - ordem?
+- anti-entropia
+  - combinação de gossiping e usando relógios vetoriais para concordar nas versões de dados conflitantes
+  - em algum momento replicas estarão consistentes, eventula consistency
+  - exemplos: Cassandra, Redis, Dynamo
+  - estado alcançado não necessariamente faz sentido
+
+### Replicação - Soluções
+
+- Único-escritor
+  - Operações de escrita direcionadas para uma única réplica
+  - Operações de leitura podem ser direcionadas à mesma réplica ou a quaisquer das replicas
+    - depende da consistência dos clientes
+  - primário/cópias (primary/backup)
+    - operações x estado
+      - o que o primário deve passar para as cópias?
+    - cópias desatualizadas
+      - operações de leituras podem ser feitas nas cópias?
+  - replicação em cadeia (chain replication)
+    - generalização do primário
+    - processos se organizam em uma sequência
+    - atualizações sempre direcionadas ao primário (cabeça)
+    - leituras
+      - se necessidade de dados escritos mais recentemente, também direcionadas à cabeça
+      - caso contrário, podem ser direcionadas aos processos na cauda
+        - diminui a carga de trabalho na cabeça
+        - quanto mais relaxado for a exigência de "frescor" dos dados, mais para o fim da cauda a replicação pode ser enviada
+  - identificação de falhas é crítico para bordagens baseadas em um primário
+  - primeiro desafio está em identificar a falha
+    - tarefa não trivial ou impossível em algumas situações
+  - identificação perfeita de falhas
+    - e as operações que já foram entregues para o primário mas que ainda não foram propagadas para as réplicas
+    - se esta situação for inaceitável, replicação ativa pode ser usada
+
+### Replicação ativa
+
+- Todas as cópias executam todos os comandos
+- Todas aptas a continuar a executar o serviço a qualquer instante
+- exemplo - replicação de máquinas de estados
+  - utiliza primitivas de comunicação em grupo
+  - primitivas vistas anteriormente não são funcionais
+    - não toleram falhas
+
+### Dependabilidade
+
+- sistema ter a propriedade de se poder depender do mesmo
+- componente C depende de um componente C' se a corretude do comportamento de C depende da corretude do componente C'
+- propriedade pode ser dividida em outras propriedades mais "simples"
+  - disponibilidade (availability) - prontidão para uso
+  - confiabilidade/fiabilidade (reliability) - capacidade de funcionar corretamente
+  - segurança (safety) - capacidade de evitar danos
+  - integridade (integrity) - capacidade de manter dados consistentes
+  - manutenibilidade (maintainability) - capacidade de ser mantido
+
+- disponibilidade
+  - (tempo de disponiblidade acordado - tempo de indisponibilidade) / tempo de disponibilidade acordado
+
+- confiabilidade
+  - tempo médio para falha, MTTF (mean time to failure)
+    - expectativa de quanto tempo resta até que o sistema apresente o próximo defeito (relevante)
+  - tempo médio para diagnóstico, MTTD (mean time to diagnosis)
+    - expectativa de quanto tempo resta até que o sistema seja diagnosticado
+  - tempo médio para reparo, MTTR
+  - tempo médio entre falhas, MTBF (mean time between failures)
+    - expectativa de quanto tempo resta até que o sistema apresente o próximo defeito (relevante)
+
+### Detectores (não confiáveis) de falha
+
+- necessidade de perceber quando problemas acontecem
+  - exemplo, componente não funcional pode necessitar manutenção
+    - reinicialização, troca de disco ou uma fonte, etc
+- detectores de falhas
+  - introduzidos por Chandra e Toueg
+  - forma de encapsular a percepção do estado funcional dos outros processos
+
+---
+
+- detectores de falhas
+  - podem ser confiáveis ou não confiáveis
+- normalmente implementados por meio de trocas de mensagens de heartbeat
+- mensagens são esperadas em momentos específicos
+  - recebimento sugere que remetente continua funcional
+
+---
+
+- propriedades
+  - completudo (completeness)
+    - capacidade de suspeitar de um processo defeituoso
+  - acurácia (accuracy)
+    - capacidade de não suspeitar de um processo correto
+  - processo correto:
+    - não falha durante execução do protocolo
