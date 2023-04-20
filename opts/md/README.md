@@ -400,3 +400,162 @@ Outros problemas que podem comprometer a qualidade dos dados são:
 - Há dois passos chaves para converter dados tabulares (relacionais) em multidimensionais
   - Definição de dimensões
   - Definição de medidas
+
+## Classificação de Dados
+
+> Aprender conceitos básicos sobre classificação de dados
+---
+> Conhecer dois métodos de classificação da literatura: k-vizinhos mais próximos e árvore de decisão
+
+- É tarefa de organizar objetos em diversas categorias pré-definidas;
+- Engloba muitas aplicações distintas:
+  - Detecção de spam
+  - Diagnóstico de doenças
+  - Classificação de imagens
+  - ...
+
+---
+
+- Classificação
+  - Entrada
+    - conjunto de atributos
+  - Modelo de classificação
+    - classificador que aprende a partir dos dados de treinamento como mapear um conjunto de atributos x no seu rótulo de classe y
+  - Saída
+    - Rótulo de classe (Y)
+
+---
+
+- Formalmente:
+  - Dados de entrada de uma tarefa e classificação é uma conjunto de instâncias, cada uma delas denotada pela tupla(x, y)
+    - x denota os atributos
+    - y a classe
+  - Se y é discreto -> Classificação
+  - Se y é contínuo -> Regressão
+
+- Modelagem descritiva: serve como uma ferramenta explicativa para distinguir entre objetos e classes diferentes
+  - Exemplo: Quais características definem um mamífero?
+- Modelagem preditiva: Utilizado para prever o rótulo de uma classe de registraos não conhecida
+  - Exemplo: Tendo as características, como determinar a classe à qual uma criatura pertence (e.g. mamífero ou réptil)
+
+### Processo de Classificação
+
+- Dados são separados em dados de teste e dados de treinamento
+- Dados de treino
+  - São alimentados em um algoritmo de aprendizagem
+  - então o modelo de classificação converge
+- Dados de teste
+  - Utiliza o modelo pronto
+  - Cálcula a acurácia do modelo em relação aos dados de teste
+
+### Críterios de Comparação dos Métodos
+
+- Acurácia: capacidade de classificar corretamente novas tuplas em uma base de dados
+- Rapidez: mede o tempo gasto na classificação dos dados
+- Robustez: habilidade de classificar corretamente mesmo na presença de ruídos e valores desconhecidos
+- Escalabilidade: eficiência de um classificador ou método em grandes volumes de dados
+- Interpretabilidade: facilidade de um usuário entender ou compreender as regras produzidas pelo classificador
+
+### Avaliação de Desempenho
+
+- É baseada nas contagens de registros de testes previstos corretamente e incorretamente pelo modelo
+- Acurácia = mede a porcentagem das tuplas dos dados de teste que são corretamente classificados
+- Erro = 1 - Acurácia
+- Estas contagens são tabuladas em uma tabela conhecida como Matriz de Confusão
+
+Matriz confusão  | C1 | C2 
+-------|----------|--------
+C1 | Positivos verdadeiros | Falsos Negativos
+C2 | Falsos negativos | Negativos verdadeiros
+
+### Outras Medidas de Desempenho
+
+- Sensitividade: capacidade de um classificador de detectar todos os exemplos positivos
+  - Sensitividade = Positivos verdadeiros / (Positivos verdadeiros + Falsos negativos)
+
+- Especificidade: capacidade de um classificador de detectar todos os exemplos negativos
+  - Especificidade = Negativos verdadeiros / (Negativos verdadeiros + Falsos positivos)
+
+- Precisão: capacidade de um classificador de não classificar como positivo exemplos negativos
+  - Precisão = Positivos verdadeiros / (Positivos verdadeiros + Falsos positivos)
+
+### k-vizinhos mais próximos (kNN)
+
+- Tipo de aprendizado denominado Lazy Learning
+- "If it walks like a duck, and quacks like a duck, looks like a duck, then it must be a duck"
+- kNN atribui uma classe a um dado objeto por considerar a classe mais frequente entre seus k objetos mais próximos
+- Informalmente, o algoritmo pode ser descrito nos passos a seguir:
+  - Armazene a base de dados (atributos e classe) na memória
+  - Para cada novo objeto, calcule a proximidade dele com os objetos armazenados em memória
+  - Classifique o novo objeto na classe mais frequente entre seus k vizinhos mais próximos
+
+---
+
+- Dados: DB de m tuplas classificadas de treino (a1, a2, ..., an, C)
+- Determinar o parâmetro K = nº de vizinhos mais próximos
+- Uma tupla X = (x1, x2, ..., xn) não classificada (dados teste)
+- Os valores dos atributos são normalizados
+  - valor normalizado = (valorReal - Min-a1) / (Max-a1 - Min-a1)
+- Calcula distância euclidiana de X e todas as tuplas do DB (treino)
+- Ordena a distância e determina os vizinhos mais próximos com base na distância mínima k-ésimo
+- Obtém-se as k-tuplas do DB mais próximas de X
+- A classe de X é a classe que aparecer com maior frequência
+
+---
+
+- É preciso estar atento com as etapas de pré-processamento e as medidas de proximidade escolhidas
+- A etapa de teste pode ser um pouco mais lenta que a de outros algoritmos
+- Considera informações locais para realizar a predição, o que pode ser uma limitação em bases de dados com muitos ruídos
+- Pode produzir fronteiras de forma arbitrária devido a representação mais flexível do modelo
+
+### Árvore de Decisão
+
+- Árvore de decisão são uma das formas mais simples (e mais bem sucedidas) de aprendizagem automática
+- Basicamente, elas tomam como entrada um objeto ou situação descritos por um conjunto de atributos e retorna uma decisão (classe) executando uma sequência de testes
+  - Cada nó interno da árvore corresponde a uma teste do valor de uma das propriedades, e as ramificações a partir do nó são identificadas com os valores possíveis do teste
+  - Cada nó folha especifica o valor a ser retornado se aquela folha for alcançada
+
+#### Como construir uma árvore de decisão
+
+- Encontrar uma árvore ótima é computacionalmente inviável por causa do espaço de busca (pesquisa) a ser realizada
+- Apesar disso, diversos algoritmos eficientes têm sido desenvolvidos para induzir uma AD razoável, embora não perfeita, em uma quantidade adequada de tempo
+- Estes algoritmos usam uma estratégia que cresce AD tomando decisões ótimas, a fima de particionar os dados
+- Existem diversos algoritmos de AD que adotam essa estratégia de particionar, tais como ID3, C4.5, C5.0, CART, CHAID, etc.
+
+#### Algoritmo ID3
+
+- Constrói AD a partir do nó raiz e começa perguntando, Qual atributo deveria ser testado na raiz da árvore?
+- Cada atributo é avaliado usando um teste estatístico para determinar como este classifica dados de treino
+- O melhor atributo é utilizado como o nodo raiz
+- Um descendente do nodo raiz é criado, então para cada valor deste atributo, os dados de treino são particionados
+
+#### Algoritmo de Aprendizagem de Árvores de Decisão (informal)
+
+- Se exitem alguns exemplos positivos e alguns negativos, escolha o melhor atributo para dividí-los
+- Se todos os exemplos restantes são positivos, então crie um nó folha com a classe positiva
+
+---
+
+- Se não resta nenhum atributo, mas há exemplos e negativos, temos um problema
+- Isso acontece quando
+  - alguns dados estão incorretos, dizemos que existe ruído nos dados
+  - os atributos não fornecem informações suficientes
+  - o domínio não é completamente determinístico
+- Saída simples: utilizar uma votação pela maioria
+
+#### Escolha de atributos
+
+- Idéia: um bom atributo divide os exemplos em subconjuntos que (preferivelmente) são "todos positivos" ou "todos negativos"
+
+- Como definir o que é um atributo melhor?
+  - A escolha de atributos deve minimizar a profundidade da árvore de decisão
+    - Escolher um atributo que vá o mais longe possível na classificação dos dados
+
+#### Ganho de informação na divisão
+
+- Entropia é o cálculo do Ganho de Informação baseado em uma medida utilizada na teoria da informação
+- Entropia (Entropia) caracteriza a impureza dos dados: em um dataset, é uma medida da falta de homogeneidade dos dados de entrada em relação a sua classificação
+- Entrop(A) = -p1 log2 p1 - p2 log2 p2
+  - p1 = probabilidade de um exemplo ser positivo
+  - p2 = probabilidade de um exemplo ser negativo
+- Entrop(D)
