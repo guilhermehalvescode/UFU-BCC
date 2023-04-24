@@ -681,9 +681,116 @@ Soluções para exclusão mútua:
 ---
 
 - propriedades
-  - completudo (completeness)
+  - completude (completeness)
     - capacidade de suspeitar de um processo defeituoso
   - acurácia (accuracy)
     - capacidade de não suspeitar de um processo correto
   - processo correto:
     - não falha durante execução do protocolo
+
+---
+
+- Classificação: captura combinações de eventos apresentadas
+  - Completude Forte
+    - A partir de algum instante, todo processo falho é suspeito permanentemente por todos os processos corretos
+  - Completude Fraca
+    - A partir de algum instante, todo processo falho é suspeito permanentemente por algum processo correto
+  - Precisão Forte
+    - Todos os processos são suspeitos somente após terem falhado
+  - Precisão Fraca
+    - Algum processo correto nunca é suspeito de ter falhado
+  - Precisão Eventual Forte
+    - A partir de algum instante, todos os processos são suspeitos somente após terem falhado
+  - Precisão Eventual Fraca
+    - A partir de algum instante, algum processo correto nunca é suspeitado
+
+---
+
+- Detector ideal
+  - Completude Forte e Precisão Forte
+  - Conhecidocomo P ou Perfeito
+  - Só podem ser implementados em sistema síncronos
+    - ausência de uma mensagem significa que mensagem não será entregue
+  - Em ambientes parcialmente síncronos
+    - É possível implementar detectores não confiáveis
+    - Se os processo dispõem de temporizadores precisos
+      - Detector pode considerar um limite de tempo para tentar determinar processos encontram-se defeituosos ou não, como nas figuras apresentadas acima
+    - Detectores podem voltar atrás em suas suspeitas
+    - Informação provida já pode ser suficiente para que se resolve diversos problemas em computação distribuído
+
+### Consistência
+
+- Modelos
+  - Surgiram em dois mundos diferentes
+    - Sistemas distribuídos: diz respeito à execução de conjuntos de operações individuais sobre objetos simples, como uma variável
+    - Bancos de dados: se refere às garantias dadas por transações
+  - Apesar do ponto de partida disjunto, os dois pontos de vista podem ser unificados
+
+---
+
+- Modelos - simplificação
+  - Considere um banco de dados para falar tanto sobre modelos para operações simples quanto para transições
+  - Tabela do tipo chave/valor
+    - Podem ser associadas a comandos
+      - X recebe 'João' e qual o valor de Y
+    - Várias partes:
+      - `{"Endereço": "Av1, número2", "Profissão": "Computeiro"}`
+  - Simplificação poderosa (bancos NOSQL)
+
+---
+
+- Expectativa x Realidade
+  - Esta expectativa é o que denominamos um modelo de consistência
+  - Processos esperam um certo comportamento quanto ao funcionamento deste banco
+    - Exemplo, ao escrever um dado no banco, o cliente geralmente espera que as escritas aconteçam na ordme em que as disparou e que, ao ler, lhe seja retornado o "último" valor escrito
+
+- Níveis de Consistência
+  - Forte: leituras sempre retornam versão mais recente do dado sendo lido
+    - Propagação instantânea ou locks dos dados sendo manipulados enquanto a propagação acontece
+  - Fraca: leituras podem retornar versões mais antigas
+
+---
+
+- Implementação de modelo de consistência
+- Dificuldades:
+  - Operações não são atõmicas
+  - Processo em máquinas distintas
+  - Tempo de propagação para os comandos e respostas
+  - O problema se agrava com banco de dados distribuído
+
+### Modelos centrados nos dados
+
+- Linearizabilidade (linearizability)
+  - Modelo mais forte de consistência
+  - Operações aparentem executar atomicamente
+  - Respeitam a ordem temporal das ações
+  - Mesmo comportamento de um sistema centralizado
+  - Execução é equivalente a uma thread executando, onde não há concorrência entre as operações
+
+---
+
+- Consistência Sequencial (sequential consistency)
+  - permite leituras de versões antigas
+  - permite escritas em ordens diferentes
+  - mesma sequência de escritas em todo o banco
+
+---
+
+- Consistência Causal (causal consistency)
+  - Escritas com potencial relação causal são vistas por todos os processo na mesma ordem
+  - Escritas concorrentes (não casualmente relacionadas) podem ser vistas em ordem diferentes por processos diferentes
+
+---
+
+- Consistência FIFO (FIFO consistency)
+  - Escritas de um processo são vistas por todos os outros processos na ordem em que foram feitas
+  - Escritas de diferentes processos podem ser vistos em ordem diferentes
+
+---
+
+- Consistência de Entrada
+  - Efeitos de operações individuais em um grupo não são visíveis
+  - Variáveis de sincronização
+    - Acesso às variáveis de sincronização da datastore é sequencialmente consistente
+    - Acesso à variável de sincronização não é permitido até que todas as escritas das anteriores tenham sido executadas em todos os lugares
+    - Acesso aos dados não são permitidos até que sejam liberados
