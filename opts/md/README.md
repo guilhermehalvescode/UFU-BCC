@@ -559,3 +559,159 @@ C2 | Falsos negativos | Negativos verdadeiros
   - p1 = probabilidade de um exemplo ser positivo
   - p2 = probabilidade de um exemplo ser negativo
 - Entrop(D)
+
+### Redes neurais
+
+- Aprender conceitos básicos sobre redes neurais
+- Entender o funcionamento de um neurônio
+- Entender a arquitetura e principais aplicações de tais modelos
+
+---
+
+- Um neurônio é uma célula no cérebro cuja principal função é coletar, processar e disseminar sinais elétricos
+  - A capacidade de processamento de informações no cérebro emerge de redes de neurônios
+- Parte do trabalho incial em IA teve como objetivo tentar criar redes neurais artificiais
+- Cérebro:
+  - 10¹¹ neurônios de 20 tipos diferentes
+  - 10¹⁴ sinapses
+  - Sinais são sequências de pulsos elétricos com ciclos de 1ms-10ms
+
+---
+
+#### "Neurônio" de McCulloch e Pitts (1943)
+
+![mccullochPitts](images/mccullochPitts.png)
+
+- Modelo matemático de um neurônio
+- O neurônio "dispara" quando uma combinação linear de suas entradas excede um certo limiar
+- Modelo simplificado de um neurônio real, serve para estudar propriedades abstratas de redes neurais
+- A área de neurociência computacional estuda modelos mais detalhados
+
+#### Unidades em redes neurais
+
+- Uma ligação da unidade j para unidade i serve para propagar a ativação ai desde j até i
+- Cada ligação tem um peso numérico wij, que determina a sua intensidade
+- Cada unidade calcula uma soma
+
+#### Funções de Ativação
+
+- A função de ativação tem que atender a dois critérios:
+  - Deve estar ativa (próxima de +1) para entradas "corretas" e inativa (próxima a 0) para entradas "erradas"
+  - Deve ser não linear para que a rede como um todo possa representar funções não-lineares
+
+#### Estruturas de Rede
+
+- Existem duas categorias principais de redes neurais:
+  - Redes acíclicas ou de alimentação direta
+    - Representam uma função de sua entrada atual
+    - Não têm nenhum estado interno além de pesos
+  - Redes cíclicas ou recorrentes
+    - Utilizam suas saídas para realimentar suas entradas
+    - Níveis de ativação da rede formam um sistema dinâmico
+    - Podem adimitir memória de curto prazo, tornando-se mais interessantes como modelos do cérebro
+
+#### Exemplo: Rede de Alimentação Direta
+
+- Uma rede de alimentação direta representa uma função não-linear de suas entradas
+- O aprendizado ocorre através do ajuste dos pesos das ligações
+
+#### Unidades de Saída
+
+- Uma rede neural pode ser usada para classificação ou regressão
+- Para regressão:
+  - Utiliza-se diretamente o valor na unidade de saída
+- Para classificação binária:
+  - Um valor acima de 0,5 na unidade de saída é interpretado como uma classe e abaixo de 0,5 como a outra
+- Para classificação multi-classe (k classes):
+  - Utiliza-se k unidades de saída, como o valor de cada unidade representando a probabilidade de pertencer a uma classe
+
+#### Camadas
+
+- As redes de alimentação direta normalmente são organizadas em camadas
+- Cada unidade recebe a entrada de unidades situadas na cama imediatamente precedente
+- A rede abaixo possui uma camada de entrada, uma camada oculta e uma camada de saída
+
+#### Espaço de Hipóteses de um Perceptron
+
+- Com uma funçã ode ativação de limiar, a função de saída do perceptron é dada por:
+  - Somatório (Wj xj) > 0 ou W . x > 0
+- Isso equivale a um separador linear
+
+#### Aprendizado de Perceptrons
+
+- O aprendizado é formulado como uma busca de otimização no espaçao de pesos
+  - Ajusta-se os pesos da rede para minimizar alguma medida de erro no conjunto de treinamento
+- A médida "clássica" de erro é a soma dos erros quadráticos
+- O erro quadrático para um único exemplo com entrada x e saída verdadeira y é dado por:
+  - E = Err²/2 = (y - hw(x))²/2
+- onde hw(x) é a saída do perceptron
+
+---
+
+- O algoritmo executa os exemplos de treinamento através da rede, um de cada vez, ajustando os pesos depois de cada exemplo
+- Um ciclo através dos exemplos é chamado de época
+- As épocas são repetidas até ser alcançado um critério de parada
+  - Em geral, o fato de as mudanças de pesos se tornarem muito pequenas
+
+#### Curvas de Aprendizado
+
+- O perceptron converge para uma função consistente se ela pode ser representada linearmente
+
+#### Redes Neurais de Alimentação Direta de Várias Camadas
+
+- O caso mais comum usa única camada oculta
+  - Com uma única camada podemos representar qualquer função contínua
+  - Com duas, até mesmo funções discontínuas podem ser representadas
+- O número de unidades ocultas tem que ser escolhido "manualmente"
+  - Normalmente utiliza-se validação cruzada
+
+#### Expressividade de Redes Neurais
+
+- Para representar qualquer função precisamos ir aumentando exponencialmente o número de unidades ocultas
+
+## Avaliação de desempenho
+
+- Usada quando o modelo de classificação já está construído
+- Pode ser aplicado um conjunto de teste para prever os rótulos de classe de registros não vistos anteriormente
+- Muitas vezes é importante para medir o desempenho do modelo no conjunto de teste, porque tal medição fornece uma avaliação imparcial do seu erro e generalização
+- A precisão é calculada do conjunto de teste para comparar o desempenho de diferentes classificadores no mesmo domínio. Então, os rótulos (as saídas) devem ser conhecidas
+
+### Treinamento e Teste
+
+#### Método Holdout
+
+- Neste métodos os dados originais são particionados em dois conjuntos disjuntos, D1(Treinamento) e D2(Teste)
+- Um modelo de classificação é induzaido a partir do D1 e seu desempenho é avaliado em D2
+- A proporção dos dados reservados para D1 e D2 fica na análise de discretização (e.g. 50-50 ou 2/3 = D1 e 1/3 = D2)
+- Este método possui algumas limitações
+  - Caso tenha menos exemplos para D1, o modelo pode não ser tão bom, diferente se tivesse mais exemplos para o conjunto D1
+
+#### Cross-Validation (k-fold Cross-validation)
+
+- No método de validação cruzada, os dados iniciais são particionados em k partes, D1, ..., Dk de tamanhos iguais:
+  - Durante cada execução i (i = 1...k) Di é escolhido para teste e o restante das partições são utilizadas para treino
+  - Este processo é repetido k vezes, cada vez com uma partição diferente para teste
+
+![kfoldCrossValidation](images/kfoldCrossValidation.png)
+
+- O erro total é a soma dos de todas as k execuções. Outra forma, pode-se obter acurácia = nº total de tuplas bem classificadas nas k iterações dividido pelo total de tuplas no DB
+
+### Medidas para Classificadores (classes não-balanceadas)
+
+- Sensitividade (recall) = TP / (TP + FN)
+  - pacientes classificados como positivos dentre todos os que realmente são positivos
+- Precisão (precision) = TP / (TP + FP)
+  - pacientes classificados como positivos dentre todos os que foram classificados como positivos
+- Precisão e Recall: medidas originadas em **Recuperação de Informação** utilizadas em Classificação, quando se lida com "classes não-balanceadas"
+  - Medida F = 2p / (p + r)
+    - p = precisão
+    - r = recall
+
+#### Curva ROC (Receiver Operating Characteristic)
+
+- Técnica para visualizar, avaliar e selecionar classificadores baseado em seus desempenhos (Caract, Operacionais Receptor)
+- Para realizar estas análises, gráficos ROC podem mostrar o limite de decisão de um classificador em diferentes níveis de sensibilidade e especificidade
+
+---
+
+- A curva ROC é um gráfico da taxa de verdadeiros positivos (TPR) contra a taxa de falsos positivos (FPR) para diferentes valores de limite de decisão
