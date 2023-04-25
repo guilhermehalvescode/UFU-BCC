@@ -887,3 +887,13 @@
   - Laravel, Symfony, Zend, etc
 - Serviços gratuitos de hospedagem com suporte a php
 - Muito popular e de fácil aprendizado
+
+### Comunicação PHP com MySQL
+
+- MySQLi Extension (MySQL Improved)
+  - Interface específica para o MySQL
+  - Desempenho otimizado
+  - Suporta alguns recursos espcíficos do MySQL
+- PHP Data Objects (PDO) Extension
+  - Provê interface única e consistente para vários SGBDs
+  - Incluindo MySQL, PostgreSQL, Firebird, IBM DB2, etc.t
