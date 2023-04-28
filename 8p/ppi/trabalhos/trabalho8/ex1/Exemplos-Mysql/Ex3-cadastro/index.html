@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <!-- 1: Tag de responsividade -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro de Cliente</title>
+
+  <!-- 2: Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <style>
+    body {
+      padding: 1rem;
+    }
+    button {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <main>
+      <form action="cadastra-cliente.php" method="POST" class="row g-3">
+
+        <!-- Nome e CPF -->
+        <div class="col-9">
+          <label for="nome" class="form-label">Nome completo</label>
+          <input type="text" name="nome" class="form-control" id="nome">
+        </div>
+        <div class="col-3">
+          <label for="cpf" class="form-label">CPF</label>
+          <input type="text" name="cpf" class="form-control" id="cpf">
+        </div>
+
+        <!-- E-mail e senha -->
+        <div class="col-sm-9">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" name="email" class="form-control" id="email">
+        </div>
+        <div class="col-sm-3">
+          <label for="senha" class="form-label">Senha</label>
+          <input type="password" name="senha" class="form-control" id="senha">
+        </div>
+
+        <!-- Data de nascimento, estado civil e altura -->
+        <div class="col-sm">
+          <label for="datanascimento" class="form-label">Data Nascimento</label>
+          <input type="date" name="datanascimento" class="form-control" id="datanascimento">
+        </div>
+        <div class="col-sm">
+          <label for="estadocivil" class="form-label">Estado Civil</label>
+          <select name="estadocivil" class="form-select" id="estadocivil">
+            <option selected>Selecione</option>
+            <option value="solteiro">Solteiro</option>
+            <option value="casado">Casado</option>
+            <option value="viuvo">Viúvo</option>
+          </select>
+        </div>
+        <div class="col-sm-3">
+          <label for="altura" class="form-label">Altura (cm)</label>
+          <input type="number" name="altura" class="form-control" id="altura" value="170">
+        </div>
+        
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+</body>
+
+</html>

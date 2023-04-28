@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Exercício 1</title>
+</head>
+
+<body>
+  <section>
+    <h1>Exemplo 1 - Hello World - Listar alunos</h1>
+    <p>O código realiza a conexão com um banco de dados através do uso de PDO's e logo após realiza uma query no banco
+      de dados buscando todos os alunos (atributos nome e telefone) para listar em uma tabela</p>
+  </section>
+  <section>
+    <h1>Exemplo 2 - Cadastro Vulnerável a Injeção de SQL</h1>
+    <p>
+      O código da página principal representa uma seção de cadastro de alunos, tendo como visualizar os alunos cadastrados na página mostra-alunos.php.
+      Na mesma página de cadastro de aluno há um formulário que enviara as informação de nome e endereço do aluno por meio de um post no arquivo cadastro-vulneravel.php.
+      No arquivo de cadastro-vulneravel.php, o mesmo se conecta com o banco e pega as informações de cadastro do aluno e insere elas no banco por meio de uma query no banco.
+      O código é vulnerável a SQL Injection, pois os argumentos preenchidos pelo usuário são diretamente inseridos na query, permitindo que o mesmo modifique a query.
+    </p>
+  </section>
+  <section>
+    <h1>Exemplo 3 - Cadastrar Cliente</h1>
+    <p>
+      O código da página principal representa um cadastro de clientes, que cadastra esses clientes no através do arquivo cadastra-cliente.php usando de técnicas que não permitem
+      a ocorrência de SQL Injection. Nesse exemplo também há códigos para a exclusão de clientes (exclui-cliente.php) e listagem de clientes (mostra-clientes.php).
+    </p>
+  </section>
+  <section>
+    <h1>Exemplo 4 - Testar login</h1>
+    <p>
+      O código da página principal apresenta um formulário de login com informações de login e senha e com a submissão desse formulário para o script login.php.
+      O script login.php se conecta com o banco de dados, busca o cliente pelo email passado no login e verifica-o com o hash armazenado no banco.
+      Se o login for correto o usuário é redirecionado para a página home.html, senão ele é redirecionado para index.html para realizar o login novamente.
+    </p>
+  </section>
+  <section>
+    <h1>Exemplo 5 - Cadastrar Pedido</h1>
+    <p>
+      O código da página principal representa um cadastro de clientes com endereços de entrega, onde esses dados são enviados para o script, o qual cadastra através de uma transação as informações do cliente na
+      respectiva tabela e logo após as informações do endereço na tabela de endereço de entrega.
+      Também há uma página para listagem de pedidos, que conecta no banco e realiza uma busca com join da tabela de cliente com a de endereços de entrega, listando as informações em uma table.
+    </p>
+  </section>
+
+</body>
+
+</html>

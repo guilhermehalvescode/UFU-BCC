@@ -1,0 +1,37 @@
+div[data-tab="contato"] form {
+    width: fit-content;
+    margin: 0 auto;
+}
+
+
+
+div[data-tab="contato"] textarea {
+    resize: vertical;
+    display: block;
+}
+
+#mensagem {
+    height: 150px;
+}
+
+
+div[data-tab="contato"] input, textarea {
+    box-sizing: border-box;
+    border: lightgray 1px solid;
+
+}
+
+div[data-tab="contato"] input:focus, textarea:focus, :checked {
+    box-shadow: 0 0 5px gray;
+}
+
+div[data-tab="contato"] button {
+    color: white;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    padding: 1rem;
+    background-color: #49bf49;
+    box-shadow: 0 0 5px lightgray;
+}
