@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css"
+    >
+  </head>
+  <body>
+    <div class="container py-3 px-5">
+      <form action="createClient.php" class="container" method="post">
+        <div class="row mb-3">
+          <div class="col-9">
+            <label for="nome" class="form-label">Nome completo</label>
+            <input type="text" class="form-control" name="nome" id="nome">
+          </div>
+          <div class="col-3">
+            <label for="cpf" class="form-label">CPF</label>
+            <input type="text" class="form-control" name="cpf" id="cpf">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-9">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" id="email">
+          </div>
+          <div class="col-sm-3">
+            <label for="pass" class="form-label">Senha</label>
+            <input type="password" class="form-control" name="pass" id="pass">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-2">
+            <label for="cep" class="form-label">CEP</label>
+            <input type="text" class="form-control" name="cep" id="cep">
+          </div>
+          <div class="col-sm-10">
+            <label for="end" class="form-label">Endereço</label>
+            <input
+              type="text"
+              placeholder="Avenida João Naves de Ávila"
+              class="form-control"
+              name="end"
+              id="end"
+            >
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm">
+            <label for="district" class="form-label">Bairro</label>
+            <input
+              type="text"
+              class="form-control"
+              name="district"
+              id="district"
+            >
+          </div>
+          <div class="col-sm">
+            <label for="city" class="form-label">Cidade</label>
+            <input type="text" class="form-control" name="city" id="city">
+          </div>
+          <div class="col-sm">
+            <label for="state" class="form-label">Estado</label>
+            <select class="form-select" id="state" name="state">
+              <option selected>Selecione</option>
+              <option value="MG">MG</option>
+              <option value="SP">SP</option>
+              <option value="ES">ES</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                name="agree"
+                type="checkbox"
+                value="true"
+                id="agree"
+              >
+              <label class="form-check-label" for="agree">
+                Concordo com os termos
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <button type="submit" class="btn btn-primary">
+              <span class="bi bi-plus"></span> Cadastrar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  </body>
+</html>

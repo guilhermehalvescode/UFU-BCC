@@ -1,3 +1,20 @@
+<?php
+
+require "./db.php";
+$pdo = db();
+
+try {
+  $sql = <<<SQL
+  SELECT nome, email, mensagem
+  FROM contato;
+  SQL;
+
+  $stmt = $pdo->query($sql);
+} 
+catch (Exception $e) {
+  exit('Ocorreu uma falha: ' . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,18 +26,32 @@
 <body>
     <table>
         <tbody>
-            <tr>
-                <td>Nome:</td>
-                <td><?php echo htmlspecialchars($_GET['nome'] ?? '')?></td>
-            </tr>
-            <tr>
-                <td>Email:</td>
-                <td><?php echo htmlspecialchars($_GET['email'] ?? '')?></td>
-            </tr>
-            <tr>
-                <td>Mensagem:</td>
-                <td><?php echo htmlspecialchars($_GET['mensagem'] ?? '')?></td>
-            </tr>
+            <thead>
+                <tr>
+                    <td>Nome:</td>
+                    <td>Email:</td>
+                    <td>Mensagem:</td>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+                while ($row = $stmt->fetch()) {
+
+                    $nome = $row['nome'];
+                    $email = $row['email'];
+                    $mensagem = $row['mensagem'];
+
+
+                    echo <<<HTML
+                    <tr>
+                        <td>$nome</td> 
+                        <td>$email</td>
+                        <td>$mensagem</td>
+                    </tr>      
+                    HTML;
+                }
+                ?>
+            </tbody>
         </tbody>
     </table>
     

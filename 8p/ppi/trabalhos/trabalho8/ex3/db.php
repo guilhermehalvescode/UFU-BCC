@@ -2,12 +2,13 @@
 
 function db()
 {
-  $db_host = "sql106.epizy.com";
-  $db_username = "epiz_33702317";
-  $db_password = "valterValter";
-  $db_name = "epiz_33702317_anuncios";
+  $db_host = "localhost";
+  $db_username = "root";
+  $db_password = "";
+  $db_name = "trabalho8";
+  $db_port = "3306";
 
-  $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
+  $dsn = "mysql:host=$db_host;port=$db_port;dbname=$db_name;charset=utf8mb4";
 
   $options = [
     PDO::ATTR_EMULATE_PREPARES => false, // desativa a execução emulada de prepared statements

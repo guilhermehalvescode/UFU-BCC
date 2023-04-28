@@ -1,6 +1,6 @@
 <?php
 
-require "./db.php"
+require "./db.php";
 
 $pdo = db();
 
@@ -16,6 +16,7 @@ try {
     SQL;
   
     $pdo->exec($sql);
+    header('Location: mostraContato.php');
   } 
   catch (Exception $e) {
     error_log($e->getMessage(), 3, 'log_registraContato.php');
