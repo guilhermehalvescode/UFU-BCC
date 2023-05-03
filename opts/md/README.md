@@ -715,3 +715,158 @@ C2 | Falsos negativos | Negativos verdadeiros
 ---
 
 - A curva ROC é um gráfico da taxa de verdadeiros positivos (TPR) contra a taxa de falsos positivos (FPR) para diferentes valores de limite de decisão
+
+## Regras de Associação
+
+- Regras de associação são usadas para descobrir relações interessantes entre itens em grandes conjuntos de dados
+
+- Uma regra de associação é uma expressão de implicação no formato x -> y, onde x e y são conjuntos disjuntos de itens, x $\cap$ y = $\emptyset$
+
+- Exemplo:
+  - Itens = {leite, pão, manteiga, cerveja, fraldas}
+    - leite, pão -> manteiga
+    - fraldas -> cerveja
+
+### Métricas de Avaliação
+
+- Suporte
+  - determina a frequência na qual uma regra é aplicável a um determinado conjunto de dados
+  - suporte de A, B, C -> D
+    - número de amostras que contém A, B, C e D
+  - probabilidade da ocorrência de uma associação
+  - regras com baixo valor de suporte podem acontecer simplesmente por coincidência, por isso suporte é usado para eliminar regras sem interesse
+- Confiança
+  - determina a frequência na qual os itens Y aparecem em transações que contenham X
+  - Confiança de A, B, C -> D
+    - número de amostras que contém A, B, C e D dividido pelo número de amostras que contém A, B, C
+  - confiabilidade da inferência feita por uma regra, sendo que o valor de confiança é a probabilidade de que a inferência seja verdadeira (x -> y, quando maior a confiança, maior a chance aparecer y quando x aparece)
+
+### Tarefa de Mineração
+
+- Dado:
+  - Um banco de dados de transações D
+  - Um limite de suporte N, 1 >= N > 0
+  - Um limite de confiança M, 1 >= M > 0
+- Problema: Encontrar regras de associação em D que:
+  - Suporte(r) >= N
+  - Confiança(r) >= M
+
+### Algoritmo baseado em duas etapas
+
+- Uma estratégia adotada por diversos algoritmos de mineração de regras de associação é decompor o problema em duas subtarefas principais:
+  - Encontrar todos os itemsets l frequentes
+    - Suporte(l) >= N (Geração de itemsets frequentes)
+      - itemsets = conjunto de itens
+      - etapa custosa, pois varre toda a base dados
+  - Extrair todas as regas de alta confiança a partir dos itemsets frequentes
+    - Confiança(r) >= M (Geração de regras de associação)
+
+### Algoritmo Apriori (AA)
+
+- Descreve como a medida de suporte reduz o nº de itemsets candidatos durante a geração de itemsets frequentes
+- Apriori é o 1º algoritmo de mineração de regras de associação, controla o crescimento de itemsets candidatos
+  - Propriedade importante
+    - Se um itemset é frequente, então todos os seus subconjuntos também são frequentes
+
+#### AA: 1ª Encontrar intemsets frequentes
+
+- Entrada: BD de transações, N
+- Saída: F1, F2, F3, ..., Fn
+
+```portugol
+c1 = itemsets de tamanho 1
+f1 = itemsets frequentes de c1
+k = 1
+while fk não for vazio do
+  ck+1 = Junta(fk, fk)      // gera as combinações de fk
+  ck+1 = Poda(Ck, Fk)       // elimina os conjuntos olhando os subconjuntos não frequentes
+  fk+1 = Valida(BD, ck+1, N) // verifica se os conjuntos são frequentes (recalcula o suporte)
+  k += 1
+```
+
+---
+
+- Geração de candidatos
+  - Gera novos conj. candidatos k itens, baseada nos conj. frequentes k - alpha itens encontradas na iteração anterior
+- Poda de candidatos
+  - Elimina alguns dos conjuntos candidatos de k itens, usando
+
+#### AA: 2º Geração de regras
+
+- Dado um limite mínimo de confiança M, o algoritmo gera todas as regras de associação que satisfazem o limite de confiança
+
+## Agrupamento de Dados
+
+### Clusterização x Classificação
+
+- Classificação
+  - Aprendizado Supervisionado
+    - Amostras de treinamento são classificadas
+    - Número de classes é conhecido
+  - Aprendizado por Exemplo
+- Clusterização
+  - Aprendizado Não Supervisionado
+  - Aprendizado por Observação
+
+### Conceitos
+
+- Clusterização é o processo de agrupar um conjunto de objetos de tal forma que os objetos de um mesmo grupo (chamado cluster) sejam mais similares entre si do que com os objetos de outros grupos (clusters)
+- Em resumo: agrupar objetos similares e separar objetos dissimilares
+- Distâncias intra-clusters são minimizadas, e as distâncias inter-clusters são maximizadas
+
+### Dificuldades
+
+- Encontrar grupos de objetos similares é uma tarefa difícil, pois teremos k^n/n! possíveis partições de n objetos em k grupos
+- Quase todos os algoritmos de clustering requerem os parâmetros de entrada:
+  - Número de clusters
+  - Medida de similaridade
+- Os algoritmos são muito sensíveis a estes valores de parâmetros, produzindo partições muito diferentes
+- Conjuntos de dados reais de alta dimensão (muitos atributos) têm uma distribuição muita ampla o que dificulta a análise
+
+### Medidas de Similaridade
+
+- As medidas de similaridade fornecem valores numéricos que expressam a "distância" entre dois objetos
+- Quanto menor o valor desta "distância", mais semelhantes são os objetos e tenderão a ficar no mesmo cluster
+- Quanto maior a "distância", menos similares serão os objetos e, em consequência, tenderão a ficar em clusters diferentes
+
+### Tipos de Clusterização (Grupos)
+
+- Particionamento x Hierárquicos
+  - Particionais
+    - os clusters são disjuntos
+  - Hierárquicos
+    - clusters possuem subclusters - organizados em árvore
+    - cada cluseter (nó interno da árvore) é a união de seus filhos
+- Exclusivos X Não exclusivos X Fuzzy
+  - Exclusivos
+    - cada objeto pertence a uma único cluster (grupo)
+  - Não exlusivos
+    - existem objetos que são associados a clusters distintos (intersecção de clusters)
+  - Fuzzy
+    - objetos são associados um cluster com um grau de pertinência, 0 (não pertence) e 1 (pertence totalmente)
+- Completos X Parciais
+  - Completos
+    - cada objeto pertence a um cluster
+  - Parciais
+    - existem objetos que não estão associados a nenhum cluster (outliers, ruídos, sem interesse)
+
+### Tipos de Técnicas de Clusterização
+
+- Particionamento
+  - K-means e K-medóides
+- São algoritmos particionais e baseados em protótipos
+- Qual o objetivo
+  - Encontrar um número k de clusters (k é fornecido pelo usuário) que são representados por seus centroides
+
+---
+
+- Hierárquicos Aglomerativos
+  - Produzem agrupamentos começando com clusters unitários e repete aglutinando clusters próximos 2 à 2 até chegar k clusters definido pelo usuário
+- Exemplos: CURE, BIRCH, ROCK, CHAMELEON, etc
+
+### K-means
+
+- Inicializa k pontos como centróides
+- Associar cada objeto da base ao centróide mais próximo
+- Atualiza o centróide com a média dos objetos associados
+- Repetir até a convergência
