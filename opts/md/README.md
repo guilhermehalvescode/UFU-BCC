@@ -211,7 +211,9 @@ Outros problemas que podem comprometer a qualidade dos dados são:
 - amostragem aleatória simples?
   - selecionar uma amostra de forma aleatória com probabilidade uniforme
 - com recolocação?
+  - selecionar n amostras de um conjunto da seguinte forma: seleciona uma e reinsere a mesma de volta na população, realizando o passo anterior até n amostras serem coletadas
 - estratificada?
+  - a população é estratificada em categorias e são escolhidas amostras de cada categória
 
 #### Redução de dimensionalidade
 
