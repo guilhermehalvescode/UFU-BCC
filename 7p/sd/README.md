@@ -794,3 +794,100 @@ Soluções para exclusão mútua:
     - Acesso às variáveis de sincronização da datastore é sequencialmente consistente
     - Acesso à variável de sincronização não é permitido até que todas as escritas das anteriores tenham sido executadas em todos os lugares
     - Acesso aos dados não são permitidos até que sejam liberados
+
+---
+
+- Objetivo
+  - Evitar sincronização global
+  - Se para os clientes parecer consistente, tudo bem
+- Consistência Eventual
+  - Se nenhuma escrita ocorrer em período considerável de tempo, os clientes gradualmente se sincronizarão e ficarão consistentes
+  - Se clientes sempre acessarem as mesmas réplicas, terão impressão de consistência
+- Garantias são do ponto de vista de um cliente
+  - Leituras monotônicas
+  - Escritas monotônicas
+  - Leia suas escritas
+  - Escritas seguem leituras
+
+---
+
+- Leituras Monotônicas
+  - Garantia
+    - Se um processo lê o valor de um item x, qualquer leitura sucessiva de x retornará o mesmo valor ou um mais recente
+  - Exemplo:
+    - Toda vez que se conecta a um servidor de e-mail, seu cliente lê novas mensagens, caso haja
+    - O cliente nunca esquece uma mensagem, mesmo que ainda não esteja no servidor conectado por último
+
+---
+
+- Escritas Monotônicas
+  - Garantia
+    - Se um processo escreve em item x, então esta operação deve terminar antes que qualquer escrita sucessiva em x possa ser executada pelo mesmo processo
+  - Exemplo
+    - Sistema de arquivos na rede:
+      - escrita do conteúdo de um arquivo, em certa posição, só pode ser feita se escritas anteriores já estão registradas no arquivo
+
+---
+
+- Leia suas escritas
+  - Garantia
+    - Se um processo escreve um item x, então leituras sucessivas no mesmo item pelo mesmo processo devem refletir tal escrita
+  - Exemplo
+    - Atualizar código fonte de uma página e exigir que o navegador carrega a nova versão
+
+---
+
+- Escritas seguem leituras
+  - Garantia
+    - Se um processo lê um item x, então escritas sucessivas no mesmo item só podem ser completadas se o mesmo reflete o valor lido anteriormente
+  - Exemplo
+    - Só é permitido enviar uma resposta a uma mensagem se a mensagem em si é vista, independentemente do cliente ter se movimentado
+
+## Consenso
+
+- Replicação de processos
+  - Processo devem entrar em acorodo quanto a uma sequência de comandos a serem processados por todos
+- Problemas de acordo
+  - Processos devem concordar em alguma coisa
+  - Solução depende do modelo computacional
+    - De triviais a impossíveis
+- Difusão atômica e consenso distribuído são problemas equivalentes
+
+### Modelo
+
+- Considere um conjunto sigma = {p1, ..., pn} de n processos
+- Processos se comunicam exclusivamente por meio de troca de mensagens
+  - Primitivas send(m) and receive(m)
+- Assume-se o modelo crash failure
+  - Um processo correto nunca falha
+  - Um processo faltoso eventualmente falha
+- Existem f processos faltosos
+
+### Especificação
+
+- Propriedades
+  - Integridade uniforme: se um processo decide um valor v, então v foi previamente proposto por algum processo
+  - Acordo uniforme: dois processo não podem deciddir de modo diverso
+  - Terminação: todo processo correto eventualmente decide exatamente um valor
+
+### Consenso em sistema síncronos
+
+- Velocidade relativa dos processos e atrasos de mensagens são delimitados
+- Execução procede em sequência de rodadas
+  - Em cada rodada:
+    - Processos geram nova mensagem a partir do estado atual e a enviam a todos os processos
+    - Ao final, aplicam função de transição de estado utilizando o estado atual e mensagens obtidas para definir novo estado
+    - Se um processo falhar no meio de envio de mensagem, apenas um subconjunto dos processos pode receber a mensagem
+
+---
+
+- Algoritmo 1:
+  - Cada processo mantém variável W contendo subconjunto de V, o conjunto de todos os valores possíveis
+  - Inicialmente, cada processo pi possui apenas seu próprio valor inicial em W
+  - Em cada rodada, cada processo pi difunde (broadcasts) sua variável W e, ao final, adiciona todos os elementos recebidos ao seu próprio W
+  - Depois de f + 1 rodadas, pi escolhe um elemento v de W de maneira
+- Exemplo de execução
+  - Por que precisamos de f + 1 rodadas
+    - para garantir que todos os processos receberão os mesmos valores propostos, pois se f + 1 processos falharem, processos terão comandos diferentes
+
+### Consenso em sistemas assíncronos
