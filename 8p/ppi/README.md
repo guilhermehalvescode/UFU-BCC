@@ -897,3 +897,124 @@
 - PHP Data Objects (PDO) Extension
   - Provê interface única e consistente para vários SGBDs
   - Incluindo MySQL, PostgreSQL, Firebird, IBM DB2, etc.t
+
+## AJAX
+
+### XHR
+
+1. Criar objeto XMLHttpRequest(XHR)
+2. Indicar a URL da requisição - método open
+3. Indicar função para tratar resposta - propriedade onload
+4. Enviar a requisição - método send
+
+---
+
+- Exemplo
+
+```js
+let xhr = new XMLHttpRequest()
+
+xhr.open("GET", "filmes.txt", true)
+
+xhr.onload() = function () {
+  if(xhr.status === 200)
+    console.log(xhr.responseText)
+  else
+    console.log("Falha: " + xhr.status + xhr.responseText)
+}
+
+xhr.onerror = function() {
+  console.log("Erro ao nível de rede")
+}
+
+xhr.send()
+```
+
+---
+
+- Propriedades de Evento do XHR
+  - onloadstart
+  - onloadend
+  - onprogress
+  - onreadystatechange
+  - ontimeout
+
+#### XHR req retornando imagem
+
+```js
+let xhr = new XMLHttpRequest();
+xhr.open("GET", "imagemMuitoGrande.jpg");
+xhr.responseType = "blob";
+xhr.onload = function () {
+  const blob = xhr.response;
+
+  const img = document.createElement("img");
+  img.src = window.URL.createObjectURL(blob);
+  document.body.appendChild(img);
+};
+
+xhr.send();
+```
+
+#### XHR req retornando HTML como Document
+
+```js
+let xhr = new XMLHttpRequest();
+xhr.open("GET", "conteudoAdicional.html");
+xhr.responseType = "document";
+
+xhr.onload = function () {
+  const doc = xhr.response;
+  alert(doc.querySelector("h1").textContent);
+};
+
+xhr.send();
+```
+
+#### XHR req retornando JSON
+
+```js
+let xhr = new XMLHttpRequest();
+xhr.open("GET", "endereco.php?cep=38400-100");
+xhr.responseType = 'json';
+
+xhr.onload = function () {
+  if (xhr.response === null) {
+    console.log("Resposta não obtida");
+    return;
+  }
+
+  const endereco = xhr.response;
+  form.bairro.value = endereco.bairro;
+  form.cidade.value = endereco.cidade;
+};
+xhr.send();
+```
+
+#### XHR req enviando JSON
+
+```js
+let objetoJS = {
+  modelo : "Fusca",
+  ano : "1970"
+};
+let xhr = new XMLHttpRequest();
+xhr.open("POST", "cadastra.php");
+
+xhr.onload = function () { ... }
+
+xhr.setRequestHeader("Content-Type", "application/json");
+
+xhr.send(JSON.stringify(objetoJS));
+```
+
+#### Submetendo Formulário com FormData
+
+```js
+let meuForm = document.querySelector("meuForm");
+
+let formData = new FormData(meuForm);
+let xhr = new XMLHttpRequest();
+xhr.open("POST", "cadastra.php");
+xhr.send(formData);
+```
