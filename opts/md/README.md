@@ -838,7 +838,7 @@ while fk não for vazio do
     - os clusters são disjuntos
   - Hierárquicos
     - clusters possuem subclusters - organizados em árvore
-    - cada cluseter (nó interno da árvore) é a união de seus filhos
+    - cada cluster (nó interno da árvore) é a união de seus filhos
 - Exclusivos X Não exclusivos X Fuzzy
   - Exclusivos
     - cada objeto pertence a uma único cluster (grupo)
@@ -872,3 +872,97 @@ while fk não for vazio do
 - Associar cada objeto da base ao centróide mais próximo
 - Atualiza o centróide com a média dos objetos associados
 - Repetir até a convergência
+
+### Clustering hierárquico
+
+- Produz um conjunto de clusters aninhados, organizados como uma árvore
+- Pode ser visualizado como um dendograma
+  - Um diagrama em forma de árvore que registra uma sequência de uniões entre grupos
+
+---
+
+- Dois tipos principais
+  - Aglomerativo
+    - inicia com cada ponto como um cluster individual e finaliza com apenas um cluster
+  - Divisivo
+    - inicia com um cluster contendo todos os pontos e finaliza com k pontos
+
+- Os algoritmos tradicionais usam uma matriz de similaridade ou de proximidade (distância)
+  - Unem ou dividem um cluster de cada vez
+
+### Pontos fortes do clustering hierárquico
+
+- Não precisa assumir nenhum número particular de clusters
+  - Qualquer número desejado de clusters pode ser obtido "cortando" o dendograma no nível adequado
+- Podem corresponder a taxonomias
+  - Exemplo em biologia: o reino animal
+
+### Agrupamento baseado em densidade
+
+- Definição: Clusters são regiões de alta densidade de padrões separadas por regiões com baixa densidade, no espaço de padrões
+- Alogritmos baseados em densidade são projetados para encontrar clusters com base na definição de centro
+
+---
+
+- Definição baseada em centros:
+  - Uma região densa é uma região onde cada ponto tem muitos pontos em sua vizinhança
+
+#### Parâmetros de Ajuste
+
+- Vizinhança: raio Eps
+- Muitos.. : MinPts
+- Assim, uma região densa é uma região em que todos os pontos têm pelo menos MinPts pontos num raio de Eps ao seu redor
+
+#### DBSCAN
+
+- É um algoritmo baseado em densidade
+- Densidade = número de pontos de um raio especificado (Eps)
+- Um ponto é um core point se ele tem mais de um número especificado de pontos (MinPts) dentro do círculo de raio Eps
+  - Estes são pontos que pertencem a um cluster
+- Um border point tem menos do que MinPts dentro do círculo de raio Eps, mas ele está na vizinhança (definida por Eps) de um core point
+- Um noise point (ou outlier) é todo ponto que não é nem core point nem border point
+
+- Observação
+  - A densidade de cada objeto depende dos parâmetro Eps e MinPts
+  - Se Eps é muito grande, então é possível que todos os objetos tenham densidade grande (= m = número de objetos na base)
+  - Se Eps é muito pequeno, então é possível que todos os objetos tenham baixa densidade
+
+##### Conexão por Densidade
+
+- Um ponto p é conectado por densidade a um ponto q (com respeito aos parâmetros Eps, MinPts) se existir um objeto O tal que p e q são alcançáveis por densidade a partir de O
+
+##### Parada do algoritmo
+
+- O algoritmo para quando não há mais possibilidade de ser juntar clusters
+
+##### Vantagens e Desvantagens
+
+- Vantagens
+  - Eficiente em tratar grandes bases de dados
+  - Menos sensível a ruídos
+  - Forma clusters de formato abritário
+  - Usuário não precisa especificar a quantidade de clusters
+- Desvantagens
+  - Sensível aos parâmetros de entrada (Eps e MinPt)
+  - Produz resultados não confiáveis se os clusters têm densidades muito diferentes
+
+## Avaliação de Agrupamentos
+
+### Fórmula geral de avaliação
+
+- Seja C = {C1, ..., Ck}
+- AvaliaçãoTotal = Somatório em C (wi . Avaliação(Ci))
+
+### Clusteres baseados em Protótipos
+
+- Medidas de Avaliação = coesão e separação
+  - coesão: intra cluster
+  - separação: inter clusters
+
+---
+
+- Coesão(Ci) = somatório (proximidade(x, ci))
+  - x pertence a Ci
+  - ci = centroide (centro de gravidade) de Ci
+- Separação(Ci, Cj) = proxmidade(ci, cj)
+
