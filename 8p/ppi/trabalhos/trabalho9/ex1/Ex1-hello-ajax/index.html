@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Teste AJAX - onerror</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      line-height: 1.5rem;
+      background-image: url("images/bg2.jpg");
+      background-size: cover;
+      margin: 0;
+    }
+
+    main {
+      width: 60%;
+      background-color: #fff;
+      border: 0.5px solid #ccc;
+      margin: 0;
+      padding: 2% 4%;
+
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <main>
+    <h1>Faculdade de Computação da UFU</h1>
+    <p>A Faculdade de Computação (FACOM) da Universidade Federal de Uberlândia foi criada em 2000,
+      a partir do extinto Departamento de Informática (DEINF), criado em 1988, no âmbito do CETEC.</p>
+
+    <p>No início dos anos 2000 foi criado na Faculdade o Programa de Pós-Graduação em
+      Ciência da Computação.</p>
+
+    <div id="divDemo">
+      <button type="button">Clique para carregar mais conteúdo com Ajax</button>
+    </div>
+  </main>
+
+  <script>
+    function loadExtraContent() {
+      let xhr = new XMLHttpRequest();
+      xhr.open("GET", "conteudoAdicional.html", true);
+
+      xhr.onload = function () {
+        document.getElementById("divDemo").innerHTML = xhr.responseText;
+      };
+
+      xhr.onerror = function () {
+        console.log("Erro de rede - requisição não finalizada");
+      };
+
+      xhr.send();
+    }
+
+    window.onload = function () {
+      const button = document.querySelector("#divDemo > button");
+      button.addEventListener("click", loadExtraContent);
+    };
+  </script>
+  
+</body>
+
+</html>

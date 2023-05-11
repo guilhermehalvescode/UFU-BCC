@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Descrição Exercício 1</title>
+</head>
+
+<body>
+  <section>
+    <h1>Exemplo 1- Hello ajax</h1>
+    <p>index.html: página com botão que aciona evento para carregar informação de um arquivo extra localizado no servidor, utilizando ajax para tal feito e inserindo o resultado em uma div</p>
+    <p>conteudoAdicional.html: conteúdo que será buscado pela requisição ajax no servidor e adicionado no index.html</p>
+  </section>
+  <section>
+    <h1>Exemplo 2 - Buscando cidade no servidor como texto</h1>
+    <p>index.html: página com input para buscar um cep, onde quando input tem uma string de tamanho igual a nove, envia esse cep no arquivo busca-cidade.php através de um GET, se a resposta for 200 mostra a mensagem recebida em uma span, senão limpa a span e mostra no console as informações retornadas pela requisição</p>
+    <p>busca-cidade.php: arquivo responsável por tratar o GET enviado pelo form no arquivo index.html</p>
+  </section>
+  <section>
+    <h1>Exemplo 3 - Recebendo json 1</h1>
+    <p>index.html: página com input para buscar um cep, onde quando input tem uma string de tamanho igual a nove, envia esse cep no arquivo busca-endereco.php através de um GET, se a resposta for 200 e recebeu um json válido (configuração de responseType = 'json' no xhr valida isso) pega as informações do JSON recebido e insere nos respectivos campos do formulário (rua, bairro, cidade), senão mostra o status retornado da requisição e mostra a mensagem "A resposta não pode ser obtida " no console</p>
+    <p>busca-endereco.php: arquivo responsável por tratar o GET enviado pelo form no arquivo index.html, utilizando uma classe para representar o endereço e enviando as respectivas informações em um json caso exista o CEP no script</p>
+  </section>
+  <section>
+    <h1>Exemplo 4 - Recebendo json 2</h1>
+    <p>index.html: página com input para buscar um cep, onde quando input tem uma string de tamanho igual a nove, envia esse cep no arquivo busca-endereco.php através de um GET, se a resposta for 200 e recebeu um json válido (try catch tentando realizar o json.parse do json valida isso) pega as informações do JSON recebido e insere nos respectivos campos do formulário (rua, bairro, cidade), senão mostra o status retornado da requisição e mostra a mensagem "Falha inesperada " com a mensagem de erro retornada no console. Se o json for inválido mostra a mensagem "String JSON inválida: " com a mensagem de erro retornada pela requisição</p>
+    <p>busca-endereco.php: arquivo responsável por tratar o GET enviado pelo form no arquivo index.html, utilizando uma classe para representar o endereço e enviando as respectivas informações em um json caso exista o CEP no script</p>
+  </section>
+  <section>
+    <h1>Exemplo 5 - Enviando json</h1>
+    <p>
+        index.html: página com input para buscar um cep, onde quando input tem uma string de tamanho igual a nove, 
+        envia esse cep junto com outras informações (email, apikey) no arquivo busca-endereco.php através de um POST no formato JSON, 
+        pega as informações do JSON recebido e insere nos respectivos campos do formulário (rua, bairro, cidade).
+    </p>
+    <p>busca-endereco.php: arquivo responsável por tratar o POST enviado pelo form no arquivo index.html, pegando o JSON enviado através da função file_get_contents('php://input') e transformando em um objeto PHP através da função json_decode(), utilizando uma classe para representar o endereço e enviando as respectivas informações em um json caso exista o CEP no script</p>
+  </section>
+  <section>
+    <h1>Exemplo 6 - login</h1>
+    <p>
+        index.html: página com informações de login (email, senha), onde quando o formulário é submetido, 
+        envia as informações dos inputs através do FormData em uma requisição POST para o arquivo checkLogin.php. Quando as informações são recebidas,
+        caso o status ou mensagem estejam erradas mostra uma mensagem de erro com o status da requisição retornado, porém se as informações forem corretas e o login existir,
+        redireciona para a url informada na resposta (window.location = loginResponse.detail). Caso o login não exista, apresenta para o usuário uma mensagem de erro dando foco no campo de senha     
+    </p>
+    <p>checkLogin.php: arquivo responsável por tratar o POST de login enviado pelo form no arquivo index.html, pegando as informações do POST ($_POST['email'] e $_POST['senha']) e conferindo com um login e senha hardcoded, se forem iguais retorna uma RequestResponse no formato JSON alegando sucesso no login e com URL de redirecinamento para home.html. Senão, retorna um RequestResponse com success = false e sem URL de redirecionamento em formato JSON</p>
+    <p>home.html: página home de recebimento de usuário após login, e com um botão para sair da página home</p>
+  </section>
+
+</body>
+
+</html>

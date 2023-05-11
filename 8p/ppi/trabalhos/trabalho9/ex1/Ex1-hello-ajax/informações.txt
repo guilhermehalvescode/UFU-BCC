@@ -1,0 +1,5 @@
+Exemplo de requisição Ajax simples
+
+Sugestão de testes:
+1. Simular um erro de rede escolhendo a opção "sem conexão" no ambiente de desenvolvimento do navegador (F12)
+2. Simular um erro de rede alterando a URI da requisição para http://hostinexistente.com/conteudoAdicional.html'
