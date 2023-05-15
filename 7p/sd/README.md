@@ -891,3 +891,114 @@ Soluções para exclusão mútua:
     - para garantir que todos os processos receberão os mesmos valores propostos, pois se f + 1 processos falharem, processos terão comandos diferentes
 
 ### Consenso em sistemas assíncronos
+
+- Sem limite para velocidade relativa dos processos e atrasos na mensagens
+- Execução em sequência de rodadas
+  - Em cada rodada
+    - Processos geram nova mensagem a partir do estado atual e a enviam a todos os processos
+    - Experam por n - f respostas e aplicam função de transição de estado utilizando o estado atual e mensagens obtidas para definir novo estado
+    - Se um processo falhar no meio do envio de mensagem, apenas um subconjunto dos processos pode receber a mensagem
+
+---
+
+- Resultado de impossibilidade de FLP
+  - "Impossibility of distributed consensus with one faulty process", by Fischer, Lynch, and Paterson, JACM 1985
+  - Nenhum algoritmo consegue resolver consenso em um sistema assíncrono sujeito a falhas
+  - Resultado fundamental em computação distribuída
+  - Válido para f >= 1, independente do valor de n
+
+### Resolvendo consenso
+
+- Sistemas síncronos são muito fortes, e assíncronos não possuem uma solução
+- Para resolver consenso, pode-se
+  - Fortalecer as considerações sobre o modelo
+  - Enfraquecer a definição do problema
+  - Fazer as 2 coisas acima
+
+#### Fortalecendo o modelo
+
+- Sistema parcialmente síncrono
+  - Sistema assíncrono que eventualmente se torna síncrono
+  - Global Stabilization Time (GST)
+    - Tempo a partir do qual sistema se torna síncrono
+    - Desconhecido para os processos
+  - Questão fundamental
+    - É possível criar um algoritmo de consenso que nunca viola safety enquanto o sistema é assíncrono e garante liveness quando condições adicionais são satisfeitas?
+
+#### Consenso com GST
+
+- Dwork, Lynch and Stockmeyer, "Consensus in the presens of partial synchrony", JACM 1988
+  - Modelo de rodadas sobre sistemas parcialmente síncronos
+
+---
+
+- n = 3*f + 1
+
+```portugol
+Initialization
+v <- process p's proposed value
+
+Round r:
+send v to all processes
+
+if messagens received >= n - f then
+  v <- most often received value, if not unique take the smallest
+  if at least n - f values received equal to x and not decided then
+    decide x
+```
+
+#### Consenso com detectores de falhas
+
+- Consenso também pode ser resolvido em sistemas assíncronos com detectores de falhas
+  - Classes de detectores de falhas
+
+---
+
+- Chandra e Toueg: resolvendo consenso com S
+  - n = 2*f + 1 processos
+
+```portugal
+Initialization
+  v = proposed value
+  r = 0
+  t = 0
+
+While undecided do
+  c = (r mod N) + 1
+  r = r + 1
+  send (p, r, v, t) to c
+
+  c waits for first ceil((n + 1) / 2) estimates
+  c chooses the estimate w with the largest timestamp
+  c proposes (c, r, w)
+
+  p wait for a proposal or suspects c
+  if proposal (c, r, w) is received then
+    v = w
+    t = r
+    send (r, ACK) to c
+  else
+    send (r, NACK) to c
+  
+
+upon receiving (decide, w)
+  p sends (decide, w) to all
+  p decides on w and halts
+```
+
+#### Consenso com eleição de líderes
+
+- Sistema assíncrono com eleição de líderes
+- n = 2 * f + 1
+- Paxos (Lamport)
+  - Quatro papéis:
+    - Proposers
+    - Acceptors, um quorum Qa de acceptors, onde |Qa| > n/2
+    - Learners
+    - Coordinator/Leader
+
+---
+
+- Paxos
+  - Oráculo de eleição de líder
+    - Cada processo p tem acesso a um oráculo de eleição de líder que retorna um processo denominado leaderp tal que existe
