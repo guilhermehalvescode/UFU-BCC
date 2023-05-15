@@ -1002,3 +1002,70 @@ upon receiving (decide, w)
 - Paxos
   - Oráculo de eleição de líder
     - Cada processo p tem acesso a um oráculo de eleição de líder que retorna um processo denominado leaderp tal que existe
+  - Se não houver eleição de líder, os proposers irão "brigar" entre sí para decidir seu valor
+    - Ficam incrementando alternadamente as rodadas entre si
+
+#### Enfraquecendo a definição e fortalecendo o modelo
+
+- Algoritmos randomizados
+  - Mais forte que mdoelo assíncrono
+    - processos podem fazer escolhas aleatórias
+
+- k-set agreement
+  - Acordo: no máximo k valores diferentes são decididos
+  - Validade: um valor decidido é um valor proposto
+  - se f < k
+    - Primeiros f + 1 processos enviam valores iniciais para todos
+    - Um processo decide no primeiro valor que receber
+
+## Difusão tolerante a falhas
+
+- A ideia é utilizar um middleware entre a camada de aplicação e a de transporte com funções
+  - broadcast(m), enviar mensagem para todas as máquinas
+  - deliver(m), entregar mensagem para a aplicação
+
+### Especificação (DTF)
+
+- Modelo
+  - Considere um conjunto com n processos
+  - Assuma o mdelo crash failure
+    - um processo correto nunca falha
+
+### Difusão confiável
+
+> garante entrega
+
+- Difusão confiável (Reliable broadcast)
+  - Validade: se um processo correto faz a difusão de uma mensagem m (broadcast(m)), então todos os processos corretos eventualmente entregam m (deliver(m))
+  - Acordo: se um processo correto entrega m, então eventualmente todos os processo corretos entregam m
+  - Integridade: para qualquer mensagem m, todos processo correto entrega m no máximo uma vez, e somente se m já foi previamente difundida
+
+#### Difusão confiável uniforme
+
+- O que muda é o acordo
+  - acordo uniforme: se um processo ~~correto~~ entrega m, então eventualmente todos os processos corretos entregam m
+
+### Difusão FIFO
+
+- Difusão FIFO (FIFO broadcast)
+  - Garante a difusão confiável
+  - Ordem FIFO: se um processo correto difunte m antes de m', então nenhum processo correto entrega m' a menos que tenha feito a entrega de m
+
+#### Difusão FIFO uniforme
+
+- Ordem FIFO: se um processo ~~correto~~ difunte m antes de m', então nenhum processo ~~correto~~ entrega m' a menos que tenha feito a entrega de m
+
+### Difusão causal
+
+- Difusão causal (Causal broadcast)
+  - Garante a difusão confiável e a difusão FIFO
+  - Exemplo:
+    - Em uma aplicação de envio de notícias, se usuários difundem seus artigos com difusão FIFO, o seguinte pode ocorrer:
+      1. Usuário A difunde um artigo
+      2. Usuário B entrega o artigo e difunde uma resposta ao artigo
+      3. Usuário C entrega a resposta de B antes do artigo de A
+  - Ordem causal: se a difusão de uma mensagem m precede a difusão de uma mensagem m', então nenhum processo correto entrega m' a menos que tenha feito a entrega de m
+
+#### Difusão causal uniforme
+
+- Ordem causal: se a difusão de uma mensagem m precede a difusão de uma mensagem m', então nenhum processo ~~correto~~ entrega m' a menos que tenha feito a entrega de m
