@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Encadeando requisições assíncronas</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      line-height: 1.5rem;
+      background-color: #ddd;
+      color: #555;
+      margin: 0;
+    }
+
+    main {
+      width: 60%;
+      margin: 0;
+      padding: 2% 4%;
+      background-color: #eee;
+
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    h1 {
+      font-size: 5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+    <h2>Temperatura Local: <span id="temp">...</span></h2>
+    <h2>Velocidade do Vento: <span id="wind">...</span></h2>
+    <p>
+      O código consulta a URL 'https://ipapi.co/json/' através de uma requisição GET, 
+      logo após converte o dado recebido em json no encadeamento do fetch.
+      Depois, com os dados convertidos para json, acessa a latitude e a longitude para consultar outra API
+      através de uma requisição GET, na URL 'https://api.open-meteo.com/v1/forecast?latitude=${data.latitude}&longitude=${data.longitude}&current_weather=true',
+      realizando a devida substituição na URL. Após, converte os dados recebidos da api de tempo para json e insere as informações recebidas no json
+      na página, mostrando no fim a temperatura e velocidade do vento na latitude e longitude da máquina que acessa a página.
+      Caso ocorra algum erro durante todo o processo, mostra o erro no console apenas
+    </p>
+  </main>
+  <script>
+
+    // OBS: A função não trata todos os erros
+    function buscaClimaLocal() {
+      fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => fetch(`https://api.open-meteo.com/v1/forecast?latitude=${data.latitude}&longitude=${data.longitude}&current_weather=true`))
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("temp").textContent = data.current_weather.temperature + '°';
+          document.getElementById("wind").textContent = data.current_weather.windspeed + ' km/h';
+        })
+        .catch(error => console.log(error));
+    }
+
+    window.onload = function () {
+      buscaClimaLocal();
+    }
+  </script>
+
+</body>
+
+</html>

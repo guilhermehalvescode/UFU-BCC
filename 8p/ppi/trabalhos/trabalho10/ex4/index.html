@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotação</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 1.5rem;
+            background-color: #ddd;
+            color: #555;
+            margin: 0;
+        }
+
+        main {
+            width: 60%;
+            margin: 0;
+            padding: 2% 4%;
+            background-color: #eee;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        h1 {
+            font-size: 5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <h2>Cotação das Ações Indicadas</h2>
+        <hr>
+        <form name="formCot" id="formCot">
+            <div>
+                <label for="cod1">Código 1</label>
+                <input type="text" id="cod1" name="cod1">
+            </div>
+            <div>
+                <label for="cod2">Código 2</label>
+                <input type="text" id="cod2" name="cod2">
+            </div>
+            <div>
+                <label for="cod3">Código 3</label>
+                <input type="text" id="cod3" name="cod3">
+            </div>
+            <div>
+                <label for="cod4">Código 4</label>
+                <input type="text" id="cod4" name="cod4">
+            </div>
+            <div>
+                <label for="cod5">Código 5</label>
+                <input type="text" id="cod5" name="cod5">
+            </div>
+            <button id="seq" type="submit">Cotar Sequencialmente</button>
+            <button id="parallel" type="submit">Cotar em Paralelo</button>
+        </form>
+    </main>
+
+    <script>
+        function getQuote(cod) {
+            let url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${cod}.SA&apikey=590NYGLA051U5O8H`
+
+            return fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const res = {
+                        acao: data["Global Quote"]["01. symbol"].replace(".SA", ""),
+                        cotacao: data["Global Quote"]["05. price"],
+                    }
+                    return res
+                })
+        }
+
+        function renderStock(obj, target) {
+            const div = document.querySelector(`#${target}`).parentNode
+            div.innerHTML = `${obj.acao}: ${obj.cotacao}`
+        }
+
+        window.onload = () => {
+            document.forms.formCot.onsubmit = e => {
+                e.preventDefault()
+                const cod1 = document.querySelector("#cod1").value
+                const cod2 = document.querySelector("#cod2").value
+                const cod3 = document.querySelector("#cod3").value
+                const cod4 = document.querySelector("#cod4").value
+                const cod5 = document.querySelector("#cod5").value
+
+                const cods = [cod1, cod2, cod3, cod4, cod5]
+
+                if(e.submitter.id === 'seq') {
+                    getQuote(cods[0])
+                        .then((data) => {
+                            renderStock(data, "cod1")
+                            return getQuote(cods[1])
+                        })
+                        .then((data) => {
+                            renderStock(data, "cod2")
+                            return getQuote(cods[2])
+                        })
+                        .then((data) => {
+                            renderStock(data, "cod3")
+                            return getQuote(cods[3])
+                        })
+                        .then((data) => {
+                            renderStock(data, "cod4")
+                            return getQuote(cods[4])
+                        })
+                        .then((data) => {
+                            renderStock(data, "cod5")
+                        })
+                        .catch(err => console.log(err))
+                } else {
+                    const promises = cods.map(cod => getQuote(cod))
+                    Promise.all(promises)
+                        .then(data => {
+                            data.forEach((obj, i) => {
+                                renderStock(obj, `cod${i+1}`)
+                            })
+                        })
+                        .catch(err => console.log(err))
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
