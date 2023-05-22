@@ -1039,6 +1039,7 @@ upon receiving (decide, w)
   - Validade: se um processo correto faz a difusão de uma mensagem m (broadcast(m)), então todos os processos corretos eventualmente entregam m (deliver(m))
   - Acordo: se um processo correto entrega m, então eventualmente todos os processo corretos entregam m
   - Integridade: para qualquer mensagem m, todos processo correto entrega m no máximo uma vez, e somente se m já foi previamente difundida
+- Apenas assume propriedadas sobre processos corretos
 
 #### Difusão confiável uniforme
 
@@ -1069,3 +1070,39 @@ upon receiving (decide, w)
 #### Difusão causal uniforme
 
 - Ordem causal: se a difusão de uma mensagem m precede a difusão de uma mensagem m', então nenhum processo ~~correto~~ entrega m' a menos que tenha feito a entrega de m
+
+> uniforme: garante que um processo faltoso (irá falhar), quando entregar uma mensagem, todos os os processos corretos devem entregar essa mensagem
+
+### Difusão confiável - pseudocódigo
+
+```portugol
+to broadcast(m) do
+  send(m) to all
+
+upon receive(m) for the first time do
+  deliver(m)
+```
+
+### Difusão confiável uniforme - implementação
+
+```portugol
+to broadcast(m)
+  send(m) to all
+
+upon receive(m) do
+  if [for f + 1 processes: received(m) from q] then
+    deliver(m)
+  if [didn't send m yet] then send(m) to all
+```
+
+### Difusão atômica (atomic broadcast)
+
+- Ordem uniforme total: a mesma ordem é executada para todo mundo
+- Podem ser utilizados algoritmos de consenso
+
+#### FIFO Atomic Broadcast
+
+#### Causal Atomic Broadcast
+
+## Bancos de Dados Distribuídos
+
