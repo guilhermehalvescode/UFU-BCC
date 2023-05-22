@@ -1106,3 +1106,202 @@ upon receive(m) do
 
 ## Bancos de Dados Distribuídos
 
+### Introdução
+
+- Bancos de dados e transações
+  - um dado pode ser escrito e depois lido, obtendo um valor válido
+  - porém um dado pode ser lido simultâneamente por dois clientes, e gerar resultados inválidos
+  - pode ser resolvido através de locks em regiões de dados que são acessadas simultâneamente (clientes que desejam acessar aquela região sofrem espera)
+
+---
+
+- Bancos de dados tradicionais
+  - ACID: Atomicidade, Consistência, Isolamento e Duralibilidade
+- Atomicidade
+  - um grupo de operações devem ocorrer todas corretamente, ou nenhuma delas
+- Consistência
+  - em relação aos dados inseridos
+- Isolamento
+  - como e quando efeitos de transações são disponibilizados
+- Durabilidade
+
+---
+
+- Dirty reads: transações que ocorrem simultâneamente acabam permitindo entre si uso de dados inconsistentes
+- Lost update: transações que ocorrem simultâneamente porém ocorrem atualizações irrelevantes (repetidas)
+
+### Execução serial
+
+- Funciona mas perdemos concorrência
+- O que queremos na práticas
+  - Execução de transações de maneira serial
+
+### Equivalência serial
+
+- Duas execuções de transações são equivalentes se:
+  - são execuções das mesmas transações
+  - quaisquer duas operações conflitantes são executadas na mesma ordem nas duas execução
+- Duas operações são conflitantes se
+
+---
+
+- Como obter equivalência serial?
+- Precisamos garantir por construção a equivalência serial
+
+### Abort em cascata
+
+- Se uma transação concorrente sofre um abort, todas concorrentes também devem realizar abort
+
+### Controle de concorrência
+
+- 3 abordagens:
+  - Locking
+    - abordagem pessimista
+    - paga um alto preço de sincronização mesmo quando as transações não interferem umas nas outras
+    - penaliza bastante a concorrência
+  - Multi-versão
+    - abordagem otimista
+    - tem algo custo quando há muitos conflitos entre as transações
+    - são criadas versões dos recursos utilizados
+    - se ocorrer alguma inconsistência, aborta todas as transações
+  - Timestamp
+    - abordagem mais complexa de se implementar
+
+#### Locking
+
+- Todos os objetos acessados pela transação são "trancados" até que não sejam mais usados
+- Abordagem deve ser usada da maneira correta para evitar dirty read
+  - Abort em cascata pode não resolver
+- Uso do strict two phase locking resolve:
+  - Transações trancam o objeto quando primeiro acessado e só destrancam ao final da transação
+- Uso de strict two phase locking reduz concorrência
+- Alternativas:
+  - Read/Write locks
+  - múltiplos leitores/ único escritos
+  - Diferentes granularidades
+    - lock em uma coluna de uma linha do banco, de toda a linha, de toda a relação, etc...
+
+#### Multi-versão
+
+- Controle de concorrência multi-versão (MVCC, do termo em inglês)
+- Mantém uma cópia privada dos dados acessados pela transação
+- Ao final da execução, na fase de validação
+  - se cópia públia não tiver sido modificada, a transação é bem sucedida e atualizações são feitas nas cópias públicas
+- Técnica conhecida como deferred update:
+  - Atrasa a ataalização da cópia pública até o final da transação
+  - Baixo overhead, se não houver conflitos
+  - Se houver muitos conflitos, o trabalho da transação é todo desperdiçado
+    - Transação será abortada na validação
+
+---
+
+- Validação
+  - Consiste em verificar se os read e write sets de quaisquer transações concorrentes são disjuntos
+  
+---
+
+- Forward-validation
+  - Transações futuras não podem acessar informações em transação
+- Backward-validation
+  - Transações não commitadas não podem acessar informações de transações não commitadas passadas
+
+#### Timestamp
+
+- Atribui-se um timestamp a cada transação
+
+---
+
+### Como implementar controle de transações em um sistema distribuído?
+
+- Múltiplos servidores
+- Transações em cada servidor
+- Transações distribuídas
+- Como obter equivalência serial em transações distribuídas
+
+### Bancos de dados distribuídos - especificação
+
+- Transação distribuída - representação
+  - begintransaction(): tid (transaction id)
+  - operation(tid, op)
+  - endtransaction(tid): ok/nok
+  - abortransaction(tid)
+- Papéis
+  - Cliente
+  - Servidor: resource managers
+  - Servidor: transaction monitor/manager
+
+---
+
+- Cenário típico
+  - Localmente:
+    - Cada DB funciona como um sistema centralizado normal
+    - Usa abordagens otimistas/pessimistas para garantir consistência
+  - Grande problema com DB distribuído:
+    - Garantir o acordo na terminação
+
+### Comprometimento distribuído
+
+- trasação t acessa recursos nos resources managers (rm)
+- terminar com sucesso t em todos os rm - commit -
+- ou abortar t em todos os rm
+
+---
+
+- Participante
+  - resource manager "tocado" pela transação
+- Coordenador
+  - transaction manager
+- Cliente decide quando iniciar o commit
+- Cada participante faz commit ou abort da transação local
+  - pode retornar ok ou nok
+- Coordenador não começa a commit até que a t tenha terminado em todos os participantes e cliente tenha solicitado
+- Participantes falham por parada
+
+---
+
+- 1PC (One phase commit)
+  - Cliente envia endtransaction(tid) para o coordenador
+  - Coordenador envia mensagem para participantes "comitarem"
+  - Mas...
+    - E se um participante retornar nok enquanto outros retornarem ok
+    - E se um participante não responder
+
+---
+
+- 2PC
+  - Cliente envia endtransaction(tid) para o coordenador
+  - coordenador envia mensagem para participantes para terminar 
+  - coordenador espera resposta de todos se preparem ou digam se não podem
+  - coordenador envia ordem de terminação
+
+---
+
+- 2PC - Comprometimento
+  - Um partipante p está pronto para commit se:
+    - Tiver todos os valores modificados por t em memória estável, e
+    - Nenhuma razão para abortar a transação
+  - Coordenador não pode começar terminação até que todos os participante estejam prontos
+  - Se algum participante aborta, o coordenador deve abortar
+  - Problema de acordo: igual ao consenso?
+    - Decisão não é livre: commit apenas se todos participante tiverem commit, abort se houver pelo menos algum participante alegando abort
+
+---
+
+- 2PC - Protocolo
+  - Fase 1
+    - a: coordenador envia vote-request para participantes
+    - b: participante responde com vote-commit ou vote-abort
+
+---
+
+- 2PC - Falha no coordenador (e posterior recuperação)
+  - E se ninguém ouviu a decisão final do coordenador
+    - O protocolo não pode continuar enquanto o coordenador não retornar
+      - Se os RM abortarem, podem estar contradizer algo enviado já ao cliente
+
+---
+
+- Paxos Commit
+  - Usa instâncias de Consenso Distribuído para votar
+- O protocolo
+  - Para terminar a transação T, coordenador envi
