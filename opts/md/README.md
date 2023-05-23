@@ -966,3 +966,60 @@ while fk não for vazio do
   - ci = centroide (centro de gravidade) de Ci
 - Separação(Ci, Cj) = proxmidade(ci, cj)
 
+## Detecção de Anomalia
+
+- Anomalia: um padrão que não se encaixa bem com o restante dos dados (outlier)
+- Utilização de boxplots ajudam a identificar outiliers
+- É uma tarefa subjetiva
+
+---
+
+- Exemplos
+  - Detecção de fraude de cartões, deteção de fraude em telecomunicação, deteção de invasão em rede, deteção de falhas
+
+---
+
+- Variantes
+  - Dado uma base de dados, encontrar todos os outliers dado um threshold t
+  - Dado uma base de dados, achar todos os top-k outliers
+  - Dado uma base de dados, achar indentificar um novo ponto como outlier ou não
+
+---
+
+- Desafios
+  - Dificuldade em definir o que é um outlier
+  - quantos outliers existem nos dados
+  - método é não supervisionado
+    - validação pode se tornar desafiadora (mesma coisa em clusterização)
+
+- Assume que os dados são representativos de um modelo de distribuição
+  - Outliers são dados que não se encaixam no modelo
+
+### Esquemas
+
+- Passos gerais
+  - Construir um perfil do comportamento normal
+    - pode ser feitos padrões ou sumários estatísticos para toda a população
+  - Usar o perfil para identificar outliers
+    - anomalias são observações que não se encaixam no perfil
+- Tipos de detecção de anomalisas
+  - Grafíca e baseada em estatísticas
+  - Baseada em distância
+  - Baseado em modelo
+
+#### Detecção de anomalias baseada em gráficos
+
+- Boxplot(1-D), Scatterplot(2-D), Spin plot(3-D)
+- Limitações
+  - consumo de tempo
+  - subjetivo
+
+#### Convex hull
+
+- Pontos extremos são assumidos como outliers
+- Use convex hull para encontrar os pontos extremos
+- porém outliers podem ocorre no centro dos dados
+
+#### Detecção de anomalias baseada em estatísticas
+
+- Assume-se um modelo parametríco que descreve a distribuição dos dados (distribuição normal)
