@@ -1304,4 +1304,112 @@ upon receive(m) do
 - Paxos Commit
   - Usa instâncias de Consenso Distribuído para votar
 - O protocolo
-  - Para terminar a transação T, coordenador envi
+  - Para terminar a transação T, coordenador envia request-commit a todos os participantes
+  - Participante P propõe seu voto na instância tp de consenso
+  - Todo participante P espera pelas decisões das instâncias de consenso Ti para todos os participantes i
+    - Se todas as decisões forem commit, comita a transação
+    - Se cansar de esperar por Tq, propõe abort em Tq
+
+## Sistemas de arquivos distribuídos
+
+- Requisitos
+  - Transparência
+    - de acesso
+      - Programas clientes não devem conhecer a distribuição dos arquivos
+      - Programas operam em arquivos locais e remotos
+    - de localização
+      - Clientes devem usar um espaço de nome de arquivo uniforme
+      - Arquivos podem ser realocados sem alterar seus nomes de caminho
+    - de desempenho
+      - Distribuição não deve prejudicar o desempenho (comparado a sistemas de arquivos centralizados)
+    - de escala
+      - Serviço pode ser expandido por crescimento incremental
+  - Outros
+    - Atualizações simultâneas de arquivos
+      - Como lidar com vários clientes acessando o mesmo arquivo?
+      - Técnicas conhecidas em sistemas de arquivos centralizados, mas difíceis ou caras de implementar em ambientes distribuídos
+      - Tendência recorrente: siga os padrões modernos do UNIX para fornecer bloqeio em nível de arquivo ou registra obrigatório ou consultivo
+    - Replicação de arquivos
+      - A replicação permite aumentar a escalabilidade e a disponibilidade
+      - Mas difícil de implementar
+      - Poucos sistemas de arquivos suportam replicação, mas a maioria suporta cache
+    - Heterogeneidade de hardware e sistema operacional
+      - A interface de serviço deve permitir a implementação de software cliente e servidor para diferentes sistemas operacionais e computadores
+    - Consistência
+      - Idealmente, imitar a consistência de sistemas centralizados (1 cópia)
+      - Difícil devido à distribuição, replicação, armazenamento em cache, ...
+    - Segurança
+      - Autenticação além dos mecanismos de controle de acesso
+      - Criptografia de dados
+
+### NFS
+
+- Sistema de Arquivos de Rede (NFS) da SUN
+- Introduzido em meados dos anos 80
+- Altamente bem sucedido, tanto técnica como comercialmente
+- Interfaces-chave colocadas em domínio aberto e amplamente implementadas (Windows, Mac Os, Linux)
+- Acesso transparente a arquivos remotos
+- Qualquer computador pode ser um servidor, exportando seus arquivos
+
+---
+
+- Servidor NFS
+  - Reside no kernel em cada computador servidor NFS
+  - Os módulos cliente e servidor se comunicam usando RPC (RPC desenvolvido para ser usado com NFS)
+- Sistema de arquivos virtuais
+  - NFS fornece transparência de acesso
+  - Distingue entre arquivos locais e remotos
+  - Identificadores de arquivos do NFS: manipuladores de arquivos (file handlers)
+
+---
+
+- Integração do cliente
+  - Emula a semântica do sistema arquivos Unix
+  - Integrado no kernel (não disponível como biblioteca)
+    - Os programas do usuário podem acessar arquivos via Unix sem recompilação e recarregamento
+    - Módulo único atende a todos os processo do usuário (+cache compartilhado)
+  - Autenticação de controle de acesso
+    - O servidor NFS é sem estado
+    - O servidor deve verificar o id o usuário em cada solicitação
+
+> Operações idempotentes: podem ser realizadas inúmeras vezes sem levar inconsistência
+
+---
+
+- Cache do servidor
+  - Indispensável para um desempenho adequado
+- No Unix convencional
+  - Leitura antecipada (read-ahead) antecipa os acessos de leitura e busca as páginas que seguem lidas recentemente
+  - Gravações com atraso (delayed-write) no disco somente quando a página de buffer é necessária para outros página
+  - sync
+
+---
+
+- Cache do cliente
+  - Clientes armazenam em cache os resultados de leitura, gravação, getattr, lookup e operações readdir
+  - Risco de diferentes versões em diferentes caches de clientes
+    - Gravações do cliente não atualizam imediatamente todos os caches
+  - Clientes fazem poll no servidor para atualizar dados em cache
+  - Intervalo de sondagem definido de forma adaptável
+
+---
+
+- Performance
+  - As primeiras medições (ou seja, 1987) não mostraram perda de desempenho quando comparado a arquivos armazenados em discos locais
+  - Dois problemas
+    - Uso frequente da chamada getattr para buscar timestamps
+    - Baixo desempenho de gravação (por causa do write-through)
+  - Gravações são raras no Unix (5% de todas as chamadas) e o mecanismo de confirmação (commit) reduz o problema com as gravações
+
+---
+
+- Resumo
+  - Transparência de acesso: não são necessárias modificações nos programas existentes
+  - Transparência de localização: obtida pela montagem de sistemas de arquivos remotos no espaço de nomes local
+  - Escalibilidade: NFS pode lidar com grandes cargas, mas tem pouco suporte para hot spots
+  - Replicação de arquivos: suporta arquivos somente leitura, mas não atualizações
+  - Heterogeneidade de hardware e sistema operacional: bem-sucedida
+  - Tolerância a falhas: modelo de falha observado por clientes semelhante ao de arquivo locais (graças à natureza sem estado e idempotente do NFS)
+  - Consistência: muito próxima do modelo "uma cópia"
+  - Segurança: alcançada pela integração do Kerberos
+  - Eficiência: muito boa
