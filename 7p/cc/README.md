@@ -119,3 +119,96 @@
 ### Estrutura do compilador
 
 ![compilerStructure](images/compilerStructure.png)
+
+### Análise léxica
+
+- Transforma sequência de caracteres em uma sequência de símbolos básicos da linguagem (tokens)
+  - Reconhecer os tokens do programa
+    - Reconhecimento de sequências elementares completas (padrões)
+    - Identificação e classificação das palavras (átomos ou lexemas)
+  - Eliminação de delimitadores e comentários
+  - Preenchimento inicial da tabela de símbolos
+  - Relatar ou recuperar erros léxicos
+    - Ex: fim inesperado de arquivo, mal formação de lexemas, etc.
+- Analisador léxico pode ser gerado de forma automática
+  - A partir da especificação dos padrões por expressões regulares
+  - Ex: Flex
+
+---
+
+- Lê o fluxo de caracteres do código fonte (scanning) e os agrupa em (lexemas)
+  - Leitura é feita da esquerda (início) para a direita (fim)
+- Cada lexema retorna um token no formato:
+  - <tipo, atributo>
+  - tipo: identificador do tipo do token
+  - atributo: dados referentes ao lexema
+    - Ex: localização na tabela de símbolos (chave), valor de uma constante, etc.
+
+### Análise sintática
+
+- Validar a estrutura gramatical da sequência de tokens
+  - Agrupa os tokens em estruturas sintáticas da linguagem
+    - Sequência válida de tokens e hierarquias de estruturas
+  - Estruturas são especificadas em uma gramática livre de contexto (GLC)
+- Gerar a IR que representa a estrutura do código
+  - Concreta: codifica toda a estrutura sintática do programa
+    - Árvore de derivação
+  - Abstrata: codifica apenas as partes essenciais do código
+    - Árvore Sintática Abstrata (AST)
+- Reportar erros sintáticos
+  - Ex: "; esperado", "parêntese desbalanceado", etc
+- Também é possível usar geradores automáticos
+  - Utilização de GLC
+  - Ex: Yacc
+
+### Gramática livre de contexto (CFG)
+
+![cfg](images/cfg.png)
+
+### Árvore de deviração
+
+![derivationTree](images/derivationTree.png)
+
+### Árvore sintática abstrata (AST)
+
+![ast](images/ast.png)
+
+- sumariza a estrutura gramatical
+  - não inclui informações da derivação
+- mais utilizada pelos compiladores
+- é uma forma de IR
+
+### Análise semântica (contexto)
+
+- Verifica a consistência semântica do programa fonte a partir da definição da linguagem
+  - Envolve a análise de contexto
+  - Usa a AST (Árvore semântica abstrata) e as informações da tabela de símbolos no processo
+- Relata erros de contexto e de tipos
+  - Ex: variável não declarada, número de parâmetros inconsistente, incompatibilidade de tipos, etc.
+
+### Geração de código intermediário
+
+- Gera a IR usada internamente pelo compilador
+  - IR explícita de baixa nível (ex: código de 3 endereços)
+  - Independe da linguagem e da máquina (na teoria)
+  - Programa para uma máquina abstrata
+- IR deve ter 2 propriedades importantes em relação ao desempenho:
+  - Ser facilmente produzida
+  - Ser facilmente traduzida para máquina alvo
+- Geralmente é realizada em conjunto com as análises sintática e semântica
+
+### Código de 3 endereços
+
+- É uma da IR mais utilizadas
+- Conjunto de instruções com 3 operandos:
+  - Atribuições possui no máximo um operador no lado direito
+  - Compilador precisa gerar um nome temporário para guardar o resultado das instruções (registrador)
+  - Algumas instruções possuem menos de 3 operandos
+- Ex: dado que as variáveis são do tipo float, a instrução "x = y+z*10;" gera o seguinte código de 3 endereços
+  
+  ```IR
+  t1 = inttofloat(10)
+  t2 = id3 * t1
+  t3 = id2 + t2
+  id1 = t3
+  ```
