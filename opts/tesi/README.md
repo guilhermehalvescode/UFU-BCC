@@ -466,3 +466,254 @@ print(h)
   - esta no campo transações!
 - A primeira transação (coinbase) é uma transação de criação de moedas, então cada minerador coloca os seus endereços com destinatórios desta transação
 - Além disso cada transação "normal" também paga uma taxa(tip)..o minerador coleta estes valores e também redireciona para um endereço dele
+
+## Primeiro Contrato
+
+### Ethereum - Somente o necessário
+
+- Blockchain
+- Mineradores além de validar as transações (simples) também executam os contratos
+- As contas possuem saldo
+- Os contratos são imutáveis
+- Os contratos possuem um endereço
+  - Padrão de desenvolvimento pode ajudar, botão de pânico
+- Ambiente de desenvolvimento é mais complexo
+
+---
+
+- Os contratos são desenvolvidos em Solidity
+- Ethereum bytecode
+- São "entregues ao Ethereum" (deploy)
+  - Gera um identificador único (hash)
+  - Uma vez entregue o contrato esta autônomo
+- Decentralized App (DApp)
+  - Envia transações para Contratos
+  - GUI, IPFS, ...
+- Iteração pela ABI - Application Binary Interface
+  - bytes4(sha3("funcao1(bytes, bool uint256[])"))
+- web3.js
+  - Nó ethereum (local ou remoto) via HTTP, IPC ou WebSocket
+
+### Doces Ferramentas
+
+- Ambiente de desenvolvimento complexo
+- Vários usuários interagindo com o SC
+- bugs...dinheiro
+- Existem redes paralelas ao Ethereum que não usam dinheiro de verdade
+- Você pode usar ferramentas para trabalhar localmente
+- Doces
+
+#### Ganache
+
+- One Click Blockchain
+- Blockchain Log Output
+- Built-in Block Explorer
+- Advanced MIning Controls
+- "AppImage"
+
+#### Truffle
+
+- Framework para interagir com o Ethereum(Ganache)
+- init
+- build, compile
+- deploy/migrate
+- console
+- unbox
+
+#### Brownie
+
+- python + Solidity (Vyper)
+- web3.py
+- Console e biblioteca
+
+### Finalmente um SC
+
+```solidity
+pragma solidity >= 0.4.25 < 0.6.0
+
+contract AlmostSmartAuction {
+  enum AuctionStates { BidState, FinishedState }
+  AuctionStates myState;
+
+  mapping (address => uint) bids;
+  uint blocklimit;
+  adddress winner;
+  uint winnerBid;
+
+  constructor(uint auctionTime) public {
+    blocklimit = block.number + auctionTime;
+    myState = AuctionStates.BidState;
+    winnerBid = 0;
+  }
+
+  function bid(uing bidValue) public {
+    verifyFinished();
+    require (myState == AuctionStates.BidState, "Bids closet...);
+
+    if (bidValue > winnerBid) {
+      winnerBid = bidValue;
+      winner = msg.sender;
+    }
+  }
+
+  function isWinner(address who) public returns (bool) {
+    verifyFinished();
+    require ( myState == AuctionStates.FinishedState, "Be patient...");
+    return who == winner;
+  }
+}
+```
+
+```python
+from brownie import *
+import brownie
+
+def main():
+  auction = AlmostSmartAuction.deploy(4,{'from': accounts[0]})
+
+  auction.bid(10,{'from': accounts[1]})
+  auction.bid(12,{'from': accounts[2]})
+  auction.bid(13,{'from': accounts[1]})
+  auction.bid(14,{'from': accounts[3]})
+  try:
+    auction.bid(16,{'from': accounts[4]})
+  except:
+    print('Fail...')
+
+  print(auction.isWinner.call(accounts[1].address,{'from': accounts[1]}))
+  print(auction.isWinner.call(accounts[2].address,{'from': accounts[0]}))
+  print(auction.isWinner.call(accounts[3].address,{'from': accounts[5]}))
+```
+
+#### Token
+
+```solidity
+pragma solidity >= 0.4.25 < 0.6.0
+
+contract VerySimpleToken {
+  string name;
+  address tokenOwner;
+
+  constructor(string memory _n) public {
+    tokenOwner = msg.sender;
+    name = _n;
+  }
+
+  function transfer(address to) public {
+    require(msg.sender == tokenOwner);
+    tokenOwner = to;
+  }
+
+  function isOwner(address d) public returns (bool) {
+    return (d == tokenOwner);
+  }
+}
+```
+
+- Vamos leiloar um token... o contrato consegue entregar o token
+- Vamos exigir uma garantia (colateral) para os participantes
+- Para deixar mais interessante o contrato poderá lidar com vários leilões
+- O contrato cobrará uma taxa pelo uso (monetização)
+
+```solidity
+pragma solidity >= 0.4.25 < 0.6.0
+
+import "./VerySimpleToken.sol";
+
+contract TokenAuction {
+  enum AuctionStates { Prep, Bid, Finished }
+
+  address payable owner;
+
+  struct OneAuction {
+    AuctionStates myState;
+    mapping (address => bool) collateral;
+    uing blocklimit;
+    address winner;
+    addres payable tokenOwner;
+    uint winnerBid;
+    bool payment;
+    VerySimpleToken token;
+  }
+
+  uint collateralValue;
+  uint contractFee;
+
+  mapping (string => OneAuction) myAuctions;
+
+  constructor(uint c, uint fee) public {
+    owner = msg.sender
+    collateralValue = c;
+    contractFee = fee;
+  }
+
+  function createAuction(string memory name, uint time, VerySimpleToken t) public {
+    require(t.isOwner(msg.sender), "You must own the token to create one auction!");
+    OneAuction memory l;
+
+    l.blocklimit = block.number + time;
+    l.myState = AuctionStates.Prep;
+    l.winnerBit = 0;
+    l.tokenOwner = msg.sender;
+    l.payment = false;
+    l.token = t;
+
+    //Bug1
+    myAuctions[name] = l;
+  }
+
+  function initAuction(string memory name) public {
+    require(myAuctions[name].myState == AuctionStates.Prep, "The auction should be in Prep state")
+
+    require (myAuctions[name].token.isOwner(address(this)), "The contract should own the token");
+
+    myAuctions[name].myState = AuctionStates.Bid;
+  }
+
+  function verifyFinished(OneAuction a) private {
+    if (block.number > a.bloclimit) {
+      a.myState = AuctionStates.Finished;
+    }
+  }
+
+  function sendCollateral(string memory name) public payable {
+    require(myAuctions[name].myState == AuctionStates.Bid, "The auction should be in Bid state");
+
+    require(msg.value == collateralValue, "You shoud send the correct value!");
+
+    myAuctions[name].collateral[msg.sender] = true;
+  }
+
+  function bid(string memory name, uint v) public payable {
+    OneAuction storage a = myAuctions[name];
+    verifyFinished(a);
+
+    require (a.myState == AuctionStates.Bid, "The auction should be in Bid state");
+
+    require (a.collateral[msg.sender], "Send the collateral value before bidding");
+
+    if (v > a.winnerBid) {
+      a.winnerBid = v;
+      a.winner = msg.sender;
+    }
+
+  }
+
+  function claimToken(string memory name) public payable {
+    //Bug2
+
+    OneAuction storage a = myAuctions[name];
+    verifyFinished(a);
+
+    require (a.myState == AuctionSates.Finished, "Wait a minute, boys, this one is not over yet!");
+    require (msg.value == a.winnerBid - collateralValue, "Pay First....");
+
+    a.token.transfer(msg.sender);
+    a.collateral[a.winner] = false; // just to flag claimToken
+  }
+
+  function claimCollateral(string memory name) public {
+    OneAuction storage a = myAuctions[name];
+  }
+}
+```
