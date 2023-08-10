@@ -275,7 +275,7 @@ def contains(k):
 - O que acontece se k foi inserido?
   - Todas as posições de V serão true
   - porém outro k' pode ter colidido com k
-  - por isso quando contains(k) retorna true, **talvez** ele esteja no filtro 
+  - por isso quando contains(k) retorna true, **talvez** ele esteja no filtro
 
 ---
 
@@ -286,3 +286,183 @@ def contains(k):
 - (O cliente pede o filtro e faz a consulta localmente...)
 
 #### Árvore de Merkle
+
+- é uma forma eficintes de fazer um compromisso com diversos "documentos"
+- Espaço constante!!! Rede P2P é cara
+- Custo log para revelar os valores
+
+---
+
+- Um banco precisa publicar informações das transações do dia
+- Tx1, Tx2, Tx3, ..., Txn
+- Verificação posterior...
+- Txk?? (como fazer isso de forma eficiente?)
+
+---
+
+- Solução 1: publicar as transações
+- Custo?
+  - $\sum_{1}^{n} |t_xn|$
+- Vantagem?
+  - Fácil...direto...
+
+- Solução 2: publica o hash das transações...
+- Custo?
+  - |h| x n
+- Vantagem?
+  - Fácil..Fixo...direto...
+
+---
+
+- Uma solução simples seria publicar H(Tx1 | Tx2 | Tx3 | Tx4)
+- Como verificar ser Tx1', Tx2', Tx3', Tx4' são as transações corretas?
+  - H(Tx1' | Tx2' | Tx3' | Tx4') == H(Tx1 | Tx2 | Tx3 | Tx4)
+
+---
+
+- Como verificar se Tx1'?
+- Recuperar todas as outras transações...
+- H(Tx1', Tx2', Tx3', Tx4')
+- Proibitivo para muitas transações...
+
+---
+
+Como publicar apenas um hash e não usar todas as transações para verificar uma Txk
+
+- Montar uma árvore de hashes
+- e armazenar apenas a raiz
+
+![merkleTree](images/merkleTree.png)
+
+---
+
+- Folhas impares são solucionadas com duplicação
+- Como todo árvore, a altura e dada por log
+
+![merkleTree1](images/merkleTree1.png)
+
+---
+
+- A raiz é pública
+- Data uma transação k como eu verifico se ela é válidas (= esta na árvore)
+
+![merkleTreeBuilding](images/merkleTreeBuilding.png)
+
+---
+
+- Usada no bitcoin/blockchain
+- Cada bloco do blockchain armazena a raíz da merkle tree das transações "validadas" neste bloco
+- Quando alguém quer provar que uma determinada Tx pertence a um determinado bloco...
+- ... envia ao verificador apenas as informações necessárias O(lg n)
+
+### Hash + Blockchain
+
+- Existem dois usos de hashing que viabilizam a existência da Blockchain
+- Uma cadeia de blocos
+- Append
+- Conteúdo imutável
+- Quanto mais antigo o bloco, mais difícil altera-lo
+- (Alterar o último bloco é "fácil", acontece o tempo todo)
+- Os blocos contém um campo que contém os dados da aplicação, no nosso caso uma criptomoeda Hyperledger (Exemplo: Cadeia de Produção)
+- Ledger = Livro-Razão
+
+#### Timestamp
+
+- "Timestamp" em documentos digitais Impede o gasto duplo de dinheiro (digital)
+- (Implícito: Impedir a modificação)
+- Várias soluções... até chegar próximo à Blockchain de hoje
+
+#### Ingênua
+
+- Time Stamp Service (cartório?)
+- (Trusted Third Party)
+- Usuário envia x para TSS
+- TSS diz "O Documento x existe desde d"
+- Privacidade, Banda/Armazenamento, Incompetência e confiança
+
+#### Melhoria
+
+- Usuário envia h = H(x) para o TSS
+- TSS assina "O hash h existe desde d"
+- Propriedades do hash
+- Confiança
+
+#### Melhoria - Encadeamento
+
+- Usuário envia hn = H(x) para o TSS
+- TSS Produz:
+  - Cn = (n, timestampn, hn, H(Cn-1))
+- Confiança distribuída
+- Sel alguém me envia um Ck eu posso confiar??
+
+---
+
+- Se eu tenho razões para desconfiar da veracidade de Ck
+- Eu procuro o "dono" do docuemento k + 1
+- Ck+1 atesta que Ck é verdadeiro pelo encadeamento do hash que aponta para o bloco anterior...
+- Ck+2 atesta que Ck+1 e Ck são verdadeiros
+- Ck+3
+- Quanto mais "antigo" for Ck, mais difícil falsificar .... existem mais testemunhas
+
+---
+
+- Uma Blockchain é uma cadeia de blocos
+- Cada bloco contém informações do negócio
+- Cada bloco "aponta" para o anterior
+- Este aponta não é uma ponta de localização
+- É um aponta de confiança
+
+---
+
+- Se alguém for falsificar o Bn...
+- precisará falsificar todos os blocos Bn+1, Bn+2, ..., Bu
+- No modelo timestamp, cada bloco está sob os cuidados de um usuário...essa falsificação exigiria um complô
+- A Blockchain/Bitcoin estão distribuídos em uma rede P2P
+- Falsificar alguns milhares de blocos é trivial...pelo menos por enquanto
+
+#### Prova de trabalho
+
+- Proposta de usar de colisões parciais para evitar spam
+- Serviços gratuitos podem cobrar colisões/inversões parciais, evitando abusos
+- parciais = número de bits reduzido
+- Obtidos por força bruta: gastando tempo e CPU
+
+---
+
+No header do e-mail existiria um campo X-Hashcash: hfalkjkhldkjhl
+- O texto hfalkjkhldkjhl é a prova de trabalho
+- "faz" com que o hash do email seja, por exemplo 000FCAB834C....
+- Os servidores de email somente aceitariam um email se o hash seguir este padrão (iniciar com k zeros)
+- Bitcoin usa inversão para determinar minerador de um bloco
+
+```python
+import hashlib
+
+pre = "Informacoes do negocio, hash do bloco anterior,etc..."
+x = 1
+mined = False
+
+while not mined:
+  temp = pre + str(x)
+  h = hashlib.sha256(temp.encode()).hexdigest()
+  if h[:6] == '000000':
+    mined = True
+  x+=1
+  
+print(h)
+```
+
+---
+
+- O Bloco é composto por informações como: transações, timestamp, altura, hash do bloco anterior...
+- e uma área de nonce
+- O hash do bloco deve ter algumas características específicas para ser aceito pelo protocolo
+- Prova de trabalho (PoW)
+- Falsificar blocos ficou mais difícil...quanto mais velho mais difícil
+
+---
+
+- E a famosa remuneração dos mineradores???
+  - esta no campo transações!
+- A primeira transação (coinbase) é uma transação de criação de moedas, então cada minerador coloca os seus endereços com destinatórios desta transação
+- Além disso cada transação "normal" também paga uma taxa(tip)..o minerador coleta estes valores e também redireciona para um endereço dele
