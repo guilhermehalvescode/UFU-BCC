@@ -212,3 +212,92 @@
   t3 = id2 + t2
   id1 = t3
   ```
+
+### Otimização
+
+- Modifição para melhorar desempenho no código
+  - podendo diminuir tempo de execução,
+  - espaço de memória, tamanho de código,
+  - consumo energético,
+  - etc...
+
+- Otimizador deve atender aos seguinte requisitos
+  - preservar a semântica do programa (estar correto)
+    - produz o efeito esperado com as entradas fornecidas
+    - precisa de verificação formal
+  - ser eficiente
+    - obviamente, como é uma otimização, deve ter mais eficiente o uso desse processo do que não usá-lo
+  - tempo de compilação aceitável
+    - após a otimização podem ocorrer alterações na estrutura do código que podem aumentar o tempo de compilação
+  - esforços de projeto precisam ser administráveis
+    - não pode ser muito complexo de ser implementado
+
+#### Tipos
+
+- Global
+  - analisa o programa como um todo ou independente da arquitetura da máquina, ou seja, em alto nível
+  - otimiza o IR
+  - desempenho depende da qualidade do projeticsta
+    - quais e como são implementados os passos de otimização
+
+![highLevelOtimization](images/highLevelOtimization.png)
+
+- Local
+  - analisa o programa em um nível mais baixo, ou seja, depende da arquitetura da máquina
+  - otimiza o código objeto
+  - desempenho depende do conhecimento da arquitetura alvo
+    - descições se baseiam nas restrições impostas pelos recursos disponíveis
+
+### Geração de código objeto
+
+- Gera o código objeto a partir da IR
+  - Código objeto é o código de máquina
+  - Depende da arquitetura alvo
+- Mapeia cada nó da AST (Árvore Semântica Abstrata) ou instrução de 3 endereços em instruções na linguagem objeto (seleção de instruções)
+  - Gerar código de máquina (relocável ou absoluto) ou de montagem (assembly)
+  - Busca produzir código rápico e compacto
+  - Aproveita as características arquiteturais
+    - Ex: modos de enderçamento disponíveis
+  - Pode ser visto como um problema de alocação de registradores (pattern matching)
+    - Métodos ad hoc, pattern matching, programação dinâmica
+
+---
+
+- Alocação de registradores é um aspecto crítico dessa etapa
+  - Assegura que os dados estejam disponíveis quando forem usados
+  - Gerecimanto de um quantidade limitada de registradores
+  - Pode mudar as intruções e/ou incluir instruições de load/store
+  - Alocação ótima é um problema NP-completo
+    - Problema de coloração de grafos
+    - Compiladores adotam soluções aproximadas
+- Alocação de memória para os identificadores (variáveis)
+  - Decisões sobre alocação doe espaço podem ser durante a geração do código intermediário ou do código objeto
+
+---
+
+- Escalonamento de instruções
+  - Busca evitar paradas de hardware devido a dependências de dados (stall e interlock)
+  - Tentar usar todas as unidade funcionais de forma eficiente (paralela)
+  - Pode aumentar o tempo de vida das variáveis
+    - Mudança na alocação
+  - Escalonamento ótimo é um problema NP-completo
+    - Métodos heurísticos
+
+![lowLevelOtimization](images/lowLevelOtimization.png)
+
+### Formas de organização
+
+- Fases de um compilador podem ser executadas separadamente (em sequência) ou combinada em passos
+
+- Compilação em etapas (sequencial):
+  - A execução de uma faset termina antes de iniciar a próxima
+  - Vantagem: possibilidade de otimizações no código
+  - Desvantagem: aumento no tempo de compilação
+
+- Compilação em um passo:
+  - Programa-Objeto é produzido à medida que o programa-fonte é lido
+  - Vantagem: eficiência na compilação
+  - Desvantagem: dificuldade em otimizar o código
+
+- Ambientes de compilação modernos adotam um meio termo
+  - Fases agrupadas em front-end (análise), middle-end (otimização) e back-end (geração de código/síntese)
