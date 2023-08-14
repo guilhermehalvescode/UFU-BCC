@@ -301,3 +301,115 @@
 
 - Ambientes de compilação modernos adotam um meio termo
   - Fases agrupadas em front-end (análise), middle-end (otimização) e back-end (geração de código/síntese)
+
+## Análise Léxica
+
+> Etapa de Análise do Comipilador
+
+![compilerAnalisys](images/compilerAnalisys.png)
+
+- Processo iterativo e reativo
+
+### Projeto da Etapa de Análise
+
+- Por que dividir análise léxica e sintática?
+  - Permite simplificar uma das fases (projeto mais simples)
+    - Ex: análise sintática e sem tratamento para comentários
+  - Permite a adoção de técnicas especializadas/otimizadas para certas tarefas (melhor eficiência do compilador)
+    - Ex: técnicas de buferização especializadas para a leitura de caracteres e o processamento de tokens
+  - Facilita a portabilidade do compilador (manutenção)
+    - Peculiaridades da linguagem ou dos dispositivos podem ser restringidas ao analisador léxico facilitando modificações
+    - Ex: Tratamento de símbolos especiais (^ em Pascal) ou fora do padrão (ex: letras do alfabeto grego)
+
+### A Análise Léxica
+
+- Análise léxica é a 1º fase da etapa de análise
+  - Envolve varredura (scanner) e análise propriamente dita (lexer)
+  - Implementada como uma sub-rotina do analisador sintático
+- Tarefa principal: agrupar os caracteres do código fonte em tokens
+  - Ler os caracteres de um buffer de entrada do programa fonte
+  - Agrupá-los em lexemas
+  - Produzir uma sequência de tokens como saída
+    - Usada pelo analisador sintático para validar as regras da gramática
+- Pode realizar outras tarefas secundárias
+  - Remover símbolos desnecessários
+    - Comentários e separadores (espaço em branco, tabulação e quebra de linha)
+  - Correlacionar as mensagens de erro com o código fonte
+  - Processar diretivas de controle (ex: expansão de macros)
+
+### Token
+
+- Classe de elementos aceitos em uma linguagem de programação
+  - Unidade básica da sintaxe
+  - Ex: identificadores, operadores, palavras-chave, etc.
+- Elo de ligação entre as análises léxica e sintática
+  - Representa os lexemas do código fonte
+    - Palavras aceitas pela linguagem
+  - Corresponde a um nó folha da árvore sintática
+    - Símbolo terminal de uma gramática livre de contexto
+
+---
+
+- Representado por um par <Nome, Atributo>
+  - Nome: símbolo abstrato que indica o tipo de token
+    - Símbolos de entrada do analisador sintático
+  - Atributo: guarda informações adicionais necessárias (opcional)
+    - Atributo pode ser um tipo estruturado que guarda informações
+    - Ex: lexema encontrado, valor de dado, localização na entrada, etc.
+- Classe de tokens presentes em uma linguagem:
+  - Palavras-chave
+  - Operadores (organizados individualmente ou em classes)
+  - Identificadores (ID)
+  - Constantes (ex: número ou cadeia de literais)
+  - Símbolos de pontuação (ex: parênteses, ponto-e-vírgula, etc.)
+
+### Padrão de um Token
+
+- Regra que define o conjunto de palavras associado a um token
+  - Descreve a forma (cadeia de caracteres) que os lexemas de um token podem assumir
+  - Ex: Qualquer ID é formado por uma letra seguida por letras, números e " "
+- Expressões regulares são uma importante notação para especificar os padrões de lexemas
+  - Ex: letra (letra | digito | _)*
+- Os padrões são usados na construção dos reconhecedores das cadeias do conjunto
+
+### Lexema
+
+- Sequência de caracteres no programa fonte que casa com o padrão de um token
+- Palavra reconhecida pelo analisador léxico como uma instância do token
+  
+![exLexems](images/exLexems.png)
+
+### Atributo dos Tokens
+
+- Usado quando mais de um lexema casa com o padrão do token
+  - Ex: identificador, operador relacional, etc.
+
+- Fornece informações adicionais para as fases seguintes do compilador
+  - Descreve o lexema representado pelo token
+  - Nome do token influencia nas decisões durante a análise sintática
+  - Valor do atributo influencia na tradução do token após o reconhecimento sintático
+
+### Erros Léxicos
+
+- Identificar um erro no código fonte durante a análise léxica é difícil sem o auxílio de outros componentes
+  - Ex: fi é um identificador ou o if escrito errado?
+- Erros léxicos ocorrem quando nenhum dos padrões de token casa com a entrada restante
+  - Ex: símbolo desconhecido, lexemas mal formadas, identificadores muito grandes e fim de arquivo inesperado
+- Erros associados ao tratamento de constantes:
+  - Exceder o limite de casas decimais e do expoente de números reais (tatno no tamanho quando no valor)
+  - Exceder o limite máximo de cadeia de caracteres
+  - Exceder o limite do número de dígitos e do valor de um inteiro
+
+---
+
+- Estratégias de recuperação podem ser usadas
+  - Envolve transformações na entrada restante:
+    - Remover um caractere
+    - Inserir um caractere que falta
+    - Substituir um caractere por outro
+    - Transpor dois caracteres adjacentes
+  - "Modo pânico": remove caracteres até reconhecer o lexema
+  - Estratégia mais simples aplica uma única transformação
+  - Estretégia mais geral busca encontrar o menor número de transformaçoes necessárias para obter um lexema válido
+    - Na prática, é uma estratégia muito dispendiosa
+    - Não garante efetividade dos resultados
