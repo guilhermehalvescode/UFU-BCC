@@ -84,7 +84,7 @@ O conjunto de toas as palavras definidas em $\Sigma$ pode ser particionado em 3 
 - as palavras que representam as instâncias do problema tais que a resposta do problema é NÃO (instâncias negativas do problema)
 - as palavras que não representam instâncias do problema
 
-Ex: alfaberto $\Sigma = \{0, ..., 9, a, ..., z\}$
+Ex: alfabeto $\Sigma = \{0, ..., 9, a, ..., z\}$
 
 - Problema dos números pares
 
@@ -112,3 +112,11 @@ Exemplos:
 - {ε,0,1,00,01,10,11,000,001,...} é a linguagem de todas as palavras que podem ser formadas no alfabeto {0,1}
 - A linguagem Ø representa a linguagem vazia que não contém nenhuma palavra. É uma linguagem diferente da linguagem {ε} (linguagem que contém a palavra vazia)
 - O conjunto as palavras para escrever programa em C é uma linguagem
+
+### Representação das linguagens
+
+Não existe uma representação (notação) que descreve qualquer linguagem!
+
+Se a linguagem é finita, a enumeração explícita das palavras que pertencem à linguagem é suficiente para definir a linguagem
+
+Se a linguagem é infinita a enumeração explícita não corresponde a uma possibilidade de descrição da linguagem
