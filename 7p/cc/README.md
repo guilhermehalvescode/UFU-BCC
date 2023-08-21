@@ -304,7 +304,7 @@
 
 ## Análise Léxica
 
-> Etapa de Análise do Comipilador
+> Etapa de Análise do Compilador
 
 ![compilerAnalisys](images/compilerAnalisys.png)
 
@@ -413,3 +413,70 @@
   - Estretégia mais geral busca encontrar o menor número de transformaçoes necessárias para obter um lexema válido
     - Na prática, é uma estratégia muito dispendiosa
     - Não garante efetividade dos resultados
+
+### Buffering da Entrada
+
+Consiste na leitura da entrada (código fonte) para a identificação dos lexemas (casamento de um padrão)
+
+- Consome caractere a caractere da esquerda para direita
+
+Identificação correta de um lexema pode exigir a leitura de 1 ou + caracteres a frente (lookahead)
+
+- Ex: na linguagem Fortran, as palavras-chave não são reservadas e os espaços são desconsiderados
+  - DOI=1.25  =>  lexema: DOI - token: ID
+  - DOI=1,25  =>  lexema: DO - token: DO
+
+Técnicas especializadas de buffering são empregadas para reduzir o custo da operação
+
+- Exemplo:
+  - 2 buffers para tratar lookaheads grandes com segurança
+  - Uso de "sentinelas" para evitar verificação de fim do buffer
+
+### Pares de Buffer
+
+Adota 2 buffers de entrada de mesmo tamanho
+
+- Relacionado com o tamanho do bloco do disco (ex: 4096 bytes)
+
+Comando de leitura do sistema carrega todo o buffer ao invés de um único caractere
+
+- Buffers são recarregados alternadamente
+- Caracete especial EOF define fim do arquivo
+
+Abordagem adota 2 ponteiros:
+
+- ini: marca o início do lexema atual
+- prox: indica o próximo caractere a ser lido
+  - implementa o lookahead até que haja um casamento de padrão
+  - Provoca a operação de recarga sempre que extrapola o tamanho do buffer
+
+### Sentinelas
+
+Envolve incluir um caractere extra (sentinela) no fim de cada buffer
+
+- Geralmente é usado o caractere especial EOF
+- Exige uma posição a mais na estrutura de armazenamento
+
+Visa reduzir a quantidade de testes a cada caractere lido
+
+- Original: fim de buffer e qual caractere lido
+- Sentinela: qual caractere lido
+
+Posição do EOF indica o cenário a ser tratado
+
+- Final do buffer: EOF na última posição
+- Final do arquivo de entrada: EOF nas demais posições
+
+## Análise Sintática
+
+![syntaxAnalysis](images/syntaxAnalysis.png)
+
+Determina se a estrutura sintática do programa (cadeia de tokens) é aceita na linguagem
+
+- Especificação usa gramáticas livre de contexto (GLC)
+  - Tokens são os símbolos terminais da gramática
+
+- GLC descrever maior parte da sintaxe das linguagens
+- Fases subsequentes devem analisar a AST para garantir a compatibilidade com as regras que não foram contempladas
+
+Reconhecimento baseado
