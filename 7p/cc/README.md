@@ -467,6 +467,130 @@ Posição do EOF indica o cenário a ser tratado
 - Final do buffer: EOF na última posição
 - Final do arquivo de entrada: EOF nas demais posições
 
+### Expressões Regulares (ER)
+
+Notação formal usada para especificar a estrutura (padrões) dos tokens
+
+- Possibilita um analisador léxico sem erros (estrutura precisa)
+- Ex: string definida como uma cadeia de caracteres entre aspas
+  - Não são todos os caracteres que são permitidos (ex: '\n')
+- Ex: números reais em notação de ponto fixo (ex: 3.0 e 0.12)
+  - 3. e .12 são aceitos em Fortran, mas não em Pascal
+
+Descreve as linguagens a partir de 3 operações sobre os símbolos de algum alfabeto:
+
+- União: L U M = $\{ s | s \in  \text{L ou s} \in M \}$
+- Concatenação: LM = $\{ st | s \in \text{L e t} \in M \}$
+- Fecho Kleene: $L* = \cup^{i=0..\infin}L$
+
+### Processo Indutivo
+
+ER podem ser definidas a partir de expressões menores
+
+- Cada expressão r denota uma linguagem L(r)
+
+Regras que formam a base das expressões regulares:
+
+- $\epsilon$ é uma expressão regular e L$(\epsilon) = \{ \epsilon \}$
+- Se a é um símbolo de $\Sigma$, então a é uma expressão regular e L(a) = {a}
+
+Regras que formam a parte indutiva das expressões regulares
+
+- (r)|(s) é uma expressão regular denotando L(r) U L(s)
+- (r)(s) é uma expressão regular denotando L(r)L(s)
+- (r)* é uma expressão regular denotando L(r)*
+- Se r é uma expressão regular, (r) também é e denota a mesma linguagem
+
+### Precedência dos Operadores
+
+1. Fecho
+2. Concatenação
+3. União
+
+Todos com associatividade a esquerda
+
+### Definições Regulares
+
+Especifica expressões regulares a partir de outras expressões previamente definidas
+
+- Expressões mais simples são nomeadas e seus nomes usados em expressões mais complexas
+
+Não são usadas definições recursivas
+
+- Nova definição baseia-se aepnas nas anteriores
+
+Permite gerar expressões regulares apenas com os símbolos dos $\Sigma$
+
+- Aplicação de substituições consecutivas das definições mais simples nas mais complexas
+
+---
+
+Seja $\Sigma$ o alfabeto. Uma definição regular é uma sequência de definições da forma:
+
+- $d_1 \rarr r_1$
+- $d_2 \rarr r_2$
+- ...
+- $d_n \rarr r_n$
+
+- Cada $d_i$ é um novo símbolo $\notin \Sigma \cup {d_1, d_2, ..., d_{n-1}}$
+- Cada $r_i$ é uma expressão regular sobre $\Sigma \cup {d_1, d_2, ..., d_{i-1}}$
+
+### Notação Estendida
+
+Extensões são adicionadas para melhorar a capacidade de especificar padrões de cadeia
+
+- Não fazem parte da notação convencional de expressões regulares
+- Usadas na especificação de analisadores léxicos (ex: Lex)
+  
+Extensões importantes:
+
+- Operador +: representa o fecho positivo (uma ou mais instâncias)
+  - (r) denota a linguagem L(r)
+  - r$^+$ = r | $\epsilon$ e r = rr\*
+- Operador ?: representa a opção (0 ou 1 instância)
+  - r? = r | $\epsilon$
+- Operador []: representa classes de caracteres
+  - [abc] é equivalente a (a|b|c)
+  - Útil para representar sequências lógicas
+    - [a-z] é equivalente a (a|b|c|...|z)
+
+### Reconhecimento de Tokens
+
+Considere o fragmento de gramática:
+
+- stmt $\rarr$ if expr then stmt else stmt |
+- if expr then stmt |
+- expr $\rarr$ term relop term | term
+- term $\rarr$ id | num
+- Tokens são símbolos terminais da gramática livre de context
+- Devem ser reconhecidos e retornados pelo analisador léxico
+  - Palavras-chave associadas a if, then, e else
+  - Lexemas que casam com os padrões de relop, id e numero
+- Separadores (ws) devem ser removidos (tratamento especial)
+  - Não retorna token ao analisador sintático
+  - Provoca a reinicialização da análise léxica a partir do caractere seguinte
+  
+### Diagramas de Transição
+
+Fluxogramas usados no reconhecimento dos tokens
+
+- Muito parecido com os autômatos finitos
+- Gerados a partir dos padrões dos tokens
+  - Estados: nós que representam as condições que podem ocorrer durante a procura de lexemas que casem com um padrão
+    - Possui um estado inical e um ou mais estado finais ou de de aceitação
+  - Transições: arestas direcionadas associadas à leitura de um ou + símbolos do alfabeto
+    - Provoca mudança de estado e avanço do prox
+  - Estados de aceitação indicam um lexema aceito
+    - Não possuem transição de saída
+    - Estão associados ás ações que devem ser realizadas pelo analisador léxico
+    - Símbolo * indica recuo do prox (tratamento do lookahead)
+
+---
+
+Exemplo
+
+![transitionDiagram](images/transitionDiagram.png)
+
 ## Análise Sintática
 
 ![syntaxAnalysis](images/syntaxAnalysis.png)
