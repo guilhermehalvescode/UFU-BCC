@@ -717,3 +717,118 @@ contract TokenAuction {
   }
 }
 ```
+
+## ECC com Assinaturas
+
+- Dada uma curva a, b e um ponto gerador G e um módulo p...
+- Público/Sistema...sempre as partes conhecem
+- calcular P = 2G
+- calcular Q = 1024G
+- calcular R = P + Q = 1026G
+  - R = (1024 + 2)G
+
+- Dado R, encontrar n tal que R = nG -> não
+- As operações + e x "funcionam"
+  - Associativa, distributiva e comutativa!
+
+### Claus-Peter Schnorr
+
+- Conheço k (de um K = kG) sem revelar k
+- P gera alpha aleatório e envia alphaG ao V
+- V gera um desafio c e envia para P
+- P responde R = alpha + c*k
+- V calcula R = rG e R' = alphaG + c*K e verifica se R == R'
+- Tente provar sem conhecer o k
+
+### Fiat-Shamir
+
+- Não iterativo/ Mesmo objetivo
+- P
+  - Gera alpha aleatório e alphaG
+  - Gera o desafio c = H(alphG)
+  - Faz r = alpha + c * k
+  - Publica (alphaG, r)
+- V
+  - Gera o desafio c' = H(alphaG)
+  - Calcula R = rG e R' = alphaG + c'*K e verifica se R == R'
+
+---
+
+- Alice ka = Ka = kaG e m
+- Ka é a chave pública de Alice (endereço!)
+- m é uma mensagem "Pague 10 Ether para 0xabcdef"
+- Gera alpha aleatório e alphaG
+- Gera o desafio c = H(m | alphaG)
+- Faz r = alpha - c * ka
+- Publica (c, r, m) (Ka já é publico)
+
+---
+
+- Público: (c, r, m), Ka, e curva
+- Qualquer pessoa pode calcular
+- c' = H(m | (rG + cKa))
+- E verificar se c == c'
+- Se H(m | alphaG) == H(m | rG + cKa)
+  - rG + cKa == (alphaG - c*kaG) + cKa == (alphaG - c*Ka) + cKa == alphaG
+  - então c = c' e sabemos que o dono da Ka gerou (c, r, m)
+
+- c e r é assinatura de Ka sobre m!
+- O minerador diminui o saldo de Ka, aumenta de Oxabcdef, atualiza Árvore de Merkle
+
+---
+
+- Este é um processo de assinatura e verificação de assinatura
+- Somente A pode gerar (c, r, m)
+- Que seja verificável por qualquer outra pessoa
+- A assinou m
+- ECDSA - Elliptic Curve Digital Signature Algorithm
+
+## Solidity
+
+### GAS
+
+- O seu SC (Smart Contract) roda nos computadores espalhados pelo mundo
+  - De forma redundante
+  - Diferente de uma nuvem
+- Alguém precisa pagar por isso
+- GAS
+- Cotação GAS x Ether (X US$)
+- Esta moeda "separada" (cotação separada) permite uma dissociação
+
+---
+
+- Cada instrução da EVM tem um custo
+  - Boas práticas do programação
+- Computação off chain
+- Cada byte armazenado também storage/memory
+- A "carteira" cuida do pagamento
+- A carteira paga para rodar o contrato A, que chama um contrato B, que chama tudo por conta de quem iniciou a transação
+- Define um Gas Máximo para a transação
+  - Por enquanto tudo escondido/default
+- O gas não é revertido no rollback
+
+---
+
+- Pode pagar mais
+- pressa
+- Inúmeras possibilidades de ataques
+
+### Mapping
+
+- Estrutura chave/valor
+- Todas as chaves estão inicializadas com "zero"
+- Pode exigir algum esforço de programação mapping(address => uint) balances;
+- Sem iterator!!!
+
+### Modifiers
+
+```solidity
+function XYZ(<param types>)
+{internal|external} [constant] [payable] [returns(<ret types>)]
+```
+
+- Existem outros
+- Podem ser definidos pelos usuários
+
+---
+
