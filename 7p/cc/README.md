@@ -705,7 +705,6 @@ Implementação automático do código
 - Muito usado em projetos reais
 - Geralmente adotam métodos métodos dirigidos por tabela
 
-
 ## Análise Sintática
 
 ![syntaxAnalysis](images/syntaxAnalysis.png)
