@@ -588,8 +588,123 @@ Fluxogramas usados no reconhecimento dos tokens
 ---
 
 Exemplo
-
+~
 ![transitionDiagram](images/transitionDiagram.png)
+
+### Palavras-Chave vs. Identificadores
+
+Diferenciar palavras-chave e identificadores pode ser um problema
+
+- Palavras-chave casam com o padrão dos identificadores
+- Considerar as palavras-chave como reservadas ajuda no reconhecimento
+
+Existem 2 formas de lidar com palavras reservadas:
+
+- Tratar palavras reservadas como identificador
+- Criar diagramas separados para cada palavra-chave
+
+---
+
+Tratar palavras reservadas como identifiacor
+
+- Inicia tabela de símbolos com as palavras reservadas
+- Consulta a tabela antes de incluir um novo lexema
+  - Se encontrar registro, retora o nome do token
+  - Senão inclui o novo lexema e retorna o ID
+
+![reservedAsId](images/reservedAsId.png)
+
+---
+
+Criar diagramas separados para cada palavra-chave:
+
+- Verifica se a cadeia terminou antes de associar o lexema ao token
+  - Para evitar erros prioriza o maior prefixo aceito
+  - Ex: ifan é um identificador e não a palavra chave if
+- Se lexema casar com 2 padrões, deve priorizar a palavra chave
+
+![sepDiagrams](images/sepDiagrams.png)
+
+---
+
+Variação que UNIFICA os diagramas do IF e do ID:
+
+- Unificação é uma das estratégias para lidar com vários diagramas durante o processo de reconhecimento
+
+### Diagramas de Transição (Continuação)
+
+Como seriam os diagrama de transição para os demais tokens do nosso estudo de caso?
+
+- then, else, ws e número
+
+---
+
+then e else
+
+- Já está sendo coberto pelo autômato da 1 estratégia (palavras reservadas como identificadores)
+- 2 estratégia
+
+![thenElseAutomata](images/thenElseAutomata.png)
+
+---
+
+ws (separadores)
+
+- Espaços em branco, tabulações e quebras de linha
+
+![wsAutomata](images/wsAutomata.png)
+
+---
+
+Constante numérica
+
+- numero -> digitos(.digitos)? (E[+-]?digitos)?
+
+![numberAutomata](images/numberAutomata.png)
+
+### Formas de Implementação
+
+#### Tabeça de Símbolos
+
+Forma de implementação da estrutura de represetnação dos tokens afeta a memória usada pela tabela de símbolos
+
+- Operadores podem ser representados por 2 caracteres
+- Palavras reservadas geralemnte naão são grandes
+  - Também podem ser represetnadas por códigos
+- Como lidar com identificadores, números e strings?
+- Alocação estática:
+  - Vantagem: implementação mais simples
+  - Desvantagem: desperdício de memória
+- Alocação dinâmica:
+  - Vantagem: economia de memória
+  - Desvantagem: complexidade de implementação
+
+---
+
+Despenho do analisador é influenciado pela eficiência da consulta a tabela de símbolos
+
+- Busca linear:
+  - Mais simples de implementar
+  - Pior desempenho (O(n))
+- Busca binária:
+  - Boa eficiência (O(log n))
+- Hashing:
+  - Ideal para consulta a palavras reservadas (O(1))
+  - Garante acesso sem colisões (palavras já são conhecidas)
+
+#### Diagramas de Transição na implementação
+
+Formas de implementação manual de um código para simular o comportamento de um diagrama
+
+- Solução ad hoc
+- Codificação direta do autômato finito
+- Uso da tabela de transição
+
+Implementação automático do código
+
+- Muito usado em projetos reais
+- Geralmente adotam métodos métodos dirigidos por tabela
+
 
 ## Análise Sintática
 
