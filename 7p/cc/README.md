@@ -704,6 +704,114 @@ Implementação automático do código
 
 - Muito usado em projetos reais
 - Geralmente adotam métodos métodos dirigidos por tabela
+- Ex: Lex, JavaCC
+
+#### Solução Ad Hoc
+
+Implementação focada no fluxo de entrada
+
+- Simples e fácil
+
+Estados do autômato são implementados implicitamente
+
+- Aninhamento de IF's define as mudanças de estado
+  - Aninhamentos implementam a derivação de um lexema aceito
+  - Mesma transição é repetida em diferentes partes do código
+
+Complexidade do código cresce com o Nro. de estados
+
+- Aplicável a autômatos com poucos estados
+
+Implementação personalizada
+
+- Código sensível a mudanças no autômato
+
+![adHocExemple](images/adHocExemple.png)
+
+---
+
+![adHocExemple1](images/adHocExemple1.png)
+
+#### Codificação Direta
+
+Reflete diretamente o autômato finito
+
+Estados do autômato são implementados explicitamente
+
+- Estado atual é armazenado em uma variável
+
+Incorpora as transições no código do programa
+
+- Verificação externa trata o estado corrente
+  - Leva ao código para cada um dos possíveis estados
+- Verificação interna trata o símbolo lido
+  - Implementa as ações de um estado
+  - Envolve mudanças de estado e leitura do próximo caractere da entrada
+
+Ainda é uma implementação personalizada
+
+- Código permanece sensível a mudanças no autômato
+
+![codificacaoDireta](images/codificacaoDireta.png)
+
+---
+
+![codificacaoDireta1](images/codificacaoDireta1.png)
+
+#### Tabela de Transição
+
+Autômato representado como uma estrutura de dados
+
+- Tipo Abstrato de Dados (TAD)
+- Atributos: descrevem as características do autômato finito
+  - Conjunto de transições representado por uma tabela
+  - Deve indicar o estado inicial e os finais
+  - Precisa representar as entradas não previstas em um estado
+- Operações: possiblitam acesso aos atributos do TAD
+
+Permite a implementação de um código genérico
+
+- Especificidades do autômato estão restritas ao TAD
+
+![tabelaTransicao0](images/tabelaTransicao0.png)
+![tabelaTransicao1](images/tabelaTransicao1.png)
+![tabelaTransicao2](images/tabelaTransicao2.png)
+
+---
+
+Vantagens:
+
+- Código reduzido (elegância)
+- Mesmo código atende a várias linguagens (generalidade)
+
+Desvantagem:
+
+- Tabelas estáticas: pode demandas/desperdiçar muito espaço de memória
+  - Alfabeto grande ou autômato com muitos estados no autômato
+- Tabelas dinâmicas: torna o processamento mais lento
+
+#### Análise Baseada em Diagramas
+
+Analisador léxico precisa executar o código de todos os diagramas para determinar o token a ser retornado
+
+Possíveis estratégias:
+
+- Executar os diagramas sequencialemente
+- Executar os diagramas em paralelo
+- Combinar todos os diagramas em um único
+
+#### Execução Sequencial
+
+Tokens são verificados em sequência
+
+- Permite diagramas específicos para palavras-chave
+- Ordem de execução define a prioridade de reconhecimento entre os tokens
+  - Ex: palavras-chave vs. identificadores
+
+Falha no reconhecimento de um diagrama provoca troca de diagrama
+
+- Reinicialização do campo prox
+- Inicialização do próximo diagrama
 
 ## Análise Sintática
 
@@ -718,3 +826,4 @@ Determina se a estrutura sintática do programa (cadeia de tokens) é aceita na 
 - Fases subsequentes devem analisar a AST para garantir a compatibilidade com as regras que não foram contempladas
 
 Reconhecimento baseado
+
