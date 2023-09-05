@@ -669,7 +669,7 @@ Constante numérica
 Forma de implementação da estrutura de represetnação dos tokens afeta a memória usada pela tabela de símbolos
 
 - Operadores podem ser representados por 2 caracteres
-- Palavras reservadas geralemnte naão são grandes
+- Palavras reservadas geralmente não são grandes
   - Também podem ser represetnadas por códigos
 - Como lidar com identificadores, números e strings?
 - Alocação estática:
@@ -812,6 +812,118 @@ Falha no reconhecimento de um diagrama provoca troca de diagrama
 
 - Reinicialização do campo prox
 - Inicialização do próximo diagrama
+
+#### Execução Paralela
+
+Tokens são analisados ao mesmo tempo
+
+- Caractere é tratado por todos os diagramas ativos
+  - Diagrama ativo: capaz de processar a entrada
+- Cada diagrama controla suas transições
+  - Se símbolo está previsto então realiza a transição, senão desativa o diagrama
+
+Precisa de regras para tratar ambiguidades
+
+- Define o que fazer quando um padrão é atendido mas ainda existem outros diagramas ativos
+  - Ex: thenext ou then ? "->" ou "-" ? "<=" ou "<" ?
+- Estratégia mais usual é pegar o lexema mais longo
+  - Uso da palavra reservada para priorizar palavras-chave
+
+#### Diagrama Combinado
+
+Todos os diagramas representados em um só
+
+Diagrama gerado deve:
+
+- Ler entrada até não existir transição possível
+- Retornar lexema mais longo que casou com um padrão
+
+Tarefa é geralmente complexa:
+
+- Problema: tratar diagramas com a mesma transição
+- Solução: usar um autômato finito não determinístico com transições $\sigma$ (AFND$\sigma$)
+
+### Geradores Automáticos de Analisadores Léxicos (LEX / FLEX)
+
+#### Geradores Automático
+
+Gerador de analisadores léxicos
+
+> "Programa que recebe como entrada a especificação léxia para uma linguagem e produz como saída um programa que faz a análise léxica dessa linguagem"
+
+Por que usar um gerador de analisadores?
+
+- Menos trabalho
+- Garante a geração de um analisador léxico correto
+
+![automaticGenerator](images/automaticGenerator.png)
+
+#### Gerador Automático Flex
+
+Flex (Fast Lexical Analyzer Generator)
+
+- Versão GNU do gerador Lex (software livre)
+
+Especificação léxica envolve a descrição dos padrões para os tokens (expressões regulares)
+
+- Usa notação da linguagem Lex (arquivo .l ou .lex)
+
+Compilador Lex gera um programa que simla o diagrama de transição criado a partir dos padrões
+
+- Programa gerado em linguagem C
+- Sintaxe: flex -o lexer.c lexer.lex
+
+Compilador C usado para gerar o código executável
+
+- Ex: gcc -o lexer lexer.c
+
+![flexAutomaticGenerator](images/flexAutomaticGenerator.png)
+
+#### Estrutura de Programas Lex
+
+- Expecificação é dividida em 3 partes
+
+```lex
+Declarações
+
+%%
+
+Regras de tradução
+
+%%
+
+Código
+```
+
+---
+
+Declarações: especifica variáveis globais, constantes manifestas e definições regulares
+
+- Constantes manifestas:
+  - Identificadores para constantes (ex: nome dos tokens)
+  - Conjunto de diretivas #define do C
+- Definições regulares
+  - Expressões regulares usadas como símbolos pelos padrões
+- Variáveis e constantes manifestas são declaradas dentro de delimitadores especiais %{ e %}
+  - Copia o conteúdo diretamente para o arquivo lex.yy.c
+
+---
+
+Regras de tradução: especifica os padrões e suas ações
+
+- Parte principal da especificação léxica (única obrigatória)
+
+Sintaxe: padrão { ação }
+
+- Padrão: expressão regular que descreve um token da linguagem
+- Ação: fragmento de código C que determina o que fazer quando um lexema casa com o padrão especificado
+  - Mais comum: instanciar um token para o lexema encontrado
+  - Pode utilizar funções auxiliares descritas na seção código ou arq. externo
+
+Código: especifica funções auxiliares usadas nas ações
+
+- Também podem ser especificadas em arquivos separados
+- Geralmente usadas para manipular a tabela de símbolos
 
 ## Análise Sintática
 
