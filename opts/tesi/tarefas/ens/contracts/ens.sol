@@ -1,40 +1,48 @@
-// SPDX-License-Identifier: UNLICENSED 
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
-/*
-// registra um "dominio"
-registerDomain(string newDomain) onlyOwner;
-
-// O msg.sender define um par chave-valor em domain
-//  setValue("TOPICOS","ivan") faz    ENS["TOPICOS"]["ivan"] = msg.sender
-setValue(string domain,string v) 
-
-
-// getValue("TOPICOS") retorna  a string RET quando ENS["TOPICOS"][RET] = msg.sender
-getValue(string domain, address a) returns (string)
-
-
-// getValue("TOPICOS","ivan" ) retorna  o endereço ADDRESS  quando ENS["TOPICOS"]["ivan"] = ADDRESS
-getValue(string domain, string v) returns (address)
-*/
 
 contract ens {
-  mapping ( string => mapping( string => address ) ) public enses;
+    address owner;
+    mapping(string => mapping(string => address)) public enses;
+		mapping(string => mapping(address => string)) public addressesSubdomains;
 
-  function registerDomain(string newDomain) public onlyOwner {
-    
-  }
+    constructor() {
+        owner = msg.sender;
+    }
 
-  function setValue(string domain, string v) public {
-    enses[domain][v] = msg.sender;
-  }
+    modifier onlyOwner() {
+        require(msg.sender == owner, "You must be the owner");
+        _;
+    }
 
 
-  function getValue(string domain) public returns (string) {
-    return enses[domain][msg.sender];
-  }
-    
-  function getValue(string domain, string v) public returns (address) {
-    return enses[domain][v];
-  }
+    // registra um "dominio" para msg.sender
+    // registerDomain(string newDomain) onlyOwner;
+    function registerDomain(string memory newDomain) public onlyOwner {
+				string memory addr = string(abi.encodePacked(msg.sender));
+        enses[newDomain][addr] = msg.sender;
+    }
 
+
+    // O msg.sender define um par chave-valor em domain
+    // setValue("TOPICOS","ivan") faz ENS["TOPICOS"]["ivan"] = msg.sender
+    // setValue(string domain, string v) 
+		// OBS: should domain owner register the subdomains? this way anyone can register a subdomain
+    function setValue(string memory domain, string memory v) public {
+        enses[domain][v] = msg.sender;
+				addressesSubdomains[domain][msg.sender] = v;
+    }
+
+
+		// getValue("TOPICOS","ivan") retorna  o endereço ADDRESS  quando ENS["TOPICOS"]["ivan"] = ADDRESS
+		// getValue(string domain, string v) returns (address)
+    function getValue(string memory domain, string memory v) public view returns (address) {
+        return enses[domain][v];
+    }
+
+		// getValue("TOPICOS") retorna  a string RET quando ENS["TOPICOS"][RET] = msg.sender
+		// getValue(string domain) returns (string)
+    function getValue(string memory domain) public view returns (string memory) {
+        return addressesSubdomains[domain][msg.sender];
+    }
 }
