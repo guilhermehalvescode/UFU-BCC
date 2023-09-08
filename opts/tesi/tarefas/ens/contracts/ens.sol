@@ -46,3 +46,5 @@ contract ens {
         return addressesSubdomains[domain][msg.sender];
     }
 }
+
+// deployment: 0x9A4ec17378F5128F62849edF460145667CFb551c
