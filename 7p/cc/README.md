@@ -115,7 +115,7 @@
   - Ordem de aplicação interfere no código gerado
     - Passos de otimização interagem entre si
     - Sequências distintas -> diferentes códigos e desempenho
-  
+
 ### Estrutura do compilador
 
 ![compilerStructure](images/compilerStructure.png)
@@ -204,8 +204,8 @@
   - Atribuições possui no máximo um operador no lado direito
   - Compilador precisa gerar um nome temporário para guardar o resultado das instruções (registrador)
   - Algumas instruções possuem menos de 3 operandos
-- Ex: dado que as variáveis são do tipo float, a instrução "x = y+z*10;" gera o seguinte código de 3 endereços
-  
+- Ex: dado que as variáveis são do tipo float, a instrução "x = y+z\*10;" gera o seguinte código de 3 endereços
+
   ```IR
   t1 = inttofloat(10)
   t2 = id3 * t1
@@ -216,6 +216,7 @@
 ### Otimização
 
 - Modifição para melhorar desempenho no código
+
   - podendo diminuir tempo de execução,
   - espaço de memória, tamanho de código,
   - consumo energético,
@@ -290,11 +291,13 @@
 - Fases de um compilador podem ser executadas separadamente (em sequência) ou combinada em passos
 
 - Compilação em etapas (sequencial):
+
   - A execução de uma faset termina antes de iniciar a próxima
   - Vantagem: possibilidade de otimizações no código
   - Desvantagem: aumento no tempo de compilação
 
 - Compilação em um passo:
+
   - Programa-Objeto é produzido à medida que o programa-fonte é lido
   - Vantagem: eficiência na compilação
   - Desvantagem: dificuldade em otimizar o código
@@ -369,19 +372,20 @@
   - Descreve a forma (cadeia de caracteres) que os lexemas de um token podem assumir
   - Ex: Qualquer ID é formado por uma letra seguida por letras, números e " "
 - Expressões regulares são uma importante notação para especificar os padrões de lexemas
-  - Ex: letra (letra | digito | _)*
+  - Ex: letra (letra | digito | \_)\*
 - Os padrões são usados na construção dos reconhecedores das cadeias do conjunto
 
 ### Lexema
 
 - Sequência de caracteres no programa fonte que casa com o padrão de um token
 - Palavra reconhecida pelo analisador léxico como uma instância do token
-  
+
 ![exLexems](images/exLexems.png)
 
 ### Atributo dos Tokens
 
 - Usado quando mais de um lexema casa com o padrão do token
+
   - Ex: identificador, operador relacional, etc.
 
 - Fornece informações adicionais para as fases seguintes do compilador
@@ -423,8 +427,8 @@ Consiste na leitura da entrada (código fonte) para a identificação dos lexema
 Identificação correta de um lexema pode exigir a leitura de 1 ou + caracteres a frente (lookahead)
 
 - Ex: na linguagem Fortran, as palavras-chave não são reservadas e os espaços são desconsiderados
-  - DOI=1.25  =>  lexema: DOI - token: ID
-  - DOI=1,25  =>  lexema: DO - token: DO
+  - DOI=1.25 => lexema: DOI - token: ID
+  - DOI=1,25 => lexema: DO - token: DO
 
 Técnicas especializadas de buffering são empregadas para reduzir o custo da operação
 
@@ -498,7 +502,7 @@ Regras que formam a parte indutiva das expressões regulares
 
 - (r)|(s) é uma expressão regular denotando L(r) U L(s)
 - (r)(s) é uma expressão regular denotando L(r)L(s)
-- (r)* é uma expressão regular denotando L(r)*
+- (r)_ é uma expressão regular denotando L(r)_
 - Se r é uma expressão regular, (r) também é e denota a mesma linguagem
 
 ### Precedência dos Operadores
@@ -541,7 +545,7 @@ Extensões são adicionadas para melhorar a capacidade de especificar padrões d
 
 - Não fazem parte da notação convencional de expressões regulares
 - Usadas na especificação de analisadores léxicos (ex: Lex)
-  
+
 Extensões importantes:
 
 - Operador +: representa o fecho positivo (uma ou mais instâncias)
@@ -569,7 +573,7 @@ Considere o fragmento de gramática:
 - Separadores (ws) devem ser removidos (tratamento especial)
   - Não retorna token ao analisador sintático
   - Provoca a reinicialização da análise léxica a partir do caractere seguinte
-  
+
 ### Diagramas de Transição
 
 Fluxogramas usados no reconhecimento dos tokens
@@ -583,7 +587,7 @@ Fluxogramas usados no reconhecimento dos tokens
   - Estados de aceitação indicam um lexema aceito
     - Não possuem transição de saída
     - Estão associados ás ações que devem ser realizadas pelo analisador léxico
-    - Símbolo * indica recuo do prox (tratamento do lookahead)
+    - Símbolo \* indica recuo do prox (tratamento do lookahead)
 
 ---
 
@@ -925,6 +929,56 @@ Código: especifica funções auxiliares usadas nas ações
 - Também podem ser especificadas em arquivos separados
 - Geralmente usadas para manipular a tabela de símbolos
 
+---
+
+Quando nenhum padrão for casado, uma regra padrão do Flex imprime os caracteres não reconhecidos
+
+Precedência na solução de conflitos
+
+1. Preferência pelo prefixo mais longo
+2. Ordem de descrição dos padrões no programa Lex
+
+Operador lookahead:
+
+- Padrão: sempre lê o próximo caractere após o casamento do padrão e depois recua a entrada para consumir apenas o lexema
+- O que fazer quando o casamento exige que o padrão seja seguindo por um certo conjunto de caracteres?
+  - Solução: uso da barra condicional (/)
+  - Inclui um padrão adicional após a barra que não faz parte do lexema
+
+---
+
+Exemplo: IF / \\(.\*\\) {letter}
+
+- Padrão permite diferenciar o comando IF de uma variável indexada IF(x, y) no Fortran
+
+  - IF(I, J) = 3
+  - IF (condição) THEN
+
+- Necessita que a entrada seja pré-processada para a remoção dos espaços em branco
+
+![lexStructureEx](images/lexStructureEx.png)
+
+#### Integração com o Programa Usuário
+
+O analisador léxico gerado a partir de um programa lex.
+
+- Usa a rotina yylex() para chamada do analisador pelo usuário
+
+  - Não possui argumento de entrada e retorna um inteiro (padrão)
+    - Retorno geralmente é associado pelo usuário ao tipo do token
+    - Tipo do retorno pode ser alterado por tipo definido pelo usuário
+
+- Interface realizada por 2 variáveis globais do tipo FILE:
+
+  - Entrada é lida do arquivo endereçado por yyin
+    - Padrão é o ponteiro stdin (teclado)
+  - Resultado é enviado para o arquivo endereçado por yyout
+    - Padrão é o ponteiro stdout (tela)
+  - Ambas podem ser modificadas na seção de código do prog .lex
+
+- Variável yytext aponta para a última cadeia reconhecida
+  - Variável global do tipo ponteiro para caracteres (string)
+
 ## Análise Sintática
 
 ![syntaxAnalysis](images/syntaxAnalysis.png)
@@ -932,10 +986,10 @@ Código: especifica funções auxiliares usadas nas ações
 Determina se a estrutura sintática do programa (cadeia de tokens) é aceita na linguagem
 
 - Especificação usa gramáticas livre de contexto (GLC)
+
   - Tokens são os símbolos terminais da gramática
 
 - GLC descrever maior parte da sintaxe das linguagens
 - Fases subsequentes devem analisar a AST para garantir a compatibilidade com as regras que não foram contempladas
 
 Reconhecimento baseado
-
