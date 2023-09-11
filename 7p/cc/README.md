@@ -502,7 +502,7 @@ Regras que formam a parte indutiva das expressões regulares
 
 - (r)|(s) é uma expressão regular denotando L(r) U L(s)
 - (r)(s) é uma expressão regular denotando L(r)L(s)
-- (r)_ é uma expressão regular denotando L(r)_
+- (r)\_ é uma expressão regular denotando L(r)\_
 - Se r é uma expressão regular, (r) também é e denota a mesma linguagem
 
 ### Precedência dos Operadores
