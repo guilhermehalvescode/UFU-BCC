@@ -979,6 +979,115 @@ O analisador léxico gerado a partir de um programa lex.
 - Variável yytext aponta para a última cadeia reconhecida
   - Variável global do tipo ponteiro para caracteres (string)
 
+### Construção do Analisador Léxico
+
+#### Geração Automática (construção)
+
+Geradores (Flex) convertem as especificações léxicas em um diagrama de transição
+
+- Especificação: usa notação para definir os padrões dos tokens (expressões regulares)
+- Implementação: simulação de AFD ou AFND-$\epsilon$
+
+AFND é uma representação abstrata do algoritmo reconhecedor, enquanto que o AFD é o algoritmo simples e concreto
+
+- AFND facilita a geração do diagrama (conversão)
+- AFD facilita a simulação (reconhecimento)
+
+---
+
+Analisador léxico do Flex consiste:
+
+- Um programa fixo que simula um autômato (genérico)
+- Componentes criado a partir do programa Lex (específico)
+  - Tabela de transição para o autômato
+  - Ações a serem invocadas pelo simulador do autômato
+  - Funções auxiliares passadas diretamente para a saída
+
+Processo mecânico e sistêmico
+
+- Conversão das expressões regulares em AFNDs
+- Unificação dos AFNDs em um único autômato
+- Conversão do AFND em um AFD
+- Minimização do número de etsados
+- Simulação do AFD
+
+Alternativa é similar diretamente o AFND gerado
+
+---
+
+![autoGenerateLexEx](images/autoGenerateLexEx.png)
+
+#### Conversão Expressões Regulares
+
+Algoritmo de McNaughton-Yamada-Thompson
+
+- Gera AFND para reconhecer cadeias definidas na expressão regular
+  - Algoritmo dirigido por sintaxe (produz a derivação para as expressões)
+- Baseado no tratamento recursivo das relações elementares
+  - Base: símbolos do alfabeto
+  - Passo recursivo: operações básicas (concatenação, união e fecho)
+- Constrói um AFND para cada relação com um único estado de aceitação
+
+Etapas:
+
+- Decompor a expressão regular em suas relações elementares (do todo para a parte)
+- Construir um autômato finito que reconheça cada uma das subexpressões obtidas (da parte para o todo)
+
+---
+
+![regularExpConversionBasicOps](images/regularExpConversionBasicOps.png)
+
+---
+
+Algumas propriedades do algoritmo:
+
+- AFND gerado tem um estado inicial e um final
+  - Estado inicial não possui transições de entrada
+  - Estado final não possui transições de saída
+- AFND gerado tem no máximo o dobro de estados em relação ao número de operadores e operandos da expressão regular
+  - Cada passo do algoritmo cria no máximo 2 novos estados
+- Cada estado do ANFD (exceto o final) possui:
+  - Uma transição de saída em um símbolo do alfabeto
+  - Duas transições de saída (ambas em $\epsilon$)
+
+#### Conversão ANFD para AFD
+
+Baseado na construção de subconjuntos:
+
+- Cada estado do AFD corresponde a um conjunto de estados do AFND
+- Tabela de transição do AFD simula todos os movimentos do AFND considerando os possíveis símbolos de entrada
+
+Possíveis dificuldades na conversão
+
+- Crescimento exponencial do número de estaods
+  - Não costuma ocorrer na análise das linguagens reais
+- Tratar corretamente os movimentos vazios
+
+Operações básicas usadas no processo
+
+- $\epsilon-closure(T)$: retorna o conjunto de estados do AFND que podem ser alcançados a partir de algum estado s $\in$ T, usando movimentos vazios
+  - $\epsilon-closure(s)$ retorna o fecho-$\epsilon$ de s
+- move(T, c): retorna o conjunto de estados do AFND que podem ser alcançados a partir de algum estado s $\in$ T, ao ler o símbolo c
+
+---
+
+![closureCalculation](images/closureCalculation.png)
+
+#### Minimização de Estados do AFD
+
+Elimina estados do AFD que possuem as mesmas transições
+
+Algoritmo:
+
+- Separe o conjunto de estados do AFD (S) em:
+
+  - S1: subconjunto com todos os estado finais (F)
+  - S2: subgrupo contendo os estados não-finais (S-F)
+
+- Particione cada subconjunto Sn de modo que 2 estados de S permanecerão juntos se eles possuírem as mesmas transições
+
+- Repita o passo anterior para os novos subgrupos até que não seja possível novas partições
+
 ## Análise Sintática
 
 ![syntaxAnalysis](images/syntaxAnalysis.png)
