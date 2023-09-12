@@ -4,6 +4,7 @@
     "prettier-plugin-solidity": "^1.1.3"
   },
   "scripts": {
-    "gasTest": "brownie run gasTest main"
+    "gasTest": "brownie run gasTest main",
+    "deployTest": "brownie run deployTest"
   }
 }

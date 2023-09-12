@@ -1,7 +1,6 @@
 from brownie import *
 from brownie import ens, accounts
 
-
 def main():
     acc = accounts[0]
     contract = ens.deploy({'from': acc})
