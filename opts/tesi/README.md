@@ -51,7 +51,7 @@ constructor(address payable d,uint tempo) public {
 - Biblioteca de Números Grandes
 - Limite: memória e CPU
 - Os numeros são armazenados como vetores
-- As bibliotecas implementam as operações usuais: +, -, *, /, ehPrimo, etc
+- As bibliotecas implementam as operações usuais: +, -, \*, /, ehPrimo, etc
 
 ### Exponenciação
 
@@ -145,6 +145,7 @@ int potencia(b,e):
 ### Algumas funções de hash
 
 - MD5 (message digest)
+
   - Ron Rivest
   - MD2, MD4, ...
   - hash de 128 bits
@@ -226,7 +227,7 @@ int potencia(b,e):
   - (Pode ser antes, depois, envelopando, ...)
   - Hi(x) != Hj(x) para i != j
   - (É o que esperamos ...)
-  
+
 ---
 
 - Um filtro de Bloom é uma ED com a seguinte interface:
@@ -255,7 +256,7 @@ contains(k) -> boolean
 
 def insert(k):
   for i in range(1, h+1):
-    t = hi(k) 
+    t = hi(k)
     V[t % n] = True
 
 def contains(k):
@@ -304,6 +305,7 @@ def contains(k):
 - Custo?
   - $\sum_{1}^{n} |t_xn|$
 - Vantagem?
+
   - Fácil...direto...
 
 - Solução 2: publica o hash das transações...
@@ -430,6 +432,7 @@ Como publicar apenas um hash e não usar todas as transações para verificar um
 ---
 
 No header do e-mail existiria um campo X-Hashcash: hfalkjkhldkjhl
+
 - O texto hfalkjkhldkjhl é a prova de trabalho
 - "faz" com que o hash do email seja, por exemplo 000FCAB834C....
 - Os servidores de email somente aceitariam um email se o hash seguir este padrão (iniciar com k zeros)
@@ -448,7 +451,7 @@ while not mined:
   if h[:6] == '000000':
     mined = True
   x+=1
-  
+
 print(h)
 ```
 
@@ -725,6 +728,7 @@ contract TokenAuction {
 - calcular P = 2G
 - calcular Q = 1024G
 - calcular R = P + Q = 1026G
+
   - R = (1024 + 2)G
 
 - Dado R, encontrar n tal que R = nG -> não
@@ -736,8 +740,8 @@ contract TokenAuction {
 - Conheço k (de um K = kG) sem revelar k
 - P gera alpha aleatório e envia alphaG ao V
 - V gera um desafio c e envia para P
-- P responde R = alpha + c*k
-- V calcula R = rG e R' = alphaG + c*K e verifica se R == R'
+- P responde R = alpha + c\*k
+- V calcula R = rG e R' = alphaG + c\*K e verifica se R == R'
 - Tente provar sem conhecer o k
 
 ### Fiat-Shamir
@@ -746,11 +750,11 @@ contract TokenAuction {
 - P
   - Gera alpha aleatório e alphaG
   - Gera o desafio c = H(alphG)
-  - Faz r = alpha + c * k
+  - Faz r = alpha + c \* k
   - Publica (alphaG, r)
 - V
   - Gera o desafio c' = H(alphaG)
-  - Calcula R = rG e R' = alphaG + c'*K e verifica se R == R'
+  - Calcula R = rG e R' = alphaG + c'\*K e verifica se R == R'
 
 ---
 
@@ -759,7 +763,7 @@ contract TokenAuction {
 - m é uma mensagem "Pague 10 Ether para 0xabcdef"
 - Gera alpha aleatório e alphaG
 - Gera o desafio c = H(m | alphaG)
-- Faz r = alpha - c * ka
+- Faz r = alpha - c \* ka
 - Publica (c, r, m) (Ka já é publico)
 
 ---
@@ -769,6 +773,7 @@ contract TokenAuction {
 - c' = H(m | (rG + cKa))
 - E verificar se c == c'
 - Se H(m | alphaG) == H(m | rG + cKa)
+
   - rG + cKa == (alphaG - c*kaG) + cKa == (alphaG - c*Ka) + cKa == alphaG
   - então c = c' e sabemos que o dono da Ka gerou (c, r, m)
 
@@ -829,6 +834,3 @@ function XYZ(<param types>)
 
 - Existem outros
 - Podem ser definidos pelos usuários
-
----
-
