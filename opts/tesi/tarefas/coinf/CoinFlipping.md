@@ -1,3 +1,10 @@
+# TESI - Tarefa CoinFlipping
+
+> Guilherme Alves Carvalho - 11921BCC016
+
+## Código
+
+```solidity
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.4.25 <0.6.0;
 
@@ -115,3 +122,5 @@ contract CoinFlipping {
         }
     }
 }
+
+```
