@@ -21,91 +21,103 @@ pragma solidity >=0.4.25 <0.6.0;
 */
 
 contract LUPA {
-  enum LUPAStates { Bid, Payment, Finished}
-
-  struct BidValue {
-    uint value;
-    bool isUnmatched;
-    address payable[] bidders;
-}
-
-  mapping (uint =>  BidValue) bids;
-  uint blocklimit;
-  LUPAStates myState;
-  uint prizeValue;
-  address payable owner;
-
-
-  modifier onlyOwner {
-    require (msg.sender == owner,
-            "Sorry!");
-    _;
-  }
-
-
-  constructor(uint time) payable public {
-      blocklimit = block.number + time;
-      myState = LUPAStates.Bid;
-      prizeValue =msg.value;
-      owner = msg.sender;
-  }
-
-  function bid() public payable {
-    verifyFinished();
-    require (myState == LUPAStates.Bid, "Too late!");
-    require (msg.value>0,"Dont even try this dirt trick!!!");
-    require (msg.value<10e18,"Nope...");
-    BidValue storage oneBid = bids[msg.value];
-    if (oneBid.value == 0 ) { // Unmatched
-        oneBid.value = msg.value;
-        oneBid.bidders.push(msg.sender);
-        oneBid.isUnmatched=true;
-    } else {
-      oneBid.bidders.push(msg.sender);
-      oneBid.isUnmatched=false;
+    enum LUPAStates {
+        Bid,
+        Payment,
+        Finished
     }
 
-  }
-
-  function bidWinner() public returns (int) {
-    verifyFinished();
-    require (myState == LUPAStates.Payment ,"Wait!");
-    uint l=0;
-    while (l<10e18) {
-      BidValue storage oneBid = bids[l];
-      if (oneBid.isUnmatched) {
-        return int(oneBid.value);
-      }
-      l+=1;
+    struct BidValue {
+        uint value;
+        bool isUnmatched;
+        address payable[] bidders;
     }
-    return -1;
-  }
 
-  function winner(uint w) private returns (address payable) {
-    BidValue storage oneBid = bids[w];
-    return oneBid.bidders[0];
-  }
+    mapping(uint => BidValue) bids;
+    uint blocklimit;
+    LUPAStates myState;
+    uint prizeValue;
+    address payable owner;
 
-  function makePayment() public {
-    verifyFinished();
-    require (myState == LUPAStates.Payment ,"Wait!");
-    int widx = bidWinner();
-    if (widx>-1) {
-      address payable wa = winner(uint(widx));
-      wa.transfer(prizeValue);
+    modifier requireOnlyOwner() {
+        require(msg.sender == owner, "Sorry!");
+        _;
     }
-    owner.transfer(address(this).balance);
-    myState = LUPAStates.Finished;
-  }
+
+    function finishAuction() public requireOnlyOwner {
+        myState = LUPAStates.Payment;
+    }
+
+    // turn function requireFinished to modifier: it was being called at the start of all callers
+    modifier finishAuctionIfLimit() {
+        if (block.number > blocklimit) {
+            finishAuction();
+        }
+        _;
+    }
 
 
-  function finishAuction() public onlyOwner {
-    myState = LUPAStates.Payment;
-  }
+    modifier requireInitiated(state) {
+        require(myState == LUPAStates.Bid, "Too late!");
+        _;
+    }
 
-  function verifyFinished() private {
-    if (block.number > blocklimit) {
-       // myState = LUPAStates.Payment;
-      }
+    modifier requireForPayment() {
+      require(myState == LUPAStates.Payment, "Wait!");
+      _;
+    }
+
+    modifier requireValueValid(value) private returns (bool) {
+        require(value > 0 && value < 10e18, "Dont even try this dirt trick!!!");
+        _;
+    }
+
+    constructor(uint time) public payable {
+        blocklimit = block.number + time;
+        myState = LUPAStates.Bid;
+        prizeValue = msg.value;
+        owner = msg.sender;
+    }
+
+
+    function bid() public payable requireInitiated requireValueValid(msg.value) {
+        BidValue storage oneBid = bids[msg.value];
+
+        if (oneBid.value == 0) {
+            // Unmatched
+            oneBid.value = msg.value;
+            oneBid.bidders.push(msg.sender);
+            oneBid.isUnmatched = true;
+        } else {
+            oneBid.bidders.push(msg.sender);
+            oneBid.isUnmatched = false;
+        }
+    }
+
+    function findBidWinner() private requireForPayment returns (int) {
+        uint l = 0;
+        while (l < 10e18) {
+            BidValue storage oneBid = bids[l];
+            if (oneBid.isUnmatched) {
+                return l;
+            }
+            l += 1;
+        }
+        return -1;
+    }
+
+    function getBidsFirstBid(uint w) private returns (address payable) {
+        BidValue storage oneBid = bids[w];
+        return oneBid.bidders[0];
+    }
+
+    function makePayment() public finishAuctionIfLimit {
+        int widx = findBidWinner();
+        if (widx > -1) {
+            address payable wa = getBidsFirstBid(uint(widx));
+            wa.transfer(prizeValue);
+        }
+        owner.transfer(address(this).balance);
+        myState = LUPAStates.Finished;
     }
 }
