@@ -14,3 +14,5 @@ x20v_1991.pdf
 node_modules
 dist/
 *.lock
+
+*.Identifier
