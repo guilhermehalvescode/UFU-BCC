@@ -20,7 +20,11 @@ pragma solidity >=0.4.25 <0.6.0;
 
 */
 
+import "./SimpleCommit.sol";
+
 contract LUPA {
+    using SimpleCommit for SimpleCommit.CommitType;
+
     enum LUPAStates {
         Bid,
         Payment,
@@ -30,7 +34,10 @@ contract LUPA {
     struct BidValue {
         uint value;
         bool isUnmatched;
+        uint newCommitIndex;
         address payable[] bidders;
+        // for commit strategy
+        SimpleCommit.CommitType[] commits;
     }
 
     mapping(uint => BidValue) bids;
@@ -49,25 +56,24 @@ contract LUPA {
     }
 
     // turn function requireFinished to modifier: it was being called at the start of all callers
-    modifier finishAuctionIfLimit() {
+    modifier finishBidIfLimit() {
         if (block.number > blocklimit) {
             finishAuction();
         }
         _;
     }
 
-
-    modifier requireInitiated(state) {
+    modifier requireInitiated() {
         require(myState == LUPAStates.Bid, "Too late!");
         _;
     }
 
     modifier requireForPayment() {
-      require(myState == LUPAStates.Payment, "Wait!");
-      _;
+        require(myState == LUPAStates.Payment, "Wait!");
+        _;
     }
 
-    modifier requireValueValid(value) private returns (bool) {
+    modifier requireValueValid(uint value) {
         require(value > 0 && value < 10e18, "Dont even try this dirt trick!!!");
         _;
     }
@@ -79,27 +85,30 @@ contract LUPA {
         owner = msg.sender;
     }
 
-
-    function bid() public payable requireInitiated requireValueValid(msg.value) {
+    function bid(
+        bytes32 c
+    ) public payable requireInitiated requireValueValid(msg.value) {
         BidValue storage oneBid = bids[msg.value];
 
         if (oneBid.value == 0) {
             // Unmatched
             oneBid.value = msg.value;
-            oneBid.bidders.push(msg.sender);
             oneBid.isUnmatched = true;
         } else {
-            oneBid.bidders.push(msg.sender);
             oneBid.isUnmatched = false;
         }
+
+        oneBid.commits[oneBid.newCommitIndex].commit(c);
+        oneBid.bidders.push(msg.sender);
+        oneBid.newCommitIndex += 1;
     }
 
-    function findBidWinner() private requireForPayment returns (int) {
+    function findBidWinnerIndex() private view requireForPayment returns (int) {
         uint l = 0;
         while (l < 10e18) {
             BidValue storage oneBid = bids[l];
             if (oneBid.isUnmatched) {
-                return l;
+                return int(l);
             }
             l += 1;
         }
@@ -108,11 +117,16 @@ contract LUPA {
 
     function getBidsFirstBid(uint w) private returns (address payable) {
         BidValue storage oneBid = bids[w];
+
+        bytes32 nonce = oneBid.commits[0].commited;
+        oneBid.commits[0].reveal(nonce, 0);
+
+        require(oneBid.commits[0].isCorrect(), "Wrong bid!");
         return oneBid.bidders[0];
     }
 
-    function makePayment() public finishAuctionIfLimit {
-        int widx = findBidWinner();
+    function makePayment() public finishBidIfLimit {
+        int widx = findBidWinnerIndex();
         if (widx > -1) {
             address payable wa = getBidsFirstBid(uint(widx));
             wa.transfer(prizeValue);
