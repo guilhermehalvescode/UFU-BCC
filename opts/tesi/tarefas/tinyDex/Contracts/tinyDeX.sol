@@ -29,20 +29,32 @@ contract tinyDeX {
         owner = msg.sender;
     }
 
-    function createPool(string memory name, ERC20 x, ERC20 y) public {
+    modifier poolNotExists(string memory name) {
         require(
             pools[name].poolOwner == address(0),
             "This pool already exists!"
         );
-        require(
-            x.allowance(msg.sender, address(this)) > 0,
-            "Show me the token!"
-        );
-        require(
-            y.allowance(msg.sender, address(this)) > 0,
-            "Show me the token!"
-        );
+        _;
+    }
 
+    modifier poolExists(string memory name) {
+        require(pools[name].poolOwner != address(0), "This pool doesnt exist!");
+        _;
+    }
+
+    modifier tokenHasAllowance(ERC20 token) {
+        require(
+            token.allowance(msg.sender, address(this)) > 0,
+            "Show me the token!"
+        );
+        _;
+    }
+
+    function createPool(
+        string memory name,
+        ERC20 x,
+        ERC20 y
+    ) public poolNotExists(name) tokenHasAllowance(x) tokenHasAllowance(y) {
         x.transferFrom(
             msg.sender,
             address(this),
@@ -60,12 +72,9 @@ contract tinyDeX {
     }
 
     // buy y token using x token
-    function buy(string memory name) public {
-        require(pools[name].poolOwner != address(0), "This pool doesnt exist!");
-        require(
-            pools[name].x.allowance(msg.sender, address(this)) > 0,
-            "Show me the token!"
-        );
+    function buy(
+        string memory name
+    ) public poolExists(name) tokenHasAllowance(pools[name].x) {
         uint256 xammount = pools[name].x.allowance(msg.sender, address(this));
         uint256 xbalance = pools[name].x.balanceOf(address(this));
         uint256 ybalance = pools[name].y.balanceOf(address(this));
@@ -76,12 +85,9 @@ contract tinyDeX {
         pools[name].y.transfer(msg.sender, yammount);
     }
 
-    function sell(string memory name) public {
-        require(pools[name].poolOwner != address(0), "This pool doesnt exist!");
-        require(
-            pools[name].y.allowance(msg.sender, address(this)) > 0,
-            "Show me the token!"
-        );
+    function sell(
+        string memory name
+    ) public poolExists(name) tokenHasAllowance(pools[name].y) {
         uint256 yammount = pools[name].y.allowance(msg.sender, address(this));
         uint256 ybalance = pools[name].y.balanceOf(address(this));
         uint256 xbalance = pools[name].x.balanceOf(address(this));
