@@ -17,28 +17,25 @@ import "OpenZeppelin/openzeppelin-contracts@3.0.0/contracts/token/ERC20/ERC20.so
 contract tinyDeX {
     address owner;
 
-    struct PoolType {
-        address poolOwner;
-        ERC20 x;
-        ERC20 y;
+    struct Pool {
+        address owner;
+        ERC20 thisT;
+        ERC20 otherT;
     }
 
-    mapping(string => PoolType) pools;
+    mapping(string => Pool) pools;
 
     constructor() public {
         owner = msg.sender;
     }
 
     modifier poolNotExists(string memory name) {
-        require(
-            pools[name].poolOwner == address(0),
-            "This pool already exists!"
-        );
+        require(pools[name].owner == address(0), "This pool already exists!");
         _;
     }
 
     modifier poolExists(string memory name) {
-        require(pools[name].poolOwner != address(0), "This pool doesnt exist!");
+        require(pools[name].owner != address(0), "This pool doesn't exist!");
         _;
     }
 
@@ -50,51 +47,84 @@ contract tinyDeX {
         _;
     }
 
-    function createPool(
-        string memory name,
-        ERC20 x,
-        ERC20 y
-    ) public poolNotExists(name) tokenHasAllowance(x) tokenHasAllowance(y) {
-        x.transferFrom(
+    function receiveToken(ERC20 token) private {
+        token.transferFrom(
             msg.sender,
             address(this),
-            x.allowance(msg.sender, address(this))
+            token.allowance(msg.sender, address(this))
         );
-        y.transferFrom(
-            msg.sender,
-            address(this),
-            y.allowance(msg.sender, address(this))
-        );
-
-        pools[name].poolOwner = msg.sender;
-        pools[name].x = x;
-        pools[name].y = y;
     }
 
-    // buy y token using x token
+    function getPool(string memory name) public view returns (Pool memory) {
+        return pools[name];
+    }
+
+    function setPool(string memory name, ERC20 thisT, ERC20 otherT) public {
+        Pool memory p = getPool(name);
+        p.owner = msg.sender;
+        p.thisT = thisT;
+        p.otherT = otherT;
+    }
+
+    function createPool(
+        string memory name,
+        ERC20 thisT,
+        ERC20 otherT
+    )
+        public
+        poolNotExists(name)
+        tokenHasAllowance(thisT)
+        tokenHasAllowance(otherT)
+    {
+        receiveToken(thisT);
+
+        receiveToken(otherT);
+
+        setPool(name, thisT, otherT);
+    }
+
+    // function getTransactionAmmount(ERC20 thisT, ERC20 otherT) {
+    //     uint256 thisTAmmount = thisT.allowance(msg.sender, address(this));
+    //     uint256 thisTBalance = thisT.balanceOf(address(this));
+    //     uint256 otherTBalance = otherT.balanceOf(address(this));
+
+    //     uint256 otherTAmmount = (otherTBalance * thisTAmmount) /
+    //         (thisTBalance + thisTAmmount);
+
+    //     return otherTAmmount;
+
+    // }
+
+    // buy Other token using This token
     function buy(
         string memory name
     ) public poolExists(name) tokenHasAllowance(pools[name].x) {
-        uint256 xammount = pools[name].x.allowance(msg.sender, address(this));
-        uint256 xbalance = pools[name].x.balanceOf(address(this));
-        uint256 ybalance = pools[name].y.balanceOf(address(this));
+        Pool storage p = getPool(name);
 
-        uint256 yammount = (ybalance * xammount) / (xbalance + xammount);
+        uint256 thisTAmmount = p.thisT.allowance(msg.sender, address(this));
+        uint256 thisTBalance = p.thisT.balanceOf(address(this));
+        uint256 otherTBalance = p.otherT.balanceOf(address(this));
 
-        pools[name].x.transferFrom(msg.sender, address(this), xammount);
-        pools[name].y.transfer(msg.sender, yammount);
+        uint256 otherTAmmount = (otherTBalance * thisTAmmount) /
+            (thisTBalance + thisTAmmount);
+
+        p.thisT.transferFrom(msg.sender, address(this), thisTAmmount);
+        p.otherT.transfer(msg.sender, otherTAmmount);
     }
 
     function sell(
         string memory name
-    ) public poolExists(name) tokenHasAllowance(pools[name].y) {
-        uint256 yammount = pools[name].y.allowance(msg.sender, address(this));
-        uint256 ybalance = pools[name].y.balanceOf(address(this));
-        uint256 xbalance = pools[name].x.balanceOf(address(this));
+    ) public poolExists(name) tokenHasAllowance(pools[name].otherT) {
+        Pool storage p = getPool(name);
 
-        uint256 xammount = (xbalance * yammount) / (ybalance + yammount);
+        uint256 otherTAmmount = p.otherT.allowance(msg.sender, address(this));
+        uint256 otherTBalance = p.otherT.balanceOf(address(this));
+        uint256 thisTBalance = p.thisT.balanceOf(address(this));
 
-        pools[name].y.transferFrom(msg.sender, address(this), yammount);
-        pools[name].x.transfer(msg.sender, xammount);
+        uint256 thisTAmmount = (thisTBalance * otherTAmmount) /
+            (otherTBalance + otherTAmmount);
+
+        p.otherT.transferFrom(msg.sender, address(this), otherTAmmount);
+        p.thisT.transfer(msg.sender, thisTAmmount);
     }
 }
