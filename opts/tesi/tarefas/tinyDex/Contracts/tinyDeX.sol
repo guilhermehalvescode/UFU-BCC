@@ -16,17 +16,35 @@ import "OpenZeppelin/openzeppelin-contracts@3.0.0/contracts/token/ERC20/ERC20.so
 
 contract tinyDeX {
     address owner;
+    uint tax;
 
     struct Pool {
         address owner;
+        uint tax;
         ERC20 thisT;
         ERC20 otherT;
     }
 
     mapping(string => Pool) pools;
 
-    constructor() public {
+    modifier validTax(uint tax) {
+        require(tax >= 0 && tax <= 100, "Tax must be between 0 and 100!");
+        _;
+    }
+
+    constructor(uint tax) public validTax(tax) {
         owner = msg.sender;
+        tax = tax;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function!");
+        _;
+    }
+    
+    modifier onlyPoolOwner(string memory name) {
+        require(msg.sender == pools[name].owner, "Only pool owner can call this function!")
+        _;
     }
 
     modifier poolNotExists(string memory name) {
@@ -55,19 +73,33 @@ contract tinyDeX {
         );
     }
 
+    function sendToken(ERC20 token) private {
+        token.transferFrom(
+            address(this),
+            msg.sender,
+            token.allowance(address(this), msg.sender)
+        );
+    }
     function getPool(string memory name) public view returns (Pool memory) {
         return pools[name];
     }
 
-    function setPool(string memory name, ERC20 thisT, ERC20 otherT) public {
+    function setPool(
+        string memory name,
+        uint memory tax,
+        ERC20 thisT,
+        ERC20 otherT
+    ) public validTax(tax) {
         Pool memory p = getPool(name);
         p.owner = msg.sender;
+        p.tax = tax;
         p.thisT = thisT;
         p.otherT = otherT;
     }
 
     function createPool(
         string memory name,
+        uint tax,
         ERC20 thisT,
         ERC20 otherT
     )
@@ -80,7 +112,17 @@ contract tinyDeX {
 
         receiveToken(otherT);
 
-        setPool(name, thisT, otherT);
+        setPool(name, tax, thisT, otherT);
+    }
+
+    function retrievePool(string memory name) public onlyPoolOwner(name) {
+        Pool storage p = getPool(name);
+
+        sendToken(p.thisT);
+
+        sendToken(p.otherT);
+
+        delete pools[name];
     }
 
     // function getTransactionAmmount(ERC20 thisT, ERC20 otherT) {
@@ -98,7 +140,7 @@ contract tinyDeX {
     // buy Other token using This token
     function buy(
         string memory name
-    ) public poolExists(name) tokenHasAllowance(pools[name].x) {
+    ) public poolExists(name) tokenHasAllowance(pools[name].thisT) {
         Pool storage p = getPool(name);
 
         uint256 thisTAmmount = p.thisT.allowance(msg.sender, address(this));
