@@ -74,6 +74,7 @@ contract tinyDeX {
     }
 
     function sendToken(ERC20 token) private {
+        token.transfer(msg.sender, token.balanceOf(address(this)));
         token.transferFrom(
             address(this),
             msg.sender,
