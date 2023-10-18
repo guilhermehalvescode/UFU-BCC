@@ -21,8 +21,8 @@ contract tinyDeX {
     struct Pool {
         address owner;
         uint tax;
-        ERC20 thisT;
-        ERC20 otherT;
+        ERC20 theToken;
+        ERC20 otherToken;
     }
 
     mapping(string => Pool) pools;
@@ -43,17 +43,17 @@ contract tinyDeX {
     }
     
     modifier onlyPoolOwner(string memory name) {
-        require(msg.sender == pools[name].owner, "Only pool owner can call this function!")
+        require(msg.sender == getPool(name).owner, "Only pool owner can call this function!")
         _;
     }
 
     modifier poolNotExists(string memory name) {
-        require(pools[name].owner == address(0), "This pool already exists!");
+        require(getPool(name).owner == address(0), "This pool already exists!");
         _;
     }
 
     modifier poolExists(string memory name) {
-        require(pools[name].owner != address(0), "This pool doesn't exist!");
+        require(getPool(name).owner != address(0), "This pool doesn't exist!");
         _;
     }
 
@@ -74,13 +74,13 @@ contract tinyDeX {
     }
 
     function sendToken(ERC20 token) private {
-        token.transfer(msg.sender, token.balanceOf(address(this)));
         token.transferFrom(
             address(this),
             msg.sender,
             token.allowance(address(this), msg.sender)
         );
     }
+
     function getPool(string memory name) public view returns (Pool memory) {
         return pools[name];
     }
@@ -88,86 +88,107 @@ contract tinyDeX {
     function setPool(
         string memory name,
         uint memory tax,
-        ERC20 thisT,
-        ERC20 otherT
-    ) public validTax(tax) {
+        ERC20 theToken,
+        ERC20 otherToken
+    ) private validTax(tax) {
         Pool memory p = getPool(name);
         p.owner = msg.sender;
         p.tax = tax;
-        p.thisT = thisT;
-        p.otherT = otherT;
+        p.theToken = theToken;
+        p.otherToken = otherToken;
+    }
+
+    function payAddress(address addr, ERC20 token, uint tax) private {
+        taxValue = token.allowance(msg.sender, addr) * (tax / 100);
+
+        token.transferFrom(
+            msg.sender,
+            addr,
+            taxValue
+        );
     }
 
     function createPool(
         string memory name,
         uint tax,
-        ERC20 thisT,
-        ERC20 otherT
+        ERC20 theToken,
+        ERC20 otherToken
     )
         public
         poolNotExists(name)
-        tokenHasAllowance(thisT)
-        tokenHasAllowance(otherT)
+        tokenHasAllowance(theToken)
+        tokenHasAllowance(otherToken)
     {
-        receiveToken(thisT);
+        receiveToken(theToken);
 
-        receiveToken(otherT);
+        receiveToken(otherToken);
 
-        setPool(name, tax, thisT, otherT);
+        setPool(name, tax, theToken, otherToken);
     }
 
     function retrievePool(string memory name) public onlyPoolOwner(name) {
         Pool storage p = getPool(name);
 
-        sendToken(p.thisT);
+        sendToken(p.theToken);
 
-        sendToken(p.otherT);
+        sendToken(p.otherToken);
 
-        delete pools[name];
+        delete getPool(name);
     }
 
-    // function getTransactionAmmount(ERC20 thisT, ERC20 otherT) {
-    //     uint256 thisTAmmount = thisT.allowance(msg.sender, address(this));
-    //     uint256 thisTBalance = thisT.balanceOf(address(this));
-    //     uint256 otherTBalance = otherT.balanceOf(address(this));
+    function getBalanceOf(ECR20 token ,address addr) private {
+        return token.balanceOf(addr);
+    }
 
-    //     uint256 otherTAmmount = (otherTBalance * thisTAmmount) /
-    //         (thisTBalance + thisTAmmount);
+    function getAllowanceFrom(ERC20 token, address from, address to) private {
+        return token.allowance(from, to);
+    }
 
-    //     return otherTAmmount;
+    function transaction(ECR20 buyerToken, ERC20 sellerToken, address buyer, address seller) private {
 
-    // }
+        uint256 buyerTokenAmmount = getAllowanceFrom(buyerToken, buyer, seller);
+
+        payAddress(seller, buyerToken, tax);
+        payAddress(poolOwner, buyerToken, poolTax);
+
+        taxesValue = (buyerTokenAmmount * tax) / 100 + (buyerTokenAmmount * poolTax) / 100;
+
+        buyerTokenAmmount = buyerTokenAmmount - taxesValue;
+
+        uint256 buyerTokenBalance = getBalanceOf(buyerToken, buyer);
+        uint256 sellerTokenBalance = getBalanceOf(sellerToken, buyer);
+
+        uint256 sellerTokenAmmount = (sellerTokenBalance * buyerTokenAmmount) /
+            (buyerTokenBalance + buyerTokenAmmount);
+
+        buyerToken.transferFrom(buyer, seller, buyerTokenAmmount);
+        sellerToken.transferFrom(seller, buyer, sellerTokenAmmount);
+    }
 
     // buy Other token using This token
     function buy(
         string memory name
-    ) public poolExists(name) tokenHasAllowance(pools[name].thisT) {
+    ) public poolExists(name) tokenHasAllowance(pools[name].theToken) {
         Pool storage p = getPool(name);
 
-        uint256 thisTAmmount = p.thisT.allowance(msg.sender, address(this));
-        uint256 thisTBalance = p.thisT.balanceOf(address(this));
-        uint256 otherTBalance = p.otherT.balanceOf(address(this));
+        address contractAddress = address(this);
 
-        uint256 otherTAmmount = (otherTBalance * thisTAmmount) /
-            (thisTBalance + thisTAmmount);
+        ERC20 fromToken = p.theToken;
+        ERC20 toToken = p.otherToken;
 
-        p.thisT.transferFrom(msg.sender, address(this), thisTAmmount);
-        p.otherT.transfer(msg.sender, otherTAmmount);
+        transaction(fromToken, toToken, msg.sender, contractAddress);
     }
 
     function sell(
         string memory name
-    ) public poolExists(name) tokenHasAllowance(pools[name].otherT) {
+    ) public poolExists(name) tokenHasAllowance(pools[name].otherToken) {
         Pool storage p = getPool(name);
 
-        uint256 otherTAmmount = p.otherT.allowance(msg.sender, address(this));
-        uint256 otherTBalance = p.otherT.balanceOf(address(this));
-        uint256 thisTBalance = p.thisT.balanceOf(address(this));
+        address contractAddress = address(this);
 
-        uint256 thisTAmmount = (thisTBalance * otherTAmmount) /
-            (otherTBalance + otherTAmmount);
+        ERC20 fromToken = p.otherToken;
+        ERC20 toToken = p.theToken;
 
-        p.otherT.transferFrom(msg.sender, address(this), otherTAmmount);
-        p.thisT.transfer(msg.sender, thisTAmmount);
+        transaction(fromToken, toToken, contractAddress, msg.sender);
     }
 }
