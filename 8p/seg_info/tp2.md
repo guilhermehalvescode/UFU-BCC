@@ -55,10 +55,40 @@ x = 2⁵⁵ / 10⁹ = 36028797 segundos = 417 dias
 
 ## Questão 6
 
-[x] Algoritmo de criptografia, texto cifrado, um ou mais pares de texto claro/texto cifrado.
+Algoritmo de criptografia, texto cifrado, um ou mais pares de texto claro/texto cifrado.
 
 Algoritmo de criptografia, texto cifrado, chave e um ou mais pares de texto claro/texto cifrado.
 
 Algoritmo de criptografia, texto cifrado, chave, mensagem de texto claro conhecida e o respectivo texto cifrado.
 
-Algoritmo de criptografia, texto cifrado, mensagem de texto claro conhecida e o respectivo texto cifrado.
+[X] Algoritmo de criptografia, texto cifrado, mensagem de texto claro conhecida e o respectivo texto cifrado.
+
+## Questão 7
+
+Quanto mais "achatada" a curva de um algoritmo no gráfico, mais difícil será o trabalho do criptoanalista pois a informação de frequência da letra do texto cifrado não se aproximará a curva do texto claro.
+
+O gráfico representa a distribuição de frequência de letras em algum alfabeto e o compara com diversos mecanismos de criptografia simétrica.
+
+## Questão 8
+
+O one time pad é considerado uma cifra incondicionalmente segura pois impede ataques de criptoanálise e força bruta devido a aleatoriedade da chave em cada envio de mensagem. Tal sistema não é utilizado na prática devido aos problemas de eficiência envolvidos: necessidade da chave ser do mesmo tamanho da mensagem (custo depende do tamanho da mensagem, que na maioria dos casos é grande); gerenciamento custoso das chaves (tanto para envio, quanto para geração).
+
+## Questão 9
+
+A mensagem original é: "acifradecesarnaoeseguraedeveserevitada".
+
+Para chegar nela decodifiquei a mensagem "bW91cmRtcHFvcWVtZHptYXFlcXNnZG1xcHFocWVxZHFodWZtcG0=" em base64 e obtive o seguinte valor "mourdmpqoqemdzmaqeqsgdmqpqhqeqdqhufmpm".
+
+No final testei diferentes deslocamentos da cifra de césar até achar um deslocamento de 12 caracteres: "mourdmpqoqemdzmaqeqsgdmqpqhqeqdqhufmpm" -> "acifradecesarnaoeseguraedeveserevitada"
+
+## Questão 10
+
+O Artigo apresenta os seguintes desafios:
+
+- Criptografia padronizada: a padronização da criptografia é importante, porém para que ocorra, existem obstáculos tecnológicos, políticos e comerciais que tornam esse processo lento (demanda anos de desenvolvimento)
+- Implementação: implementar um protocolo de criptografia é uma tarefa altamente complexa devido às dificuldades técnicas associadas à sua realização eficiente e segura.
+- Gerenciamento de chaves: garantir o armazenamento, a distribuição e a realização de atualizações frequentes das chaves em sistemas e aplicações de grande.
+
+## Questão 11
+
+As "Crypto Wars" (Guerras Criptográficas) referem-se a debates, disputas e controvérsias em torno do uso e da regulamentação da criptografia, especialmente em relação à sua aplicação em comunicações digitais e na proteção da privacidade. Os principais atores e suas posições são:
