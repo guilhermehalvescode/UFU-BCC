@@ -9,6 +9,8 @@ main
 x20v_1991.pdf
 *.bin
 *.pdf
+*.enc
+*.zip
 
 # ts / node
 node_modules
