@@ -111,9 +111,9 @@ A sentença II só faz sentido se Alice utilizar algum algoritmo que não cumpra
 
 A sentença IV faz sentido pois o arquivo texto que contém o valor do hash depende do tamanho do arquivo de entrada. Sobre a sentença II, Alice poderia argumentar que o uso de funções de hash robustas, como SHA2 ou SHA3, torna computacionalmente inviável a criação de colisões. (F)
 
-A sentença I está fora do escopo da solução da Alice. A invasão do servidor poderia comprometer não somente os documentos do repositório mas a integridade de todo o sistema. Funções de hash possuem saídas de tamanho fixo razoavelmente pequenas, como por exemplo, 128, 168 e 256 bits. Esse argumento poderia ser usado para contestar o colocação IV. (F)
+A sentença I está fora do escopo da solução da Alice. A invasão do servidor poderia comprometer não somente os documentos do repositório mas a integridade de todo o sistema. Funções de hash possuem saídas de tamanho fixo razoavelmente pequenas, como por exemplo, 128, 168 e 256 bits. Esse argumento poderia ser usado para contestar o colocação IV. (V)
 
-A sentença III pode ser facilmente contestada se Alice usar uma função de hash criptográfica forte. Um dos requisitos de tais funções é justamente ligada ao excelente desempenho computacional dessas funções. O exemplo fornecido pela sentença I impossibilita a implementação de qualquer protocolo de verificação de integridade de arquivos. (V)
+A sentença III pode ser facilmente contestada se Alice usar uma função de hash criptográfica forte. Um dos requisitos de tais funções é justamente ligada ao excelente desempenho computacional dessas funções. O exemplo fornecido pela sentença I impossibilita a implementação de qualquer protocolo de verificação de integridade de arquivos. (F)
 
 ## Exercício 9
 
@@ -132,3 +132,25 @@ Emissor e receptor precisam compartilhar um segredo S. Feito isso, o emissor con
 ## Exercício 11
 
 Decifrar todo o bloco usando a chave K, separar M e o bloco de autenticação, calcular o hash de (M || S), comparar o hash que acabou de ser calculado com o bloco de autenticação que veio do emissor. (X)
+
+## Exercício 12
+
+Integridade, autenticidade, não-repúdio e sigilo
+
+## Exercício 13
+
+Um certificado digital é calculado a partir do hash da chave pública da entidade junto de outras informações da entidade solicitante e da autoridade certificadora (AC). Feito isso, o hash é cifrado com a chave privada da AC.
+
+## Exercício 14
+
+Instalar certificados revogados ou expirados no navegador não representam problemas de segurança pois uma autoridade certificadora os assinou.
+
+## Exercício 15
+
+i) calcular o hash do certificado não assinado, ii) decifrar o certificado assinado usando a chave pública da AC, iii) comparar o resultado de i) e ii)
+
+## Exercício 16
+
+1 e 3 são verdadeiras.
+
+## Exercício 17
